@@ -1,0 +1,31 @@
+body {
+    background-color: #333333;
+    color: #FCFCFC;
+    margin-top: 220px;
+    text-align: center;
+}
+
+.title {
+    font-size: 36px;
+}
+
+.subtitle {
+    font-size: 12px;
+}
+
+.sign-in-button {
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 4px 6px;
+}
+
+.sign-in-button img {
+    padding-right: 4px;
+    vertical-align: middle;
+}
+
+.sign-in-button span {
+    font-family: Montserrat;
+    font-size: 16px;
+    vertical-align: middle;
+}
