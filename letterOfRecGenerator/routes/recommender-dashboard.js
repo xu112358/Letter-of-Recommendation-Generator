@@ -1,0 +1,11 @@
+var express = require('express');
+var router = express.Router();
+
+/* GET login page. */
+router.get('/', function(req, res, next) {
+    res.render('pages/recommender-dashboard', {
+        title: 'RECOMMENDER DASHBOARD',
+    });
+});
+
+module.exports = router;
