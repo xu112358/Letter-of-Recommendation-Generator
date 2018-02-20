@@ -10,6 +10,7 @@ router.use(function (req, res, next) {
 router.get('/', function(req, res, next) {
     res.render('pages/recommender-dashboard', {
         title: 'RECOMMENDER DASHBOARD',
+        recommendees: [],
     });
 });
 
@@ -54,9 +55,18 @@ router.post('/', function(req, res, next) {
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
 
+    recommendees = [
+        {
+            email: email,
+            template: "temp",
+            status: "X"
+        }
+    ];
+
     res.render('pages/recommender-dashboard', {
         title: 'RECOMMENDER DASHBOARD',
-        statusMessage: 'Email invitation sent!'
+        statusMessage: 'Email invitation sent!',
+        recommendees,
     });
 });
 
