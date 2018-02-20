@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
 
+"use strict";
+
 router.use(function (req, res, next) {
     res.locals.statusMessage = null;
     next();
