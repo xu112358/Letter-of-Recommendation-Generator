@@ -10,5 +10,12 @@
             <% include ../partials/header %>
         </header>
         <h1 class="title"><%= title %></h1>
+        <form method="POST" action="/recommender-dashboard">
+            <input type="text" name="email">
+            <input type="submit" value="Send Test Dummy Email via Ethereal">
+        </form>
+        <% if(statusMessage !=null){ %>
+            <div> <%= statusMessage %> </div>
+        <%}%>
     </body>
 </html>

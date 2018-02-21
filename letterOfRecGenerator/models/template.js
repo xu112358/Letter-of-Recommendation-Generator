@@ -8,7 +8,11 @@ var TemplateSchema = new Schema({
         number: Number,
         question: String,
         tag: String
-    }]
+    }],
+    letterheadImg: {
+        data: Buffer,
+        contentType: String
+    }
 });
 
 var Template = db.model('Template', TemplateSchema);

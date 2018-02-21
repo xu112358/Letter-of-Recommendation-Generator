@@ -5,10 +5,6 @@ var Template = require("./template");
 var Schema = db.Schema;
 
 var UserSchema = new Schema({
-    name: {
-        first: String,
-        last: String
-    },
     templates: [Template.schema],
     forms: [Form.schema]
 });
