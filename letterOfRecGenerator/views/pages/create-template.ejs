@@ -4,16 +4,41 @@
         <title><%= title %></title>
         <link rel="stylesheet" href="/stylesheets/style.css" />
         <link rel="stylesheet" href="/css/create-template.css" />
-        <link type="text/javascript" href="/javascripts/create-template.js" />
+        <script type="text/javascript" src="/javascripts/create-template.js"></script>
     </head>
     <body>
         <header>
             <% include ../partials/header %>
         </header>
         <h1 class="title"><%= title %></h1>
-        <button class="large-plus-button">+</button>
+
+        <div id="questions-container">
+            <div class="question-container">
+                <textarea class="text-field" type="text" placeholder="Enter new question here..." onkeyup="auto_grow(this)"></textarea>
+            </div>
+        </div>
+        <button class="large-plus-button" onclick="addQuestion()">+</button>
         <div class="flex-row">
-            <button id="save-button">Save</button>
+            <button id="save-button" onclick="saveTemplate()">Save</button>
         </div>
     </body>
+
+    <div id="add-question-modal">
+        <div class="content">
+            <div class="flex-row">
+                <h1>Select Question Type</h1>
+            </div>
+            <div class="flex-row">            
+                <button>Text Answer</button>
+            </div>
+            <div class="line"></div>
+            <div class="flex-row">            
+                <button>Radio Button</button>
+            </div>
+            <div class="line"></div>
+            <div class="flex-row">            
+                <button>Checkbox</button>
+            </div>
+        </div>
+    </div>
 </html>

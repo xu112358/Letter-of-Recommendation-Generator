@@ -20,7 +20,7 @@
 }
 
 .flex-row {
-    display: inline-flex;
+    display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -39,4 +39,75 @@
 
 #save-button:hover {
     background-color: rgb(248, 61, 47);
+}
+
+#questions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.question-container {
+    flex: 1;
+    width: 700px;
+    height: 100%;
+    background-color: white;
+    border: 1px solid rgb(80, 80, 80);
+    box-shadow: 2px 2px #888888;
+    margin: 5px 0px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.question-container .text-field {
+    border: none;
+    border-color: transparent;
+    flex: 1;
+    margin: 8px 3px;
+    font-size: 15px;
+    font-weight: bold;
+    height: 22px;
+}
+
+#add-question-modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+#add-question-modal .content{
+    margin: 15% auto; /* 15% from the top and centered */
+    background-color: #E0E0E0;
+    padding: 15px;
+    width: 50%; /* Could be more or less, depending on screen size */
+    border: 1px solid black;
+}
+
+#add-question-modal .content h1 {
+    color: #EB5757;
+    flex-basis: auto;
+}
+
+#add-question-modal .content button {
+    height: 40px;
+    display: block;
+    background-color: transparent;
+    border: none;
+    flex: 1;
+    text-align: left;
+    font-size: 20px;
+    padding-left: 15px;
+}
+
+#add-question-modal .content .line {
+    height: 1px;
+    border-top: 1px solid #BDBDBD;
 }
