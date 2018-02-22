@@ -1,5 +1,12 @@
 .title {
-    padding-left: 8px;
+    background-color: #FFFFFF;
+    font-size: 32px;
+    margin: 0px;
+    padding: 20px 8px;
+}
+
+body {
+    background-color: #F2F2F2;
 }
 /* The Modal (background) */
 .modal {
@@ -15,7 +22,7 @@
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.addBtn {
+.add-btn {
     background-color: #C4C4C4;
     border-radius: 50%;
     bottom: 8px;
@@ -66,7 +73,7 @@
 }
 
 .input-form {
-    padding-top: 16px;
+    padding-top: 20px;
     text-align: center;
 }
 
@@ -77,12 +84,13 @@
 
 .input-submit {
     background-color: #FF473A;
-    font-size: 16px;
-    margin-top: 16px;
+    font-size: 20px;
+    margin-top: 20px;
 }
 table {
+    background-color: #FFFFFF;
     border-collapse: collapse;
-    font-size: 16px;
+    font-size: 20px;
     width: 100%;
 }
 
@@ -96,6 +104,8 @@ table thead tr {
 
 table tbody tr {
     border-bottom: solid 1px black;
+    cursor: pointer;
+    height: 150px;
 }
 
 td.center {
