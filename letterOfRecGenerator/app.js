@@ -10,6 +10,7 @@ var login = require('./routes/login');
 var recommenderDashboard = require('./routes/recommender-dashboard');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
+var createTemplate = require('./routes/create-template');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use('/login', login);
 app.use('/recommender-dashboard', recommenderDashboard);
 app.use('/template-dashboard', templateDashboard)
 app.use('/users', users);
+app.use('/create-template', createTemplate)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
