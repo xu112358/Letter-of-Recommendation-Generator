@@ -3,12 +3,16 @@
     <head>
         <title><%= title %></title>
         <link rel="stylesheet" href="/stylesheets/style.css" />
-        <link rel="stylesheet" type="text/css/create-template.css" />
+        <link rel="stylesheet" href="/css/create-template.css" />
     </head>
     <body>
         <header>
             <% include ../partials/header %>
         </header>
         <h1 class="title"><%= title %></h1>
+        <button class="large-plus-button">+</button>
+        <div class="flex-row">
+            <button id="save-button">Save</button>
+        </div>
     </body>
 </html>

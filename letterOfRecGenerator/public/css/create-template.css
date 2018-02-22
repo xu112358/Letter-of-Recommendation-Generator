@@ -1,0 +1,38 @@
+.title {
+    padding-left: 50px;
+}
+
+.large-plus-button {
+    border-radius: 50%;
+    color: white;
+    background-color: #C4C4C4;
+    text-align: center;
+    font-size: 20px;
+    height: 50px;
+    width: 50px;
+    text-decoration: none;
+    margin-left: 40px;
+    display: block;
+}
+
+.large-plus-button:hover {
+    background-color: rgb(136, 136, 136);
+}
+
+.flex-row {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#save-button {
+    flex-basis: auto;
+    width: 300px;
+    height: 50px;
+    background-color: #FF473A;
+    color: black;
+    text-align: center;
+    font-size: 24px;
+}
