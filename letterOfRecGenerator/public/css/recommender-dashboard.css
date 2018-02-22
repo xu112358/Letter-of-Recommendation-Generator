@@ -115,3 +115,8 @@ td.center {
 table tbody tr:last-child {
     border-bottom: none;
 }
+
+img.status {
+    height: 30px;
+    width: 30px;
+}

@@ -59,7 +59,7 @@ router.post('/', function(req, res, next) {
 
     recommendees = [
         {
-            email: email,
+            email,
             template: "temp",
             status: "X"
         }

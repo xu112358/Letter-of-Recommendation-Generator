@@ -37,7 +37,13 @@
                     <tr>
                         <td><%= rec.email %></td>
                         <td><%= rec.template %></td>
-                        <td class="center"><%= rec.status %></td>
+                        <td class="center">
+                            <% if (rec.status == 'X') { %>
+                                <img class="status" src="/images/red_x.png"/>
+                            <% } else { %>
+                                <img class="status" src="/images/green_checkmark.png"/>
+                            <% } %>
+                        </td>
                     </tr>
                 <% } %>
             </tbody>
