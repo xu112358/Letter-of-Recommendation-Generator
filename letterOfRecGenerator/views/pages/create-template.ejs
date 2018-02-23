@@ -12,11 +12,8 @@
         </header>
         <h1 class="title"><%= title %></h1>
 
-        <div id="questions-container">
-            <div class="question-container">
-                <textarea class="text-field" type="text" placeholder="Enter new question here..." onkeyup="auto_grow(this)"></textarea>
-            </div>
-        </div>
+        <div id="questions-container"></div>
+
         <button class="large-plus-button" onclick="addQuestion()">+</button>
         <div class="flex-row">
             <button id="save-button" onclick="saveTemplate()">Save</button>
@@ -29,7 +26,7 @@
                 <h1>Select Question Type</h1>
             </div>
             <div class="flex-row">            
-                <button>Text Answer</button>
+                <button onclick="addTextAnswerQuestion()">Text Answer</button>
             </div>
             <div class="line"></div>
             <div class="flex-row">            
