@@ -4,11 +4,10 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    User.find(function(err, results) {
-        if (err){
+    User.find(function (err, results) {
+        if (err) {
             res.send("Oops...");
-        }
-        else {
+        } else {
             res.send(results);
         }
     });

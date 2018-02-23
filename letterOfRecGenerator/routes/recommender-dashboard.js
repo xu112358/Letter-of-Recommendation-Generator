@@ -7,13 +7,13 @@ router.use(function (req, res, next) {
     next();
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     res.render('pages/recommender-dashboard', {
         title: 'Welcome ' + req.user.displayName + '!'
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     // nodemailer
     const transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',

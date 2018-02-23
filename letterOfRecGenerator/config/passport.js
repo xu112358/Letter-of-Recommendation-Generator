@@ -33,7 +33,7 @@ passport.use(new GoogleStrategy({
 
         // Find the user based on their google id
         var details = extractProfile(profile);
-        User.findOrCreate(details.id, function(err, user) {
+        User.findOrCreate(details.id, function (err, user) {
             if (err) {
                 console.log('handle');
             }
