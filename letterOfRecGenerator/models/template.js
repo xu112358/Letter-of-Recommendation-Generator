@@ -3,6 +3,7 @@ var db = require('../db');
 var Schema = db.Schema;
 
 var TemplateSchema = new Schema({
+    name: String,
     text: String,
     questions: [{
         number: Number,
@@ -12,8 +13,16 @@ var TemplateSchema = new Schema({
     letterheadImg: {
         data: Buffer,
         contentType: String
+    },
+    archived: {
+        type: Boolean,
+        default: false
     }
 });
+
+TemplateSchema.methods.archive = function () {
+    this.archived = true;
+}
 
 var Template = db.model('Template', TemplateSchema);
 
