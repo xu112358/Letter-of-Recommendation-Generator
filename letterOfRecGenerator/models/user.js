@@ -5,9 +5,66 @@ var Template = require("./template");
 var Schema = db.Schema;
 
 var UserSchema = new Schema({
+    id: String,
+    displayName: String,
     templates: [Template.schema],
     forms: [Form.schema]
 });
+
+UserSchema.statics.findUser = function (id, cb) {
+    db.model('User').findOne({'id': id}, function (err, user) {
+        cb(err, user);
+    });
+};
+
+UserSchema.statics.createUser = function (id, cb) {
+    console.log(id);
+    User.create({id: id}, cb);
+};
+
+UserSchema.statics.findOrCreate = function (id, cb) {
+    UserSchema.statics.findUser(id, function (err, user) {
+        if (!user) {
+            UserSchema.statics.createUser(id, cb);
+        } else {
+            cb(err, user);
+        }
+    });
+};
+
+UserSchema.methods.addTemplate = function (template) {
+    this.templates.push(template);
+};
+
+UserSchema.methods.removeTemplate = function (template) {
+    var template = getTemplate(template._id);
+    template.archive();
+    template.save();
+};
+
+UserSchema.methods.getTemplates = function () {
+    return this.templates;
+};
+
+UserSchema.methods.getActiveTemplates = function () {
+    return this.templates.filter(template => !template.archived);
+};
+
+UserSchema.methods.findTemplates = function (name) {
+    return this.templates.filter(template => template.name == name);
+};
+
+UserSchema.methods.findActiveTemplates = function (name) {
+    return this.templates.filter(template => template.name == name && !template.archived);
+};
+
+UserSchema.methods.getTemplate = function (id) {
+    return this.templates.find(template => template._id == id);
+};
+
+UserSchema.methods.getForms = function () {
+    return this.forms;
+};
 
 var User = db.model('User', UserSchema);
 

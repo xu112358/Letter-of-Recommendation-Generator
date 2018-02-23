@@ -23,7 +23,7 @@ router.post('/', function (req, res) {
         }
     };
 
-    User.create(user);
+    User.createUser(user);
 
     res.render('pages/index', {
         title: 'Express',
