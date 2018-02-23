@@ -5,18 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var index = require('./routes/index');
-var login = require('./routes/login');
-var recommenderDashboard = require('./routes/recommender-dashboard');
-var templateDashboard = require('./routes/template-dashboard');
-var users = require('./routes/users');
 var {google} = require('googleapis');
 var querystring = require('querystring');
 var url = require('url');
 var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
-
-var expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+var index = require('./routes/index');
+var login = require('./routes/login');
+var recommenderDashboard = require('./routes/recommender-dashboard');
+var templateDashboard = require('./routes/template-dashboard');
+var users = require('./routes/users');
+var createTemplate = require('./routes/create-template');
 
 var app = express();
 
@@ -55,9 +54,10 @@ app.use('/logout', (req, res) => {
 
 app.use('/', index);
 app.use('/login', login);
-app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
-app.use('/template-dashboard', isAuthenticated, templateDashboard);
-app.use('/users', isAuthenticated, users);
+app.use('/recommender-dashboard', recommenderDashboard);
+app.use('/template-dashboard', templateDashboard);
+app.use('/users', users);
+app.use('/create-template', createTemplate);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
