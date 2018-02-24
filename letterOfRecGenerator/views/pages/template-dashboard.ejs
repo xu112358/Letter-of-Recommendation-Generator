@@ -9,7 +9,7 @@
         <header>
             <% include ../partials/header %>
         </header>
-        <h1 class="title"><%= title %></h1>
+        <p class="title"><%= title %></p>
         <div class="addBtn" onclick="openModal()">+</div>
 
         <div id="myModal" class="modal">
@@ -24,12 +24,8 @@
                 </form>
             </div>
         </div>
-
     </body>
-
         <script>
-
-
             // Get the modal
             var modal = document.getElementById('myModal');
         
@@ -49,11 +45,5 @@
                     modal.style.display = "none";
                 }
             }
-
-
-            // // Takes the user to template creation
-            // function templateCreation(){
-            //     window.location = "/template-creation";
-            // }
         </script>
 </html>
