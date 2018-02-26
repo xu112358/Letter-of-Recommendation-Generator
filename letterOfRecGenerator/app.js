@@ -54,10 +54,10 @@ app.use('/logout', (req, res) => {
 
 app.use('/', index);
 app.use('/login', login);
-app.use('/recommender-dashboard', recommenderDashboard);
-app.use('/template-dashboard', templateDashboard);
-app.use('/users', users);
-app.use('/create-template', createTemplate);
+app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
+app.use('/template-dashboard', isAuthenticated, templateDashboard);
+app.use('/users', isAuthenticated, users);
+app.use('/create-template', isAuthenticated, createTemplate);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

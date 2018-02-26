@@ -26,9 +26,6 @@ passport.use(new GoogleStrategy({
     clientSecret: auth.clientSecret,
     callbackURL: auth.clientCallback
 }, function (token, refreshToken, profile, done) {
-    console.log("doing local login");
-    // make the code asynchronous
-    // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function () {
 
         // Find the user based on their google id
