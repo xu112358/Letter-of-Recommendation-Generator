@@ -70,12 +70,12 @@
 }
 
 .input-form {
-    padding-top: 16px;
+    padding-top: 25px;
     text-align: center;
 }
 
 .input-text {
-    line-height: 20px;
+    line-height: 30px;
     width: 100%;
 }
 
@@ -83,6 +83,8 @@
     background-color: #FF473A;
     font-size: 16px;
     margin-top: 16px;
+    width: 200px;
+    height: 50px;
 }
 table {
     border-collapse: collapse;
