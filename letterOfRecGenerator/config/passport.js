@@ -14,7 +14,6 @@ passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
 
-// Deserialize user for the session
 passport.deserializeUser(function (id, done) {
     User.findUser(id, function (err, user) {
         done(err, user);
