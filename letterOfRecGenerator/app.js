@@ -40,7 +40,10 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
-app.get('/auth/google', passport.authenticate('google', {scope: ['profile']}));
+app.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile'],
+    prompt: 'select_account'
+}));
 
 app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/login'}), function (req, res) {
     // Successful authentication, redirect home.
@@ -48,7 +51,7 @@ app.get('/auth/google/callback', passport.authenticate('google', {failureRedirec
 });
 
 app.use('/logout', (req, res) => {
-    req.session.token = null;
+    req.logOut();
     res.redirect('/login');
 });
 
