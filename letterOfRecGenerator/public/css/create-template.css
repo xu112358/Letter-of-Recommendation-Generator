@@ -52,6 +52,19 @@
     background-color: rgb(248, 61, 47);
 }
 
+#letter-container {
+    display: flex;
+    justify-content: center;
+}
+
+#letter-container #letter-text-area {
+    height: 300px;
+    width: 800px;
+    flex-basis: auto;
+    border: thick solid black;
+    font-size: 13px;
+}
+
 #questions-container {
     display: flex;
     flex-direction: column;
