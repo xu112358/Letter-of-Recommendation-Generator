@@ -41,7 +41,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 app.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile'],
+    scope: ['profile', 'https://www.googleapis.com/auth/gmail.send'],
     prompt: 'select_account'
 }));
 
