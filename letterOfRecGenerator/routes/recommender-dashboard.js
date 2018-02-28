@@ -9,7 +9,8 @@ router.use(function (req, res, next) {
 
 router.get('/', function (req, res, next) {
     res.render('pages/recommender-dashboard', {
-        title: 'Welcome ' + req.user.displayName + '!'
+        title: 'Welcome ' + req.user.displayName + '!',
+        data: req.user.getActiveTemplates()
     });
 });
 

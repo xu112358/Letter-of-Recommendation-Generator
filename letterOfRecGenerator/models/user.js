@@ -18,7 +18,6 @@ UserSchema.statics.findUser = function (id, cb) {
 };
 
 UserSchema.statics.createUser = function (id, cb) {
-    console.log(id);
     User.create({id: id}, cb);
 };
 

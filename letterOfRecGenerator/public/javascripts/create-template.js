@@ -18,12 +18,12 @@ const QUESTIONS_CONTAINER_ID = "questions-container";
 const ADD_QUESTION_MODAL_ID = "add-question-modal";
 var questions = [];
 
-window.onload = function() {
-    questions.push(new Question("text", "", ''));
+window.onload = function () {
+    questions.push(new Question("Text", "", ''));
     displayQuestions();
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     if (event.target == modal) {
         hideAddQuestionModal();
@@ -42,8 +42,8 @@ function displayQuestions() {
 }
 
 function getQuestionHTML(q) {
-    var data_id_attribute = "data-id=\"" + q.id + "\""; 
-    var delete_onclick_attribute = "onclick=\"deleteQuestion(" + q.id + ")\"";   
+    var data_id_attribute = "data-id=\"" + q.id + "\"";
+    var delete_onclick_attribute = "onclick=\"deleteQuestion(" + q.id + ")\"";
     return "<div class=\"question-outer-container\"" + data_id_attribute + ">" +
                 "<div class=\"question-container\">" +
                     "<textarea data-type=\"value\" class=\"text-area underlined\" type=\"text\" placeholder=\"Enter new question here...\" onkeyup=\"auto_grow(this)\">"
@@ -56,10 +56,10 @@ function getQuestionHTML(q) {
             "</div>";
 }
 
-// used for allowing textareas to grow in height (trick with onkeyup)
+// used for allowing text areas to grow in height (trick with onkeyup)
 function auto_grow(element) {
     element.style.height = "5px";
-    element.style.height = (element.scrollHeight)+"px";
+    element.style.height = (element.scrollHeight) + "px";
 }
 
 function addQuestion() {
@@ -70,6 +70,43 @@ function addQuestion() {
 function saveTemplate() {
     console.log("saveTemplate called");
     updateQuestions();
+
+    var template = {
+        name: 'test',
+        text: 'test',
+        questions: getQuestions(),
+        archived: false
+    };
+
+    $.ajax({
+        url: 'http://localhost:3000/create-template',
+        data: {template: template},
+        type: 'POST',
+        complete: function () {
+            console.log('complete');
+        },
+        success: function (data) {
+            console.log(data);
+            console.log('sucess');
+        },
+        error: function () {
+            console.log('error');
+        }
+    });
+}
+
+function getQuestions() {
+    var dbQuestions = [];
+    var questionNumber = 1;
+
+    questions.forEach(question => dbQuestions.push({
+        number: questionNumber++,
+        type: question.type,
+        question: question.value,
+        tag: question.tag
+    }));
+
+    return dbQuestions;
 }
 
 function showAddQuestionModal() {
@@ -85,14 +122,14 @@ function hideAddQuestionModal() {
 function addTextAnswerQuestion() {
     console.log("addTestAnswerQuestion called");
     updateQuestions();
-    questions.push(new Question("text", "", ""));
+    questions.push(new Question("Text", "", ""));
     displayQuestions();
     hideAddQuestionModal();
 }
 
 function updateQuestions() {
     for (var i = 0; i < questions.length; i++) {
-        var query = "div[data-id='" + questions[i].id +"']";
+        var query = "div[data-id='" + questions[i].id + "']";
         var question = document.querySelector(query);
 
         questions[i].value = question.querySelector("[data-type='value']").value;

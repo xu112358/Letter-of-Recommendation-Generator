@@ -4,11 +4,20 @@ var Schema = db.Schema;
 
 var TemplateSchema = new Schema({
     name: String,
-    text: String,
+    text: {
+        type: String,
+        required: true
+    },
     questions: [{
         number: Number,
+        type: {
+            type: String,
+            enum: ['Button', 'Checkbox', 'Text'],
+            required: true
+        },
         question: String,
-        tag: String
+        tag: String,
+        options: [String]
     }],
     letterheadImg: {
         data: Buffer,
@@ -22,7 +31,7 @@ var TemplateSchema = new Schema({
 
 TemplateSchema.methods.archive = function () {
     this.archived = true;
-}
+};
 
 var Template = db.model('Template', TemplateSchema);
 
