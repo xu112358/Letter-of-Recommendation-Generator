@@ -7,6 +7,7 @@ var Schema = db.Schema;
 var UserSchema = new Schema({
     id: String,
     displayName: String,
+    accessToken: String,
     templates: [Template.schema],
     forms: [Form.schema]
 });

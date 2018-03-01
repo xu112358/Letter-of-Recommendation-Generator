@@ -35,6 +35,7 @@ passport.use(new GoogleStrategy({
             }
 
             user.displayName = details.displayName;
+            user.accessToken = token;
             user.save();
             done(null, user);
         });

@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
+var crypto = require('crypto');
+var link = require('../models/link');
+var credentials = require('../config/auth');
+var googleAuth = require('google-auth-library');
+var {google} = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
 
 router.use(function (req, res, next) {
     res.locals.statusMessage = null;
@@ -8,6 +14,7 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
+    console.log(req.user);
     res.render('pages/recommender-dashboard', {
         title: 'Welcome ' + req.user.displayName + '!',
         data: req.user.getActiveTemplates()
@@ -19,6 +26,8 @@ router.post('/', function (req, res, next) {
 
     var email_lines = [];
     var toEmail = req.body.email;
+    const hash = crypto.createHash('md5').update(toEmail).digest("hex");
+    link.create({link: hash});
 
     if (!toEmail.length) {
         res.render('pages/recommender-dashboard', {
@@ -27,51 +36,36 @@ router.post('/', function (req, res, next) {
         });
         return;
     }
-    email_lines.push('From: "test" <pcarion@gmail.com>');
-    email_lines.push('To: ' + email);
+    //email_lines.push('From: "test" <pcarion@gmail.com>');
+    email_lines.push('To: ' + toEmail);
     email_lines.push('Content-type: text/html;charset=iso-8859-1');
     email_lines.push('MIME-Version: 1.0');
     email_lines.push('Subject: Invitation to Fill Recommendation Letter Questionairre');
-    email_lines.push('And this would be the content.<br/>');
-    email_lines.push('The body is in HTML so <b>we could even use bold</b>');
+    email_lines.push('');
+    var url = encodeURI('http://localhost:3000/rec/' + hash);
+    email_lines.push('<p>Please click the following questionairre <a href = "' + url + '">link.</a></p>');
 
     var email = email_lines.join('\r\n').trim();
     var base64EncodedEmail = new Buffer(email).toString('base64');
     base64EncodedEmail = base64EncodedEmail.replace(/\+/g, '-').replace(/\//g, '_');
 
+    var auth = new googleAuth();
+    var oauth2Client = new OAuth2(credentials.clientId, credentials.clientSecret, credentials.clientCallback);
+    oauth2Client.setCredentials(req.user.accessToken);
+
     gmailClass.users.messages.send({
-      auth: auth,
+      access_token: req.user.accessToken,
       userId: 'me',
       resource: {
         raw: base64EncodedEmail
       }
-    }, cb);
-
-    // grab the email from the form
-    
-
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: '<no-reply@example.com>', // sender address
-        to: email, // list of receivers
-        subject: '', // Subject line
-        text: 'Please click the following questionairre link.', // plain text body
-        html: '<p>Please click the following questionairre link.</p>' // html body
-    };
-
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent: %s', info.messageId);
-        // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
+
 
     res.render('pages/recommender-dashboard', {
         title: 'RECOMMENDER DASHBOARD',
-        statusMessage: 'Email invitation sent!'
+        statusMessage: 'Email invitation sent!',
+        data: req.user.getActiveTemplates()
     });
 });
 
