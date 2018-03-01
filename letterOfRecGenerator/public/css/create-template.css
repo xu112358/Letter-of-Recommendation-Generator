@@ -121,6 +121,23 @@
     color: rgb(64, 64, 157);
 }
 
+.question-container .multiple-choices-container {
+    flex: 1;
+    margin: 0px 5px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.question-container .multiple-choices-container .multiple-choice-container {
+    flex: 1;
+
+    display: flex;
+    flex-direction: row;
+}
+
 #add-question-modal {
     display: none;
     position: fixed; /* Stay in place */
@@ -159,4 +176,5 @@
 .line {
     height: 1px;
     border-top: 1px solid #BDBDBD;
+    margin-top: 3px;
 }
