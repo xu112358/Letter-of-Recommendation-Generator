@@ -15,6 +15,7 @@
 
         <div id="letter-container">
             <textarea id="letter-text-area"></textarea>
+            <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding question's answer</h3>
         </div>
 
         <div id="questions-container"></div>
@@ -35,11 +36,23 @@
             </div>
             <div class="line"></div>
             <div class="flex-row">            
-                <button>Radio Button</button>
+                <button onclick="addRadioButtonQuestion()">Radio Button</button>
             </div>
             <div class="line"></div>
             <div class="flex-row">            
-                <button>Checkbox</button>
+                <button onclick="addCheckboxQuestion()">Checkbox</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="warning-modal">
+        <div class="content">
+            <div class="flex-row">
+                <h1>Are you sure?</h1>
+            </div>
+            <div class="flex-row">            
+                <button onclick="executeWarningModalFunction()">Yes</button>
+                <button onclick="hideWarningModal()">No</button>
             </div>
         </div>
     </div>
