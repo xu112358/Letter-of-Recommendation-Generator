@@ -9,6 +9,41 @@
         <header>
             <% include ../partials/header %>
         </header>
-        <h1 class="title"><%= title %></h1>
+        <p class="title"><%= title %></p>
+        <div class="addBtn" onclick="openModal()">+</div>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="close-container">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <p class="modal-title">Create New Template</p>
+                <form class="input-form" method="POST" action="/template-creation">
+                    <input class="input-text" type="text" name="title">
+                    <input class="input-submit" type="submit" value="Create">
+                </form>
+            </div>
+        </div>
     </body>
+        <script>
+            // Get the modal
+            var modal = document.getElementById('myModal');
+        
+            // When the user clicks on the button, open the modal 
+            function openModal() {
+                modal.style.display = "block";
+            }
+        
+            // When the user clicks on <span> (x), close the modal
+            function closeModal() {
+                modal.style.display = "none";
+            }
+        
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
 </html>

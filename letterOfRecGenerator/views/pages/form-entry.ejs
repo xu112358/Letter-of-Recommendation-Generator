@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="stylesheet" type="text/css" href="/css/form-entry.css" />
+    </head>
+    <body>
+        <div class="header"></div>
+        <p class="title"><%= title %></p>
+        <form id="RecommendeeForm" method="POST" action="/form-entry">
+            <% for (var q of questions) { %>
+                <div class="question" id=<%= q.type %>>
+                    <p><%= q.text %></p>
+                    <% switch(q.type) {
+                        case 'long-response': %>
+                            <textarea form="RecommendeeForm" placeholder="Enter response..." id=<%= q.number %> name=<%= q.number %>></textarea>
+                            <% break;
+                        case 'radio-button': %>
+                            <% for (var option of q.options) { %>
+                                <div class="option-container">
+                                    <input type="radio" value=<%= option %> name=<%= q.number %> />
+                                    <label><%= option %></label>
+                                </div>
+                            <% } %>
+                            <% break;
+                        case 'checkbox': %>
+                            <% for (var option of q.options) { %>
+                                <div class="option-container">
+                                    <input type="checkbox" value=<%= option %> name=<%= q.number %> />
+                                    <label class="block"><%= option %></label>
+                                </div>                     
+                            <% } %>
+                            <% break;
+                        default: %>
+                            <%
+                    } %>
+                </div>
+            <% } %>
+            <input class="input-submit" type="button" value="Submit" onclick="openModal()" />
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <div class="close-container">
+                        <span class="close" onclick="closeModal()">&times;</span>
+                    </div>
+                    <p class="modal-title">Confirm Submission?</p>
+                    <input class="input-submit" type="submit" value="Confirm">
+                </div>
+            </div>
+        </form>
+    </body>
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+        
+        // When the user clicks on the button, open the modal 
+        function openModal() {
+            modal.style.display = "block";
+            return false;
+        }
+    
+        // When the user clicks on <span> (x), close the modal
+        function closeModal() {
+            modal.style.display = "none";
+            return false;
+        }
+    
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</html>

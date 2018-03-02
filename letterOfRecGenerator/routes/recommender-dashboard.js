@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
 
+"use strict";
+
 router.use(function (req, res, next) {
     res.locals.statusMessage = null;
     next();
@@ -10,7 +12,8 @@ router.use(function (req, res, next) {
 router.get('/', function (req, res, next) {
     res.render('pages/recommender-dashboard', {
         title: 'Welcome ' + req.user.displayName + '!',
-        data: req.user.getActiveTemplates()
+        data: req.user.getActiveTemplates(),
+        recommendees: [],
     });
 });
 
@@ -55,9 +58,21 @@ router.post('/', function (req, res, next) {
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
 
+    recommendees = [
+        {
+            email,
+            template: "temp",
+            status: "X"
+        }
+    ];
+
+    console.log(req);
+
     res.render('pages/recommender-dashboard', {
-        title: 'RECOMMENDER DASHBOARD',
-        statusMessage: 'Email invitation sent!'
+        title: 'Welcome ' + req.user.displayName + '!',
+        statusMessage: 'Email invitation sent!',
+        data: req.user.getActiveTemplates(),
+        recommendees,
     });
 });
 
