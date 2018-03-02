@@ -11,15 +11,14 @@ var url = require('url');
 var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
 
+var createTemplate = require('./routes/create-template');
 var formEntry = require('./routes/form-entry');
 var index = require('./routes/index');
 var letterPreview = require('./routes/letter-preview');
 var login = require('./routes/login');
 var recommenderDashboard = require('./routes/recommender-dashboard');
-var templateCreation = require('./routes/template-creation');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
-var createTemplate = require('./routes/create-template');
 
 var app = express();
 
@@ -60,11 +59,11 @@ app.use('/logout', (req, res) => {
 });
 
 app.use('/', index);
+app.use('/create-template', createTemplate);
 app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
 app.use('/login', login);
 app.use('/recommender-dashboard', recommenderDashboard);
-app.use('/template-creation', templateCreation);
 app.use('/template-dashboard', templateDashboard);
 app.use('/users', users);
 
