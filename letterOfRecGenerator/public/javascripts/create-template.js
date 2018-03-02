@@ -19,7 +19,9 @@ class Question {
 
 const QUESTIONS_CONTAINER_ID = "questions-container";
 const ADD_QUESTION_MODAL_ID = "add-question-modal";
+const WARNING_MODAL_ID = "warning-modal";
 var questions = [];
+var warningModalFunction;
 
 window.onload = function () {
     questions.push(new Question("text", "", ''));
@@ -46,7 +48,7 @@ function displayQuestions() {
 
 function getQuestionHTML(q) {
     var data_id_attribute = "data-id=\"" + q.id + "\"";
-    var delete_onclick_attribute = "onclick=\"deleteQuestion(" + q.id + ")\"";
+    var delete_onclick_attribute = "onclick=\"deleteQuestionWithWarning(" + q.id + ")\"";
     var multiple_choice_fields_html = getMultipleChoiceFieldsHTML(q);
     var placeholder = "Enter new question here...";
 
@@ -86,7 +88,7 @@ function getMultipleChoiceFieldsHTML(q) {
     var html = "<div class=\"multiple-choices-container\">";
     for (var i = 0; i < q.options.length; i++) {
         var data_id_attribute = "data-id=\"" + i + "\"";
-        var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceField(this," + i + ")\"";
+        var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
         html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" +
                     getTextAreaHTML(placeholder, q.options[i]) +
                     "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" +
@@ -166,6 +168,22 @@ function hideAddQuestionModal() {
     modal.style.display = "none";
 }
 
+function showWarningModal(func) {
+    var modal = document.getElementById(WARNING_MODAL_ID);
+    modal.style.display = "block";
+    warningModalFunction = func;
+}
+
+function hideWarningModal() {
+    var modal = document.getElementById(WARNING_MODAL_ID);
+    modal.style.display = "none";
+}
+
+function executeWarningModalFunction() {
+    warningModalFunction();
+    hideWarningModal();
+}
+
 // NOTE: need to push new question AFTER updateQuestions(), since display questions relies on a question being displayed once
 // to assign it a data_id
 function addTextAnswerQuestion() {
@@ -221,6 +239,18 @@ function deleteQuestion(id) {
         }
     }
     displayQuestions();
+}
+
+function deleteQuestionWithWarning(id) {
+    showWarningModal(() => {
+        deleteQuestion(id);
+    });
+}
+
+function deleteMultipleChoiceFieldWithWarning(el, data_id) {
+    showWarningModal(() => {
+        deleteMultipleChoiceField(el, data_id);
+    })
 }
 
 function addMultipleChoiceField(id) {
