@@ -12,6 +12,7 @@ var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
 var index = require('./routes/index');
 var login = require('./routes/login');
+var rec = require('./routes/rec');
 var recommenderDashboard = require('./routes/recommender-dashboard');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
@@ -41,7 +42,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 app.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile'],
+    scope: ['profile', 'https://www.googleapis.com/auth/gmail.send'],
     prompt: 'select_account'
 }));
 
@@ -58,6 +59,7 @@ app.use('/logout', (req, res) => {
 app.use('/', index);
 app.use('/login', login);
 app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
+app.use('/rec', isAuthenticated, rec);
 app.use('/template-dashboard', isAuthenticated, templateDashboard);
 app.use('/users', isAuthenticated, users);
 app.use('/create-template', isAuthenticated, createTemplate);
@@ -82,7 +84,7 @@ app.use(function (err, req, res, next) {
 });
 
 function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
+    if (req.user) {
         return next();
     }
 
