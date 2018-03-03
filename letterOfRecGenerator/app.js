@@ -16,6 +16,7 @@ var formEntry = require('./routes/form-entry');
 var index = require('./routes/index');
 var letterPreview = require('./routes/letter-preview');
 var login = require('./routes/login');
+var rec = require('./routes/rec');
 var recommenderDashboard = require('./routes/recommender-dashboard');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
@@ -44,7 +45,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 app.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile'],
+    scope: ['profile', 'https://www.googleapis.com/auth/gmail.send'],
     prompt: 'select_account'
 }));
 
@@ -59,13 +60,14 @@ app.use('/logout', (req, res) => {
 });
 
 app.use('/', index);
-app.use('/create-template', createTemplate);
+app.use('/create-template', isAuthenticated, createTemplate);
 app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
 app.use('/login', login);
-app.use('/recommender-dashboard', recommenderDashboard);
-app.use('/template-dashboard', templateDashboard);
-app.use('/users', users);
+app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
+app.use('/rec', isAuthenticated, rec);
+app.use('/template-dashboard', isAuthenticated, templateDashboard);
+app.use('/users', isAuthenticated, users);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -87,7 +89,7 @@ app.use(function (err, req, res, next) {
 });
 
 function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
+    if (req.user) {
         return next();
     }
 
