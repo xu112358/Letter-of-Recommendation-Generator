@@ -1,9 +1,13 @@
 .title {
+    background-color: #FFFFFF;
     font-size: 32px;
     margin: 0;
     padding: 20px 8px;
 }
 
+body {
+    background-color: #F2F2F2;
+}
 
 /* The Modal (background) */
 .modal {
@@ -75,7 +79,8 @@
 }
 
 .input-text {
-    line-height: 30px;
+    font-size: 20px;
+    line-height: 20px;
     width: 100%;
 }
 
@@ -87,8 +92,9 @@
     height: 50px;
 }
 table {
+    background-color: #FFFFFF;
     border-collapse: collapse;
-    font-size: 16px;
+    font-size: 20px;
     width: 100%;
 }
 
@@ -102,6 +108,11 @@ table thead tr {
 
 table tbody tr {
     border-bottom: solid 1px black;
+    height: 150px;
+}
+
+table tbody tr td {
+    position: relative;
 }
 
 td.center {
@@ -110,4 +121,24 @@ td.center {
 
 table tbody tr:last-child {
     border-bottom: none;
+}
+
+.image-container {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.template-name {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+img.icon {
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
 }

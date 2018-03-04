@@ -62,6 +62,10 @@ UserSchema.methods.getTemplate = function (id) {
     return this.templates.find(template => template._id == id);
 };
 
+UserSchema.methods.addForm = function (form) {
+    this.forms.push(form);
+}
+
 UserSchema.methods.getForms = function () {
     return this.forms;
 };

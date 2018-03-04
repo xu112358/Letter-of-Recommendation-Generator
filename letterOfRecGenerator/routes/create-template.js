@@ -13,14 +13,17 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
     console.log(req.body.template);
     Template.create(req.body.template, function (err, template) {
-        if(err) {
-            console.log('error');
+        if (err) {
+            console.log(`error: ${err}`);
+        } else {
+            req.user.templates.push(template);
+            req.user.save();
+
+            res.render('pages/template-dashboard', {
+                title: 'TEMPLATE DASHBOARD',
+                templates: req.user.getActiveTemplates(),
+            })
         }
-
-        req.user.templates.push(template);
-        req.user.save();
-
-        console.log(template);
     });
 });
 

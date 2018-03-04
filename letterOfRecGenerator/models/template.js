@@ -12,7 +12,7 @@ var TemplateSchema = new Schema({
         number: Number,
         type: {
             type: String,
-            enum: ['Button', 'Checkbox', 'Text'],
+            enum: ['Radio Button', 'Checkbox', 'Text'],
             required: true
         },
         question: String,

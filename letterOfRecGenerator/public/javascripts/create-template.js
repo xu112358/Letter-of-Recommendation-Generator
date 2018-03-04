@@ -5,13 +5,13 @@ var nextQuestionIdToUse = 0;
  */
 class Question {
     constructor(type, value, tag) {
-        // text, radio, checkbox
+        // Text, Radio Button, Checkbox
         this.type = type;
         this.value = value;
         this.tag = tag;
         // local browser
         this.id = nextQuestionIdToUse;
-        // filled with strings if dealing with radio button or checkbox
+        // Filled with strings if dealing with Radio Button or Checkbox
         this.options = [];
         nextQuestionIdToUse++;
     }
@@ -24,7 +24,7 @@ var questions = [];
 var warningModalFunction;
 
 window.onload = function () {
-    questions.push(new Question("text", "", ''));
+    questions.push(new Question("Text", "", ''));
     displayQuestions();
 }
 
@@ -54,13 +54,13 @@ function getQuestionHTML(q) {
 
     var question_type_label = "";
     switch (q.type) {
-        case "text":
+        case "Text":
             question_type_label = "TEXT";
             break;
-        case "radio":
+        case "Radio Button":
             question_type_label = "RADIO BUTTON";
             break;
-        case "checkbox":
+        case "Checkbox":
             question_type_label = "CHECKBOX";
             break;
         default:
@@ -82,7 +82,7 @@ function getQuestionHTML(q) {
 
 // Note: the html needs to be nested within a question-container element in order to properly work
 function getMultipleChoiceFieldsHTML(q) {
-    if (q.type != "radio" && q.type != "checkbox") return "";
+    if (q.type != "Radio Button" && q.type != "Checkbox") return "";
 
     var placeholder = "Enter option here...";
     var html = "<div class=\"multiple-choices-container\">";
@@ -116,12 +116,12 @@ function addQuestion() {
     showAddQuestionModal();
 }
 
-function saveTemplate() {
+function saveTemplate(templateName) {
     console.log("saveTemplate called");
     updateQuestions();
 
     var template = {
-        name: 'test',
+        name: templateName,
         text: 'test',
         questions: getQuestions(),
         archived: false
@@ -152,6 +152,7 @@ function getQuestions() {
         number: questionNumber++,
         type: question.type,
         question: question.value,
+        options: question.options,
         tag: question.tag
     }));
 
@@ -189,7 +190,7 @@ function executeWarningModalFunction() {
 function addTextAnswerQuestion() {
     console.log("addTestAnswerQuestion called");
     updateQuestions();
-    questions.push(new Question("text", "", ""));
+    questions.push(new Question("Text", "", ""));
     displayQuestions();
     hideAddQuestionModal();
 }
@@ -197,7 +198,7 @@ function addTextAnswerQuestion() {
 function addRadioButtonQuestion() {
     console.log("addRadioButtonQuestion called");
     updateQuestions();
-    var question = new Question("radio", "", "");
+    var question = new Question("Radio Button", "", "");
     question.options.push("");
     questions.push(question);
     displayQuestions();
@@ -207,7 +208,7 @@ function addRadioButtonQuestion() {
 function addCheckboxQuestion() {
     console.log("addCheckboxQuestion called");
     updateQuestions();
-    var question = new Question("checkbox", "", "");
+    var question = new Question("Checkbox", "", "");
     question.options.push("");
     questions.push(question);
     displayQuestions();

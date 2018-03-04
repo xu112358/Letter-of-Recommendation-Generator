@@ -6,6 +6,7 @@ var Template = require('./template');
 var Schema = db.Schema;
 
 var FormSchema = new Schema({
+    recommendee: String,
     status: {
         type: String,
         enum: ['Sent', 'Submitted', 'Complete']
@@ -14,7 +15,7 @@ var FormSchema = new Schema({
     link: Link.schema,
     responses: [{
         tag: String,
-        response: String
+        response: Schema.Types.Mixed,
     }],
     metadata: {
         sentTimestamp: Date,

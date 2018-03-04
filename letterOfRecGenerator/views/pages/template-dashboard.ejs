@@ -24,6 +24,24 @@
                 </form>
             </div>
         </div>
+        <table>
+            <thead>
+                <td class="center">Templates</td>
+            </thead>
+            <tbody>
+                <%for (var template of templates) { %>
+                    <tr>
+                        <td>
+                            <div class="template-name"><%= template.name %></div>
+                            <div class="image-container">
+                                <img class="icon" src="/images/pencil.png"/>
+                                <img class="icon" src="/images/delete.png" onclick="deleteRow(this)"/>
+                            </div>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
     </body>
         <script>
             // Get the modal
