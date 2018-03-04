@@ -60,7 +60,7 @@ app.use('/logout', (req, res) => {
 
 app.use('/', index);
 app.use('/create-template', isAuthenticated, createTemplate);
-app.use('/form-entry', isAuthenticated, formEntry);
+app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
 app.use('/login', login);
 app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
