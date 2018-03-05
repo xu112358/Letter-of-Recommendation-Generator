@@ -17,9 +17,12 @@ class Question {
     }
 }
 
+const LETTER_TEXT_AREA_ID = "letter-text-area";
 const QUESTIONS_CONTAINER_ID = "questions-container";
 const ADD_QUESTION_MODAL_ID = "add-question-modal";
 const WARNING_MODAL_ID = "warning-modal";
+
+let letter = "";
 var questions = [];
 var warningModalFunction;
 
@@ -215,6 +218,11 @@ function addCheckboxQuestion() {
 }
 
 function updateQuestions() {
+    // update the letter
+    letter = document.getElementById(LETTER_TEXT_AREA_ID).value;
+    console.log(letter);
+
+    // update individual questions
     for (var i = 0; i < questions.length; i++) {
         // grab the question element
         var query = "div[data-id='" + questions[i].id + "'][class='question-outer-container']";
