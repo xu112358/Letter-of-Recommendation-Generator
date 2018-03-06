@@ -50,7 +50,7 @@ function showEditModal() {
     var element = document.querySelector(TRIX_EDITOR);
     console.log(element);
     element.value = "";
-    element.editor.insertString(state);
+    element.editor.insertHTML(state);
 
     modal.style.display = "block";
 }
@@ -63,9 +63,9 @@ function saveEditModal() {
 
     console.log("HOW ITS SAVED: " + element.value);
     // Using doc.toString() strips formatting right now, because I don't parse it yet in render.
-    var doc = element.editor.getDocument();
-    state = doc.toString();
-
+    //var doc = element.editor.getDocument();
+    //state = doc.toString();
+    state = element.value;
     renderLetterDisplay();
     modal.style.display = "none";
 }
