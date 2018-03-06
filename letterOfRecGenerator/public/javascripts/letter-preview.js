@@ -5,7 +5,7 @@ const TRIX_EDITOR = "trix-editor";
 
 
 // eventually will be an array of letter content blocks (from backend)
-var state = 'Lorem ipsum';
+var state = 'Lorem ipsum this is a great student very good I love them wowza! WOWOFOFOAOSF TYPOOOO';
 
 
 $('.example')
@@ -60,6 +60,9 @@ function saveEditModal() {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
 
     var element = document.querySelector(TRIX_EDITOR);
+
+    console.log("HOW ITS SAVED: " + element.value);
+    // Using doc.toString() strips formatting right now, because I don't parse it yet in render.
     var doc = element.editor.getDocument();
     state = doc.toString();
 
