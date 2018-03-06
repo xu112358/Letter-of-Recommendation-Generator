@@ -1,4 +1,5 @@
 var nextQuestionIdToUse = 0;
+var id;
 
 /**
  * Prototype class for Questions
@@ -27,7 +28,7 @@ var questions = [];
 var warningModalFunction;
 
 window.onload = function () {
-    questions.push(new Question("text", "", ''));
+    questions.push(new Question("Text", "", ''));
     displayQuestions();
 }
 
@@ -57,13 +58,13 @@ function getQuestionHTML(q) {
 
     var question_type_label = "";
     switch (q.type) {
-        case "text":
+        case "Text":
             question_type_label = "TEXT";
             break;
-        case "radio":
+        case "Radio":
             question_type_label = "RADIO BUTTON";
             break;
-        case "checkbox":
+        case "Checkbox":
             question_type_label = "CHECKBOX";
             break;
         default:
@@ -85,7 +86,7 @@ function getQuestionHTML(q) {
 
 // Note: the html needs to be nested within a question-container element in order to properly work
 function getMultipleChoiceFieldsHTML(q) {
-    if (q.type != "radio" && q.type != "checkbox") return "";
+    if (q.type != "Radio" && q.type != "Checkbox") return "";
 
     var placeholder = "Enter option here...";
     var html = "<div class=\"multiple-choices-container\">";
@@ -130,21 +131,49 @@ function saveTemplate() {
         archived: false
     };
 
-    $.ajax({
-        url: 'http://localhost:3000/create-template',
-        data: {template: template},
-        type: 'POST',
-        complete: function () {
-            console.log('complete');
-        },
-        success: function (data) {
-            console.log(data);
-            console.log('sucess');
-        },
-        error: function () {
-            console.log('error');
-        }
-    });
+
+    if (id) {
+        console.log("updating template");
+        $.ajax({
+            url: 'http://localhost:3000/create-template/update',
+            data: {
+                id: id,
+                template: template
+            },
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+            },
+            success: function (data) {
+                console.log(data);
+
+                console.log('success');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    } else {
+        console.log("creating template");
+        $.ajax({
+            url: 'http://localhost:3000/create-template/create',
+            data: {template: template},
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+            },
+            success: function (data) {
+                console.log(data);
+
+                id = data.id;
+
+                console.log('success');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
 }
 
 function getQuestions() {
@@ -155,7 +184,8 @@ function getQuestions() {
         number: questionNumber++,
         type: question.type,
         question: question.value,
-        tag: question.tag
+        tag: question.tag,
+        options: question.options
     }));
 
     return dbQuestions;
@@ -192,7 +222,7 @@ function executeWarningModalFunction() {
 function addTextAnswerQuestion() {
     console.log("addTestAnswerQuestion called");
     updateQuestions();
-    questions.push(new Question("text", "", ""));
+    questions.push(new Question("Text", "", ""));
     displayQuestions();
     hideAddQuestionModal();
 }
@@ -200,7 +230,7 @@ function addTextAnswerQuestion() {
 function addRadioButtonQuestion() {
     console.log("addRadioButtonQuestion called");
     updateQuestions();
-    var question = new Question("radio", "", "");
+    var question = new Question("Radio", "", "");
     question.options.push("");
     questions.push(question);
     displayQuestions();
@@ -210,7 +240,7 @@ function addRadioButtonQuestion() {
 function addCheckboxQuestion() {
     console.log("addCheckboxQuestion called");
     updateQuestions();
-    var question = new Question("checkbox", "", "");
+    var question = new Question("Checkbox", "", "");
     question.options.push("");
     questions.push(question);
     displayQuestions();
