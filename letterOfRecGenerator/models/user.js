@@ -32,8 +32,42 @@ UserSchema.statics.findOrCreate = function (id, cb) {
     });
 };
 
-UserSchema.methods.addTemplate = function (template) {
+UserSchema.methods.addTemplate = function (template, cb) {
     this.templates.push(template);
+    var newTemplate = this.templates[this.templates.length - 1];
+
+    this.save(function (err) {
+        cb(err, newTemplate._id);
+    })
+};
+
+UserSchema.methods.addTemplate = function (template, cb) {
+    this.templates.push(template);
+    var newTemplate = this.templates[this.templates.length - 1];
+
+    this.save(function (err) {
+        cb(err, newTemplate._id);
+    })
+};
+
+UserSchema.methods.updateTemplate = function (id, template, cb) {
+    var user = this;
+    var updatedTemplate = this.templates.id(id);
+
+    updatedTemplate.name = template.name;
+    updatedTemplate.text = template.text;
+    updatedTemplate.questions = template.questions;
+
+    User.findOneAndUpdate({
+        "id": user.id,
+        "templates._id": id
+    }, {
+        "$set": {
+            "templates.$": updatedTemplate
+        }
+    }, function (err, user) {
+        cb(err, template);
+    });
 };
 
 UserSchema.methods.removeTemplate = function (template) {
@@ -59,7 +93,7 @@ UserSchema.methods.findActiveTemplates = function (name) {
 };
 
 UserSchema.methods.getTemplate = function (id) {
-    return this.templates.find(template => template._id == id);
+    return this.templates.id(id);
 };
 
 UserSchema.methods.getForms = function () {

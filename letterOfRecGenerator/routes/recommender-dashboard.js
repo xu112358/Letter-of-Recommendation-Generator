@@ -14,10 +14,8 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    console.log(req.user);
     res.render('pages/recommender-dashboard', {
-        title: 'Welcome ' + req.user.displayName + '!',
-        data: req.user.getActiveTemplates()
+        title: 'Welcome ' + req.user.displayName + '!'
     });
 });
 

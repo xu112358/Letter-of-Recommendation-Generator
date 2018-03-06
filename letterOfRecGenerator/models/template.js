@@ -4,15 +4,12 @@ var Schema = db.Schema;
 
 var TemplateSchema = new Schema({
     name: String,
-    text: {
-        type: String,
-        required: true
-    },
+    text: String,
     questions: [{
         number: Number,
         type: {
             type: String,
-            enum: ['Button', 'Checkbox', 'Text'],
+            enum: ['Radio', 'Checkbox', 'Text'],
             required: true
         },
         question: String,
@@ -28,6 +25,10 @@ var TemplateSchema = new Schema({
         default: false
     }
 });
+
+TemplateSchema.methods.getId = function () {
+    return this._id;
+};
 
 TemplateSchema.methods.archive = function () {
     this.archived = true;
