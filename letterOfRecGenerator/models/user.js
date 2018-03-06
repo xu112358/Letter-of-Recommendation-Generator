@@ -37,7 +37,7 @@ UserSchema.methods.addTemplate = function (template, cb) {
     var newTemplate = this.templates[this.templates.length - 1];
 
     this.save(function (err) {
-        cb(err, newTemplate._id);
+        cb(err, newTemplate.getId());
     })
 };
 
@@ -46,7 +46,7 @@ UserSchema.methods.addTemplate = function (template, cb) {
     var newTemplate = this.templates[this.templates.length - 1];
 
     this.save(function (err) {
-        cb(err, newTemplate._id);
+        cb(err, newTemplate.getId());
     })
 };
 
