@@ -1,3 +1,55 @@
 .title {
     padding-left: 8px;
 }
+
+.convert-pdf {
+    background-color: #FF473A;
+    font-size: 20px;
+    margin-top: 20px;
+    width: 200px;
+    height: 50px;
+margin:auto;
+  display:block;
+}
+
+#letter-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border: thick solid black;
+    align-items: center;
+}
+
+
+#letter-container #letter-text-area {
+    height: 300px;
+    width: 800px;
+    flex-basis: auto;
+    font-size: 13px;
+}
+
+
+#add-question-modal {
+	display: none;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+}
+
+#add-question-modal .inside{
+    margin: 15% auto; /* 15% from the top and centered */
+    background-color: #E0E0E0;
+    padding: 15px;
+    width: 50%; /* Could be more or less, depending on screen size */
+    border: 1px solid black;
+}
+
+#add-question-modal .inside h1 {
+    color: #EB5757;
+    flex-basis: auto;
+}
+
