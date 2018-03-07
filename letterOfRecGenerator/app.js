@@ -12,6 +12,7 @@ var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
 
 var createTemplate = require('./routes/create-template');
+var formCompleted = require('./routes/form-completed');
 var formEntry = require('./routes/form-entry');
 var index = require('./routes/index');
 var letterPreview = require('./routes/letter-preview');
@@ -60,6 +61,7 @@ app.use('/logout', (req, res) => {
 
 app.use('/', index);
 app.use('/create-template', isAuthenticated, createTemplate);
+app.use('/form-completed', formCompleted);
 app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
 app.use('/login', login);

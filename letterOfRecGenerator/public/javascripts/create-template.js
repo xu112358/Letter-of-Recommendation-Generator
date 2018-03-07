@@ -137,6 +137,7 @@ function saveTemplate(templateName) {
         success: function (data) {
             console.log(data);
             console.log('sucess');
+            window.location.href=('/template-dashboard');
         },
         error: function () {
             console.log('error');

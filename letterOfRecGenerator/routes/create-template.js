@@ -18,11 +18,11 @@ router.post('/', function(req, res, next) {
         } else {
             req.user.templates.push(template);
             req.user.save();
-
+            
             res.render('pages/template-dashboard', {
                 title: 'TEMPLATE DASHBOARD',
                 templates: req.user.getActiveTemplates(),
-            })
+            });
         }
     });
 });
