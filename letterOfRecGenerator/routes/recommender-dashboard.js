@@ -76,12 +76,7 @@ router.post('/', function (req, res, next) {
                         }
                     });
 
-                    res.render('pages/recommender-dashboard', {
-                        title: 'Welcome ' + req.user.displayName + '!',
-                        statusMessage: 'Email invitation sent!',
-                        templates: req.user.getActiveTemplates(),
-                        forms: req.user.getForms(),
-                    });
+                    res.redirect('/recommender-dashboard');
                 }
             });
         }
