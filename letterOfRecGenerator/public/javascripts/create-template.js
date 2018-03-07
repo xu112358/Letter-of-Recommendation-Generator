@@ -28,8 +28,34 @@ var questions = [];
 var warningModalFunction;
 
 window.onload = function () {
+    setUpEventHandlers();
+
     questions.push(new Question("Text", "", ''));
     displayQuestions();
+}
+
+function setUpEventHandlers() {
+    // upload letterhead
+    $('#letterhead-upload').submit(function(evt) {
+        evt.preventDefault();
+        console.log('submit clicked');
+        var formData = new FormData($(this)[0]);
+        $.ajax({
+            url: 'fileUpload',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            enctype: 'multipart/form-data',
+            processData: false,
+            success: function (response) {
+            alert(response);
+            }
+        });
+        // disable page refresh
+        return false;
+    });
 }
 
 window.onclick = function (event) {
@@ -250,7 +276,6 @@ function addCheckboxQuestion() {
 function updateQuestions() {
     // update the letter
     letter = document.getElementById(LETTER_TEXT_AREA_ID).value;
-    console.log(letter);
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
