@@ -1,4 +1,5 @@
 var nextQuestionIdToUse = 0;
+var id;
 
 /**
  * Prototype class for Questions
@@ -17,9 +18,12 @@ class Question {
     }
 }
 
+const LETTER_TEXT_AREA_ID = "letter-text-area";
 const QUESTIONS_CONTAINER_ID = "questions-container";
 const ADD_QUESTION_MODAL_ID = "add-question-modal";
 const WARNING_MODAL_ID = "warning-modal";
+
+let letter = "";
 var questions = [];
 var warningModalFunction;
 
@@ -127,22 +131,48 @@ function saveTemplate(templateName) {
         archived: false
     };
 
-    $.ajax({
-        url: 'http://localhost:3000/create-template',
-        data: {template: template},
-        type: 'POST',
-        complete: function () {
-            console.log('complete');
-        },
-        success: function (data) {
-            console.log(data);
-            console.log('sucess');
-            window.location.href=('/template-dashboard');
-        },
-        error: function () {
-            console.log('error');
-        }
-    });
+    if (id) {
+        console.log("updating template");
+        $.ajax({
+            url: 'http://localhost:3000/create-template/update',
+            data: {
+                id: id,
+                template: template
+            },
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+            },
+            success: function (data) {
+                console.log(data);
+                console.log('success');
+                window.location.href=('/template-dashboard');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    } else {
+        console.log("creating template");
+        $.ajax({
+            url: 'http://localhost:3000/create-template/create',
+            data: {template: template},
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+            },
+            success: function (data) {
+                console.log(data);
+
+                id = data.id;
+
+                console.log('success');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
 }
 
 function getQuestions() {
@@ -217,6 +247,11 @@ function addCheckboxQuestion() {
 }
 
 function updateQuestions() {
+    // update the letter
+    letter = document.getElementById(LETTER_TEXT_AREA_ID).value;
+    console.log(letter);
+
+    // update individual questions
     for (var i = 0; i < questions.length; i++) {
         // grab the question element
         var query = "div[data-id='" + questions[i].id + "'][class='question-outer-container']";
