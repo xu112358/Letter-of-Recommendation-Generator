@@ -12,10 +12,12 @@
             <% include ../partials/header %>
         </header>
         <h1 class="title"><%= title %></h1>
+        
+        <img id="letterhead-preview" src="#" alt="" />
 
         <form id="letterhead-upload">
-            <input type="file" name="file">
-            <input type="submit" name="Submit">
+            <input type="file" name="file" id="letterhead-upload-file" />
+            <input type="submit" name="Submit" />
         </form>
 
         <div id="letter-container">

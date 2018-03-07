@@ -38,21 +38,35 @@ function setUpEventHandlers() {
     // upload letterhead
     $('#letterhead-upload').submit(function(evt) {
         evt.preventDefault();
-        console.log('submit clicked');
-        var formData = new FormData($(this)[0]);
-        $.ajax({
-            url: 'fileUpload',
-            type: 'POST',
-            data: formData,
-            async: false,
-            cache: false,
-            contentType: false,
-            enctype: 'multipart/form-data',
-            processData: false,
-            success: function (response) {
-            alert(response);
+        var files = $('#letterhead-upload-file')[0].files;
+        console.log(files);
+        if (files && files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#letterhead-preview').attr('src', e.target.result);
             }
-        });
+
+            reader.readAsDataURL(files[0]);
+        }
+
+        // I'm leaving this code here as it is potentially useful for uploading to backend
+        //
+        // var formData = new FormData($(this)[0]);
+        // $.ajax({
+        //     url: 'fileUpload',
+        //     type: 'POST',
+        //     data: formData,
+        //     async: false,
+        //     cache: false,
+        //     contentType: false,
+        //     enctype: 'multipart/form-data',
+        //     processData: false,
+        //     success: function (response) {
+        //     alert(response);
+        //     }
+        // });
+
+
         // disable page refresh
         return false;
     });
