@@ -29,9 +29,16 @@ var warningModalFunction;
 
 window.onload = function () {
     setUpEventHandlers();
-
-    questions.push(new Question("Text", "", ''));
+    loadDefaultQuestions();
     displayQuestions();
+}
+
+function loadDefaultQuestions() {
+    var default1 = new Question("Text", "What is your name?", "name");
+    questions.push(default1);
+    var default2 = new Question("Radio", "What is your gender?", "");
+    default2.options = ["Male", "Female", "Prefer not to answer"];
+    questions.push(default2);
 }
 
 function setUpEventHandlers() {
