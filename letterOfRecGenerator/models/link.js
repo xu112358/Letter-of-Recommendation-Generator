@@ -18,6 +18,14 @@ LinkSchema.statics.generateLink = function (email, cb) {
     Link.create({link: hash}, cb);
 };
 
+LinkSchema.statics.removeLink = function (id, cb) {
+    Link.remove({_id: id}, cb);
+};
+
+LinkSchema.methods.getId = function() {
+    return this._id;
+}
+
 var Link = db.model('Link', LinkSchema);
 
 module.exports = Link;

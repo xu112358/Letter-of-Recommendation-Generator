@@ -48,6 +48,22 @@ FormSchema.statics.findFromLink = function (link, cb) {
     Form.findOne({'link.link': link}, cb);
 };
 
+FormSchema.statics.removeForm = function (id, cb) {
+    FormSchema.statics.findForm(id, function (err, form) {
+        if (err) {
+            cb(err, null);
+        } else {
+            Link.removeLink(form.link.getId(), function (err) {
+                if (err) {
+                    cb(err, null);
+                } else {
+                    Form.remove({_id: id}, cb);
+                }
+            });
+        }
+    });
+};
+
 FormSchema.methods.getLink = function () {
     return this.link.link;
 };
