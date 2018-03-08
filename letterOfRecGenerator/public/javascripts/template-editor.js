@@ -39,7 +39,11 @@ window.onload = function () {
             data: {id},
             type: 'GET',
             success: function (data) {
-                data.questions.forEach(question => questions.push(new Question(question.type, question.question, question.tag)));
+                data.questions.forEach(question => {
+                    var savedQuestion = new Question(question.type, question.question, question.tag);
+                    savedQuestion.options = question.options;
+                    questions.push(savedQuestion);
+                });
                 console.log('success');
                 displayQuestions();
             },
