@@ -28,8 +28,47 @@ var questions = [];
 var warningModalFunction;
 
 window.onload = function () {
+    setUpEventHandlers();
+
     questions.push(new Question("Text", "", ''));
     displayQuestions();
+}
+
+function setUpEventHandlers() {
+    // upload letterhead
+    $('#letterhead-upload').submit(function(evt) {
+        evt.preventDefault();
+        var files = $('#letterhead-upload-file')[0].files;
+        if (files && files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#letterhead-preview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(files[0]);
+        }
+
+        // I'm leaving this code here as it is potentially useful for uploading to backend
+        // it sends a post request with the data to 'fileUpload' path
+        //
+        // var formData = new FormData($(this)[0]);
+        // $.ajax({
+        //     url: 'fileUpload',
+        //     type: 'POST',
+        //     data: formData,
+        //     async: false,
+        //     cache: false,
+        //     contentType: false,
+        //     enctype: 'multipart/form-data',
+        //     processData: false,
+        //     success: function (response) {
+        //     alert(response);
+        //     }
+        // });
+
+        // disable page refresh
+        return false;
+    });
 }
 
 window.onclick = function (event) {
@@ -249,7 +288,6 @@ function addCheckboxQuestion() {
 function updateQuestions() {
     // update the letter
     letter = document.getElementById(LETTER_TEXT_AREA_ID).value;
-    console.log(letter);
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
