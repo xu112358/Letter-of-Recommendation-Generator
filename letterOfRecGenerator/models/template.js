@@ -16,10 +16,7 @@ var TemplateSchema = new Schema({
         tag: String,
         options: [String]
     }],
-    letterheadImg: {
-        data: Buffer,
-        contentType: String
-    }
+    letterheadImg: String
 });
 
 TemplateSchema.methods.getId = function () {
@@ -37,6 +34,12 @@ TemplateSchema.methods.getText = function () {
 TemplateSchema.methods.getQuestions = function () {
     return this.questions;
 };
+
+TemplateSchema.methods.getLetterheadImage = function () {
+    var image = new Image();
+    image.src = this.letterheadImg;
+    return image;
+}
 
 var Template = db.model('Template', TemplateSchema);
 
