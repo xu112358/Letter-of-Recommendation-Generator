@@ -223,6 +223,8 @@ function saveTemplate(templateName) {
             }
         });
     }
+
+    window.location.href = 'http://localhost:3000/template-dashboard'
 }
 
 function getQuestions() {
