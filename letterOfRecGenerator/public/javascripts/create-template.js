@@ -1,5 +1,6 @@
 var nextQuestionIdToUse = 0;
 var id;
+var imgData;
 
 /**
  * Prototype class for Questions
@@ -36,22 +37,21 @@ window.onload = function () {
 
 function setUpEventHandlers() {
     // upload letterhead
-    $('#letterhead-upload').submit(function(evt) {
+    $('#letterhead-upload').submit(function (evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
         if (files && files[0]) {
             var reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 $('#letterhead-preview').attr('src', e.target.result);
-            }
+                imgData = e.target.result;
+            };
 
             reader.readAsDataURL(files[0]);
         }
 
-        // I'm leaving this code here as it is potentially useful for uploading to backend
-        // it sends a post request with the data to 'fileUpload' path
-        //
-        // var formData = new FormData($(this)[0]);
+
+// var formData = new FormData($(this)[0]);
         // $.ajax({
         //     url: 'fileUpload',
         //     type: 'POST',
@@ -65,7 +65,6 @@ function setUpEventHandlers() {
         //     alert(response);
         //     }
         // });
-
         // disable page refresh
         return false;
     });
@@ -110,17 +109,7 @@ function getQuestionHTML(q) {
             break;
     }
 
-    return "<h2>" + question_type_label + "</h2>" +
-            "<div class=\"question-outer-container\"" + data_id_attribute + ">" +
-                "<div class=\"question-container\">" +
-                    getTextAreaHTML(placeholder, q.value) +
-                    multiple_choice_fields_html +
-                    "<span class=\"line\"></span>" +
-                    "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here... (optional)\" value=\"" +
-                    q.tag + "\">" +
-                "</div>" +
-                "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" +
-            "</div>";
+    return "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here... (optional)\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -132,10 +121,7 @@ function getMultipleChoiceFieldsHTML(q) {
     for (var i = 0; i < q.options.length; i++) {
         var data_id_attribute = "data-id=\"" + i + "\"";
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
-        html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" +
-                    getTextAreaHTML(placeholder, q.options[i]) +
-                    "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" +
-                "</div>";
+        html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + getTextAreaHTML(placeholder, q.options[i]) + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
     }
     var add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
     html += "<button class=\"small-circle-button\" " + add_multiple_choice_attribute + ">+</button>";
@@ -144,8 +130,7 @@ function getMultipleChoiceFieldsHTML(q) {
 }
 
 function getTextAreaHTML(placeholder, value) {
-    return "<textarea data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" +
-            value + "</textarea>";
+    return "<textarea data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" + value + "</textarea>";
 }
 
 // used for allowing text areas to grow in height (trick with onkeyup)
@@ -169,6 +154,10 @@ function saveTemplate(templateName) {
         questions: getQuestions(),
         archived: false
     };
+
+    if (imgData) {
+        template.letterheadImg = imgData;
+    }
 
     if (id) {
         console.log("updating template");
@@ -359,4 +348,15 @@ function deleteMultipleChoiceField(el, data_id) {
 function findAncestor(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls)) ;
     return el;
+}
+
+function getBase64Image(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    var dataURL = canvas.toDataURL("image/png");
+    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
