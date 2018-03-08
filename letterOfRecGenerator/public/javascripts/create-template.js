@@ -39,7 +39,6 @@ function setUpEventHandlers() {
     $('#letterhead-upload').submit(function(evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
-        console.log(files);
         if (files && files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
