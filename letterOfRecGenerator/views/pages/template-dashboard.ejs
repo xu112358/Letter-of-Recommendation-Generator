@@ -18,7 +18,7 @@
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <p class="modal-title">Create New Template</p>
-        <form class="input-form" method="GET" action="/create-template">
+        <form class="input-form" method="GET" action="/template-editor">
             <input class="input-text" type="text" name="title">
             <input class="input-submit" type="submit" value="Create">
         </form>
@@ -34,7 +34,7 @@
         <td>
             <div class="template-name"><%= template.name %></div>
             <div class="image-container">
-                <img class="icon" src="/images/pencil.png"/>
+                <img class="icon" src="/images/pencil.png" onclick="editTemplate('<%= template._id %>')"/>
                 <img class="icon" src="/images/delete.png" onclick="deleteRow('<%= template._id %>')"/>
             </div>
         </td>
@@ -58,6 +58,23 @@
         modal.style.display = "none";
     }
 
+    function editTemplate(id) {
+        $.ajax({
+            url: 'http://localhost:3000/template-editor/edit',
+            data: {id},
+            type: 'GET',
+            complete: function (data) {
+                var params = data.responseJSON;
+                console.log(params)
+                console.log('complete');
+                window.location.href = getDestinationRoute('http://localhost:3000/template-editor', params);
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
     // On click for trash icon
     function deleteRow(id) {
         $.ajax({
@@ -79,6 +96,10 @@
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    }
+
+    function getDestinationRoute(address, params) {
+        return address + '?' + $.param(params);
     }
 </script>
 </html>

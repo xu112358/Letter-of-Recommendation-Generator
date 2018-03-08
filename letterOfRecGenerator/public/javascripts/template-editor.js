@@ -1,6 +1,8 @@
 var nextQuestionIdToUse = 0;
-var id;
-var imgData;
+var id = parseAttribute('id');
+var imgData = parseAttribute('imgData');
+
+console.log(id);
 
 /**
  * Prototype class for Questions
@@ -31,8 +33,32 @@ var warningModalFunction;
 window.onload = function () {
     setUpEventHandlers();
 
-    questions.push(new Question("Text", "", ''));
-    displayQuestions();
+    if (id) {
+        $.ajax({
+            url: 'http://localhost:3000/template-editor/template',
+            data: {id},
+            type: 'GET',
+            success: function (data) {
+                data.questions.forEach(question => questions.push(new Question(question.type, question.question, question.tag)));
+                console.log('success');
+                displayQuestions();
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    } else {
+        loadDefaultQuestions();
+        displayQuestions();
+    }
+};
+
+function loadDefaultQuestions() {
+    var default1 = new Question("Text", "What is your name?", "name");
+    questions.push(default1);
+    var default2 = new Question("Radio Button", "What is your gender?", "");
+    default2.options = ["Male", "Female", "Prefer not to answer"];
+    questions.push(default2);
 }
 
 function setUpEventHandlers() {
@@ -50,22 +76,6 @@ function setUpEventHandlers() {
             reader.readAsDataURL(files[0]);
         }
 
-
-// var formData = new FormData($(this)[0]);
-        // $.ajax({
-        //     url: 'fileUpload',
-        //     type: 'POST',
-        //     data: formData,
-        //     async: false,
-        //     cache: false,
-        //     contentType: false,
-        //     enctype: 'multipart/form-data',
-        //     processData: false,
-        //     success: function (response) {
-        //     alert(response);
-        //     }
-        // });
-        // disable page refresh
         return false;
     });
 }
@@ -162,7 +172,7 @@ function saveTemplate(templateName) {
     if (id) {
         console.log("updating template");
         $.ajax({
-            url: 'http://localhost:3000/create-template/update',
+            url: 'http://localhost:3000/template-editor/update',
             data: {
                 id: id,
                 template: template
@@ -183,7 +193,7 @@ function saveTemplate(templateName) {
     } else {
         console.log("creating template");
         $.ajax({
-            url: 'http://localhost:3000/create-template/create',
+            url: 'http://localhost:3000/template-editor/create',
             data: {template: template},
             type: 'POST',
             complete: function () {
@@ -350,13 +360,6 @@ function findAncestor(el, cls) {
     return el;
 }
 
-function getBase64Image(img) {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-
-    var dataURL = canvas.toDataURL("image/png");
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+function parseAttribute(attr) {
+    return document.currentScript.getAttribute(attr) == '\'\'' ? null : document.currentScript.getAttribute(attr).replace(/['"]+/g, '');
 }
