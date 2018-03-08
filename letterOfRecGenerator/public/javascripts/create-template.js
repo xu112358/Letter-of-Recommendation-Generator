@@ -49,6 +49,7 @@ function setUpEventHandlers() {
         }
 
         // I'm leaving this code here as it is potentially useful for uploading to backend
+        // it sends a post request with the data to 'fileUpload' path
         //
         // var formData = new FormData($(this)[0]);
         // $.ajax({
@@ -64,7 +65,6 @@ function setUpEventHandlers() {
         //     alert(response);
         //     }
         // });
-
 
         // disable page refresh
         return false;
