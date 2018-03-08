@@ -6,13 +6,13 @@ var id;
  */
 class Question {
     constructor(type, value, tag) {
-        // text, radio, checkbox
+        // Text, Radio Button, Checkbox
         this.type = type;
         this.value = value;
         this.tag = tag;
         // local browser
         this.id = nextQuestionIdToUse;
-        // filled with strings if dealing with radio button or checkbox
+        // Filled with strings if dealing with Radio Button or Checkbox
         this.options = [];
         nextQuestionIdToUse++;
     }
@@ -107,7 +107,7 @@ function getQuestionHTML(q) {
         case "Text":
             question_type_label = "TEXT";
             break;
-        case "Radio":
+        case "Radio Button":
             question_type_label = "RADIO BUTTON";
             break;
         case "Checkbox":
@@ -132,7 +132,7 @@ function getQuestionHTML(q) {
 
 // Note: the html needs to be nested within a question-container element in order to properly work
 function getMultipleChoiceFieldsHTML(q) {
-    if (q.type != "Radio" && q.type != "Checkbox") return "";
+    if (q.type != "Radio Button" && q.type != "Checkbox") return "";
 
     var placeholder = "Enter option here...";
     var html = "<div class=\"multiple-choices-container\">";
@@ -166,17 +166,16 @@ function addQuestion() {
     showAddQuestionModal();
 }
 
-function saveTemplate() {
+function saveTemplate(templateName) {
     console.log("saveTemplate called");
     updateQuestions();
 
     var template = {
-        name: 'test',
+        name: templateName,
         text: 'test',
         questions: getQuestions(),
         archived: false
     };
-
 
     if (id) {
         console.log("updating template");
@@ -192,8 +191,8 @@ function saveTemplate() {
             },
             success: function (data) {
                 console.log(data);
-
                 console.log('success');
+                window.location.href = ('/template-dashboard');
             },
             error: function () {
                 console.log('error');
@@ -230,8 +229,8 @@ function getQuestions() {
         number: questionNumber++,
         type: question.type,
         question: question.value,
-        tag: question.tag,
-        options: question.options
+        options: question.options,
+        tag: question.tag
     }));
 
     return dbQuestions;
@@ -276,7 +275,7 @@ function addTextAnswerQuestion() {
 function addRadioButtonQuestion() {
     console.log("addRadioButtonQuestion called");
     updateQuestions();
-    var question = new Question("Radio", "", "");
+    var question = new Question("Radio Button", "", "");
     question.options.push("");
     questions.push(question);
     displayQuestions();
@@ -364,7 +363,7 @@ function deleteMultipleChoiceField(el, data_id) {
     displayQuestions();
 }
 
-function findAncestor (el, cls) {
-    while ((el = el.parentElement) && !el.classList.contains(cls));
+function findAncestor(el, cls) {
+    while ((el = el.parentElement) && !el.classList.contains(cls)) ;
     return el;
 }

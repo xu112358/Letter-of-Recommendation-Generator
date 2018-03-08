@@ -6,6 +6,7 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
     res.render('pages/create-template', {
         title: 'CREATE A NEW TEMPLATE',
+        templateName: req.query.title,
     });
 });
 

@@ -10,13 +10,16 @@ var querystring = require('querystring');
 var url = require('url');
 var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
+
+var createTemplate = require('./routes/create-template');
+var formCompleted = require('./routes/form-completed');
+var formEntry = require('./routes/form-entry');
 var index = require('./routes/index');
+var letterPreview = require('./routes/letter-preview');
 var login = require('./routes/login');
-var rec = require('./routes/rec');
 var recommenderDashboard = require('./routes/recommender-dashboard');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
-var createTemplate = require('./routes/create-template');
 
 var app = express();
 
@@ -57,12 +60,14 @@ app.use('/logout', (req, res) => {
 });
 
 app.use('/', index);
+app.use('/create-template', isAuthenticated, createTemplate);
+app.use('/form-completed', formCompleted);
+app.use('/form-entry', formEntry);
+app.use('/letter-preview', letterPreview);
 app.use('/login', login);
 app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
-app.use('/rec', isAuthenticated, rec);
 app.use('/template-dashboard', isAuthenticated, templateDashboard);
 app.use('/users', isAuthenticated, users);
-app.use('/create-template', isAuthenticated, createTemplate);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
