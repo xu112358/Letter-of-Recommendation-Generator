@@ -10,12 +10,92 @@
             <% include ../partials/header %>
         </header>
         <h1 class="title"><%= title %></h1>
-        <form method="POST" action="/recommender-dashboard">
-            <input type="text" name="email">
-            <input type="submit" value="Send Test Dummy Email via Ethereal">
-        </form>
-        <% if(statusMessage !=null){ %>
-            <div> <%= statusMessage %> </div>
-        <%}%>
+        <% if (templates.length) { %>
+            <div class="add-btn" onclick="openModal()">+</div>
+        <% } %>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="close-container">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <p class="modal-title">Enter Email</p>
+                <form class="input-form" method="POST" action="/recommender-dashboard">
+                    <div class="input-container">
+                        <input class="input-text" type="text" name="email">
+                        <select class="input-dropdown" name="templateId">
+                            <% for (var template of templates) { %>
+                                <option value=<%= template._id %> ><%= template.name %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <input class="input-submit" type="submit" value="Send">
+                </form>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Template</td>
+                    <td class="center">Status</td>
+                    <td class="icons"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (var form of forms) { %>
+                    <tr>
+                        <td><%= form.recommendee %></td>
+                        <td><%= form.template.name %></td>
+                        <td class="center">
+                            <% if (form.status == 'Sent') { %>
+                                <img class="icon" src="/images/red_x.png"/>
+                            <% } else { %>
+                                <img class="icon" src="/images/green_checkmark.png"/>
+                            <% } %>
+                        </td>
+                        <td class="center">
+                            <img class="icon" src="/images/pencil.png"/>
+                            <img class="icon" src="/images/preview.png" onclick="openLetterPreview('<%= form.recommendee %>')"/>
+                            <img class="icon" src="/images/delete.png" onclick="deleteRow(this)"/>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <script>
+
+            // Get the modal
+            var modal = document.getElementById('myModal');
+
+            // When the user clicks on the button, open the modal
+            function openModal() {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            function closeModal() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            // On click for trash icon
+            function deleteRow(r) {
+                // Deletes row
+                var p = r.parentNode.parentNode;
+                p.parentNode.removeChild(p);
+            }
+
+            // When the user clicks the preview icon, take them to the letter preview page.
+            function openLetterPreview(name) {
+                window.location = `/letter-preview?name=${name}`;
+            }
+
+        </script>
     </body>
 </html>
