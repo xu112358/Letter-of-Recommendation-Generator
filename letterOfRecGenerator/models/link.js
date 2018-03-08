@@ -13,7 +13,7 @@ var LinkSchema = new Schema({
 });
 
 LinkSchema.statics.generateLink = function (email, cb) {
-    var hash = crypto.createHash('md5').update(email).digest("hex");
+    var hash = crypto.createHash('md5').update(email + Date.now().toString()).digest("hex");
 
     Link.create({link: hash}, cb);
 };
