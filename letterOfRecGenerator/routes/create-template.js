@@ -20,11 +20,6 @@ router.post('/create', function (req, res, next) {
                 status: 200,
                 id: id
             });
-
-            res.render('pages/template-dashboard', {
-                title: 'TEMPLATE DASHBOARD',
-                templates: req.user.getActiveTemplates(),
-            });
         }
     });
 });

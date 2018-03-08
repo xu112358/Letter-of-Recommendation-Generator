@@ -146,7 +146,7 @@ function saveTemplate(templateName) {
             success: function (data) {
                 console.log(data);
                 console.log('success');
-                window.location.href=('/template-dashboard');
+                window.location.href = ('/template-dashboard');
             },
             error: function () {
                 console.log('error');
@@ -318,7 +318,7 @@ function deleteMultipleChoiceField(el, data_id) {
     displayQuestions();
 }
 
-function findAncestor (el, cls) {
-    while ((el = el.parentElement) && !el.classList.contains(cls));
+function findAncestor(el, cls) {
+    while ((el = el.parentElement) && !el.classList.contains(cls)) ;
     return el;
 }

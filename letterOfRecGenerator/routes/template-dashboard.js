@@ -5,7 +5,21 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
     res.render('pages/template-dashboard', {
         title: 'TEMPLATE DASHBOARD',
-        templates: req.user.getActiveTemplates(),
+        templates: req.user.getTemplates(),
+    });
+});
+
+router.post('/delete', function (req, res, next) {
+    var user = req.user;
+    user.removeTemplate(req.body.id, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('pages/template-dashboard', {
+                title: 'TEMPLATE DASHBOARD',
+                templates: req.user.getTemplates(),
+            });
+        }
     });
 });
 
