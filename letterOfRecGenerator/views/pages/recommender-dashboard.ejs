@@ -56,12 +56,13 @@
                         <td class="center">
                             <img class="icon" src="/images/pencil.png"/>
                             <img class="icon" src="/images/preview.png" onclick="openLetterPreview('<%= form.recommendee %>')"/>
-                            <img class="icon" src="/images/delete.png" onclick="deleteRow(this)"/>
+                            <img class="icon" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
                         </td>
                     </tr>
                 <% } %>
             </tbody>
         </table>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script>
 
             // Get the modal
@@ -85,10 +86,19 @@
             }
 
             // On click for trash icon
-            function deleteRow(r) {
-                // Deletes row
-                var p = r.parentNode.parentNode;
-                p.parentNode.removeChild(p);
+            function deleteRow(id) {
+                $.ajax({
+                    url: 'http://localhost:3000/recommender-dashboard/delete',
+                    data: {id},
+                    type: 'POST',
+                    complete: function () {
+                        console.log('complete');
+                        window.location.reload(false);
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                });
             }
 
             // When the user clicks the preview icon, take them to the letter preview page.

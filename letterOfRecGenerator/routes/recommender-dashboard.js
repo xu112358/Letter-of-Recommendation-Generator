@@ -84,4 +84,26 @@ router.post('/', function (req, res, next) {
     });
 });
 
+router.post('/delete', function (req, res, next) {
+    var user = req.user;
+
+    user.removeForm(req.body.id, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            req.user.getForms(function (err, forms) {
+                if (err) {
+                    console.log(`error: ${err}`);
+                } else {
+                    res.render('pages/recommender-dashboard', {
+                        title: 'Welcome ' + req.user.displayName + '!',
+                        templates: req.user.getTemplates(),
+                        forms: forms,
+                    });
+                }
+            });
+        }
+    });
+});
+
 module.exports = router;

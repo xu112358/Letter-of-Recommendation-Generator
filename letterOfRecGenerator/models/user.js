@@ -88,6 +88,30 @@ UserSchema.methods.getForms = function (cb) {
     })
 };
 
+UserSchema.methods.getForm = function (id, cb) {
+    User.findOne({id: this.id}).populate({
+        path: 'forms',
+        match: {_id: id}
+    }).exec(function (err, user) {
+        if (user.forms.length != 1) {
+            console.log('error');
+        } else {
+            cb(err, user.forms[0]);
+        }
+    })
+};
+
+UserSchema.methods.removeForm = function (id, cb) {
+    this.forms.pull(id);
+    this.save(function (err) {
+        if (err) {
+            cb(err, null);
+        } else {
+            Form.removeForm(id, cb);
+        }
+    });
+};
+
 var User = db.model('User', UserSchema);
 
 module.exports = User;
