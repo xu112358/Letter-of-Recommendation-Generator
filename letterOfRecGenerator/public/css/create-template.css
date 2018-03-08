@@ -2,6 +2,27 @@
     padding-left: 50px;
 }
 
+.section-header {
+    color: #FF473A;
+    text-align: center;
+}
+
+#letterhead-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+#letterhead-preview {
+    flex-basis: auto;
+}
+
+#letterhead-upload {
+    flex-basis: auto;
+}
+
 .large-circle-button {
     border-radius: 50%;
     color: white;
