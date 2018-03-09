@@ -39,6 +39,7 @@ window.onload = function () {
             data: {id},
             type: 'GET',
             success: function (data) {
+                document.getElementById(LETTER_TEXT_AREA_ID).value = data.letter;
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag);
                     savedQuestion.options = question.options;
@@ -61,14 +62,6 @@ function loadDefaultQuestions() {
     var default1 = new Question("Text", "What is your name?", "name");
     questions.push(default1);
     var default2 = new Question("Radio Button", "What is your gender?", "");
-    default2.options = ["Male", "Female", "Prefer not to answer"];
-    questions.push(default2);
-}
-
-function loadDefaultQuestions() {
-    var default1 = new Question("Text", "What is your name?", "name");
-    questions.push(default1);
-    var default2 = new Question("Radio", "What is your gender?", "");
     default2.options = ["Male", "Female", "Prefer not to answer"];
     questions.push(default2);
 }
@@ -172,7 +165,7 @@ function saveTemplate(templateName) {
 
     var template = {
         name: templateName,
-        text: 'test',
+        text: letter,
         questions: getQuestions(),
         archived: false
     };
@@ -182,6 +175,7 @@ function saveTemplate(templateName) {
     }
 
     if (id) {
+        console.log(template);
         console.log("updating template");
         $.ajax({
             url: 'http://localhost:3000/template-editor/update',
@@ -190,13 +184,15 @@ function saveTemplate(templateName) {
                 template: template
             },
             type: 'POST',
-            complete: function () {
+            cache: false,
+            complete: function (data) {
                 console.log('complete');
+                console.log(data);
             },
             success: function (data) {
                 console.log(data);
                 console.log('success');
-                window.location.href = ('/template-dashboard');
+                window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function () {
                 console.log('error');
@@ -217,14 +213,13 @@ function saveTemplate(templateName) {
                 id = data.id;
 
                 console.log('success');
+                window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function () {
                 console.log('error');
             }
         });
     }
-
-    window.location.href = 'http://localhost:3000/template-dashboard'
 }
 
 function getQuestions() {

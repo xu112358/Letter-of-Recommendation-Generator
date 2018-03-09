@@ -36,14 +36,17 @@ router.get('/edit', function (req, res, next) {
         });
     } else {
         res.json({
-            title: templateName,
+            title: null,
             id: null,
         });
     }
 });
 
 router.get('/template', function (req, res, next) {
-    res.json({questions: req.user.getTemplate(req.query.id).getQuestions()});
+    res.json({
+        letter: req.user.getTemplate(req.query.id).getText(),
+        questions: req.user.getTemplate(req.query.id).getQuestions()
+    });
 });
 
 router.post('/create', function (req, res, next) {
@@ -52,7 +55,7 @@ router.post('/create', function (req, res, next) {
             console.log(err);
         } else {
             res.json({
-                success: "Updated Successfully",
+                success: "Created Successfully",
                 status: 200,
                 id: id
             });
@@ -64,6 +67,11 @@ router.post('/update', function (req, res, next) {
     req.user.updateTemplate(req.body.id, req.body.template, function (err, template) {
         if (err) {
             console.log(err);
+        } else {
+            res.json({
+                success: "Updated Successfully",
+                status: 200
+            });
         }
     });
 });
