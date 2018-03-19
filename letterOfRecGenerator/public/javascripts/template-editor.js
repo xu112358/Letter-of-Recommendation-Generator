@@ -2,8 +2,6 @@ var nextQuestionIdToUse = 0;
 var id = parseAttribute('id');
 var imgData = parseAttribute('imgData');
 
-console.log(id);
-
 /**
  * Prototype class for Questions
  */
@@ -59,9 +57,9 @@ window.onload = function () {
 };
 
 function loadDefaultQuestions() {
-    var default1 = new Question("Text", "What is your name?", "name");
+    var default1 = new Question("Text", "What is your name?", "<!NAME>");
     questions.push(default1);
-    var default2 = new Question("Radio Button", "What is your gender?", "");
+    var default2 = new Question("Radio Button", "What is your gender?", "<!GENDER>");
     default2.options = ["Male", "Female", "Prefer not to answer"];
     questions.push(default2);
 }
@@ -175,7 +173,6 @@ function saveTemplate(templateName) {
     }
 
     if (id) {
-        console.log(template);
         console.log("updating template");
         $.ajax({
             url: 'http://localhost:3000/template-editor/update',
@@ -187,10 +184,8 @@ function saveTemplate(templateName) {
             cache: false,
             complete: function (data) {
                 console.log('complete');
-                console.log(data);
             },
             success: function (data) {
-                console.log(data);
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },
@@ -208,8 +203,6 @@ function saveTemplate(templateName) {
                 console.log('complete');
             },
             success: function (data) {
-                console.log(data);
-
                 id = data.id;
 
                 console.log('success');
