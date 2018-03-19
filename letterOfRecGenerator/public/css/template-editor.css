@@ -34,6 +34,7 @@
     text-decoration: none;
     margin-left: 40px;
     display: block;
+    cursor: pointer;
 }
 
 .small-circle-button {
@@ -45,6 +46,7 @@
     height: 30px;
     width: 30px;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .large-plus-button:hover {
@@ -67,6 +69,7 @@
     color: black;
     text-align: center;
     font-size: 24px;
+    cursor: pointer;
 }
 
 #save-button:hover {
@@ -128,6 +131,8 @@
     font-size: 15px;
     font-weight: bold;
     height: 22px;
+    min-height: 22px;
+    resize: vertical;
 }
 
 .question-container .text-field {
