@@ -3,20 +3,38 @@
     <head>
         <title><%= title %></title>
         <link rel="stylesheet" href="/stylesheets/style.css" />
-        <link rel="stylesheet" href="/css/create-template.css" />
+        <link rel="stylesheet" href="/css/template-editor.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" src="/javascripts/create-template.js"></script>
+        <script type="text/javascript" src="/javascripts/template-editor.js" id="'<%= id %>'" imgData="'<%= letterheadImage %>'"></script>
     </head>
     <body>
         <header>
             <% include ../partials/header %>
         </header>
         <h1 class="title"><%= title %></h1>
+        
+        <h2 class="section-header">Upload Letterhead</h2>
+
+        <div id="letterhead-container">
+            <% if(locals.letterheadImage){ %>
+                <img id="letterhead-preview" src="<%= letterheadImage %>" alt=""/>
+            <% } else{ %>
+                <img id="letterhead-preview" src="#" alt=""/>
+            <% } %>
+            <form id="letterhead-upload">
+                <input type="file" name="file" id="letterhead-upload-file" />
+                <input type="submit" name="Submit" />
+            </form>
+        </div>
+
+        <h2 class="section-header">Letter Boilerplate</h2>
 
         <div id="letter-container">
             <textarea id="letter-text-area"></textarea>
             <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding question's answer</h3>
         </div>
+
+        <h2 class="section-header">Custom Questions</h2>
 
         <div id="questions-container"></div>
 

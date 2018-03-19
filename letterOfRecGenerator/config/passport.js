@@ -31,7 +31,7 @@ passport.use(new GoogleStrategy({
         var details = extractProfile(profile);
         User.findOrCreate(details.id, function (err, user) {
             if (err) {
-                console.log('handle');
+                done(err, null);
             }
 
             user.displayName = details.displayName;

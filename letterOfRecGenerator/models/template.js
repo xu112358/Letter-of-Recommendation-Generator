@@ -4,10 +4,7 @@ var Schema = db.Schema;
 
 var TemplateSchema = new Schema({
     name: String,
-    text: {
-        type: String,
-        required: true
-    },
+    text: String,
     questions: [{
         number: Number,
         type: {
@@ -19,19 +16,30 @@ var TemplateSchema = new Schema({
         tag: String,
         options: [String]
     }],
-    letterheadImg: {
-        data: Buffer,
-        contentType: String
-    },
-    archived: {
-        type: Boolean,
-        default: false
-    }
+    letterheadImg: String
 });
 
-TemplateSchema.methods.archive = function () {
-    this.archived = true;
+TemplateSchema.methods.getId = function () {
+    return this._id;
 };
+
+TemplateSchema.methods.getName = function () {
+    return this.name;
+};
+
+TemplateSchema.methods.getText = function () {
+    return this.text;
+};
+
+TemplateSchema.methods.getQuestions = function () {
+    return this.questions;
+};
+
+TemplateSchema.methods.getLetterheadImage = function () {
+    var image = new Image();
+    image.src = this.letterheadImg;
+    return image;
+}
 
 var Template = db.model('Template', TemplateSchema);
 

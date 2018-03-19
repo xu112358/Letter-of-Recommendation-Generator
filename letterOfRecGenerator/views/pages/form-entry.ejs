@@ -29,7 +29,7 @@
                                 <div class="option-container">
                                     <input type="checkbox" value=<%= option %> name=<%= q.number %> />
                                     <label class="block"><%= option %></label>
-                                </div>                     
+                                </div>
                             <% } %>
                             <% break;
                         default: %>
@@ -53,13 +53,13 @@
     <script>
         // Get the modal
         var modal = document.getElementById('myModal');
-        
-        // When the user clicks on the button, open the modal 
+
+        // When the user clicks on the button, open the modal
         function openModal() {
             modal.style.display = "block";
             return false;
         }
-    
+
         // When the user clicks on <span> (x), close the modal
         function closeModal() {
             modal.style.display = "none";
@@ -68,7 +68,7 @@
 
         function submitForm(JSONForm) {
             var form = JSON.parse(JSONForm);
-            var responseData = $("#RecommendeeForm").serializeArray().reduce(function(obj, item) {
+            var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
                 if (obj[item.name]) {
                     if (typeof(obj[item.name] != Array)) {
                         var arr = [obj[item.name], item.value];
@@ -84,14 +84,18 @@
 
             $.ajax({
                 url: 'http://localhost:3000/form-entry',
-                data: {form, responseData},
+                data: {
+                    id: form._id,
+                    responseData
+                },
                 type: 'POST',
                 complete: function () {
                     console.log('complete');
                 },
                 success: function (form) {
                     console.log(form);
-                    console.log('sucess');
+                    console.log('success');
+                    window.location.href = ('/form-completed');
                 },
                 error: function () {
                     console.log('error');
@@ -100,9 +104,9 @@
 
             return false;
         }
-    
+
         // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }

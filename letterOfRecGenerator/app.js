@@ -11,7 +11,8 @@ var url = require('url');
 var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
 
-var createTemplate = require('./routes/create-template');
+var createTemplate = require('./routes/template-editor');
+var formCompleted = require('./routes/form-completed');
 var formEntry = require('./routes/form-entry');
 var index = require('./routes/index');
 var letterPreview = require('./routes/letter-preview');
@@ -27,7 +28,10 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true,
+    limit: '50mb'
+}));
 app.use(session({
     secret: 'anything',
     resave: true,
@@ -59,7 +63,8 @@ app.use('/logout', (req, res) => {
 });
 
 app.use('/', index);
-app.use('/create-template', isAuthenticated, createTemplate);
+app.use('/template-editor', isAuthenticated, createTemplate);
+app.use('/form-completed', formCompleted);
 app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
 app.use('/login', login);

@@ -56,27 +56,28 @@
                         <td class="center">
                             <img class="icon" src="/images/pencil.png"/>
                             <img class="icon" src="/images/preview.png" onclick="openLetterPreview('<%= form.recommendee %>')"/>
-                            <img class="icon" src="/images/delete.png" onclick="deleteRow(this)"/>
+                            <img class="icon" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
                         </td>
                     </tr>
                 <% } %>
             </tbody>
         </table>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script>
 
             // Get the modal
             var modal = document.getElementById('myModal');
-        
-            // When the user clicks on the button, open the modal 
+
+            // When the user clicks on the button, open the modal
             function openModal() {
                 modal.style.display = "block";
             }
-        
+
             // When the user clicks on <span> (x), close the modal
             function closeModal() {
                 modal.style.display = "none";
             }
-        
+
             // When the user clicks anywhere outside of the modal, close it
             window.onclick = function(event) {
                 if (event.target == modal) {
@@ -85,10 +86,19 @@
             }
 
             // On click for trash icon
-            function deleteRow(r) {
-                // Deletes row
-                var p = r.parentNode.parentNode;
-                p.parentNode.removeChild(p);
+            function deleteRow(id) {
+                $.ajax({
+                    url: 'http://localhost:3000/recommender-dashboard/delete',
+                    data: {id},
+                    type: 'POST',
+                    complete: function () {
+                        console.log('complete');
+                        window.location.reload(false);
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                });
             }
 
             // When the user clicks the preview icon, take them to the letter preview page.

@@ -9,7 +9,10 @@ var UserSchema = new Schema({
     displayName: String,
     accessToken: String,
     templates: [Template.schema],
-    forms: [Form.schema]
+    forms: [{
+        type: db.Schema.Types.ObjectId,
+        ref: 'Form'
+    }]
 });
 
 UserSchema.statics.findUser = function (id, cb) {
@@ -32,42 +35,82 @@ UserSchema.statics.findOrCreate = function (id, cb) {
     });
 };
 
-UserSchema.methods.addTemplate = function (template) {
+UserSchema.methods.addTemplate = function (template, cb) {
     this.templates.push(template);
+    var newTemplate = this.templates[this.templates.length - 1];
+
+    this.save(function (err) {
+        cb(err, newTemplate.getId());
+    })
 };
 
-UserSchema.methods.removeTemplate = function (template) {
-    var template = getTemplate(template._id);
-    template.archive();
-    template.save();
+UserSchema.methods.updateTemplate = function (id, template, cb) {
+    var user = this;
+    var updatedTemplate = this.templates.id(id);
+
+    updatedTemplate.name = template.name;
+    updatedTemplate.text = template.text;
+    updatedTemplate.questions = template.questions;
+    updatedTemplate.letterheadImg = template.letterheadImg;
+
+    User.findOneAndUpdate({
+        "id": user.id,
+        "templates._id": id
+    }, {
+        "$set": {
+            "templates.$": updatedTemplate
+        }
+    }, function (err, user) {
+        cb(err, template);
+    });
 };
 
 UserSchema.methods.getTemplates = function () {
     return this.templates;
 };
 
-UserSchema.methods.getActiveTemplates = function () {
-    return this.templates.filter(template => !template.archived);
-};
-
-UserSchema.methods.findTemplates = function (name) {
-    return this.templates.filter(template => template.name == name);
-};
-
-UserSchema.methods.findActiveTemplates = function (name) {
-    return this.templates.filter(template => template.name == name && !template.archived);
-};
-
 UserSchema.methods.getTemplate = function (id) {
-    return this.templates.find(template => template._id == id);
+    return this.templates.id(id);
 };
 
-UserSchema.methods.addForm = function (form) {
-    this.forms.push(form);
-}
+UserSchema.methods.removeTemplate = function (id, cb) {
+    this.getTemplate(id).remove();
+    this.save(cb);
+};
 
-UserSchema.methods.getForms = function () {
-    return this.forms;
+UserSchema.methods.addForm = function (form, cb) {
+    this.forms.push(form._id);
+    this.save(cb);
+};
+
+UserSchema.methods.getForms = function (cb) {
+    User.findOne({id: this.id}).populate('forms').exec(function (err, user) {
+        cb(err, user.forms);
+    })
+};
+
+UserSchema.methods.getForm = function (id, cb) {
+    User.findOne({id: this.id}).populate({
+        path: 'forms',
+        match: {_id: id}
+    }).exec(function (err, user) {
+        if (user.forms.length != 1) {
+            console.log('error');
+        } else {
+            cb(err, user.forms[0]);
+        }
+    })
+};
+
+UserSchema.methods.removeForm = function (id, cb) {
+    this.forms.pull(id);
+    this.save(function (err) {
+        if (err) {
+            cb(err, null);
+        } else {
+            Form.removeForm(id, cb);
+        }
+    });
 };
 
 var User = db.model('User', UserSchema);
