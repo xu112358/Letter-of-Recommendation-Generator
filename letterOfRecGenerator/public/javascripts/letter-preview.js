@@ -83,11 +83,12 @@ function renderSelectedDisplay() {
 function createLetterPreview(form) {
     var letter = document.createElement('div');
     letter.id = '0';
-    letter.className = 'letter-container';
+    letter.className = LETTER_CONTAINER_ID;
     letter.innerHTML = parseLetter(form);
     letter.onclick = function () {
         showEditModal(this.id);
     };
+    letter.style.cursor = 'pointer';
     var outerContainer = document.getElementById(OUTER_CONTAINER);
     outerContainer.appendChild(letter);
 
