@@ -23,13 +23,13 @@ margin:auto;
 }
 
 .letter-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    border: thick solid black;
-    align-items: center;
-    margin: 15px 100px 15px 100px; 
     background-color: #e8e8e8;
+    border: thick solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 15px 100px 15px 100px;
+    padding: 0 8px;
 }
 
 
