@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/stylesheets/style.css" />
-        <link rel="stylesheet" type="text/css" href="/css/letter-preview.css" />
-        <script type="text/javascript" src="/javascripts/letter-preview.js"></script>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css">
-        <script src="http://manova.surge.sh/javascript/jquery.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
-    </head>
-    <body onload="onLoad()">
-        <header>
-            <% include ../partials/header %>
-        </header>
-        <h1 class="title"><%= title %></h1>
-        <div id="outer-container">
-            
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css">
+    <script src="http://manova.surge.sh/javascript/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
+</head>
+<body onload="onLoad()">
+<header>
+    <% include ../partials/header %>
+</header>
+<h1 class="title"><%= title %></h1>
+<div id="outer-container">
+
+</div>
+
+</body>
+
+<div id="add-question-modal">
+    <div class="inside">
+
+        <form class="ui form example">
+            <div class="ui message error"></div>
+
+            <input id="content" value="" type="hidden" name="content">
+            <trix-editor input="content"></trix-editor>
+
+        </form>
+
+        <div class="flex-row">
+            <button class="convert-pdf" onclick="saveEditModal()">Save</button>
+            <button class="convert-pdf" onclick="cancelEditModal()">Cancel</button>
         </div>
 
-    </body>
-
-    <div id="add-question-modal">
-        <div class="inside">
-
-            <form class="ui form example">
-              <div class="ui message error"></div>
-
-              <input id="content" value= "" type="hidden" name="content">
-              <trix-editor input="content"></trix-editor>
-              
-            </form>
-
-            <div class="flex-row">
-                <button class="convert-pdf" onclick="saveEditModal()">Save</button>
-                <button class="convert-pdf" onclick="cancelEditModal()">Cancel</button>
-            </div>
-            
-        </div>
     </div>
-    <button class="convert-pdf">Convert to PDF</button>
+</div>
+<button class="convert-pdf">Convert to PDF</button>
 </html>
