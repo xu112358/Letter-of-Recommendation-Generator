@@ -7,6 +7,25 @@
     text-align: center;
 }
 
+#name-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+#name-container .text-field {
+    border: none;
+    flex: 1;
+    margin: 2px 3px;
+    font-size: 15px;
+    font-weight: bold;
+    height: 22px;
+    width: 300px;
+    text-align: center;
+}
+
 #letterhead-container {
     display: flex;
     flex-direction: column;

@@ -13,8 +13,12 @@
         </header>
         <h1 class="title"><%= title %></h1>
         
-        <h2 class="section-header">Upload Letterhead</h2>
+        <h2 class="section-header">Template Name</h2>
+        <div id="name-container">
+            <input id="name-container-text-field" type="text" class="text-field" placeholder="Enter a template name here..." value="<%= templateName %>"/>
+        </div>
 
+        <h2 class="section-header">Upload Letterhead</h2>
         <div id="letterhead-container">
             <% if(locals.letterheadImage){ %>
                 <img id="letterhead-preview" src="<%= letterheadImage %>" alt=""/>

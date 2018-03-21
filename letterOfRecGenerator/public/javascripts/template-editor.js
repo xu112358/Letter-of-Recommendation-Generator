@@ -21,6 +21,7 @@ class Question {
     }
 }
 
+const NAME_CONTAINER_TEXT_FIELD_ID = "name-container-text-field";
 const LETTER_TEXT_AREA_ID = "letter-text-area";
 const QUESTIONS_CONTAINER_ID = "questions-container";
 const ADD_QUESTION_MODAL_ID = "add-question-modal";
@@ -169,6 +170,11 @@ function addQuestion() {
 function saveTemplate(templateName) {
     console.log("saveTemplate called");
     updateQuestions();
+
+    if (document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID).value.length === 0) {
+        alert('Template name must be set');
+        return;
+    }
 
     var template = {
         name: templateName,
