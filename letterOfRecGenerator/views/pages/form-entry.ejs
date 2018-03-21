@@ -44,7 +44,7 @@
                         <span class="close" onclick="closeModal()">&times;</span>
                     </div>
                     <p class="modal-title">Confirm Submission?</p>
-                    <button class="input-submit" type="button" value="Confirm" onclick="submitForm('<%= JSON.stringify(form) %>')">Confirm</button>
+                    <button class="input-submit" type="button" value="Confirm" onclick="submitForm('<%= form._id %>')">Confirm</button>
                 </div>
             </div>
         </form>
@@ -66,8 +66,7 @@
             return false;
         }
 
-        function submitForm(JSONForm) {
-            var form = JSON.parse(JSONForm);
+        function submitForm(id) {
             var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
                 if (obj[item.name]) {
                     if (typeof(obj[item.name] != Array)) {
@@ -85,7 +84,7 @@
             $.ajax({
                 url: 'http://localhost:3000/form-entry',
                 data: {
-                    id: form._id,
+                    id: id,
                     responseData
                 },
                 type: 'POST',
@@ -93,7 +92,6 @@
                     console.log('complete');
                 },
                 success: function (form) {
-                    console.log(form);
                     console.log('success');
                     window.location.href = ('/form-completed');
                 },
