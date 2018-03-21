@@ -170,7 +170,6 @@
 
 .question-container .multiple-choices-container {
     flex: 1;
-    margin: 0px 5px;
 
     display: flex;
     flex-direction: column;
@@ -180,9 +179,20 @@
 
 .question-container .multiple-choices-container .multiple-choice-container {
     flex: 1;
+    border-top: 2px solid rgb(105, 105, 247);
+    padding: 0px 10px;
 
     display: flex;
     flex-direction: row;
+}
+
+.question-container .multiple-choices-container .multiple-choice-container .text-area-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+
+    flex-grow: 1;
 }
 
 #add-question-modal {

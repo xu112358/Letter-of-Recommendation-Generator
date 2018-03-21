@@ -13,7 +13,7 @@ class Question {
         this.tag = tag;
         // local browser
         this.id = nextQuestionIdToUse;
-        // Filled with strings if dealing with Radio Button or Checkbox
+        // Filled with Objects of {option_text, fill_text} (both strings) if dealing with Radio Button or Checkbox
         this.options = [];
         nextQuestionIdToUse++;
     }
@@ -41,6 +41,7 @@ window.onload = function () {
                 document.getElementById(LETTER_TEXT_AREA_ID).value = data.letter;
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag);
+                    // TODO(jonny): fix this to fit new option data model
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
@@ -61,7 +62,7 @@ function loadDefaultQuestions() {
     var default1 = new Question("Text", "What is your name?", "<!NAME>");
     questions.push(default1);
     var default2 = new Question("Radio Button", "What is your gender?", "<!GENDER>");
-    default2.options = ["Male", "Female", "Prefer not to answer"];
+    default2.options = [constructOptionObject("Male", ""), constructOptionObject("Female", ""), constructOptionObject("Prefer not to answer", "")];
     questions.push(default2);
 }
 
@@ -130,12 +131,15 @@ function getQuestionHTML(q) {
 function getMultipleChoiceFieldsHTML(q) {
     if (q.type != "Radio Button" && q.type != "Checkbox") return "";
 
-    var placeholder = "Enter option here...";
+    var option_placeholder = "Enter option here...";
+    var fill_text_placeholder = "Enter text that will replace the tag...";
     var html = "<div class=\"multiple-choices-container\">";
     for (var i = 0; i < q.options.length; i++) {
         var data_id_attribute = "data-id=\"" + i + "\"";
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
-        html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + getTextAreaHTML(placeholder, q.options[i]) + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
+
+        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option_text) + getTextAreaHTML(fill_text_placeholder, q.options[i].fill_text) + "</div>";
+        html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + text_area_elements + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
     }
     var add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
     html += "<button class=\"small-circle-button\" " + add_multiple_choice_attribute + ">+</button>";
@@ -221,6 +225,7 @@ function saveTemplate(templateName) {
     }
 }
 
+// TODO(jonny): fix this to match new options model
 function getQuestions() {
     var dbQuestions = [];
     var questionNumber = 1;
@@ -276,7 +281,7 @@ function addRadioButtonQuestion() {
     console.log("addRadioButtonQuestion called");
     updateQuestions();
     var question = new Question("Radio Button", "", "");
-    question.options.push("");
+    question.options.push(constructOptionObject("",""));
     questions.push(question);
     displayQuestions();
     hideAddQuestionModal();
@@ -286,7 +291,7 @@ function addCheckboxQuestion() {
     console.log("addCheckboxQuestion called");
     updateQuestions();
     var question = new Question("Checkbox", "", "");
-    question.options.push("");
+    question.options.push(constructOptionObject("",""));
     questions.push(question);
     displayQuestions();
     hideAddQuestionModal();
@@ -307,7 +312,8 @@ function updateQuestions() {
 
         var multipleChoices = question.querySelectorAll("[class='multiple-choice-container'");
         for (var j = 0; j < multipleChoices.length; j++) {
-            questions[i].options[j] = multipleChoices[j].querySelector("[data-type='value']").value;
+            questions[i].options[j].option_text = multipleChoices[j].querySelectorAll("[data-type='value']")[0].value;
+            questions[i].options[j].fill_text = multipleChoices[j].querySelectorAll("[data-type='value']")[1].value;
         }
     }
 }
@@ -337,9 +343,13 @@ function deleteMultipleChoiceFieldWithWarning(el, data_id) {
 
 function addMultipleChoiceField(id) {
     var question = getQuestionById(id);
-    question.options.push("");
+    question.options.push(constructOptionObject("",""));
     updateQuestions();
     displayQuestions();
+}
+
+function constructOptionObject(option, fill) {
+    return {option_text: option, fill_text: fill};
 }
 
 function getQuestionById(id) {
