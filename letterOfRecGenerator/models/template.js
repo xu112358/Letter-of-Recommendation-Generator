@@ -14,7 +14,10 @@ var TemplateSchema = new Schema({
         },
         question: String,
         tag: String,
-        options: [String]
+        options: [{
+            option: String,
+            fill: String
+        }]
     }],
     letterheadImg: String
 });

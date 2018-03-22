@@ -13,7 +13,7 @@ class Question {
         this.tag = tag;
         // local browser
         this.id = nextQuestionIdToUse;
-        // Filled with Objects of {option_text, fill_text} (both strings) if dealing with Radio Button or Checkbox
+        // Filled with Objects of {option, fill} (both strings) if dealing with Radio Button or Checkbox
         this.options = [];
         nextQuestionIdToUse++;
     }
@@ -41,7 +41,6 @@ window.onload = function () {
                 document.getElementById(LETTER_TEXT_AREA_ID).value = data.letter;
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag);
-                    // TODO(jonny): fix this to fit new option data model
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
@@ -132,13 +131,13 @@ function getMultipleChoiceFieldsHTML(q) {
     if (q.type != "Radio Button" && q.type != "Checkbox") return "";
 
     var option_placeholder = "Enter option here...";
-    var fill_text_placeholder = "Enter text that will replace the tag...";
+    var fill_placeholder = "Enter text that will replace the tag...";
     var html = "<div class=\"multiple-choices-container\">";
     for (var i = 0; i < q.options.length; i++) {
         var data_id_attribute = "data-id=\"" + i + "\"";
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
 
-        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option_text) + getTextAreaHTML(fill_text_placeholder, q.options[i].fill_text) + "</div>";
+        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option) + getTextAreaHTML(fill_placeholder, q.options[i].fill) + "</div>";
         html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + text_area_elements + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
     }
     var add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
@@ -225,7 +224,6 @@ function saveTemplate(templateName) {
     }
 }
 
-// TODO(jonny): fix this to match new options model
 function getQuestions() {
     var dbQuestions = [];
     var questionNumber = 1;
@@ -312,8 +310,8 @@ function updateQuestions() {
 
         var multipleChoices = question.querySelectorAll("[class='multiple-choice-container'");
         for (var j = 0; j < multipleChoices.length; j++) {
-            questions[i].options[j].option_text = multipleChoices[j].querySelectorAll("[data-type='value']")[0].value;
-            questions[i].options[j].fill_text = multipleChoices[j].querySelectorAll("[data-type='value']")[1].value;
+            questions[i].options[j].option = multipleChoices[j].querySelectorAll("[data-type='value']")[0].value;
+            questions[i].options[j].fill = multipleChoices[j].querySelectorAll("[data-type='value']")[1].value;
         }
     }
 }
@@ -349,7 +347,7 @@ function addMultipleChoiceField(id) {
 }
 
 function constructOptionObject(option, fill) {
-    return {option_text: option, fill_text: fill};
+    return {option: option, fill: fill};
 }
 
 function getQuestionById(id) {
