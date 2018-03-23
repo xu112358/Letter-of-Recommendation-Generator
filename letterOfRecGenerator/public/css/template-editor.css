@@ -24,6 +24,7 @@
     height: 22px;
     width: 300px;
     text-align: center;
+    cursor: text;
 }
 
 #letterhead-container {
