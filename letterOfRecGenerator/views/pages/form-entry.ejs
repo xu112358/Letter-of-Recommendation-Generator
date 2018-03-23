@@ -19,7 +19,7 @@
                         case 'Radio Button': %>
                             <% for (var option of q.options) { %>
                                 <div class="option-container">
-                                    <input type="radio" value=<%= option.fill %> name=<%= q.number %> />
+                                    <input type="radio" value="<%= option.fill %>" name=<%= q.number %> />
                                     <label><%= option.option %></label>
                                 </div>
                             <% } %>
@@ -27,7 +27,7 @@
                         case 'Checkbox': %>
                             <% for (var option of q.options) { %>
                                 <div class="option-container">
-                                    <input type="checkbox" value=<%= option.fill %> name=<%= q.number %> />
+                                    <input type="checkbox" value="<%= option.fill %>" name=<%= q.number %> />
                                     <label class="block"><%= option.option %></label>
                                 </div>
                             <% } %>
