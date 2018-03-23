@@ -161,7 +161,7 @@ function addQuestion() {
     showAddQuestionModal();
 }
 
-function saveTemplate(templateName) {
+function saveTemplate() {
     console.log("saveTemplate called");
     updateQuestions();
 
@@ -171,7 +171,7 @@ function saveTemplate(templateName) {
     }
 
     var template = {
-        name: templateName,
+        name: document.getElementById('name-container-text-field').value,
         text: letter,
         questions: getQuestions(),
         archived: false
