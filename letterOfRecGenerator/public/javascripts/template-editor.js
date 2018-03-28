@@ -1,4 +1,5 @@
 var nextQuestionIdToUse = 0;
+var errors = [];
 var id = parseAttribute('id');
 var imgData = parseAttribute('imgData');
 
@@ -137,7 +138,7 @@ function getMultipleChoiceFieldsHTML(q) {
         var data_id_attribute = "data-id=\"" + i + "\"";
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
 
-        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option) + getTextAreaHTML(fill_placeholder, q.options[i].fill) + "</div>";
+        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option, 'option') + getTextAreaHTML(fill_placeholder, q.options[i].fill) + "</div>";
         html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + text_area_elements + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
     }
     var add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
@@ -146,7 +147,11 @@ function getMultipleChoiceFieldsHTML(q) {
     return html;
 }
 
-function getTextAreaHTML(placeholder, value) {
+function getTextAreaHTML(placeholder, value, name) {
+    if (name) {
+        return "<textarea name=\"" + name + "\" data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" + value + "</textarea>";
+    }
+
     return "<textarea data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" + value + "</textarea>";
 }
 
@@ -165,17 +170,15 @@ function saveTemplate() {
     console.log("saveTemplate called");
     updateQuestions();
 
-    if (document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID).value.length === 0) {
-        alert('Template name must be set');
+    var template = {
+        name: document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID).value,
+        text: letter,
+        questions: getQuestions()
+    };
+
+    if (!validate(template)) {
         return;
     }
-
-    var template = {
-        name: document.getElementById('name-container-text-field').value,
-        text: letter,
-        questions: getQuestions(),
-        archived: false
-    };
 
     if (imgData) {
         template.letterheadImg = imgData;
@@ -279,7 +282,7 @@ function addRadioButtonQuestion() {
     console.log("addRadioButtonQuestion called");
     updateQuestions();
     var question = new Question("Radio Button", "", "");
-    question.options.push(constructOptionObject("",""));
+    question.options.push(constructOptionObject("", ""));
     questions.push(question);
     displayQuestions();
     hideAddQuestionModal();
@@ -289,7 +292,7 @@ function addCheckboxQuestion() {
     console.log("addCheckboxQuestion called");
     updateQuestions();
     var question = new Question("Checkbox", "", "");
-    question.options.push(constructOptionObject("",""));
+    question.options.push(constructOptionObject("", ""));
     questions.push(question);
     displayQuestions();
     hideAddQuestionModal();
@@ -341,13 +344,16 @@ function deleteMultipleChoiceFieldWithWarning(el, data_id) {
 
 function addMultipleChoiceField(id) {
     var question = getQuestionById(id);
-    question.options.push(constructOptionObject("",""));
+    question.options.push(constructOptionObject("", ""));
     updateQuestions();
     displayQuestions();
 }
 
 function constructOptionObject(option, fill) {
-    return {option: option, fill: fill};
+    return {
+        option: option,
+        fill: fill
+    };
 }
 
 function getQuestionById(id) {
@@ -378,4 +384,104 @@ function findAncestor(el, cls) {
 
 function parseAttribute(attr) {
     return document.currentScript.getAttribute(attr) == '\'\'' ? null : document.currentScript.getAttribute(attr).replace(/['"]+/g, '');
+}
+
+function validate(template) {
+    clearErrors();
+    var isValid = true;
+
+    if (isNotValid(template.name)) {
+        var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
+        addError(textField, 'template name is required');
+        isValid = false;
+    }
+
+    if (isNotValid(template.text)) {
+        var textField = document.getElementById(LETTER_TEXT_AREA_ID);
+        addError(textField, 'letter text is required');
+        isValid = false;
+    }
+
+    for (var i = 0; i < template.questions.length; i++) {
+        var question = template.questions[i];
+        var query = "div[data-id='" + i + "'][class='question-outer-container']";
+        var questionHTML = document.querySelector(query);
+
+        if (isNotValid(question.question)) {
+            var textField = questionHTML.querySelector("[data-type='value']");
+            addError(textField, 'question field is required');
+            isValid = false;
+        }
+
+        if (isNotValid(question.tag)) {
+            var textField = questionHTML.querySelector("[data-type='tag']");
+            addError(textField, 'tag field is required');
+            isValid = false;
+        }
+
+        if (question.type === 'Radio Button' || question.type === 'Checkbox') {
+            for (var j = 0; j < question.options.length; j++) {
+                var option = question.options[j];
+
+                if (isNotValid(option.option)) {
+                    var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
+                    var optionHTML = questionHTML.querySelector(query);
+                    var textField = optionHTML.querySelector("[name='option']");
+                    addError(textField, 'option is required');
+                    isValid = false;
+                }
+
+                if (isNotValid(option.option)) {
+                    option.fill = option.option;
+                }
+            }
+        }
+    }
+
+    return isValid;
+}
+
+function clearErrors() {
+    for (var i = 0; i < errors.length; i++) {
+        errors[i].field.classList.remove('error');
+        errors[i].error.remove();
+    }
+}
+
+function isNotValid(field) {
+    return field === '' || !field;
+}
+
+function addError(field, message) {
+    field.classList.add('error');
+
+    var arrow = document.createElement("div");
+    arrow.classList.add('arrow-box');
+    arrow.innerHTML = getErrorMessage(message);
+    arrow.style.position = 'absolute';
+    document.body.appendChild(arrow);
+
+    var bounds = field.getBoundingClientRect();
+    var coordinates = getCoordinates(field, arrow);
+    arrow.style.left = coordinates.x + 'px';
+    arrow.style.top = coordinates.y + 'px';
+
+    errors.push({
+        field: field,
+        error: arrow
+    });
+}
+
+function getErrorMessage(message) {
+    return '\<p class="arrow-text"\>Error: ' + message + '.\</p\>'
+}
+
+function getCoordinates(field, arrow) {
+    var bounds = field.getBoundingClientRect();
+    var coordinates = {
+        x: bounds.right + window.scrollX + 60,
+        y: bounds.top + ((bounds.bottom - bounds.top) / 2) + window.pageYOffset - (arrow.offsetHeight / 2)
+    };
+
+    return coordinates;
 }
