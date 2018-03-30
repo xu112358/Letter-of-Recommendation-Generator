@@ -13,14 +13,11 @@
     cursor: pointer;
 }
 
-#letter-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    border: thick solid black;
-    align-items: center;
-    margin: 20px;
-
+.letterhead-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
 }
 
 .letter-container {
@@ -29,8 +26,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 15px 100px 15px 100px;
-    padding: 0 8px;
+    margin: 15px auto;
+    width: 80%;
 }
 
 

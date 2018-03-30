@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
         } else {
             res.render('pages/letter-preview', {
                 title: 'Letter Preview for ' + form.email,
-                id: req.query.id
+                id: req.query.id,
             });
         }
     });

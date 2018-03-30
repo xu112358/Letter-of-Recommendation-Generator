@@ -10,11 +10,18 @@ router.get('/:hash', function (req, res, next) {
         if (err) {
             res.send("Form not found.");
         } else {
-            res.render('pages/form-entry', {
-                title: 'Form: ' + form.getTemplate().getName() + ', created ' + form.getSent() + '.',
-                questions: form.getTemplate().getQuestions(),
-                form: form,
-            });
+            if (!form.meta.submitted) {
+                res.render('pages/form-entry', {
+                    title: 'Form: ' + form.getTemplate().getName() + ', created ' + form.getSent() + '.',
+                    questions: form.getTemplate().getQuestions(),
+                    form: form,
+                });
+            }
+            else {
+                res.render('pages/form-completed', {
+                    title: 'FORM COMPLETED',
+                });
+            }
         }
     });
 });

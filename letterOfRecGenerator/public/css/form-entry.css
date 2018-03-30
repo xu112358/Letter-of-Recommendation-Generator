@@ -39,13 +39,13 @@ input[type="textarea"] {
 }
 
 .option-container {
-    display: block;
+    align-items: center;
+    display: flex;
     margin-left: 4px;
 }
 
-input[type="radio-button"], input[type="checkbox"] {
-    margin-top: -1px;
-    vertical-align: middle;
+label {
+    padding-left: 4px;
 }
 
 .input-submit {
@@ -54,9 +54,11 @@ input[type="radio-button"], input[type="checkbox"] {
     display: block;
     font-family: "Montserrat";
     font-size: 20px;
+    height: 50px;
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
+    width: 200px;
 }
 
 /* The Modal (background) */
@@ -92,10 +94,12 @@ input[type="radio-button"], input[type="checkbox"] {
 /* The Close Button */
 .close {
     color: #aaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
     line-height: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .close:hover,
@@ -107,4 +111,5 @@ input[type="radio-button"], input[type="checkbox"] {
 
 .close-container {
     height: 20px;
+    position: relative;
 }
