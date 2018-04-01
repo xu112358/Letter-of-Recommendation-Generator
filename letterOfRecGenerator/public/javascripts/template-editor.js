@@ -60,11 +60,15 @@ window.onload = function () {
 function loadDefaultQuestions() {
     var default1 = new Question("Text", "What is your name?", "<!NAME>");
     questions.push(default1);
-    var default2 = new Question("Radio Button", "What is your preferred personal pronoun?", "<!GENDER>");
+    var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
-    var default2 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!GENDER>");
-    default2.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default2);
+    var default3 = new Question("Radio Button", "What is your preferred personal pronoun (object)?", "<!OBJ_PRONOUN>");
+    default3.options = [constructOptionObject("Him", "him"), constructOptionObject("Her", "her"), constructOptionObject("Them", "them")];
+    questions.push(default3);
+    var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
+    default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
+    questions.push(default4);
 }
 
 function setUpEventHandlers() {
