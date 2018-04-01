@@ -19,7 +19,7 @@
         </div>
 
         <h2 class="section-header">Upload Letterhead</h2>
-        <div id="letterhead-container">
+        <div class="upload-preview-container">
             <% if(locals.letterheadImage){ %>
                 <img id="letterhead-preview" src="<%= letterheadImage %>" alt=""/>
             <% } else{ %>
@@ -27,6 +27,15 @@
             <% } %>
             <form id="letterhead-upload">
                 <input type="file" name="file" id="letterhead-upload-file" />
+                <input type="submit" name="Submit" />
+            </form>
+        </div>
+
+        <h2 class="section-header">Upload Footer</h2>
+        <div class="upload-preview-container">
+            <img id="footer-preview" src="#" alt=""/>
+            <form id="footer-upload">
+                <input type="file" name="file" id="footer-upload-file" />
                 <input type="submit" name="Submit" />
             </form>
         </div>

@@ -27,7 +27,7 @@
     cursor: text;
 }
 
-#letterhead-container {
+.upload-preview-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -40,6 +40,14 @@
 }
 
 #letterhead-upload {
+    flex-basis: auto;
+}
+
+#footer-preview {
+    flex-basis: auto;
+}
+
+#footer-upload {
     flex-basis: auto;
 }
 

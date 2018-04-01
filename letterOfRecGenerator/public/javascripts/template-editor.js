@@ -88,6 +88,23 @@ function setUpEventHandlers() {
 
         return false;
     });
+
+    // upload footer
+    $('#footer-upload').submit(function (evt) {
+        evt.preventDefault();
+        var files = $('#footer-upload-file')[0].files;
+        if (files && files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#footer-preview').attr('src', e.target.result);
+                // TODO(freyjona): assign to a global variable similar to imgData
+            };
+
+            reader.readAsDataURL(files[0]);
+        }
+        
+        return false;
+    });
 }
 
 window.onclick = function (event) {
