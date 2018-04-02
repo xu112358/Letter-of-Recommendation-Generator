@@ -5,7 +5,8 @@ var errorScrollCoordinates = {
     y: 0
 };
 var id = parseAttribute('id');
-var imgData = parseAttribute('imgData');
+var letterheadImgData = parseAttribute('letterheadImgData');
+var footerImgData = parseAttribute('footerImgData');
 
 /**
  * Prototype class for Questions
@@ -66,9 +67,15 @@ window.onload = function () {
 function loadDefaultQuestions() {
     var default1 = new Question("Text", "What is your name?", "<!NAME>");
     questions.push(default1);
-    var default2 = new Question("Radio Button", "What is your gender?", "<!GENDER>");
-    default2.options = [constructOptionObject("Male", ""), constructOptionObject("Female", ""), constructOptionObject("Prefer not to answer", "")];
+    var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
+    default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
     questions.push(default2);
+    var default3 = new Question("Radio Button", "What is your preferred personal pronoun (object)?", "<!OBJ_PRONOUN>");
+    default3.options = [constructOptionObject("Him", "him"), constructOptionObject("Her", "her"), constructOptionObject("Them", "them")];
+    questions.push(default3);
+    var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
+    default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
+    questions.push(default4);
 }
 
 function setUpEventHandlers() {
@@ -80,12 +87,29 @@ function setUpEventHandlers() {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#letterhead-preview').attr('src', e.target.result);
-                imgData = e.target.result;
+                letterheadImgData = e.target.result;
             };
 
             reader.readAsDataURL(files[0]);
         }
 
+        return false;
+    });
+
+    // upload footer
+    $('#footer-upload').submit(function (evt) {
+        evt.preventDefault();
+        var files = $('#footer-upload-file')[0].files;
+        if (files && files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#footer-preview').attr('src', e.target.result);
+                footerImgData = e.target.result;
+            };
+
+            reader.readAsDataURL(files[0]);
+        }
+        
         return false;
     });
 }
@@ -186,8 +210,12 @@ function saveTemplate() {
         return;
     }
 
-    if (imgData) {
-        template.letterheadImg = imgData;
+    if (letterheadImgData) {
+        template.letterheadImg = letterheadImgData;
+    }
+
+    if (footerImgData) {
+        template.footerImg = footerImgData;
     }
 
     if (id) {
@@ -389,7 +417,7 @@ function findAncestor(el, cls) {
 }
 
 function parseAttribute(attr) {
-    return document.currentScript.getAttribute(attr) == '\'\'' ? null : document.currentScript.getAttribute(attr).replace(/['"]+/g, '');
+    return document.currentScript.getAttribute(attr) == '' ? null : document.currentScript.getAttribute(attr);
 }
 
 function validate(template) {

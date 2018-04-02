@@ -52,6 +52,7 @@ UserSchema.methods.updateTemplate = function (id, template, cb) {
     updatedTemplate.text = template.text;
     updatedTemplate.questions = template.questions;
     updatedTemplate.letterheadImg = template.letterheadImg;
+    updatedTemplate.footerImg = template.footerImg;
 
     User.findOneAndUpdate({
         "id": user.id,

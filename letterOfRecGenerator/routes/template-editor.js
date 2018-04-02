@@ -5,29 +5,32 @@ var router = express.Router();
 
 router.get('/', function (req, res, next) {
     var letterheadImg;
+    var footerImg;
 
     if (req.query.id) {
         letterheadImg = req.user.getTemplate(req.query.id).letterheadImg;
+        footerImg = req.user.getTemplate(req.query.id).footerImg;
 
         res.render('pages/template-editor', {
             title: 'CREATE A NEW TEMPLATE',
             templateName: req.query.title,
             id: req.query.id,
-            letterheadImage: letterheadImg
+            letterheadImage: letterheadImg,
+            footerImage: footerImg
         });
     } else {
         res.render('pages/template-editor', {
             title: 'CREATE A NEW TEMPLATE',
             templateName: req.query.title,
             id: null,
-            letterheadImage: null
+            letterheadImage: null,
+            footerImage: null
         });
     }
 });
 
 router.get('/edit', function (req, res, next) {
     if (req.query.id) {
-        var letterheadImg = req.user.getTemplate(req.query.id).letterheadImg;
         var templateName = req.user.getTemplate(req.query.id).getName();
 
         res.json({

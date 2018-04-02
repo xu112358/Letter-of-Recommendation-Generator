@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="/stylesheets/style.css" />
         <link rel="stylesheet" href="/css/template-editor.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" src="/javascripts/template-editor.js" id="'<%= id %>'" imgData="'<%= letterheadImage %>'"></script>
+        <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>" letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>"></script>
     </head>
     <body>
         <header>
@@ -19,7 +19,7 @@
         </div>
 
         <h2 class="section-header">Upload Letterhead</h2>
-        <div id="letterhead-container">
+        <div class="upload-preview-container">
             <% if(locals.letterheadImage){ %>
                 <img id="letterhead-preview" src="<%= letterheadImage %>" alt=""/>
             <% } else{ %>
@@ -27,6 +27,19 @@
             <% } %>
             <form id="letterhead-upload">
                 <input type="file" name="file" id="letterhead-upload-file" />
+                <input type="submit" name="Submit" />
+            </form>
+        </div>
+
+        <h2 class="section-header">Upload Footer</h2>
+        <div class="upload-preview-container">
+            <% if(locals.footerImage){ %>
+                <img id="footer-preview" src="<%= footerImage %>" alt=""/>
+            <% } else{ %>
+                <img id="footer-preview" src="#" alt=""/>
+            <% } %>
+            <form id="footer-upload">
+                <input type="file" name="file" id="footer-upload-file" />
                 <input type="submit" name="Submit" />
             </form>
         </div>
