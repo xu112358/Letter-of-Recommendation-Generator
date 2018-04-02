@@ -1,5 +1,9 @@
 var nextQuestionIdToUse = 0;
 var errors = [];
+var errorScrollCoordinates = {
+    x: 0,
+    y: 0
+};
 var id = parseAttribute('id');
 var imgData = parseAttribute('imgData');
 
@@ -39,7 +43,7 @@ window.onload = function () {
             data: {id},
             type: 'GET',
             success: function (data) {
-                document.getElementById(LETTER_TEXT_AREA_ID).value = data.letter;
+                document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag);
                     savedQuestion.options = question.options;
@@ -47,6 +51,7 @@ window.onload = function () {
                 });
                 console.log('success');
                 displayQuestions();
+                emphasizeTags();
             },
             error: function () {
                 console.log('error');
@@ -124,7 +129,7 @@ function getQuestionHTML(q) {
             break;
     }
 
-    return "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here... (optional)\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
+    return "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here...\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -132,7 +137,7 @@ function getMultipleChoiceFieldsHTML(q) {
     if (q.type != "Radio Button" && q.type != "Checkbox") return "";
 
     var option_placeholder = "Enter option here...";
-    var fill_placeholder = "Enter text that will replace the tag...";
+    var fill_placeholder = "Enter text that will replace the tag... (optional)";
     var html = "<div class=\"multiple-choices-container\">";
     for (var i = 0; i < q.options.length; i++) {
         var data_id_attribute = "data-id=\"" + i + "\"";
@@ -177,6 +182,7 @@ function saveTemplate() {
     };
 
     if (!validate(template)) {
+        window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
         return;
     }
 
@@ -300,7 +306,7 @@ function addCheckboxQuestion() {
 
 function updateQuestions() {
     // update the letter
-    letter = document.getElementById(LETTER_TEXT_AREA_ID).value;
+    letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
@@ -400,6 +406,10 @@ function validate(template) {
         var textField = document.getElementById(LETTER_TEXT_AREA_ID);
         addError(textField, 'letter text is required');
         isValid = false;
+    } else if (!isTagsExist(template.text, template.questions)) {
+        var textField = document.getElementById(LETTER_TEXT_AREA_ID);
+        addError(textField, 'letter contains unknown tags');
+        isValid = false;
     }
 
     for (var i = 0; i < template.questions.length; i++) {
@@ -416,6 +426,10 @@ function validate(template) {
         if (isNotValid(question.tag)) {
             var textField = questionHTML.querySelector("[data-type='tag']");
             addError(textField, 'tag field is required');
+            isValid = false;
+        } else if (isTagNotValid(question.tag)) {
+            var textField = questionHTML.querySelector("[data-type='tag']");
+            addError(textField, 'tag field does not match expected pattern');
             isValid = false;
         }
 
@@ -446,6 +460,9 @@ function clearErrors() {
         errors[i].field.classList.remove('error');
         errors[i].error.remove();
     }
+
+    errorScrollCoordinates.x = 0;
+    errorScrollCoordinates.y = 0;
 }
 
 function isNotValid(field) {
@@ -480,8 +497,55 @@ function getCoordinates(field, arrow) {
     var bounds = field.getBoundingClientRect();
     var coordinates = {
         x: bounds.right + window.scrollX + 60,
-        y: bounds.top + ((bounds.bottom - bounds.top) / 2) + window.pageYOffset - (arrow.offsetHeight / 2)
+        y: bounds.top + ((bounds.bottom - bounds.top) / 2) + window.scrollY - (arrow.offsetHeight / 2)
     };
 
+    if (errorScrollCoordinates.x == 0 && errorScrollCoordinates.y == 0) {
+        errorScrollCoordinates.x = window.scrollX;
+        errorScrollCoordinates.y = bounds.top + window.scrollY - 50;
+    }
+
     return coordinates;
+}
+
+function isTagNotValid(tag) {
+    return !/\<\![a-z0-9_]+\>/i.test(tag);
+}
+
+function deemphasizeTags() {
+    var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
+    document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTML.replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '');
+}
+
+function emphasizeTags() {
+    var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
+    var letterHTMLWithTagEmphasis = letterHTML.replace(/&lt;\![a-z0-9_]+&gt;/gi, function (match) {
+        return '<span class="tag">' + match + '</span>';
+    });
+    letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
+    document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis;
+}
+
+function isTagsExist(letter, questions) {
+    var tags = letter.match(/\<\![a-z0-9_]+\>/gi);
+
+    for (var i = 0; i < tags.length; i++) {
+        var question = questions.find(function (question) {
+            return question.tag === tags[i]
+        });
+
+        if (!question) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function encodeLetterHTML(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
+}
+
+function decodeLetterHTML(text) {
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n');
 }
