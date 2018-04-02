@@ -1,6 +1,7 @@
 var nextQuestionIdToUse = 0;
 var id = parseAttribute('id');
-var imgData = parseAttribute('imgData');
+var letterheadImgData = parseAttribute('letterheadImgData');
+var footerImgData = parseAttribute('footerImgData');
 
 /**
  * Prototype class for Questions
@@ -80,7 +81,7 @@ function setUpEventHandlers() {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#letterhead-preview').attr('src', e.target.result);
-                imgData = e.target.result;
+                letterheadImgData = e.target.result;
             };
 
             reader.readAsDataURL(files[0]);
@@ -97,7 +98,7 @@ function setUpEventHandlers() {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#footer-preview').attr('src', e.target.result);
-                // TODO(freyjona): assign to a global variable similar to imgData
+                footerImgData = e.target.result;
             };
 
             reader.readAsDataURL(files[0]);
@@ -200,8 +201,12 @@ function saveTemplate() {
         archived: false
     };
 
-    if (imgData) {
-        template.letterheadImg = imgData;
+    if (letterheadImgData) {
+        template.letterheadImg = letterheadImgData;
+    }
+
+    if (footerImgData) {
+        template.footerImg = footerImgData;
     }
 
     if (id) {
@@ -400,5 +405,5 @@ function findAncestor(el, cls) {
 }
 
 function parseAttribute(attr) {
-    return document.currentScript.getAttribute(attr) == '\'\'' ? null : document.currentScript.getAttribute(attr).replace(/['"]+/g, '');
+    return document.currentScript.getAttribute(attr) == '' ? null : document.currentScript.getAttribute(attr);
 }

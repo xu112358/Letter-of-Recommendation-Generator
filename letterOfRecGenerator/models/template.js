@@ -19,7 +19,8 @@ var TemplateSchema = new Schema({
             fill: String
         }]
     }],
-    letterheadImg: String
+    letterheadImg: String,
+    footerImg: String
 });
 
 TemplateSchema.methods.getId = function () {
@@ -37,12 +38,6 @@ TemplateSchema.methods.getText = function () {
 TemplateSchema.methods.getQuestions = function () {
     return this.questions;
 };
-
-TemplateSchema.methods.getLetterheadImage = function () {
-    var image = new Image();
-    image.src = this.letterheadImg;
-    return image;
-}
 
 var Template = db.model('Template', TemplateSchema);
 
