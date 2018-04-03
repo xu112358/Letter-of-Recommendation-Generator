@@ -84,7 +84,10 @@ function createLetterPreview(form) {
     var letter = document.createElement('div');
     letter.id = '0';
     letter.className = LETTER_CONTAINER_ID;
-    letter.innerHTML = parseLetter(form);
+    var innerContainer = document.createElement('div');
+    innerContainer.id = 'print';
+    innerContainer.innerHTML = parseLetter(form);
+    letter.appendChild(innerContainer);
     letter.onclick = function () {
         showEditModal(this.id);
     };

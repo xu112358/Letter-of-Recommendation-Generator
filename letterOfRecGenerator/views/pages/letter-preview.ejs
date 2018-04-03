@@ -6,6 +6,8 @@
     <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
+    <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
+    <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"> -->
@@ -42,5 +44,17 @@
 
     </div>
 </div>
-<button class="convert-pdf">Convert to PDF</button>
+<button class="convert-pdf" id = "convertPDF">Convert to PDF</button>
+<script type = 'text/javascript'>
+    $('#convertPDF').click(function() {
+        var element = document.getElementById('print');
+        html2pdf(element, {
+          margin:       1,
+          filename:     'letterOfRec.pdf',
+          image:        { type: 'png', quality: 0.98 },
+          html2canvas:  { dpi: 300, letterRendering: true },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        });
+    });
+</script>
 </html>
