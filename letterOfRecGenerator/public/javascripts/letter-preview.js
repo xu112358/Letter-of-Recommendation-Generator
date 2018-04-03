@@ -93,6 +93,13 @@ function createLetterPreview(form) {
     };
     letter.style.cursor = 'pointer';
     var outerContainer = document.getElementById(OUTER_CONTAINER);
+    if (form.template.letterheadImg != null) {
+        var letterhead = document.createElement('img');
+        letterhead.src = form.template.letterheadImg;
+        letterhead.alt = "";
+        letterhead.className = "letterhead-img";
+        outerContainer.appendChild(letterhead)
+    }
     outerContainer.appendChild(letter);
 
     return letter.innerHTML;
@@ -106,7 +113,7 @@ function parseLetter(form) {
         var response = responses.find(function (item) {
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
         });
-
+        
         return response.response;
     });
 }

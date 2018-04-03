@@ -136,7 +136,10 @@ table tbody tr:last-child {
 }
 
 img.icon {
-    cursor: pointer;
     height: 30px;
     width: 30px;
+}
+
+img.clickable {
+    cursor: pointer;
 }

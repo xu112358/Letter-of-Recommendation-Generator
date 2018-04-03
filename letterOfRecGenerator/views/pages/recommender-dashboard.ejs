@@ -54,10 +54,10 @@
             <% } %>
         </td>
         <td class="center">
-            <img class="icon" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon clickable" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
                 id: form._id
             }) %>)"/>
-            <img class="icon" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
+            <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
     </tr>
     <% } %>
