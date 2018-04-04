@@ -429,7 +429,7 @@ function validate(template) {
         addError(textField, 0, 'template name is required');
         isValid = false;
     }
-
+    
     if (isNotValid(template.text)) {
         var textField = document.getElementById(LETTER_TEXT_AREA_ID);
         addError(textField, 0, 'letter text is required');
@@ -500,7 +500,7 @@ function clearErrors() {
 }
 
 function isNotValid(field) {
-    return field === '' || !field;
+    return !field || field.trim() === '';
 }
 
 function addError(field, index, message) {
