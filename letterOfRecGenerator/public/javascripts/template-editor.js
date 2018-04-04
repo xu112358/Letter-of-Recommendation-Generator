@@ -109,7 +109,7 @@ function setUpEventHandlers() {
 
             reader.readAsDataURL(files[0]);
         }
-        
+
         return false;
     });
 }
@@ -153,7 +153,7 @@ function getQuestionHTML(q) {
             break;
     }
 
-    return "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here...\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
+    return "<h2>" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here...\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div></div>";
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -345,7 +345,7 @@ function updateQuestions() {
         questions[i].value = question.querySelector("[data-type='value']").value;
         questions[i].tag = question.querySelector("[data-type='tag']").value;
 
-        var multipleChoices = question.querySelectorAll("[class='multiple-choice-container'");
+        var multipleChoices = question.querySelectorAll("[class='multiple-choice-container']");
         for (var j = 0; j < multipleChoices.length; j++) {
             questions[i].options[j].option = multipleChoices[j].querySelectorAll("[data-type='value']")[0].value;
             questions[i].options[j].fill = multipleChoices[j].querySelectorAll("[data-type='value']")[1].value;
@@ -426,17 +426,17 @@ function validate(template) {
 
     if (isNotValid(template.name)) {
         var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
-        addError(textField, 'template name is required');
+        addError(textField, 0, 'template name is required');
         isValid = false;
     }
 
     if (isNotValid(template.text)) {
         var textField = document.getElementById(LETTER_TEXT_AREA_ID);
-        addError(textField, 'letter text is required');
+        addError(textField, 0, 'letter text is required');
         isValid = false;
     } else if (!isTagsExist(template.text, template.questions)) {
         var textField = document.getElementById(LETTER_TEXT_AREA_ID);
-        addError(textField, 'letter contains unknown tags');
+        addError(textField, 0, 'letter contains unknown tags');
         isValid = false;
     }
 
@@ -444,20 +444,21 @@ function validate(template) {
         var question = template.questions[i];
         var query = "div[data-id='" + i + "'][class='question-outer-container']";
         var questionHTML = document.querySelector(query);
+        var totalFields = question.options.length != 0 ? 4 + 2 * question.options.length : 3;
 
         if (isNotValid(question.question)) {
             var textField = questionHTML.querySelector("[data-type='value']");
-            addError(textField, 'question field is required');
+            addError(textField, 0, 'question field is required');
             isValid = false;
         }
 
         if (isNotValid(question.tag)) {
             var textField = questionHTML.querySelector("[data-type='tag']");
-            addError(textField, 'tag field is required');
+            addError(textField, totalFields - 1, 'tag field is required');
             isValid = false;
         } else if (isTagNotValid(question.tag)) {
             var textField = questionHTML.querySelector("[data-type='tag']");
-            addError(textField, 'tag field does not match expected pattern');
+            addError(textField, totalFields - 1, 'tag field does not match expected pattern');
             isValid = false;
         }
 
@@ -469,7 +470,7 @@ function validate(template) {
                     var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
                     var optionHTML = questionHTML.querySelector(query);
                     var textField = optionHTML.querySelector("[name='option']");
-                    addError(textField, 'option is required');
+                    addError(textField, 1 + j * 2, 'option is required');
                     isValid = false;
                 }
 
@@ -486,7 +487,12 @@ function validate(template) {
 function clearErrors() {
     for (var i = 0; i < errors.length; i++) {
         errors[i].field.classList.remove('error');
-        errors[i].error.remove();
+        if (errors[i].error) {
+            errors[i].error.remove();
+        }
+        if (errors[i].fill) {
+            errors[i].fill.remove();
+        }
     }
 
     errorScrollCoordinates.x = 0;
@@ -497,43 +503,146 @@ function isNotValid(field) {
     return field === '' || !field;
 }
 
-function addError(field, message) {
+function addError(field, index, message) {
     field.classList.add('error');
-
-    var arrow = document.createElement("div");
-    arrow.classList.add('arrow-box');
-    arrow.innerHTML = getErrorMessage(message);
-    arrow.style.position = 'absolute';
-    document.body.appendChild(arrow);
-
-    var bounds = field.getBoundingClientRect();
-    var coordinates = getCoordinates(field, arrow);
-    arrow.style.left = coordinates.x + 'px';
-    arrow.style.top = coordinates.y + 'px';
+    var container = getErrorContainer(field);
+    var header = getSectionHeader(container);
+    var errorElements = addErrorToContainer(container, index, message);
 
     errors.push({
         field: field,
-        error: arrow
+        error: errorElements.errorList,
+        fill: errorElements.fill
     });
+
+    setScrollCoordinates(header);
+}
+
+function getErrorContainer(field) {
+    var parentContainer = field.parentElement;
+
+    while (parentContainer) {
+        if (parentContainer.classList.contains('error-container')) {
+            return parentContainer;
+        }
+
+        parentContainer = parentContainer.parentElement;
+    }
+
+    return parentContainer;
+}
+
+function getSectionHeader(container) {
+    return container.previousElementSibling.classList.contains('section-header') ? container.previousElementSibling : null;
+}
+
+function setScrollCoordinates(header) {
+    if (errorScrollCoordinates.x != 0 || errorScrollCoordinates.y != 0) {
+        return;
+    }
+
+    var rect = header.getBoundingClientRect();
+    errorScrollCoordinates.x = rect.left + window.scrollX;
+    errorScrollCoordinates.y = rect.top + window.scrollY;
+}
+
+function addErrorToContainer(container, index, message) {
+    if (!container.lastChild.classList || !container.lastChild.classList.contains('error-column-container')) {
+        addErrorListToErrorContainer(container);
+    }
+
+    var errorList = container.lastChild;
+    var fill = container.firstChild;
+    var error = getErrorHTML(message);
+    errorList.children[index].appendChild(error);
+
+    return {
+        errorList: errorList,
+        fill: fill
+    };
+}
+
+function addErrorListToErrorContainer(container) {
+    var errorList = document.createElement("div");
+    errorList.classList.add('error-column-container');
+    errorList.style.width = '15vw';
+
+    var innerContainer = getInnerContainer(container);
+
+    for (var i = 0; i < innerContainer.children.length; i++) {
+        var child = innerContainer.children[i];
+
+        if (child.classList && child.classList.contains('multiple-choices-container')) {
+            for (var j = 0; j < child.children.length; j++) {
+                var multipleChoiceContainer = child.children[j];
+
+                if (multipleChoiceContainer.classList && multipleChoiceContainer.classList.contains('multiple-choice-container')) {
+                    errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.firstChild)));
+                    errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.lastChild)));
+                } else {
+                    var fill = getFillHTML(getAbsoluteHeight(multipleChoiceContainer));
+                    errorList.appendChild(fill);
+                }
+            }
+        } else {
+            var fill = getFillHTML(getAbsoluteHeight(child));
+            errorList.appendChild(fill);
+        }
+    }
+
+    container.appendChild(errorList);
+
+    var fill = document.createElement("div");
+    fill.classList.add('fill');
+    fill.style.width = '15vw';
+    container.insertBefore(fill, container.firstChild);
+}
+
+function getInnerContainer(container) {
+    for (var i = 0; i < container.children.length; i++) {
+        var child = container.children[i];
+
+        if (!child.classList) {
+            continue;
+        }
+
+        if (child.id === 'letter-container' || child.id === 'name-container') {
+            return child;
+        }
+
+        if (child.classList.contains('question-outer-container')) {
+            return child.firstChild;
+        }
+    }
+
+    return null;
+}
+
+function getAbsoluteHeight(element) {
+    var style = window.getComputedStyle(element);
+    var margin = parseFloat(style['marginTop']) + parseFloat(style['marginBottom']);
+
+    return Math.ceil(element.offsetHeight + margin);
+}
+
+function getErrorHTML(message) {
+    var error = document.createElement("div");
+    error.classList.add('arrow-box');
+    error.innerHTML = getErrorMessage(message);
+
+    return error;
+}
+
+function getFillHTML(height) {
+    var fill = document.createElement("div");
+    fill.style.height = height + 'px';
+    fill.classList.add('error-list-item');
+
+    return fill;
 }
 
 function getErrorMessage(message) {
     return '\<p class="arrow-text"\>Error: ' + message + '.\</p\>'
-}
-
-function getCoordinates(field, arrow) {
-    var bounds = field.getBoundingClientRect();
-    var coordinates = {
-        x: bounds.right + window.scrollX + 60,
-        y: bounds.top + ((bounds.bottom - bounds.top) / 2) + window.scrollY - (arrow.offsetHeight / 2)
-    };
-
-    if (errorScrollCoordinates.x == 0 && errorScrollCoordinates.y == 0) {
-        errorScrollCoordinates.x = window.scrollX;
-        errorScrollCoordinates.y = bounds.top + window.scrollY - 50;
-    }
-
-    return coordinates;
 }
 
 function isTagNotValid(tag) {
@@ -556,6 +665,10 @@ function emphasizeTags() {
 
 function isTagsExist(letter, questions) {
     var tags = letter.match(/\<\![a-z0-9_]+\>/gi);
+
+    if (!tags) {
+        return true;
+    }
 
     for (var i = 0; i < tags.length; i++) {
         var question = questions.find(function (question) {
