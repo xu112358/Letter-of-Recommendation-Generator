@@ -101,10 +101,11 @@ function parseLetter(form) {
 
     return letter.replace(/(?:\r\n|\r|\n)/g, '<br />').replace(tagRegex, function (match) {
         var response = responses.find(function (item) {
+            console.log(item.tag.localeCompare(match, {sensitivity: 'base'}) == 0);
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
         });
 
-        return response.response;
+        return response ? response.response : '';
     });
 }
 
