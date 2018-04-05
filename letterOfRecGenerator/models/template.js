@@ -16,7 +16,8 @@ var TemplateSchema = new Schema({
         tag: String,
         options: [{
             option: String,
-            fill: String
+            fill: String,
+            tag: String
         }]
     }],
     letterheadImg: String,

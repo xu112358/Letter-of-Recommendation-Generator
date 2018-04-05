@@ -69,7 +69,7 @@
         function submitForm(id) {
             var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
                 if (obj[item.name]) {
-                    if (typeof(obj[item.name] != Array)) {
+                    if (!Array.isArray(obj[item.name])) {
                         var arr = [obj[item.name], item.value];
                         obj[item.name] = arr;
                     } else {
@@ -78,6 +78,7 @@
                 } else {
                     obj[item.name] = item.value;
                 }
+
                 return obj;
             }, {});
 
