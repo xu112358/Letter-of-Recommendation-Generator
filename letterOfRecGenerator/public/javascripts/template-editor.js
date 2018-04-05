@@ -153,7 +153,7 @@ function getQuestionHTML(q) {
             break;
     }
 
-    return "<h2>" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here...\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div></div>";
+    return "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here...\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div></div>";
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -533,7 +533,11 @@ function getErrorContainer(field) {
 }
 
 function getSectionHeader(container) {
-    return container.previousElementSibling.classList.contains('section-header') ? container.previousElementSibling : null;
+    if (container.previousElementSibling.classList.contains('section-header') || container.previousElementSibling.classList.contains('question-header')) {
+        return container.previousElementSibling;
+    }
+
+    return null;
 }
 
 function setScrollCoordinates(header) {

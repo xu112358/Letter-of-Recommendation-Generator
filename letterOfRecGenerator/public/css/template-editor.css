@@ -140,6 +140,7 @@
 .question-container {
     flex: 1;
     width: 700px;
+    max-width: 700px;
     height: 100%;
     background-color: white;
     border: 1px solid rgb(80, 80, 80);
@@ -346,7 +347,7 @@
 
 .fill {
     align-self: start;
-    max-width: 15%;
+    padding-right: 17px;
 }
 
 .error {
@@ -357,6 +358,9 @@
 }
 
 .tag {
-    color: blueviolet;
+    color: white;
+    background-color: fuchsia;
     font-weight: bolder;
+    border-radius: 0.25em;
+    box-shadow: 1.5px 1.5px 2px #b9b9b9;
 }
