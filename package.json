@@ -1,5 +1,5 @@
 {
     "scripts": {
-      "postinstall": "cd letterOfRecGenerator && npm install"
+      "postinstall": "cd letterOfRecGenerator && npm install --prefix letterOfRecGenerator"
     }
 }
