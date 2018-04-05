@@ -14,7 +14,8 @@ class Question {
         this.tag = tag;
         // local browser
         this.id = nextQuestionIdToUse;
-        // Filled with Objects of {option, fill} (both strings) if dealing with Radio Button or Checkbox
+        // Filled with Objects of {option, fill, tag} (all strings) if dealing with Radio Button or Checkbox
+        // tag is always empty string for radio button options
         this.options = [];
         nextQuestionIdToUse++;
     }
@@ -147,7 +148,12 @@ function getQuestionHTML(q) {
             break;
     }
 
-    return "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here... (optional)\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
+    var html = "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>";
+    if (q.type !== "Checkbox") {
+        html += getTagTextInputHTML(q.tag);
+    }
+    html += "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
+    return html;
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -161,7 +167,12 @@ function getMultipleChoiceFieldsHTML(q) {
         var data_id_attribute = "data-id=\"" + i + "\"";
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
 
-        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option) + getTextAreaHTML(fill_placeholder, q.options[i].fill) + "</div>";
+        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option) + getTextAreaHTML(fill_placeholder, q.options[i].fill);
+        if (q.type === "Checkbox") {
+            //text_area_elements += getTextAreaHTML()
+            text_area_elements += getTagTextInputHTML(q.options[i].tag);
+        }
+        text_area_elements += "</div>";
         html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + text_area_elements + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
     }
     var add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
@@ -172,6 +183,10 @@ function getMultipleChoiceFieldsHTML(q) {
 
 function getTextAreaHTML(placeholder, value) {
     return "<textarea data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" + value + "</textarea>";
+}
+
+function getTagTextInputHTML(tag_value) {
+    return "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here... \" value=\"" + tag_value + "\">";
 }
 
 // used for allowing text areas to grow in height (trick with onkeyup)
@@ -329,17 +344,27 @@ function updateQuestions() {
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
+        var question = questions[i];
+
         // grab the question element
-        var query = "div[data-id='" + questions[i].id + "'][class='question-outer-container']";
-        var question = document.querySelector(query);
+        var query = "div[data-id='" + question.id + "'][class='question-outer-container']";
+        var questionEl = document.querySelector(query);
+        
+        question.value = questionEl.querySelector("[data-type='value']").value;
+        // Checkbox questions do not have a general tag (as there are tags associated with each option instead)
+        if (question.type !== "Checkbox") {
+            question.tag = questionEl.querySelector("[data-type='tag']").value;
+        }
 
-        questions[i].value = question.querySelector("[data-type='value']").value;
-        questions[i].tag = question.querySelector("[data-type='tag']").value;
-
-        var multipleChoices = question.querySelectorAll("[class='multiple-choice-container'");
+        var multipleChoices = questionEl.querySelectorAll("[class='multiple-choice-container'");
         for (var j = 0; j < multipleChoices.length; j++) {
-            questions[i].options[j].option = multipleChoices[j].querySelectorAll("[data-type='value']")[0].value;
-            questions[i].options[j].fill = multipleChoices[j].querySelectorAll("[data-type='value']")[1].value;
+            var mc = multipleChoices[j];
+
+            question.options[j].option = mc.querySelectorAll("[data-type='value']")[0].value;
+            question.options[j].fill = mc.querySelectorAll("[data-type='value']")[1].value;
+            if (question.type === "Checkbox") {
+                question.options[j].tag = mc.querySelector("[data-type='tag']").value;
+            }
         }
     }
 }
@@ -374,8 +399,8 @@ function addMultipleChoiceField(id) {
     displayQuestions();
 }
 
-function constructOptionObject(option, fill) {
-    return {option: option, fill: fill};
+function constructOptionObject(option, fill, tag = "") {
+    return {option: option, fill: fill, tag: tag};
 }
 
 function getQuestionById(id) {
