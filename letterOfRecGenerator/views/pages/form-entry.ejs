@@ -1,113 +1,204 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/stylesheets/style.css" />
-        <link rel="stylesheet" type="text/css" href="/css/form-entry.css" />
-    </head>
-    <body>
-        <div class="header"></div>
-        <p class="title"><%= title %></p>
-        <form id="RecommendeeForm">
-            <% for (var q of questions) { %>
-                <div class="question" id=<%= q.type %>>
-                    <p><%= q.question %></p>
-                    <% switch(q.type) {
-                        case 'Text': %>
-                            <textarea form="RecommendeeForm" placeholder="Enter response..." id=<%= q.number %> name=<%= q.number %>></textarea>
-                            <% break;
-                        case 'Radio Button': %>
-                            <% for (var option of q.options) { %>
-                                <div class="option-container">
-                                    <input type="radio" value="<%= option.fill %>" name=<%= q.number %> />
-                                    <label><%= option.option %></label>
-                                </div>
-                            <% } %>
-                            <% break;
-                        case 'Checkbox': %>
-                            <% for (var option of q.options) { %>
-                                <div class="option-container">
-                                    <input type="checkbox" value="<%= option.fill %>" name=<%= q.number %> />
-                                    <label class="block"><%= option.option %></label>
-                                </div>
-                            <% } %>
-                            <% break;
-                        default: %>
-                            <%
-                    } %>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/form-entry.css"/>
+</head>
+<body>
+<div class="header"></div>
+<p class="title"><%= title %></p>
+<form id="RecommendeeForm">
+    <% for (var q of questions) { %>
+    <div class="question" id=<%= q.type %>>
+        <p><%= q.question %></p>
+        <% switch(q.type) {
+        case 'Text': %>
+        <div class="error-container">
+            <textarea form="RecommendeeForm" placeholder="Enter response..."
+                      id=<%= q.number %> name=<%= q.number %>></textarea>
+        </div>
+        <% break;
+        case 'Radio Button': %>
+        <div class="error-container">
+            <div class="options-container">
+                <% for (var option of q.options) { %>
+                <div class="option-container">
+                    <input type="radio" value="<%= option.fill %>" name=<%= q.number %>/>
+                    <label><%= option.option %></label>
                 </div>
-            <% } %>
-            <input class="input-submit" type="button" value="Submit" onclick="openModal()" />
-            <div id="myModal" class="modal">
-                <div class="modal-content">
-                    <div class="close-container">
-                        <span class="close" onclick="closeModal()">&times;</span>
-                    </div>
-                    <p class="modal-title">Confirm Submission?</p>
-                    <button class="input-submit" type="button" value="Confirm" onclick="submitForm('<%= form._id %>')">Confirm</button>
-                </div>
+                <% } %>
             </div>
-        </form>
-    </body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script>
-        // Get the modal
-        var modal = document.getElementById('myModal');
+        </div>
+        <% break;
+        case 'Checkbox': %>
+        <div class="error-container">
+            <div class="options-container">
+                <% for (var option of q.options) { %>
+                <div class="option-container">
+                    <input type="checkbox" value="<%= option.fill %>" name=<%= q.number %>/>
+                    <label class="block"><%= option.option %></label>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <% break;
+            default: %>
+        <%
+        } %>
+    </div>
+    <% } %>
+    <input class="input-submit" type="button" value="Submit" onclick="openModal()"/>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="close-container">
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <p class="modal-title">Confirm Submission?</p>
+            <button class="input-submit" type="button" value="Confirm" onclick="submitForm('<%= form._id %>')">Confirm
+            </button>
+        </div>
+    </div>
+</form>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    // Get the modal
+    var modal = document.getElementById('myModal');
+    var errors = [];
 
-        // When the user clicks on the button, open the modal
-        function openModal() {
-            modal.style.display = "block";
+    // When the user clicks on the button, open the modal
+    function openModal() {
+        if (!validate()) {
+            closeModal()
             return false;
         }
 
-        // When the user clicks on <span> (x), close the modal
-        function closeModal() {
-            modal.style.display = "none";
-            return false;
-        }
+        modal.style.display = "block";
+        return false;
+    }
 
-        function submitForm(id) {
-            var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
-                if (obj[item.name]) {
-                    if (typeof(obj[item.name] != Array)) {
-                        var arr = [obj[item.name], item.value];
-                        obj[item.name] = arr;
+    // When the user clicks on <span> (x), close the modal
+    function closeModal() {
+        modal.style.display = "none";
+        return false;
+    }
+
+    function validate() {
+        clearErrors();
+        var status = true;
+
+        $("#RecommendeeForm").children('.question').each(function () {
+            var question = $(this);
+            var id = question.attr('id');
+
+            if (id === 'Text') {
+                var errorContainer = $(question.children('.error-container')[0]);
+                var textArea = $(errorContainer.children('textarea')[0]);
+
+                if (textArea.val() === '') {
+                    errors.push({
+                        error: addError(textArea, 'text answer required'),
+                        field: textArea
+                    });
+                    status = false;
+                }
+            } else if (id === 'Radio' || id === 'Checkbox') {
+                var selected = false;
+
+                var errorContainer = $(question.children('.error-container')[0]);
+                var optionsContainer = $(errorContainer.children('.options-container')[0]);
+                optionsContainer.children('.option-container').each(function () {
+                    var option = $(this);
+                    var input = $(option.children('input')[0]);
+                    selected = selected || input.is(':checked');
+                })
+
+                if (!selected) {
+                    if (id === 'Radio') {
+                        errors.push({
+                            error: addError(optionsContainer, 'please select an option'),
+                            field: optionsContainer
+                        });
                     } else {
-                        obj[item.name].push(item.value)
+                        errors.push({
+                            error: addError(optionsContainer, 'please select at least one option'),
+                            field: optionsContainer
+                        });
                     }
-                } else {
-                    obj[item.name] = item.value;
+                    status = false;
                 }
-                return obj;
-            }, {});
-
-            $.ajax({
-                url: 'http://localhost:3000/form-entry',
-                data: {
-                    id: id,
-                    responseData
-                },
-                type: 'POST',
-                complete: function () {
-                    console.log('complete');
-                },
-                success: function (form) {
-                    console.log('success');
-                    window.location.href = ('/form-completed');
-                },
-                error: function () {
-                    console.log('error');
-                }
-            });
-
-            return false;
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
             }
+        });
+
+        return status;
+    }
+
+    function addError(field, message) {
+        var container = field.parent();
+        var error = $('<div></div>');
+        var errorText = $('<p></p>');
+        field.addClass('error');
+        error.addClass('arrow-box');
+        errorText.addClass('arrow-text');
+        errorText.text('Error: ' + message);
+        error.append(errorText);
+        container.append(error);
+
+        return error;
+    }
+
+    function clearErrors() {
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].error.remove();
+            errors[i].field.removeClass('error');
         }
-    </script>
+
+        errors.length = 0;
+    }
+
+    function submitForm(id) {
+        var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
+            if (obj[item.name]) {
+                if (typeof(obj[item.name] != Array)) {
+                    var arr = [obj[item.name], item.value];
+                    obj[item.name] = arr;
+                } else {
+                    obj[item.name].push(item.value)
+                }
+            } else {
+                obj[item.name] = item.value;
+            }
+            return obj;
+        }, {});
+
+        $.ajax({
+            url: 'http://localhost:3000/form-entry',
+            data: {
+                id: id,
+                responseData
+            },
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+            },
+            success: function (form) {
+                console.log('success');
+                window.location.href = ('/form-completed');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+
+        return false;
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 </html>

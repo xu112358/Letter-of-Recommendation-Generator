@@ -495,6 +495,7 @@ function clearErrors() {
         }
     }
 
+    errors.length = 0;
     errorScrollCoordinates.x = 0;
     errorScrollCoordinates.y = 0;
 }
@@ -541,7 +542,7 @@ function getSectionHeader(container) {
 }
 
 function setScrollCoordinates(header) {
-    if (errorScrollCoordinates.x != 0 || errorScrollCoordinates.y != 0) {
+    if (errorScrollCoordinates.x != 0 || errorScrollCoordinates.y != 0 || !header) {
         return;
     }
 
