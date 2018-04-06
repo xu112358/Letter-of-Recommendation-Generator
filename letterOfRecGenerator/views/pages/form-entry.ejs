@@ -24,7 +24,7 @@
             <div class="options-container">
                 <% for (var option of q.options) { %>
                 <div class="option-container">
-                    <input type="radio" value="<%= option.fill %>" name=<%= q.number %>/>
+                    <input type="radio" value="<%= option.fill %>" name=<%= q.number %>>
                     <label><%= option.option %></label>
                 </div>
                 <% } %>
@@ -36,7 +36,7 @@
             <div class="options-container">
                 <% for (var option of q.options) { %>
                 <div class="option-container">
-                    <input type="checkbox" value="<%= option.fill %>" name=<%= q.number %>/>
+                    <input type="checkbox" value="<%= option.fill %>" name=<%= q.number %>>
                     <label class="block"><%= option.option %></label>
                 </div>
                 <% } %>
@@ -160,7 +160,7 @@
     function submitForm(id) {
         var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
             if (obj[item.name]) {
-                if (typeof(obj[item.name] != Array)) {
+                if (!Array.isArray(obj[item.name])) {
                     var arr = [obj[item.name], item.value];
                     obj[item.name] = arr;
                 } else {

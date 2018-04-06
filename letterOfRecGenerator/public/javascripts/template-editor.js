@@ -1,5 +1,6 @@
 var nextQuestionIdToUse = 0;
 var errors = [];
+var unknownTags = [];
 var errorScrollCoordinates = {
     x: 0,
     y: 0
@@ -19,7 +20,8 @@ class Question {
         this.tag = tag;
         // local browser
         this.id = nextQuestionIdToUse;
-        // Filled with Objects of {option, fill} (both strings) if dealing with Radio Button or Checkbox
+        // Filled with Objects of {option, fill, tag} (all strings) if dealing with Radio Button or Checkbox
+        // tag is always empty string for radio button options
         this.options = [];
         nextQuestionIdToUse++;
     }
@@ -153,7 +155,14 @@ function getQuestionHTML(q) {
             break;
     }
 
-    return "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>" + "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here...\" value=\"" + q.tag + "\">" + "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div></div>";
+    var html = "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>";
+    if (q.type !== "Checkbox") {
+        html += getTagTextInputHTML(q.tag);
+    }
+    html += "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div></div>";
+
+    return html;
+
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -167,12 +176,18 @@ function getMultipleChoiceFieldsHTML(q) {
         var data_id_attribute = "data-id=\"" + i + "\"";
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
 
-        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option, 'option') + getTextAreaHTML(fill_placeholder, q.options[i].fill) + "</div>";
+        var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option, 'option') + getTextAreaHTML(fill_placeholder, q.options[i].fill);
+        if (q.type === "Checkbox") {
+            //text_area_elements += getTextAreaHTML()
+            text_area_elements += getTagTextInputHTML(q.options[i].tag);
+        }
+        text_area_elements += "</div>";
         html += "<div class=\"multiple-choice-container\"" + data_id_attribute + ">" + text_area_elements + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
     }
     var add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
     html += "<button class=\"small-circle-button\" " + add_multiple_choice_attribute + ">+</button>";
     html += "</div>";
+
     return html;
 }
 
@@ -182,6 +197,10 @@ function getTextAreaHTML(placeholder, value, name) {
     }
 
     return "<textarea data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" + value + "</textarea>";
+}
+
+function getTagTextInputHTML(tag_value) {
+    return "<input data-type=\"tag\" class=\"text-field blue-text\" type=\"text\" placeholder=\"Enter answer tag here... \" value=\"" + tag_value + "\">";
 }
 
 // used for allowing text areas to grow in height (trick with onkeyup)
@@ -207,6 +226,7 @@ function saveTemplate() {
 
     if (!validate(template)) {
         window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
+        emphasizeTags();
         return;
     }
 
@@ -338,17 +358,27 @@ function updateQuestions() {
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
+        var question = questions[i];
+
         // grab the question element
-        var query = "div[data-id='" + questions[i].id + "'][class='question-outer-container']";
-        var question = document.querySelector(query);
+        var query = "div[data-id='" + question.id + "'][class='question-outer-container']";
+        var questionEl = document.querySelector(query);
 
-        questions[i].value = question.querySelector("[data-type='value']").value;
-        questions[i].tag = question.querySelector("[data-type='tag']").value;
+        question.value = questionEl.querySelector("[data-type='value']").value;
+        // Checkbox questions do not have a general tag (as there are tags associated with each option instead)
+        if (question.type !== "Checkbox") {
+            question.tag = questionEl.querySelector("[data-type='tag']").value;
+        }
 
-        var multipleChoices = question.querySelectorAll("[class='multiple-choice-container']");
+        var multipleChoices = questionEl.querySelectorAll("[class='multiple-choice-container']");
         for (var j = 0; j < multipleChoices.length; j++) {
-            questions[i].options[j].option = multipleChoices[j].querySelectorAll("[data-type='value']")[0].value;
-            questions[i].options[j].fill = multipleChoices[j].querySelectorAll("[data-type='value']")[1].value;
+            var mc = multipleChoices[j];
+
+            question.options[j].option = mc.querySelectorAll("[data-type='value']")[0].value;
+            question.options[j].fill = mc.querySelectorAll("[data-type='value']")[1].value;
+            if (question.type === "Checkbox") {
+                question.options[j].tag = mc.querySelector("[data-type='tag']").value;
+            }
         }
     }
 }
@@ -383,10 +413,11 @@ function addMultipleChoiceField(id) {
     displayQuestions();
 }
 
-function constructOptionObject(option, fill) {
+function constructOptionObject(option, fill, tag = "") {
     return {
         option: option,
-        fill: fill
+        fill: fill,
+        tag: tag
     };
 }
 
@@ -429,7 +460,7 @@ function validate(template) {
         addError(textField, 0, 'template name is required');
         isValid = false;
     }
-    
+
     if (isNotValid(template.text)) {
         var textField = document.getElementById(LETTER_TEXT_AREA_ID);
         addError(textField, 0, 'letter text is required');
@@ -444,7 +475,11 @@ function validate(template) {
         var question = template.questions[i];
         var query = "div[data-id='" + i + "'][class='question-outer-container']";
         var questionHTML = document.querySelector(query);
-        var totalFields = question.options.length != 0 ? 4 + 2 * question.options.length : 3;
+
+        var totalFields = 3;
+        if (question.options.length) {
+            totalFields = question.type === 'Checkbox' ? 4 + 3 * question.options.length : 4 + 2 * question.options.length;
+        }
 
         if (isNotValid(question.question)) {
             var textField = questionHTML.querySelector("[data-type='value']");
@@ -452,29 +487,55 @@ function validate(template) {
             isValid = false;
         }
 
-        if (isNotValid(question.tag)) {
-            var textField = questionHTML.querySelector("[data-type='tag']");
-            addError(textField, totalFields - 1, 'tag field is required');
-            isValid = false;
-        } else if (isTagNotValid(question.tag)) {
-            var textField = questionHTML.querySelector("[data-type='tag']");
-            addError(textField, totalFields - 1, 'tag field does not match expected pattern');
-            isValid = false;
+        if (question.type === 'Text' || question.type === 'Radio Button') {
+            if (isNotValid(question.tag)) {
+                var textField = questionHTML.querySelector("[data-type='tag']");
+                addError(textField, totalFields - 1, 'tag field is required');
+                isValid = false;
+            } else if (isTagNotValid(question.tag)) {
+                var textField = questionHTML.querySelector("[data-type='tag']");
+                addError(textField, totalFields - 1, 'tag field does not match expected pattern');
+                isValid = false;
+            }
         }
 
-        if (question.type === 'Radio Button' || question.type === 'Checkbox') {
+        if (question.type === 'Radio Button') {
             for (var j = 0; j < question.options.length; j++) {
                 var option = question.options[j];
+                var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
+                var optionHTML = questionHTML.querySelector(query);
 
                 if (isNotValid(option.option)) {
-                    var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
-                    var optionHTML = questionHTML.querySelector(query);
                     var textField = optionHTML.querySelector("[name='option']");
                     addError(textField, 1 + j * 2, 'option is required');
                     isValid = false;
                 }
 
+                if (isNotValid(option.fill)) {
+                    option.fill = option.option;
+                }
+            }
+        }
+
+        if (question.type === 'Checkbox') {
+            for (var j = 0; j < question.options.length; j++) {
+                var option = question.options[j];
+                var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
+                var optionHTML = questionHTML.querySelector(query);
+
                 if (isNotValid(option.option)) {
+                    var textField = optionHTML.querySelector("[name='option']");
+                    addError(textField, 1 + j * 3, 'option is required');
+                    isValid = false;
+                }
+
+                if (isNotValid(option.tag)) {
+                    var input = optionHTML.querySelector('input');
+                    addError(input, 3 + j * 3, 'tag is required');
+                    isValid = false;
+                }
+
+                if (isNotValid(option.fill)) {
                     option.fill = option.option;
                 }
             }
@@ -582,8 +643,14 @@ function addErrorListToErrorContainer(container) {
                 var multipleChoiceContainer = child.children[j];
 
                 if (multipleChoiceContainer.classList && multipleChoiceContainer.classList.contains('multiple-choice-container')) {
-                    errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.firstChild)));
-                    errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.lastChild)));
+                    if (multipleChoiceContainer.firstChild.children.length > 2) {
+                        for (var k = 0; k < 3; k++) {
+                            errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.children[k])));
+                        }
+                    } else {
+                        errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.firstChild)));
+                        errorList.appendChild(getFillHTML(getAbsoluteHeight(multipleChoiceContainer.firstChild.lastChild)));
+                    }
                 } else {
                     var fill = getFillHTML(getAbsoluteHeight(multipleChoiceContainer));
                     errorList.appendChild(fill);
@@ -656,12 +723,18 @@ function isTagNotValid(tag) {
 
 function deemphasizeTags() {
     var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-    document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTML.replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '');
+    document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTML.replace(/\<span class\="tag"\>/gi, '').replace(/\<span class\="tag-unknown"\>/gi, '').replace(/\<\/span\>/gi, '');
 }
 
 function emphasizeTags() {
     var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
     var letterHTMLWithTagEmphasis = letterHTML.replace(/&lt;\![a-z0-9_]+&gt;/gi, function (match) {
+        if (unknownTags.find(function (tag) {
+                return tag === match;
+            })) {
+            return '<span class="tag-unknown">' + match + '</span>';
+        }
+
         return '<span class="tag">' + match + '</span>';
     });
     letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
@@ -681,11 +754,25 @@ function isTagsExist(letter, questions) {
         });
 
         if (!question) {
-            return false;
+            var found = false;
+            questions.forEach(function (question) {
+                if (question.type === 'Checkbox') {
+                    question.options.forEach(function (option) {
+                        if (option.tag === tags[i]) {
+                            found = true;
+                        }
+                    });
+                }
+            });
+
+
+            if (!found) {
+                unknownTags.push(encodeLetterHTML(tags[i]));
+            }
         }
     }
 
-    return true;
+    return found;
 }
 
 function encodeLetterHTML(text) {
@@ -693,5 +780,5 @@ function encodeLetterHTML(text) {
 }
 
 function decodeLetterHTML(text) {
-    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n');
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/&nbsp/g, ' ');
 }

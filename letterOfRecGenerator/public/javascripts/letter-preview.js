@@ -104,7 +104,7 @@ function parseLetter(form) {
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
         });
 
-        return response.response;
+        return response ? response.response : '';
     });
 }
 

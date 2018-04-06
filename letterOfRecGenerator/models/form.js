@@ -89,11 +89,27 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
         if (err) {
             cb(err, null);
         } else {
-            var responses = form['template']['questions'].map(function (question) {
-                return {
-                    tag: question.tag,
-                    response: responseData[question.number - 1]
-                };
+            var responses = [];
+            form['template']['questions'].forEach(function (question) {
+                var response = responseData[question.number - 1];
+
+                if (!(response instanceof Array)) {
+                    responses.push({
+                        tag: question.tag,
+                        response: response
+                    });
+                } else {
+                    response.forEach(function (optionText) {
+                        var option = question.options.find(function (option) {
+                            return option.fill === optionText;
+                        });
+
+                        responses.push({
+                            tag: option.tag,
+                            response: option.fill
+                        });
+                    });
+                }
             });
 
             form.status = 'Submitted';
