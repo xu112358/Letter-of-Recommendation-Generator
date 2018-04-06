@@ -86,8 +86,6 @@ function createLetterPreview(form) {
     letter.className = LETTER_CONTAINER_ID;
     var innerContainer = document.createElement('div');
     innerContainer.id = 'print';
-    innerContainer.innerHTML = parseLetter(form);
-    letter.appendChild(innerContainer);
     letter.onclick = function () {
         showEditModal(this.id);
     };
@@ -98,8 +96,18 @@ function createLetterPreview(form) {
         letterhead.src = form.template.letterheadImg;
         letterhead.alt = "";
         letterhead.className = "letterhead-img";
-        outerContainer.appendChild(letterhead)
+        innerContainer.appendChild(letterhead)
+    } 
+    innerContainer.innerHTML += parseLetter(form) + "<br>";
+    console.log(form.template);
+    if (form.template.footerImg != null) {
+        var footer = document.createElement('img');
+        footer.src = form.template.footerImg;
+        footer.alt = "";
+        footer.className = "footer-img";
+        innerContainer.appendChild(footer)
     }
+    letter.appendChild(innerContainer);
     outerContainer.appendChild(letter);
 
     return letter.innerHTML;
