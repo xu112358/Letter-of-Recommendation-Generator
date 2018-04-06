@@ -84,7 +84,7 @@ function createLetterPreview(form) {
     var letter = document.createElement('div');
     letter.id = '0';
     letter.className = LETTER_CONTAINER_ID;
-    letter.innerHTML = parseLetter(form);
+    letter.innerHTML = encodeLetterHTML(parseLetter(form));
     letter.onclick = function () {
         showEditModal(this.id);
     };
@@ -99,7 +99,7 @@ function parseLetter(form) {
     var letter = form.template.text;
     var responses = form.responses;
 
-    return letter.replace(/(?:\r\n|\r|\n)/g, '<br />').replace(tagRegex, function (match) {
+    return letter.replace(tagRegex, function (match) {
         var response = responses.find(function (item) {
             console.log(item.tag.localeCompare(match, {sensitivity: 'base'}) == 0);
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
@@ -111,4 +111,8 @@ function parseLetter(form) {
 
 function parseAttribute(attr) {
     return document.currentScript.getAttribute(attr) == '\'\'' ? null : document.currentScript.getAttribute(attr).replace(/['"]+/g, '');
+}
+
+function encodeLetterHTML(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
 }
