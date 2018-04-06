@@ -69,7 +69,7 @@
     border-radius: 50%;
     color: white;
     background-color: rgb(143, 143, 143);
-    text-align:center;
+    text-align: center;
     font-size: 10px;
     height: 30px;
     width: 30px;
@@ -140,6 +140,7 @@
 .question-container {
     flex: 1;
     width: 700px;
+    max-width: 700px;
     height: 100%;
     background-color: white;
     border: 1px solid rgb(80, 80, 80);
@@ -215,7 +216,7 @@
     overflow: auto; /* Enable scroll if needed */
 }
 
-#add-question-modal .content{
+#add-question-modal .content {
     margin: 15% auto; /* 15% from the top and centered */
     background-color: #E0E0E0;
     padding: 15px;
@@ -250,7 +251,7 @@
     overflow: auto; /* Enable scroll if needed */
 }
 
-#warning-modal .content{
+#warning-modal .content {
     margin: 15% auto; /* 15% from the top and centered */
     background-color: #E0E0E0;
     padding: 15px;
@@ -277,4 +278,97 @@
     height: 1px;
     border-top: 1px solid #BDBDBD;
     margin-top: 3px;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-column-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-left: 17px;
+}
+
+.error-list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.arrow-box {
+    flex-basis: auto;
+    position: relative;
+    background: #C03737;
+    border: 2px solid #BA0404;
+    border-radius: 4px;
+    opacity: 0.75;
+    text-align: center;
+}
+
+.arrow-box:after, .arrow-box:before {
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 100%;
+    top: 50%;
+}
+
+.arrow-box:after {
+    border-color: rgba(192, 55, 55, 0);
+    border-right-color: #C03737;
+    border-width: 10px;
+    margin-top: -10px;
+}
+
+.arrow-box:before {
+    border-color: rgba(186, 4, 4, 0);
+    border-right-color: #BA0404;
+    border-width: 13px;
+    margin-top: -13px;
+}
+
+.arrow-text {
+    color: white;
+    font-size: xx-small;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.fill {
+    align-self: start;
+    padding-right: 17px;
+}
+
+.error {
+    box-shadow: 0 0 4px 3px rgb(245, 0, 0);
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px solid rgba(192, 55, 55, 1);
+}
+
+.tag {
+    color: white;
+    background-color: lawngreen;
+    font-weight: bolder;
+    border-radius: 0.2em;
+    box-shadow: 1.5px 1.5px 2px #b9b9b9;
+}
+
+.tag-unknown {
+    color: white;
+    background-color: red;
+    font-weight: bolder;
+    border-radius: 0.2em;
+    box-shadow: 1.5px 1.5px 2px #b9b9b9;
 }

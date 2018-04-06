@@ -98,7 +98,7 @@ function createLetterPreview(form) {
         letterhead.className = "letterhead-img";
         innerContainer.appendChild(letterhead)
     } 
-    innerContainer.innerHTML += parseLetter(form) + "<br>";
+    innerContainer.innerHTML += encodeLetterHTML(parseLetter(form)); + "<br>";
     console.log(form.template);
     if (form.template.footerImg != null) {
         var footer = document.createElement('img');
@@ -117,15 +117,25 @@ function parseLetter(form) {
     var letter = form.template.text;
     var responses = form.responses;
 
-    return letter.replace(/(?:\r\n|\r|\n)/g, '<br />').replace(tagRegex, function (match) {
+    return letter.replace(tagRegex, function (match) {
         var response = responses.find(function (item) {
+            console.log(item.tag.localeCompare(match, {sensitivity: 'base'}) == 0);
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
         });
+<<<<<<< HEAD
         
         return response.response;
+=======
+
+        return response ? response.response : '';
+>>>>>>> 2f146e357fe8367725dacc36ed33ceb4462de16a
     });
 }
 
 function parseAttribute(attr) {
     return document.currentScript.getAttribute(attr) == '\'\'' ? null : document.currentScript.getAttribute(attr).replace(/['"]+/g, '');
+}
+
+function encodeLetterHTML(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
 }
