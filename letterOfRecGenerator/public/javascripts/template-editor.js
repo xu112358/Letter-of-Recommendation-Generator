@@ -162,7 +162,6 @@ function getQuestionHTML(q) {
     html += "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div></div>";
 
     return html;
-
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
@@ -371,6 +370,7 @@ function updateQuestions() {
         }
 
         var multipleChoices = questionEl.querySelectorAll("[class='multiple-choice-container']");
+
         for (var j = 0; j < multipleChoices.length; j++) {
             var mc = multipleChoices[j];
 

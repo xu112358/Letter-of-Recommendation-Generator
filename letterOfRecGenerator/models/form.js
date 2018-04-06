@@ -112,6 +112,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                 }
             });
 
+            console.log(responses);
+
             form.status = 'Submitted';
             form['responses'] = responses;
             form['meta']['submitted'] = Date.now();
