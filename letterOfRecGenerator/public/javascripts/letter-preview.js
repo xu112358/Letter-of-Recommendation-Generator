@@ -122,13 +122,7 @@ function parseLetter(form) {
             console.log(item.tag.localeCompare(match, {sensitivity: 'base'}) == 0);
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
         });
-<<<<<<< HEAD
-        
-        return response.response;
-=======
-
         return response ? response.response : '';
->>>>>>> 2f146e357fe8367725dacc36ed33ceb4462de16a
     });
 }
 
