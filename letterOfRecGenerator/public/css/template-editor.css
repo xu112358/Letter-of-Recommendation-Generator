@@ -131,6 +131,12 @@
     flex-direction: row;
 }
 
+.required-checkbox-container {
+    flex-basis: auto;
+
+    margin-right: 6px;
+}
+
 .question-button {
     flex-basis: auto;
     margin-left: 10px;

@@ -12,6 +12,7 @@ class Question {
         this.type = type;
         this.value = value;
         this.tag = tag;
+        this.optional = false;
         // local browser
         this.id = nextQuestionIdToUse;
         // Filled with Objects of {option, fill, tag} (all strings) if dealing with Radio Button or Checkbox
@@ -148,11 +149,20 @@ function getQuestionHTML(q) {
             break;
     }
 
-    var html = "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">" + "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html + "<span class=\"line\"></span>";
+    var html = "<h2>" + question_type_label + "</h2>" + "<div class=\"question-outer-container\"" + data_id_attribute + ">";
+    // "required" checkbox
+    html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
+    html += (q.optional ? "" : "checked");
+    html += ">" + "</div>";
+    // question box
+    html += "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html;
     if (q.type !== "Checkbox") {
-        html += getTagTextInputHTML(q.tag);
+        html += "<span class=\"line\"></span>" + getTagTextInputHTML(q.tag);
     }
-    html += "</div>" + "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>" + "</div>";
+    html += "</div>";
+    // delete button
+    html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
+    html += "</div>";
     return html;
 }
 
@@ -355,6 +365,8 @@ function updateQuestions() {
         if (question.type !== "Checkbox") {
             question.tag = questionEl.querySelector("[data-type='tag']").value;
         }
+
+        question.optional = !questionEl.querySelector("[type='checkbox']").checked;
 
         var multipleChoices = questionEl.querySelectorAll("[class='multiple-choice-container'");
         for (var j = 0; j < multipleChoices.length; j++) {
