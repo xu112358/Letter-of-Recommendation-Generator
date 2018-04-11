@@ -758,13 +758,16 @@ function isTagsExist(letter, questions) {
         return true;
     }
 
+    var allFound = true;
+
     for (var i = 0; i < tags.length; i++) {
         var question = questions.find(function (question) {
             return question.tag === tags[i]
         });
 
+        var found = false;
+
         if (!question) {
-            var found = false;
             questions.forEach(function (question) {
                 if (question.type === 'Checkbox') {
                     question.options.forEach(function (option) {
@@ -775,14 +778,16 @@ function isTagsExist(letter, questions) {
                 }
             });
 
-
             if (!found) {
                 unknownTags.push(encodeLetterHTML(tags[i]));
             }
+        } else {
+            found = true;
         }
-    }
 
-    return found;
+        allFound = allFound && found
+    }
+    return allFound;
 }
 
 function encodeLetterHTML(text) {
