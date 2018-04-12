@@ -4,6 +4,9 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/form-entry.css"/>
+    <script>
+        var questions = <%- JSON.stringify(questions) %>
+    </script>
 </head>
 <body>
 <div class="header"></div>
@@ -90,11 +93,16 @@
 
         $("#RecommendeeForm").children('.question').each(function () {
             var question = $(this);
+
             var id = question.attr('id');
 
             if (id === 'Text') {
                 var errorContainer = $(question.children('.error-container')[0]);
                 var textArea = $(errorContainer.children('textarea')[0]);
+
+                if (isOptional(textArea.attr('id'))) {
+                    return;
+                }
 
                 if (textArea.val() === '') {
                     errors.push({
@@ -108,6 +116,11 @@
 
                 var errorContainer = $(question.children('.error-container')[0]);
                 var optionsContainer = $(errorContainer.children('.options-container')[0]);
+
+                if (isOptional($($(optionsContainer.children('.option-container')[0]).children('input')[0]).attr('name'))) {
+                    return;
+                }
+
                 optionsContainer.children('.option-container').each(function () {
                     var option = $(this);
                     var input = $(option.children('input')[0]);
@@ -132,6 +145,10 @@
         });
 
         return status;
+    }
+
+    function isOptional(number) {
+        return questions[number - 1].optional;
     }
 
     function addError(field, message) {
