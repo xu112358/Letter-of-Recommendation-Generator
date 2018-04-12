@@ -18,7 +18,8 @@ var TemplateSchema = new Schema({
             option: String,
             fill: String,
             tag: String
-        }]
+        }],
+        optional: Boolean
     }],
     letterheadImg: String,
     footerImg: String

@@ -13,12 +13,12 @@ var footerImgData = parseAttribute('footerImgData');
  * Prototype class for Questions
  */
 class Question {
-    constructor(type, value, tag) {
+    constructor(type, value, tag, optional = false) {
         // Text, Radio Button, Checkbox
         this.type = type;
         this.value = value;
         this.tag = tag;
-        this.optional = false;
+        this.optional = optional;
         // local browser
         this.id = nextQuestionIdToUse;
         // Filled with Objects of {option, fill, tag} (all strings) if dealing with Radio Button or Checkbox
@@ -49,7 +49,7 @@ window.onload = function () {
             success: function (data) {
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
                 data.questions.forEach(question => {
-                    var savedQuestion = new Question(question.type, question.question, question.tag);
+                    var savedQuestion = new Question(question.type, question.question, question.tag, question.optional);
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
@@ -298,7 +298,8 @@ function getQuestions() {
         type: question.type,
         question: question.value,
         options: question.options,
-        tag: question.tag
+        tag: question.tag,
+        optional: question.optional
     }));
 
     return dbQuestions;
@@ -693,7 +694,7 @@ function getInnerContainer(container) {
         }
 
         if (child.classList.contains('question-outer-container')) {
-            return child.firstChild;
+            return child.getElementsByClassName('question-container')[0];
         }
     }
 
