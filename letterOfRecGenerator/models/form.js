@@ -21,7 +21,8 @@ var FormSchema = new Schema({
         sent: Date,
         submitted: Date,
         completed: Date
-    }
+    },
+    letter: String
 });
 
 FormSchema.statics.createForm = function (email, template, cb) {

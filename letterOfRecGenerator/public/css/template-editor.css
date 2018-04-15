@@ -117,6 +117,7 @@
     flex-basis: auto;
     border: thick solid black;
     font-size: 13px;
+    overflow: auto;
 }
 
 #questions-container {
