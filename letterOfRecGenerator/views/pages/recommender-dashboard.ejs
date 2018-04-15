@@ -56,7 +56,7 @@
         <td class="center">
             <img class="icon clickable" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
                 id: form._id
-            }) %>)"/>
+            }) %>, '<%= form.status %>')"/>
             <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
     </tr>
@@ -103,8 +103,14 @@
     }
 
     // When the user clicks the preview icon, take them to the letter preview page.
-    function openLetterPreview(params) {
-        window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+    function openLetterPreview(params, status) {
+        console.log(status);
+        // Check to see if the status is green, if not then show error dialog
+        if(status != 'Submitted'){
+            window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
+        } else {
+            window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+        }  
     }
 
     function getDestinationRoute(address, params) {
