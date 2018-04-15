@@ -94,7 +94,12 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             form['template']['questions'].forEach(function (question) {
                 var response = responseData[question.number - 1];
 
-                if (!(response instanceof Array)) {
+                if (!response) {
+                    responses.push({
+                        tag: question.tag,
+                        response: ''
+                    });
+                } else if (!(response instanceof Array)) {
                     responses.push({
                         tag: question.tag,
                         response: response
@@ -113,11 +118,28 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                 }
             });
 
-            console.log(responses);
-
             form.status = 'Submitted';
             form['responses'] = responses;
             form['meta']['submitted'] = Date.now();
+
+            form.save(function (err) {
+                cb(err, form);
+            });
+        }
+    });
+};
+
+FormSchema.statics.completeForm = function (id, letter, cb) {
+    FormSchema.statics.findForm(id, function (err, form) {
+        if (err) {
+            cb(err, null);
+        } else {
+            form.letter = letter;
+            form.status = 'Complete';
+
+            if (!form['meta']['submitted']) {
+                form['meta']['submitted'] = Date.now();
+            }
 
             form.save(function (err) {
                 cb(err, form);

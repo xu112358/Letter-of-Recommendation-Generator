@@ -6,6 +6,7 @@ const TRIX_EDITOR = "trix-editor";
 const OUTER_CONTAINER = "outer-container";
 
 var form;
+var letterText;
 var tagRegex = /\<\![a-z0-9_]+\>/ig;
 
 
@@ -30,8 +31,23 @@ function onLoad() {
         success: function (data) {
             form = data;
             console.log('success');
+            letterText = form.letter;
             var letter = createLetterPreview(form);
             sections.push(letter);
+            $.ajax({
+                url: 'http://localhost:3000/letter-preview/save',
+                data: {
+                    id: id,
+                    letter: letterText
+                },
+                type: 'POST',
+                success: function (data) {
+                    console.log('letter saved');
+                },
+                error: function () {
+                    console.log('error');
+                }
+            });
         },
         error: function () {
             console.log('error');
@@ -60,7 +76,23 @@ function saveEditModal() {
 
     state = element.value.replace(/\<div\>/, '<div id="print">');
     sections[curr_section] = state;
+    letterText = decodeLetterHTML(state);
     renderSelectedDisplay();
+
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/save',
+        data: {
+            id: id,
+            letter: letterText
+        },
+        type: 'POST',
+        success: function (data) {
+            console.log('letter saved');
+        },
+        error: function () {
+            console.log('error');
+        }
+    });
 
     modal.style.display = "none";
 }
@@ -80,15 +112,15 @@ function renderSelectedDisplay() {
 
 // Creates the divs for each item in array
 function createLetterPreview(form) {
-    var letter = document.createElement('div');
-    letter.id = '0';
-    letter.className = LETTER_CONTAINER_ID;
+    var letterContainer = document.createElement('div');
+    letterContainer.id = '0';
+    letterContainer.className = LETTER_CONTAINER_ID;
     var innerContainer = document.createElement('div');
     innerContainer.id = 'print';
-    letter.onclick = function () {
+    letterContainer.onclick = function () {
         showEditModal(this.id);
     };
-    letter.style.cursor = 'pointer';
+    letterContainer.style.cursor = 'pointer';
     var outerContainer = document.getElementById(OUTER_CONTAINER);
     if (form.template.letterheadImg != null) {
         var letterhead = document.createElement('img');
@@ -96,8 +128,14 @@ function createLetterPreview(form) {
         letterhead.alt = "";
         letterhead.className = "letterhead-img";
         innerContainer.appendChild(letterhead)
-    } 
-    innerContainer.innerHTML += encodeLetterHTML(parseLetter(form)); + "<br>";
+    }
+
+    if (!letterText) {
+        letterText = parseLetter(form);
+    }
+
+    innerContainer.innerHTML += encodeLetterHTML(letterText);
+    +"<br>";
     if (form.template.footerImg != null) {
         var footer = document.createElement('img');
         footer.src = form.template.footerImg;
@@ -105,10 +143,10 @@ function createLetterPreview(form) {
         footer.className = "footer-img";
         innerContainer.appendChild(footer)
     }
-    letter.appendChild(innerContainer);
-    outerContainer.appendChild(letter);
+    letterContainer.appendChild(innerContainer);
+    outerContainer.appendChild(letterContainer);
 
-    return letter.innerHTML;
+    return innerContainer.innerHTML;
 }
 
 function parseLetter(form) {
@@ -127,7 +165,7 @@ function parseLetter(form) {
         return response ? response.response : '';
     }));
 
-    for(var i = 0; i < noCapitalization.length; i++) {
+    for (var i = 0; i < noCapitalization.length; i++) {
 
         // Found ending punctuation that isn't the last letter in the text
         if ((noCapitalization[i] == '.' || noCapitalization[i] == '?' || noCapitalization[i] == '!') && i != noCapitalization.length - 1) {
@@ -159,4 +197,8 @@ function parseAttribute(attr) {
 
 function encodeLetterHTML(text) {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
+}
+
+function decodeLetterHTML(text) {
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/&nbsp/g, ' ');
 }

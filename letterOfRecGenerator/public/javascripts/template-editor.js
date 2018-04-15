@@ -749,7 +749,7 @@ function emphasizeTags() {
         return '<span class="tag">' + match + '</span>';
     });
     letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
-    document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis;
+    document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis.replace(/\<div\>\<br\>\<\/div\>/gi, '<br>').replace(/\<div\>/gi, '<br>').replace(/\<\/div\>/gi, '');
 }
 
 function isTagsExist(letter, questions) {

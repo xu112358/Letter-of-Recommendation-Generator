@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var Form = require('../models/form');
-var User = require('../models/user');
-var ObjectId = require('mongodb').ObjectID;
 
 /* GET form entry page. */
 router.get('/:hash', function (req, res, next) {
