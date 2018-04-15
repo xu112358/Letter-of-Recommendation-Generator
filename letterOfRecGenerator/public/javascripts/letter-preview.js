@@ -58,9 +58,7 @@ function saveEditModal() {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     var element = document.querySelector(TRIX_EDITOR);
 
-    console.log("HOW ITS SAVED: " + element.value);
-
-    state = element.value;
+    state = element.value.replace(/\<div\>/, '<div id="print">');
     sections[curr_section] = state;
     renderSelectedDisplay();
 
@@ -77,6 +75,7 @@ function cancelEditModal() {
 function renderSelectedDisplay() {
     var selectedDisplayDiv = document.getElementById(curr_section);
     selectedDisplayDiv.innerHTML = state;
+
 }
 
 // Creates the divs for each item in array
@@ -99,7 +98,6 @@ function createLetterPreview(form) {
         innerContainer.appendChild(letterhead)
     } 
     innerContainer.innerHTML += encodeLetterHTML(parseLetter(form)); + "<br>";
-    console.log(form.template);
     if (form.template.footerImg != null) {
         var footer = document.createElement('img');
         footer.src = form.template.footerImg;
