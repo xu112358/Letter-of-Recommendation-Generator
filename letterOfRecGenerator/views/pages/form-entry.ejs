@@ -11,10 +11,15 @@
 <body>
 <div class="header"></div>
 <p class="title"><%= title %></p>
+<div class="optional-message">Questions marked with an * are required.</div>
 <form id="RecommendeeForm">
     <% for (var q of questions) { %>
     <div class="question" id=<%= q.type %>>
-        <p><%= q.question %></p>
+        <% if (q.optional) { %>
+            <p><%= q.question %></p>
+        <% } else { %>
+            <p>*<%= q.question %></p>
+        <% } %>
         <% switch(q.type) {
         case 'Text': %>
         <div class="error-container">
