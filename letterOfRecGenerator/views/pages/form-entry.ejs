@@ -189,11 +189,20 @@
             return obj;
         }, {});
 
+        var responseArray = [];
+        for (var i = 0; i < questions.length; i++) {
+            if (responseData[i + 1]) {
+                responseArray.push(responseData[i + 1]);
+            } else {
+                responseArray.push(null);
+            }
+        }
+
         $.ajax({
             url: 'http://localhost:3000/form-entry',
             data: {
                 id: id,
-                responseData
+                responseData: responseArray
             },
             type: 'POST',
             complete: function () {
