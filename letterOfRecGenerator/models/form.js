@@ -94,7 +94,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             form['template']['questions'].forEach(function (question) {
                 var response = responseData[question.number - 1];
 
-                if (!response) {
+                if (!response.length) {
                     responses.push({
                         tag: question.tag,
                         response: ''
