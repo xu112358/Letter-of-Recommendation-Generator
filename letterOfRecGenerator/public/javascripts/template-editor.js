@@ -40,6 +40,19 @@ var warningModalFunction;
 
 window.onload = function () {
     setUpEventHandlers();
+    document.getElementById(LETTER_TEXT_AREA_ID).addEventListener('paste', function (e) {
+        e.preventDefault();
+
+        if (e.clipboardData) {
+            content = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+            document.execCommand('insertText', false, content);
+        } else if (window.clipboardData) {
+            content = window.clipboardData.getData('Text');
+
+            document.selection.createRange().pasteHTML(content);
+        }
+    });
 
     if (id) {
         $.ajax({

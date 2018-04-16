@@ -26,7 +26,7 @@
     width: 80%;
 }
 
-.letter-container {
+#letter-container {
     background-color: #e8e8e8;
     border: thick solid black;
     display: flex;

@@ -106,7 +106,7 @@
     function openLetterPreview(params, status) {
         console.log(status);
         // Check to see if the status is green, if not then show error dialog
-        if(status != 'Submitted'){
+        if(status === 'Sent'){
             window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
         } else {
             window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);

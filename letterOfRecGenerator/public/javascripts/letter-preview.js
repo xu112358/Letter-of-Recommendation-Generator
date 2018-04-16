@@ -6,21 +6,8 @@ const TRIX_EDITOR = "trix-editor";
 const OUTER_CONTAINER = "outer-container";
 
 var form;
-var letterText;
+var letterHTML;
 var tagRegex = /\<\![a-z0-9_]+\>/ig;
-
-
-// eventually will be an array of letter content blocks (from backend)
-var state = 'Lorem ipsum this is a great student very good I love them wowza! WOWOFOFOAOSF TYPOOOO';
-
-var editable = [];
-var sections = [];
-var curr_section;
-
-document.addEventListener("trix-change", function (event) {
-    //$('pre').html($(event.target).text());
-    //state = (event.target).text();
-});
 
 // body
 function onLoad() {
@@ -31,14 +18,12 @@ function onLoad() {
         success: function (data) {
             form = data;
             console.log('success');
-            letterText = form.letter;
-            var letter = createLetterPreview(form);
-            sections.push(letter);
+            letterHTML = createLetterPreview(form, form.letter);
             $.ajax({
                 url: 'http://localhost:3000/letter-preview/save',
                 data: {
                     id: id,
-                    letter: letterText
+                    letter: letterHTML
                 },
                 type: 'POST',
                 success: function (data) {
@@ -56,15 +41,11 @@ function onLoad() {
 }
 
 function showEditModal(clicked) {
-    curr_section = clicked;
-    state = sections[curr_section];
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
-
     var element = document.querySelector(TRIX_EDITOR);
-    console.log("SHOWEDITMODAL state: " + state);
-    console.log("SHOWEDITMODAL curr_section: " + curr_section);
     element.value = "";
-    element.editor.insertHTML(state);
+    element.editor.setSelectedRange([0, 0]);
+    element.editor.insertHTML(letterHTML);
 
     modal.style.display = "block";
 }
@@ -74,16 +55,14 @@ function saveEditModal() {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     var element = document.querySelector(TRIX_EDITOR);
 
-    state = element.value.replace(/\<div\>/, '<div id="print">');
-    sections[curr_section] = state;
-    letterText = decodeLetterHTML(state);
-    renderSelectedDisplay();
+    letterHTML = element.value.replace(/\<div\>/, '<div id="print">');
+    document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
 
     $.ajax({
         url: 'http://localhost:3000/letter-preview/save',
         data: {
             id: id,
-            letter: letterText
+            letter: letterHTML
         },
         type: 'POST',
         success: function (data) {
@@ -103,18 +82,10 @@ function cancelEditModal() {
     modal.style.display = "none";
 }
 
-// Updates current section innerHTML
-function renderSelectedDisplay() {
-    var selectedDisplayDiv = document.getElementById(curr_section);
-    selectedDisplayDiv.innerHTML = state;
-
-}
-
 // Creates the divs for each item in array
-function createLetterPreview(form) {
+function createLetterPreview(form, letter) {
     var letterContainer = document.createElement('div');
-    letterContainer.id = '0';
-    letterContainer.className = LETTER_CONTAINER_ID;
+    letterContainer.id = LETTER_CONTAINER_ID;
     var innerContainer = document.createElement('div');
     innerContainer.id = 'print';
     letterContainer.onclick = function () {
@@ -130,12 +101,14 @@ function createLetterPreview(form) {
         innerContainer.appendChild(letterhead)
     }
 
-    if (!letterText) {
-        letterText = parseLetter(form);
+    if (letter) {
+        letterHTML = letter;
+    } else {
+        letterHTML = encodeLetterHTML(parseLetter(form));
     }
 
-    innerContainer.innerHTML += encodeLetterHTML(letterText);
-    +"<br>";
+    innerContainer.innerHTML += letterHTML;
+
     if (form.template.footerImg != null) {
         var footer = document.createElement('img');
         footer.src = form.template.footerImg;
@@ -143,6 +116,7 @@ function createLetterPreview(form) {
         footer.className = "footer-img";
         innerContainer.appendChild(footer)
     }
+
     letterContainer.appendChild(innerContainer);
     outerContainer.appendChild(letterContainer);
 
@@ -197,8 +171,4 @@ function parseAttribute(attr) {
 
 function encodeLetterHTML(text) {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
-}
-
-function decodeLetterHTML(text) {
-    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/&nbsp/g, ' ');
 }

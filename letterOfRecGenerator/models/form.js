@@ -137,8 +137,8 @@ FormSchema.statics.completeForm = function (id, letter, cb) {
             form.letter = letter;
             form.status = 'Complete';
 
-            if (!form['meta']['submitted']) {
-                form['meta']['submitted'] = Date.now();
+            if (!form['meta']['completed']) {
+                form['meta']['completed'] = Date.now();
             }
 
             form.save(function (err) {
