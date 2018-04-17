@@ -1,10 +1,25 @@
 # csci-401-capstone
 Repo for hosting Group 28 capstone project
 
-## How to Run (Development)
+## Deployment (as of Spring 2018)
+Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3000, with the MongoDB instance on the same IP address but at port 12345.
+
+## How to Run Locally
 + Enter letterOfRecGenerator folder
 + Run `DEBUG=letterOfRecGenerator:* npm run devstart` (for debug on console) or `npm run devstart`
 + Open up a browser tab to `127.0.0.1:3000` (make sure port 3000 was not already occupied)
+
+## Making Changes to Deployment (as of Spring 2018)
++ Run `ssh jeff@68.181.97.191`
++ Enter the password as `csci-401`
++ Run `cd csci-401-capstone/letterOfRecGenerator` from root directrory
++ Run `git pull`
++ Run `mongod --port 12345`
++ Run `npm run devstart`
+
+For the last step, you may need to kill the previous process on port 3000 using the following steps:
++ Run 'sudo lsof -n -i :3000 | grep LISTEN'
++ Using the second number (the pid) in the result, run `kill ${PID}`
 
 ## How to Install MongoDB
 1. Go to [this link](https://www.mongodb.com/download-center?_ga=2.34334885.546969976.1519083876-785985683.1517259025#enterprise) and download the compressed files for your respective platform.
