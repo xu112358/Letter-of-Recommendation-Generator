@@ -10,15 +10,16 @@ Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3
 + Open up a browser tab to `127.0.0.1:3000` (make sure port 3000 was not already occupied)
 
 ## Making Changes to Deployment (as of Spring 2018)
++ Ensure that any changes to be put on deployment are pushed into server-setup branch of this repo.
 + Run `ssh jeff@68.181.97.191`
 + Enter the password as `csci-401`
 + Run `cd csci-401-capstone/letterOfRecGenerator` from root directrory
-+ Run `git pull`
++ Run `git pull` (Run `git branch` to ensure that the branch is server-setup. If not, run `git checkout server-setup`)
 + Run `mongod --port 12345`
 + Run `npm run devstart`
 
 For the last step, you may need to kill the previous process on port 3000 using the following steps:
-+ Run 'sudo lsof -n -i :3000 | grep LISTEN'
++ Run `sudo lsof -n -i :3000 | grep LISTEN`
 + Using the second number (the pid) in the result, run `kill ${PID}`
 
 ## How to Install MongoDB
