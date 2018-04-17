@@ -22,6 +22,8 @@ For the last step, you may need to kill the previous process on port 3000 using 
 + Run `sudo lsof -n -i :3000 | grep LISTEN`
 + Using the second number (the pid) in the result, run `kill ${PID}`
 
+Afterwards, test to see if the app is properly running by accessing `68.181.97.191/login` on your browser.
+
 ## How to Install MongoDB
 1. Go to [this link](https://www.mongodb.com/download-center?_ga=2.34334885.546969976.1519083876-785985683.1517259025#enterprise) and download the compressed files for your respective platform.
 2. Extract the files from the downloaded archive.
