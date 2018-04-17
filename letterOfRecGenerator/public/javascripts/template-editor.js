@@ -43,7 +43,7 @@ window.onload = function () {
 
     if (id) {
         $.ajax({
-            url: 'http://localhost:3000/template-editor/template',
+            url: `http://68.181.97.191:3000/template-editor/template`,
             data: {id},
             type: 'GET',
             success: function (data) {
@@ -249,7 +249,7 @@ function saveTemplate() {
     if (id) {
         console.log("updating template");
         $.ajax({
-            url: 'http://localhost:3000/template-editor/update',
+            url: `http://68.181.97.191:3000/template-editor/update`,
             data: {
                 id: id,
                 template: template
@@ -261,7 +261,7 @@ function saveTemplate() {
             },
             success: function (data) {
                 console.log('success');
-                window.location.href = 'http://localhost:3000/template-dashboard'
+                window.location.href = `http://68.181.97.191:3000/template-dashboard`
             },
             error: function () {
                 console.log('error');
@@ -270,7 +270,7 @@ function saveTemplate() {
     } else {
         console.log("creating template");
         $.ajax({
-            url: 'http://localhost:3000/template-editor/create',
+            url: `http://68.181.97.191:3000/template-editor/create`,
             data: {template: template},
             type: 'POST',
             complete: function () {
@@ -280,7 +280,7 @@ function saveTemplate() {
                 id = data.id;
 
                 console.log('success');
-                window.location.href = 'http://localhost:3000/template-dashboard'
+                window.location.href = `http://68.181.97.191:3000/template-dashboard`
             },
             error: function () {
                 console.log('error');

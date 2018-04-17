@@ -25,7 +25,7 @@ document.addEventListener("trix-change", function (event) {
 // body
 function onLoad() {
     $.ajax({
-        url: 'http://localhost:3000/letter-preview/form',
+        url: `http://68.181.97.191:3000/letter-preview/form`,
         data: {id},
         type: 'GET',
         success: function (data) {
@@ -35,7 +35,7 @@ function onLoad() {
             var letter = createLetterPreview(form);
             sections.push(letter);
             $.ajax({
-                url: 'http://localhost:3000/letter-preview/save',
+                url: `http://68.181.97.191:3000/letter-preview/save`,
                 data: {
                     id: id,
                     letter: letterText
@@ -80,7 +80,7 @@ function saveEditModal() {
     renderSelectedDisplay();
 
     $.ajax({
-        url: 'http://localhost:3000/letter-preview/save',
+        url: `http://68.181.97.191:3000/letter-preview/save`,
         data: {
             id: id,
             letter: letterText

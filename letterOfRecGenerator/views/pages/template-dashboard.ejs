@@ -60,13 +60,13 @@
 
     function editTemplate(id) {
         $.ajax({
-            url: 'http://localhost:3000/template-editor/edit',
+            url: `http://68.181.97.191:3000/template-editor/edit`,
             data: {id},
             type: 'GET',
             complete: function (data) {
                 var params = data.responseJSON;
                 console.log('complete');
-                window.location.href = getDestinationRoute('http://localhost:3000/template-editor', params);
+                window.location.href = getDestinationRoute(`http://68.181.97.191:3000/template-editor`, params);
             },
             error: function () {
                 console.log('error');
@@ -77,7 +77,7 @@
     // On click for trash icon
     function deleteRow(id) {
         $.ajax({
-            url: 'http://localhost:3000/template-dashboard/delete',
+            url: `http://68.181.97.191:3000/template-dashboard/delete`,
             data: {id},
             type: 'POST',
             complete: function () {
