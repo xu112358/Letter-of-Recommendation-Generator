@@ -497,7 +497,7 @@ function validate(template) {
 
     for (var i = 0; i < template.questions.length; i++) {
         var question = template.questions[i];
-        var query = "div[data-id='" + i + "'][class='question-outer-container']";
+        var query = "div[data-id='" + questions[i].id + "'][class='question-outer-container']";
         var questionHTML = document.querySelector(query);
 
         var totalFields = 3;
