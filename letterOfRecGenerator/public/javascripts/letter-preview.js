@@ -5,8 +5,10 @@ const LETTER_CONTAINER_ID = "letter-container";
 const TRIX_EDITOR = "trix-editor";
 const OUTER_CONTAINER = "outer-container";
 
+var innerContainer;
 var form;
 var letterHTML;
+var templateData;
 var tagRegex = /\<\![a-z0-9_]+\>/ig;
 
 // body
@@ -17,20 +19,32 @@ function onLoad() {
         type: 'GET',
         success: function (data) {
             form = data;
-            console.log('success');
-            letterHTML = createLetterPreview(form, form.letter);
             $.ajax({
-                url: 'http://localhost:3000/letter-preview/save',
-                data: {
-                    id: id,
-                    letter: letterHTML
-                },
-                type: 'POST',
-                success: function (data) {
-                    console.log('letter saved');
-                },
-                error: function () {
-                    console.log('error');
+                url: 'http://localhost:3000/template-editor/template',
+                data: {id: data.template._id},
+                type: 'GET',
+                success: function (dat) {
+                    console.log(data.template._id);
+                    templateData = dat;
+                    console.log(templateData);
+                    templateData.letterheadImg = templateData.letterheadImg || form.template.letterheadImg;
+                    templateData.footerImg = templateData.footerImg || form.template.footerImg;
+                    console.log('success');
+                    letterHTML = createLetterPreview(form, form.letter);
+                    $.ajax({
+                        url: 'http://localhost:3000/letter-preview/save',
+                        data: {
+                            id: id,
+                            letter: letterHTML
+                        },
+                        type: 'POST',
+                        success: function (da) {
+                            console.log('letter saved');
+                        },
+                        error: function () {
+                            console.log('error');
+                        }
+                    });
                 }
             });
         },
@@ -45,7 +59,7 @@ function showEditModal(clicked) {
     var element = document.querySelector(TRIX_EDITOR);
     element.value = "";
     element.editor.setSelectedRange([0, 0]);
-    element.editor.insertHTML(letterHTML);
+    element.editor.insertHTML(innerContainer.innerHTML);
 
     modal.style.display = "block";
 }
@@ -55,7 +69,7 @@ function saveEditModal() {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     var element = document.querySelector(TRIX_EDITOR);
 
-    letterHTML = element.value.replace(/\<div\>/, '<div id="print">');
+    letterHTML = element.value;
     document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
 
     $.ajax({
@@ -84,43 +98,59 @@ function cancelEditModal() {
 
 // Creates the divs for each item in array
 function createLetterPreview(form, letter) {
-    var letterContainer = document.createElement('div');
-    letterContainer.id = LETTER_CONTAINER_ID;
-    var innerContainer = document.createElement('div');
-    innerContainer.id = 'print';
-    letterContainer.onclick = function () {
-        showEditModal(this.id);
-    };
-    letterContainer.style.cursor = 'pointer';
-    var outerContainer = document.getElementById(OUTER_CONTAINER);
-    if (form.template.letterheadImg != null) {
-        var letterhead = document.createElement('img');
-        letterhead.src = form.template.letterheadImg;
-        letterhead.alt = "";
-        letterhead.className = "letterhead-img";
-        innerContainer.appendChild(letterhead)
-    }
+    $(function() {
+        var letterContainer = document.createElement('div');
+        letterContainer.id = LETTER_CONTAINER_ID;
+        innerContainer = document.createElement('div');
+        innerContainer.id = 'print';
+        letterContainer.onclick = function (e) {
+            console.log(e.target);
+            if (e.target.className.indexOf('resizable') != -1) {
+                return;
+            }
+            showEditModal(this.id);
+        };
+        letterContainer.style.cursor = 'pointer';
+        var outerContainer = document.getElementById(OUTER_CONTAINER);
 
-    if (letter) {
-        letterHTML = letter;
-    } else {
-        letterHTML = encodeLetterHTML(parseLetter(form));
-    }
+        if (templateData.letterheadImg != null && !$('.letterhead-img').length) {
+            var imgcontainer = document.createElement('div');
+            imgcontainer.className = 'resizable';
+            var letterhead = document.createElement('img');
+            letterhead.src = templateData.letterheadImg;
+            letterhead.className = "letterhead-img ui-widget-content";
+            letterhead.id = "letterhead-img"
+            letterhead.alt = "";
+            imgcontainer.appendChild(letterhead);
+            innerContainer.appendChild(imgcontainer);
+        }
 
-    innerContainer.innerHTML += letterHTML;
+        if (letter) {
+            letterHTML = letter;
+        } else {
+            letterHTML = encodeLetterHTML(parseLetter(form));
+        }
 
-    if (form.template.footerImg != null) {
-        var footer = document.createElement('img');
-        footer.src = form.template.footerImg;
-        footer.alt = "";
-        footer.className = "footer-img";
-        innerContainer.appendChild(footer)
-    }
+        innerContainer.innerHTML += '<div id = "letter-text">' + letterHTML + '</div>';
 
-    letterContainer.appendChild(innerContainer);
-    outerContainer.appendChild(letterContainer);
+        if (templateData.footerImg != null && !$('.footer-img').length) {
+            var imgcontainer = document.createElement('div');
+            imgcontainer.className = 'resizable';
+            var footer = document.createElement('img');
+            footer.src = templateData.footerImg;
+            footer.alt = "";
+            footer.id = "footer-img";
+            footer.className = "footer-img ui-widget-content";
+            imgcontainer.appendChild(footer);
+            innerContainer.appendChild(imgcontainer);
+        }
 
-    return innerContainer.innerHTML;
+
+        letterContainer.appendChild(innerContainer);
+        outerContainer.appendChild(letterContainer);
+        $('.resizable').resizable();
+        return innerContainer.innerHTML;
+    });
 }
 
 function parseLetter(form) {

@@ -48,7 +48,9 @@ router.get('/edit', function (req, res, next) {
 router.get('/template', function (req, res, next) {
     res.json({
         letter: req.user.getTemplate(req.query.id).getText(),
-        questions: req.user.getTemplate(req.query.id).getQuestions()
+        questions: req.user.getTemplate(req.query.id).getQuestions(),
+        letterheadImg: req.user.getTemplate(req.query.id).getLetterheadImg(),
+        footerImg: req.user.getTemplate(req.query.id).getFooterImg(),
     });
 });
 

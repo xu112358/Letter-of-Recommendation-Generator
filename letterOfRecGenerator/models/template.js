@@ -41,6 +41,14 @@ TemplateSchema.methods.getQuestions = function () {
     return this.questions;
 };
 
+TemplateSchema.methods.getLetterheadImg = function () {
+    return this.letterheadImg;
+};
+
+TemplateSchema.methods.getFooterImg = function () {
+    return this.footerImg;
+};
+
 var Template = db.model('Template', TemplateSchema);
 
 module.exports = Template;
