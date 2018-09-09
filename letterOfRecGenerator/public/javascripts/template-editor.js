@@ -26,6 +26,10 @@ class Question {
         this.options = [];
         nextQuestionIdToUse++;
     }
+    
+    setId(id) {
+        this.id = id;
+    }
 }
 
 const NAME_CONTAINER_TEXT_FIELD_ID = "name-container-text-field";
@@ -140,12 +144,15 @@ window.onclick = function (event) {
 function displayQuestions() {
     // grab the container that will hold all questions
     var container = document.getElementById(QUESTIONS_CONTAINER_ID);
-
+    
     // fill in with questions
     container.innerHTML = "";
     for (var i = 0; i < questions.length; i++) {
         container.innerHTML += getQuestionHTML(questions[i]);
     }
+
+    var list = document.getElementById(QUESTIONS_CONTAINER_ID);
+    Sortable.create(list);
 }
 
 function getQuestionHTML(q) {
@@ -169,7 +176,7 @@ function getQuestionHTML(q) {
             break;
     }
 
-    var html = "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+    var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
     // "required" checkbox
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
@@ -182,7 +189,7 @@ function getQuestionHTML(q) {
     html += "</div>";
     // delete button
     html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
-    html += "</div></div>";
+    html += "</div></div></div>";
     return html;
 }
 
@@ -275,7 +282,7 @@ function saveTemplate() {
             },
             success: function (data) {
                 console.log('success');
-                window.location.href = 'http://localhost:3000/template-dashboard'
+                //window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function () {
                 console.log('error');
@@ -294,7 +301,7 @@ function saveTemplate() {
                 id = data.id;
 
                 console.log('success');
-                window.location.href = 'http://localhost:3000/template-dashboard'
+                //window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function () {
                 console.log('error');
@@ -307,7 +314,25 @@ function getQuestions() {
     var dbQuestions = [];
     var questionNumber = 1;
 
-    questions.forEach(question => dbQuestions.push({
+    var sortableQuestionsHTML = document.getElementById(QUESTIONS_CONTAINER_ID).getElementsByClassName("sortable-questions");
+    //var sortableQuestionsHTML = questionsContainerHTML.getElementsByTagName("DIV");
+    var updatedQuestions = [];
+    var newQuestionIndex = 0;
+
+    for(var i=0; i<sortableQuestionsHTML.length; i++){
+        console.log("i= "+ i);
+        console.log("sortableQuestionsHTML= " + sortableQuestionsHTML[i]);
+        var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName("error-container");
+        console.log("errorContainerHTML= " + errorContainerHTML[0]);
+        var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
+        var dataID = questionsOuterContainer[0].getAttribute("data-id");
+        console.log("dataID= " + dataID);
+        var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional);
+        newQuestion.setId(i);
+        updatedQuestions.push(newQuestion);
+    }
+
+    updatedQuestions.forEach(question => dbQuestions.push({
         number: questionNumber++,
         type: question.type,
         question: question.value,
