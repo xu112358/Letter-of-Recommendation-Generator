@@ -282,7 +282,7 @@ function saveTemplate() {
             },
             success: function (data) {
                 console.log('success');
-                //window.location.href = 'http://localhost:3000/template-dashboard'
+                window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function () {
                 console.log('error');
@@ -301,7 +301,7 @@ function saveTemplate() {
                 id = data.id;
 
                 console.log('success');
-                //window.location.href = 'http://localhost:3000/template-dashboard'
+                window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function () {
                 console.log('error');
@@ -315,7 +315,6 @@ function getQuestions() {
     var questionNumber = 1;
 
     var sortableQuestionsHTML = document.getElementById(QUESTIONS_CONTAINER_ID).getElementsByClassName("sortable-questions");
-    //var sortableQuestionsHTML = questionsContainerHTML.getElementsByTagName("DIV");
     var updatedQuestions = [];
     var newQuestionIndex = 0;
 
