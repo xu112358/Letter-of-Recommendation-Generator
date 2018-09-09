@@ -30,6 +30,10 @@ class Question {
     setId(id) {
         this.id = id;
     }
+
+    setOptions(options) {
+        this.options = options;
+    }
 }
 
 const NAME_CONTAINER_TEXT_FIELD_ID = "name-container-text-field";
@@ -327,6 +331,7 @@ function getQuestions() {
         var dataID = questionsOuterContainer[0].getAttribute("data-id");
         console.log("dataID= " + dataID);
         var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional);
+        newQuestion.setOptions(questions[dataID].options);
         newQuestion.setId(i);
         updatedQuestions.push(newQuestion);
     }
