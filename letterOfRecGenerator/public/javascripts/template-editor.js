@@ -74,6 +74,7 @@ window.onload = function () {
                 console.log('error');
             }
         });
+
     } else {
         loadDefaultQuestions();
         displayQuestions();
@@ -146,6 +147,9 @@ function displayQuestions() {
     for (var i = 0; i < questions.length; i++) {
         container.innerHTML += getQuestionHTML(questions[i]);
     }
+
+    let list = document.getElementById(QUESTIONS_CONTAINER_ID);
+    Sortable.create(list);
 }
 
 function getQuestionHTML(q) {
@@ -169,7 +173,20 @@ function getQuestionHTML(q) {
             break;
     }
 
-    var html = "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+
+
+    // question html
+    let html =
+        ["<div> " +
+            "<h2 class=\"question-header\"> Type: " + question_type_label + "</h2>" +
+            "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" +
+            "<div class=\"error-container\">" +
+                "<div class=\"question-outer-container\"" + data_id_attribute + ">"
+        ];
+
+
+
+
     // "required" checkbox
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
@@ -182,7 +199,7 @@ function getQuestionHTML(q) {
     html += "</div>";
     // delete button
     html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
-    html += "</div></div>";
+    html += "</div></div></div>";
     return html;
 }
 
