@@ -82,8 +82,6 @@ window.onload = function () {
 };
 
 function loadDefaultQuestions() {
-    console.log("****************************loadDefaultQuestions()");
-
     var default1 = new Question("Text", "What is your name?", "<!NAME>");
     questions.push(default1);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
@@ -141,10 +139,6 @@ window.onclick = function (event) {
 }
 
 function displayQuestions() {
-    console.log("****************************displayQuestions()");
-
-    
-
     // grab the container that will hold all questions
     var container = document.getElementById(QUESTIONS_CONTAINER_ID);
 
@@ -154,19 +148,11 @@ function displayQuestions() {
         container.innerHTML += getQuestionHTML(questions[i]);
     }
 
-    var list = document.getElementById(QUESTIONS_CONTAINER_ID);
+    let list = document.getElementById(QUESTIONS_CONTAINER_ID);
     Sortable.create(list);
-
-    // update index
-
-
-
 }
 
 function getQuestionHTML(q) {
-    console.log("****************************getQuestionHTML()");
-
-
     var data_id_attribute = "data-id=\"" + q.id + "\"";
     var delete_onclick_attribute = "onclick=\"deleteQuestionWithWarning(" + q.id + ")\"";
     var multiple_choice_fields_html = getMultipleChoiceFieldsHTML(q);
