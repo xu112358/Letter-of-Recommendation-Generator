@@ -26,6 +26,14 @@ class Question {
         this.options = [];
         nextQuestionIdToUse++;
     }
+    
+    setId(id) {
+        this.id = id;
+    }
+
+    setOptions(options) {
+        this.options = options;
+    }
 }
 
 const NAME_CONTAINER_TEXT_FIELD_ID = "name-container-text-field";
@@ -82,7 +90,9 @@ window.onload = function () {
 };
 
 function loadDefaultQuestions() {
-    var default1 = new Question("Text", "What is your name?", "<!NAME>");
+    var default0 = new Question("Text", "What is your first name?", "<!FNAME>");
+    questions.push(default0);
+    var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
     questions.push(default1);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
@@ -141,7 +151,7 @@ window.onclick = function (event) {
 function displayQuestions() {
     // grab the container that will hold all questions
     var container = document.getElementById(QUESTIONS_CONTAINER_ID);
-
+    
     // fill in with questions
     container.innerHTML = "";
     for (var i = 0; i < questions.length; i++) {
@@ -173,19 +183,7 @@ function getQuestionHTML(q) {
             break;
     }
 
-
-
-    // question html
-    let html =
-        ["<div> " +
-            "<h2 class=\"question-header\"> Type: " + question_type_label + "</h2>" +
-            "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" +
-            "<div class=\"error-container\">" +
-                "<div class=\"question-outer-container\"" + data_id_attribute + ">"
-        ];
-
-
-
+    var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\">" + question_type_label + "</h2>" + "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
 
     // "required" checkbox
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
@@ -324,7 +322,25 @@ function getQuestions() {
     var dbQuestions = [];
     var questionNumber = 1;
 
-    questions.forEach(question => dbQuestions.push({
+    var sortableQuestionsHTML = document.getElementById(QUESTIONS_CONTAINER_ID).getElementsByClassName("sortable-questions");
+    var updatedQuestions = [];
+    var newQuestionIndex = 0;
+
+    for(var i=0; i<sortableQuestionsHTML.length; i++){
+        console.log("i= "+ i);
+        console.log("sortableQuestionsHTML= " + sortableQuestionsHTML[i]);
+        var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName("error-container");
+        console.log("errorContainerHTML= " + errorContainerHTML[0]);
+        var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
+        var dataID = questionsOuterContainer[0].getAttribute("data-id");
+        console.log("dataID= " + dataID);
+        var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional);
+        newQuestion.setOptions(questions[dataID].options);
+        newQuestion.setId(i);
+        updatedQuestions.push(newQuestion);
+    }
+
+    updatedQuestions.forEach(question => dbQuestions.push({
         number: questionNumber++,
         type: question.type,
         question: question.value,
