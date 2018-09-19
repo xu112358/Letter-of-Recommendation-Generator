@@ -74,6 +74,7 @@ window.onload = function () {
                 console.log('error');
             }
         });
+
     } else {
         loadDefaultQuestions();
         displayQuestions();
@@ -81,6 +82,8 @@ window.onload = function () {
 };
 
 function loadDefaultQuestions() {
+    console.log("****************************loadDefaultQuestions()");
+
     var default1 = new Question("Text", "What is your name?", "<!NAME>");
     questions.push(default1);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
@@ -138,6 +141,10 @@ window.onclick = function (event) {
 }
 
 function displayQuestions() {
+    console.log("****************************displayQuestions()");
+
+    
+
     // grab the container that will hold all questions
     var container = document.getElementById(QUESTIONS_CONTAINER_ID);
 
@@ -146,9 +153,20 @@ function displayQuestions() {
     for (var i = 0; i < questions.length; i++) {
         container.innerHTML += getQuestionHTML(questions[i]);
     }
+
+    var list = document.getElementById(QUESTIONS_CONTAINER_ID);
+    Sortable.create(list);
+
+    // update index
+
+
+
 }
 
 function getQuestionHTML(q) {
+    console.log("****************************getQuestionHTML()");
+
+
     var data_id_attribute = "data-id=\"" + q.id + "\"";
     var delete_onclick_attribute = "onclick=\"deleteQuestionWithWarning(" + q.id + ")\"";
     var multiple_choice_fields_html = getMultipleChoiceFieldsHTML(q);
@@ -169,7 +187,20 @@ function getQuestionHTML(q) {
             break;
     }
 
-    var html = "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+
+
+    // question html
+    let html =
+        ["<div> " +
+            "<h2 class=\"question-header\"> Type: " + question_type_label + "</h2>" +
+            "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" +
+            "<div class=\"error-container\">" +
+                "<div class=\"question-outer-container\"" + data_id_attribute + ">"
+        ];
+
+
+
+
     // "required" checkbox
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
@@ -182,7 +213,7 @@ function getQuestionHTML(q) {
     html += "</div>";
     // delete button
     html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
-    html += "</div></div>";
+    html += "</div></div></div>";
     return html;
 }
 
