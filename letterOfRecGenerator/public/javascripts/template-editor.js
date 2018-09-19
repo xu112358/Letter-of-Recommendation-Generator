@@ -89,7 +89,9 @@ window.onload = function () {
 };
 
 function loadDefaultQuestions() {
-    var default1 = new Question("Text", "What is your name?", "<!NAME>");
+    var default0 = new Question("Text", "What is your first name?", "<!FNAME>");
+    questions.push(default0);
+    var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
     questions.push(default1);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
