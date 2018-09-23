@@ -89,6 +89,7 @@ window.onload = function () {
     }
 };
 
+// creates default questions
 function loadDefaultQuestions() {
     var default0 = new Question("Text", "What is your first name?", "<!FNAME>");
     questions.push(default0);
@@ -103,6 +104,12 @@ function loadDefaultQuestions() {
     var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
     default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default4);
+
+    // for organizations
+    var default5 = new Question("Text", "What organizations will you be applying to?", "<!ORGANIZATION>");
+    questions.push(default5);
+    console.log("pushed default");
+
 }
 
 function setUpEventHandlers() {

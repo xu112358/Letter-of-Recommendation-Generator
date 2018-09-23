@@ -92,6 +92,7 @@
         return false;
     }
 
+    // validates form, makes sure optional questions are answers, else shows errors
     function validate() {
         clearErrors();
         var status = true;
@@ -105,10 +106,14 @@
                 var errorContainer = $(question.children('.error-container')[0]);
                 var textArea = $(errorContainer.children('textarea')[0]);
 
+                // check if question is optional
                 if (isOptional(textArea.attr('id'))) {
                     return;
                 }
 
+                console.log("student text response: " + textArea.val());
+
+                // empty response, show error
                 if (textArea.val() === '') {
                     errors.push({
                         error: addError(textArea, 'text answer required'),
@@ -179,7 +184,15 @@
         errors.length = 0;
     }
 
+    /**
+     * Student submits form; takes responses and serializes it
+     * Fired when student presses confirm button in Confirm Submission Modal
+     * @param id
+     * @returns {boolean}
+     */
     function submitForm(id) {
+
+        // takes all responses and serializes into an object
         var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
             if (obj[item.name]) {
                 if (!Array.isArray(obj[item.name])) {
@@ -194,6 +207,10 @@
             return obj;
         }, {});
 
+        console.log("Response Data: ");
+        console.log(responseData);
+
+        // takes responseData and puts each response as an element in responseArray
         var responseArray = [];
         for (var i = 0; i < questions.length; i++) {
             if (responseData[i + 1]) {
@@ -203,6 +220,10 @@
             }
         }
 
+        console.log("Response Array: ");
+        console.log(responseArray);
+
+        // redirects to form-completed page on success, sends responseArray to server
         $.ajax({
             url: 'http://localhost:3000/form-entry',
             data: {

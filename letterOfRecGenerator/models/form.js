@@ -22,8 +22,18 @@ var FormSchema = new Schema({
         submitted: Date,
         completed: Date
     },
-    letter: String
+    letter: String,
+    duplicated: Boolean
 });
+
+
+FormSchema.methods.getResponses = function () {
+    console.log("this form's responses: ");
+    console.log(this.responses);
+
+    // if there are multiple schools, create copies
+    return this.responses;
+};
 
 FormSchema.statics.createForm = function (email, template, cb) {
     Link.generateLink(email, function (err, link) {
@@ -35,11 +45,34 @@ FormSchema.statics.createForm = function (email, template, cb) {
                 status: 'Sent',
                 template: template,
                 link: link,
-                'meta.sent': Date.now()
+                'meta.sent': Date.now(),
+                duplicated: false
             }, cb);
         }
     });
 };
+
+FormSchema.statics.duplicateForm = function (form, cb) {
+    console.log("IN FORMSCHEMA DUPLICATEFORM");
+    //Link.generateLink(email, function (err, link) {
+
+        // if (err) {
+        //     cb(err, null);
+        // } else {
+        Form.create({
+            email: form.email,
+            status: form.status,
+            template: form.template,
+            link: form.link,
+            responses: form.responses,
+            meta: form.meta,
+            letter: form.letter,
+            duplicated: true
+        }, cb);
+        //}
+    //});
+};
+
 
 FormSchema.statics.findForm = function (id, cb) {
     Form.findOne({_id: id}, cb);
@@ -93,6 +126,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             var responses = [];
             form['template']['questions'].forEach(function (question) {
                 var response = responseData[question.number - 1];
+                console.log("response: " + response);
 
                 if (!response.length) {
                     responses.push({
@@ -147,6 +181,8 @@ FormSchema.statics.completeForm = function (id, letter, cb) {
         }
     });
 };
+
+
 
 var Form = db.model('Form', FormSchema);
 

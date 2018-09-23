@@ -16,8 +16,74 @@ router.use(function (req, res, next) {
     next();
 });
 
+/**
+ * data needed to render recommender-dashboard
+ */
 router.get('/', function (req, res, next) {
+
+    req.user.duplicateForms(function (err, forms) {
+        console.log("duplicate Forms router!!!");
+
+        // let numOrganizations = 0;
+        // let formToDuplicate = null;
+        for(let i=0; i<forms.length; i++) {
+            console.log("FORM ***********************************");
+            console.log(forms[i]);
+
+            // if this form.duplicate == false
+            if(!forms[i].duplicated) {
+
+                let responses = forms[i].responses;
+                for (let j = 0; j < responses.length; j++) {
+                    let tag = responses[j].tag;
+                    console.log(tag);
+                    if (tag === '<!ORGANIZATION>') {
+                        let organizationsList = responses[j].response.trim();
+                        let organizationsArr = organizationsList.split(", ");
+                        console.log("LENGTH OF ORGS");
+                        console.log(organizationsArr.length);
+                        let numOrganizations = organizationsArr.length;
+                        let formToDuplicate = forms[i];
+
+                        formToDuplicate.duplicated = true;
+                        formToDuplicate.save();
+
+                        for(let k=0; k<numOrganizations-1; k++) {
+                            Form.duplicateForm(formToDuplicate, function (err, form) {
+                                req.user.addForm(form, function (err) {
+                                    if (err) {
+                                        console.log(`error: ${err}`);
+                                        return;
+                                    }
+                                });
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        // console.log("template");
+        // console.log(formToDuplicate.template);
+        // console.log("email");
+        // console.log(formToDuplicate.email);
+        //
+        // let email = formToDuplicate.email;
+        // let template = formToDuplicate.template;
+
+
+
+
+
+
+    });
+
     req.user.getForms(function (err, forms) {
+        console.log("get forms !!");
+        console.log("my forms: ");
+        //console.log(JSON.stringify(forms, null, 2));
+        console.log("length: ");
+        console.log(forms.length);
         if (err) {
             console.log(`error: ${err}`);
         } else {
@@ -42,6 +108,8 @@ router.post('/', function (req, res, next) {
         });
         return;
     }
+
+
 
     Form.createForm(toEmail, req.user.getTemplate(req.body.templateId), function (err, form) {
         if (err) {

@@ -85,6 +85,13 @@ UserSchema.methods.addForm = function (form, cb) {
     this.save(cb);
 };
 
+
+UserSchema.methods.duplicateForms = function (cb) {
+    User.findOne({id: this.id}).populate('forms').exec(function (err, user) {
+        cb(err, user.forms);
+    })
+};
+
 UserSchema.methods.getForms = function (cb) {
     User.findOne({id: this.id}).populate('forms').exec(function (err, user) {
         cb(err, user.forms);
