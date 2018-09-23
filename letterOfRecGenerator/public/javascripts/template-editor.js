@@ -95,6 +95,8 @@ function loadDefaultQuestions() {
     questions.push(default0);
     var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
     questions.push(default1);
+    var organizationQuestion = new Question("Text", "Name the organizations you are applying to, seperated with commas.", "<!ORG>");
+    questions.push(organizationQuestion);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
     questions.push(default2);
@@ -106,8 +108,7 @@ function loadDefaultQuestions() {
     questions.push(default4);
 
     // for organizations
-    var default5 = new Question("Text", "What organizations will you be applying to?", "<!ORGANIZATION>");
-    questions.push(default5);
+    
     console.log("pushed default");
 
 }

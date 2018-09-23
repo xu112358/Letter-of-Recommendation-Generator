@@ -28,8 +28,8 @@ var FormSchema = new Schema({
 
 
 FormSchema.methods.getResponses = function () {
-    console.log("this form's responses: ");
-    console.log(this.responses);
+    // console.log("this form's responses: ");
+    // console.log(this.responses);
 
     // if there are multiple schools, create copies
     return this.responses;
@@ -54,23 +54,16 @@ FormSchema.statics.createForm = function (email, template, cb) {
 
 FormSchema.statics.duplicateForm = function (form, cb) {
     console.log("IN FORMSCHEMA DUPLICATEFORM");
-    //Link.generateLink(email, function (err, link) {
-
-        // if (err) {
-        //     cb(err, null);
-        // } else {
-        Form.create({
-            email: form.email,
-            status: form.status,
-            template: form.template,
-            link: form.link,
-            responses: form.responses,
-            meta: form.meta,
-            letter: form.letter,
-            duplicated: true
-        }, cb);
-        //}
-    //});
+    Form.create({
+        email: form.email,
+        status: form.status,
+        template: form.template,
+        link: form.link,
+        responses: form.responses,
+        meta: form.meta,
+        letter: form.letter,
+        duplicated: true
+    }, cb);
 };
 
 
@@ -117,6 +110,11 @@ FormSchema.methods.getSubmitted = function () {
 FormSchema.methods.getTemplate = function () {
     return this.template;
 };
+
+FormSchema.methods.setDuplicatedTrueAndSave = function() {
+    this.duplicated = true;
+    this.save();
+}
 
 FormSchema.statics.submitForm = function (id, responseData, cb) {
     FormSchema.statics.findForm(id, function (err, form) {
@@ -181,7 +179,6 @@ FormSchema.statics.completeForm = function (id, letter, cb) {
         }
     });
 };
-
 
 
 var Form = db.model('Form', FormSchema);

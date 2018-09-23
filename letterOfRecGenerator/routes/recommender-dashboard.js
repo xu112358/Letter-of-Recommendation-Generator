@@ -23,77 +23,68 @@ router.get('/', function (req, res, next) {
 
     req.user.duplicateForms(function (err, forms) {
         console.log("duplicate Forms router!!!");
-
-        // let numOrganizations = 0;
-        // let formToDuplicate = null;
-        for(let i=0; i<forms.length; i++) {
-            console.log("FORM ***********************************");
-            console.log(forms[i]);
-
-            // if this form.duplicate == false
-            if(!forms[i].duplicated) {
-
-                let responses = forms[i].responses;
-                for (let j = 0; j < responses.length; j++) {
-                    let tag = responses[j].tag;
-                    console.log(tag);
-                    if (tag === '<!ORGANIZATION>') {
-                        let organizationsList = responses[j].response.trim();
-                        let organizationsArr = organizationsList.split(", ");
-                        console.log("LENGTH OF ORGS");
-                        console.log(organizationsArr.length);
-                        let numOrganizations = organizationsArr.length;
-                        let formToDuplicate = forms[i];
-
-                        formToDuplicate.duplicated = true;
-                        formToDuplicate.save();
-
-                        for(let k=0; k<numOrganizations-1; k++) {
-                            Form.duplicateForm(formToDuplicate, function (err, form) {
-                                req.user.addForm(form, function (err) {
-                                    if (err) {
-                                        console.log(`error: ${err}`);
-                                        return;
+        if(err){
+            console.log(`error: ${err}`);
+        } else {
+            for(let i=0; i<forms.length; i++) {
+                console.log("FORM ***********************************");
+                // if this form.duplicate == false
+                if(!forms[i].duplicated) {
+                    console.log(forms[i]._id)
+                    let responses = forms[i].responses;
+                    for (let j = 0; j < responses.length; j++) {
+                        let tag = responses[j].tag;
+                        // console.log(tag);
+                        if (tag === '<!ORG>') {
+                            let organizationsList = responses[j].response.trim();
+                            let organizationsArr = organizationsList.split(", ");
+                            console.log("LENGTH OF ORGS: " + organizationsArr.length);
+                            console.log("list: " + organizationsList);
+                            let numOrganizations = organizationsArr.length;
+                            let formToDuplicate = forms[i];
+    
+                            formToDuplicate.setDuplicatedTrueAndSave();
+                            console.log("numOrganizations: " + numOrganizations);
+                            for(let k=0; k<numOrganizations-1; ++k) {
+                                Form.duplicateForm(formToDuplicate, function (err, form) {
+                                    console.log("Duplicated success: " + k);
+                                    if(err){
+                                        console.log("error in Form.duplicateForm");
+                                    } else {
+                                        req.user.addForm(form, function (err) {
+                                            console.log("addForm success: " + k);
+                                            console.log("form ID: " + forms._id);
+                                            if (err) {
+                                                console.log(`error: ${err}`);
+                                                return;
+                                            }
+                                        });
                                     }
                                 });
-                            });
-                        }
+                            }
                     }
                 }
             }
         }
 
-        // console.log("template");
-        // console.log(formToDuplicate.template);
-        // console.log("email");
-        // console.log(formToDuplicate.email);
-        //
-        // let email = formToDuplicate.email;
-        // let template = formToDuplicate.template;
-
-
-
-
-
-
+        req.user.getForms(function (err, forms) {
+            console.log("get forms !!");
+            console.log("length: " + forms.length);
+            if (err) {
+                console.log(`error: ${err}`);
+            } else {
+                res.render('pages/recommender-dashboard', {
+                    title: 'Welcome ' + req.user.displayName + '!',
+                    templates: req.user.getTemplates(),
+                    forms: forms,
+                });
+            }
+        });
     });
 
-    req.user.getForms(function (err, forms) {
-        console.log("get forms !!");
-        console.log("my forms: ");
-        //console.log(JSON.stringify(forms, null, 2));
-        console.log("length: ");
-        console.log(forms.length);
-        if (err) {
-            console.log(`error: ${err}`);
-        } else {
-            res.render('pages/recommender-dashboard', {
-                title: 'Welcome ' + req.user.displayName + '!',
-                templates: req.user.getTemplates(),
-                forms: forms,
-            });
-        }
-    });
+    //console.log(req.user.getForms)
+
+    
 });
 
 router.post('/', function (req, res, next) {
