@@ -77,8 +77,7 @@ UserSchema.methods.getTemplate = function (id) {
 
 UserSchema.methods.removeTemplate = function (id, cb) {
     this.getTemplate(id).remove();
-    // this.save(cb);
-    this.$__save();
+    this.save(cb);
 };
 
 UserSchema.methods.addMultipleForms = function (formArr, cb) {
