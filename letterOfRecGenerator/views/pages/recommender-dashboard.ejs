@@ -36,17 +36,21 @@
     <thead>
     <tr>
         <td>Name</td>
+        <td>Organization</td>
         <td>Template</td>
         <td class="center">Status</td>
         <td class="icons"></td>
     </tr>
     </thead>
     <tbody>
+    <% console.log("!!!!!!!!!!!!!!!! num forms: " + forms.length)  %>
     <% for (var form of forms) { %>
     <tr>
         <td><%= form.email %></td>
+        <td><%= form.organization %></td>
         <td><%= form.template.name %></td>
         <td class="center">
+
             <% if (form.status == 'Sent') { %>
             <img class="icon" src="/images/red_x.png"/>
             <% } else { %>

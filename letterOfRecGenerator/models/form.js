@@ -1,5 +1,6 @@
 var db = require('../db');
-var Link = require('./link')
+var Link = require('./link');
+var User = require('./user');
 var Template = require('./template');
 
 
@@ -23,7 +24,8 @@ var FormSchema = new Schema({
         completed: Date
     },
     letter: String,
-    duplicated: Boolean
+    duplicated: Boolean,
+    organization: String
 });
 
 
@@ -35,6 +37,12 @@ FormSchema.methods.getResponses = function () {
     return this.responses;
 };
 
+/**
+ * Creates a new form and initializes values
+ * @param email Students email address
+ * @param template
+ * @param cb
+ */
 FormSchema.statics.createForm = function (email, template, cb) {
     Link.generateLink(email, function (err, link) {
         if (err) {
@@ -46,13 +54,20 @@ FormSchema.statics.createForm = function (email, template, cb) {
                 template: template,
                 link: link,
                 'meta.sent': Date.now(),
-                duplicated: false
+                duplicated: false,
+                organization: "unspecified"
             }, cb);
         }
     });
 };
 
-FormSchema.statics.duplicateForm = function (form, cb) {
+/**
+ * Duplicated a form and adds organization value
+ * @param form - form to be duplicated
+ * @param organization - organization that unique to the duplicated form
+ * @param cb
+ */
+FormSchema.statics.duplicateForm = function (form, organization, cb) {
     console.log("IN FORMSCHEMA DUPLICATEFORM");
     Form.create({
         email: form.email,
@@ -62,7 +77,8 @@ FormSchema.statics.duplicateForm = function (form, cb) {
         responses: form.responses,
         meta: form.meta,
         letter: form.letter,
-        duplicated: true
+        duplicated: true,
+        organization: organization
     }, cb);
 };
 
@@ -111,10 +127,19 @@ FormSchema.methods.getTemplate = function () {
     return this.template;
 };
 
+/**
+ * Setter for organization
+ * @param organization
+ */
+FormSchema.methods.setOrganization = function (organization) {
+    this.organization = organization;
+    this.save();
+};
+
 FormSchema.methods.setDuplicatedTrueAndSave = function() {
     this.duplicated = true;
     this.save();
-}
+};
 
 FormSchema.statics.submitForm = function (id, responseData, cb) {
     FormSchema.statics.findForm(id, function (err, form) {
@@ -153,6 +178,50 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             form.status = 'Submitted';
             form['responses'] = responses;
             form['meta']['submitted'] = Date.now();
+
+            /*
+            console.log("----------------------------findForm (new form created) : ----------------------");
+            console.log(form);
+
+            for (let j = 0; j < responses.length; j++) {
+                let tag = responses[j].tag;
+                // console.log(tag);
+                if (tag === '<!ORG>') {
+                    let organizationsList = responses[j].response.trim();
+                    let organizationsArr = organizationsList.split(", ");
+                    console.log("LENGTH OF ORGS: " + organizationsArr.length);
+                    console.log("list: " + organizationsList);
+                    let numOrganizations = organizationsArr.length;
+                    //let formToDuplicate = forms[i];
+                    console.log("numOrganizations: " + numOrganizations);
+
+                    if(numOrganizations > 1) {
+                        // duplicate numOrganizations - 1 times
+                        for(let k=0; k<5; k++) {
+                            Form.duplicateForm(form, function (err, form) {
+                                console.log("Duplicated success: " + k);
+                                if (err) {
+                                    console.log("error in Form.duplicateForm");
+                                } else {
+                                    // add this form to user
+                                    // User.addForm(form);
+
+                                    User.addForm(form, function (err) {
+                                        if (err) {
+                                            console.log(`error: ${err}`);
+                                            return;
+                                        }
+                                    });
+
+
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            */
+
 
             form.save(function (err) {
                 cb(err, form);

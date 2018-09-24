@@ -21,16 +21,17 @@ router.use(function (req, res, next) {
  */
 router.get('/', function (req, res, next) {
 
-    req.user.duplicateForms(function (err, forms) {
-        console.log("duplicate Forms router!!!");
-        if(err){
-            console.log(`error: ${err}`);
-        } else {
+        req.user.getForms(function (err, forms) {
+            console.log("get forms !!");
+            console.log("length: " + forms.length);
+            // have to make sure forms is correct number here
+            // so when it passes to frontend, it's correct number
+
             for(let i=0; i<forms.length; i++) {
                 console.log("FORM ***********************************");
                 // if this form.duplicate == false
                 if(!forms[i].duplicated) {
-                    console.log(forms[i]._id)
+                    console.log(forms[i]._id);
                     let responses = forms[i].responses;
                     for (let j = 0; j < responses.length; j++) {
                         let tag = responses[j].tag;
@@ -42,34 +43,51 @@ router.get('/', function (req, res, next) {
                             console.log("list: " + organizationsList);
                             let numOrganizations = organizationsArr.length;
                             let formToDuplicate = forms[i];
-    
+
                             formToDuplicate.setDuplicatedTrueAndSave();
                             console.log("numOrganizations: " + numOrganizations);
-                            for(let k=0; k<numOrganizations-1; ++k) {
-                                Form.duplicateForm(formToDuplicate, function (err, form) {
+
+                            // // edit this form so that its organization
+                            formToDuplicate.setOrganization(organizationsArr[0]);
+
+                            // duplicate (numOrganizations - 1) many forms and add organizations value
+                            let duplicatedForms = [];
+                            for (let k = 1; k < numOrganizations; k++) {
+                                console.log("============= in for loop ==============");
+                                Form.duplicateForm(formToDuplicate, organizationsArr[k] , function (err, form) {
                                     console.log("Duplicated success: " + k);
-                                    if(err){
+                                    if (err) {
                                         console.log("error in Form.duplicateForm");
                                     } else {
-                                        req.user.addForm(form, function (err) {
-                                            console.log("addForm success: " + k);
-                                            console.log("form ID: " + forms._id);
-                                            if (err) {
-                                                console.log(`error: ${err}`);
-                                                return;
-                                            }
-                                        });
+                                        //form.setOrganization("haha");
+                                        duplicatedForms.push(form);
+                                        console.log("DUPLICATED FORMS SIZE: " + duplicatedForms.length);
+                                        if(duplicatedForms.length === (numOrganizations-1)) {
+                                            console.log("Done!");
+
+                                            req.user.addMultipleForms(duplicatedForms, function (err) {
+                                                console.log("addForm success: " + k);
+                                                console.log("form ID: " + forms._id);
+                                                if (err) {
+                                                    console.log(`error: ${err}`);
+                                                    return;
+                                                }
+                                            });
+
+                                        }
                                     }
                                 });
+
                             }
+
+
+
+                        }
                     }
                 }
             }
-        }
 
-        req.user.getForms(function (err, forms) {
-            console.log("get forms !!");
-            console.log("length: " + forms.length);
+
             if (err) {
                 console.log(`error: ${err}`);
             } else {
@@ -80,7 +98,7 @@ router.get('/', function (req, res, next) {
                 });
             }
         });
-    });
+    //});
 
     //console.log(req.user.getForms)
 
