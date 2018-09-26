@@ -25,7 +25,8 @@ var FormSchema = new Schema({
     },
     letter: String,
     duplicated: Boolean,
-    organization: String
+    organization: String,
+    owner: {type: db.Schema.Types.ObjectId, ref: 'User'}
 });
 
 
@@ -43,7 +44,8 @@ FormSchema.methods.getResponses = function () {
  * @param template
  * @param cb
  */
-FormSchema.statics.createForm = function (email, template, cb) {
+FormSchema.statics.createForm = function (email, template, userId, cb) {
+    console.log("inside createForm, id: " + userId);
     Link.generateLink(email, function (err, link) {
         if (err) {
             cb(err, null);
@@ -55,7 +57,8 @@ FormSchema.statics.createForm = function (email, template, cb) {
                 link: link,
                 'meta.sent': Date.now(),
                 duplicated: false,
-                organization: "unspecified"
+                organization: "unspecified",
+                owner: userId
             }, cb);
         }
     });
@@ -141,22 +144,33 @@ FormSchema.methods.setDuplicatedTrueAndSave = function() {
     this.save();
 };
 
-FormSchema.statics.submitForm = function (id, responseData, cb) {
+FormSchema.statics.submitForm = function (id, responseData, duplicatedFormArr, cb) {
+    var organizationArr = [];
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
-            cb(err, null);
+            cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
         } else {
             var responses = [];
             form['template']['questions'].forEach(function (question) {
                 var response = responseData[question.number - 1];
-                console.log("response: " + response);
-
+                /* If the question has a organizationFlag that is true, 
+                attempt to extract the organizations (seperated with , )
+                and make additional Forms with the different organization names */
+                if(question.organizationFlag){
+                    console.log("found organization Question")
+                    let organizationList = response.trim();
+                    organizationArr = organizationList.split(", ");
+                    console.log("Length of Orgs: " + organizationArr.length);
+                    
+                }
+                //If response is empty
                 if (!response.length) {
                     responses.push({
                         tag: question.tag,
                         response: ''
                     });
                 } else if (!(response instanceof Array)) {
+                    //other response types are from here
                     responses.push({
                         tag: question.tag,
                         response: response
@@ -174,59 +188,106 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     });
                 }
             });
-
+            //Update organization to be the first one
+            form.organization = organizationArr[0];
+            form.duplicated = true;
             form.status = 'Submitted';
             form['responses'] = responses;
             form['meta']['submitted'] = Date.now();
-
-            /*
-            console.log("----------------------------findForm (new form created) : ----------------------");
-            console.log(form);
-
-            for (let j = 0; j < responses.length; j++) {
-                let tag = responses[j].tag;
-                // console.log(tag);
-                if (tag === '<!ORG>') {
-                    let organizationsList = responses[j].response.trim();
-                    let organizationsArr = organizationsList.split(", ");
-                    console.log("LENGTH OF ORGS: " + organizationsArr.length);
-                    console.log("list: " + organizationsList);
-                    let numOrganizations = organizationsArr.length;
-                    //let formToDuplicate = forms[i];
-                    console.log("numOrganizations: " + numOrganizations);
-
-                    if(numOrganizations > 1) {
-                        // duplicate numOrganizations - 1 times
-                        for(let k=0; k<5; k++) {
-                            Form.duplicateForm(form, function (err, form) {
-                                console.log("Duplicated success: " + k);
-                                if (err) {
-                                    console.log("error in Form.duplicateForm");
-                                } else {
-                                    // add this form to user
-                                    // User.addForm(form);
-
-                                    User.addForm(form, function (err) {
-                                        if (err) {
-                                            console.log(`error: ${err}`);
-                                            return;
-                                        }
-                                    });
-
-
-                                }
+              
+            form.save().then(function(savedForm){
+                // console.log("promise success: " + savedForm);
+                if(organizationArr.length > 1){
+                    console.log("started making duplicates")
+                    for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
+                        console.log("============= in for loop ==============");
+    
+                        // form.duplicateFormTest(savedForm, organizationArr[orgIndex]).then(
+                        //     function(duplicatedForm){
+                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm);
+                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm._id);
+                        //     duplicateFormArr.push(duplicatedForm);
+                        // }, function(err){
+                        //     console.log("duplicateFormTest promise err: " + err);
+                        // });
+                        var promise = Form.create({
+                            email: savedForm.email,
+                            status: savedForm.status,
+                            template: savedForm.template,
+                            link: savedForm.link,
+                            responses: savedForm.responses,
+                            meta: savedForm.meta,
+                            letter: savedForm.letter,
+                            duplicated: true,
+                            organization: organizationArr[orgIndex]
+                        });
+                    
+                        promise.then(function(savedForm){
+                            //console.log("so...what is this?: " + savedForm);
+                            //duplicateFormIdArr.push(savedForm._id);
+                            console.log("savedFormID?: " + savedForm._id);
+                            //cb(savedForm);
+                            duplicatedFormArr.push(savedForm);
+                            arrPromise.then(function(array){
+                                console.log("arrPromise: duplicatedFormArr.length: " + duplicatedFormArr.length);
+                            }, function(welp) {
+                                console.log("welp");
                             });
-                        }
+                        }, function(rejected) {
+                            console.log("rejected promise: " + rejected);
+                        });
+
+                        // var promise = form.duplicateFormTest(savedForm, organizationArr[orgIndex]);
+                        // promise.then(function(duplicatedForm){
+                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm);
+                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm._id);
+                        //     duplicateFormArr.push(duplicatedForm);
+                        // }, function(err) {
+                        //     console.log("duplicateFormTest promise err: " + err);
+                        // });
                     }
-                }
-            }
-            */
-
-
-            form.save(function (err) {
-                cb(err, form);
+                    console.log("duplicateFormIdArr.length: " + duplicatedFormArr.length);
+                }           
+            }, function(err) {
+                console.log("promise error: " + err);
             });
+            
+            // console.log("owner?? " + this.owner);
+            // UserModel.findUser(this.owner, function(err, user){
+            //     if(err) {
+            //         console.log( "error!!!!");
+            //     } else {
+            //         console.log("id???found?: " + user._id);
+            //     }
+            // });
         }
+        cb(err);
+    });
+};
+
+FormSchema.methods.duplicateFormTest = function (form, org) {
+
+    var promise = Form.create({
+        email: form.email,
+        status: form.status,
+        template: form.template,
+        link: form.link,
+        responses: form.responses,
+        meta: form.meta,
+        letter: form.letter,
+        duplicated: true,
+        organization: org
+    });
+
+    console.log("what is promise?: " + promise);
+    promise.then(function(savedForm){
+        //console.log("so...what is this?: " + savedForm);
+        //duplicateFormIdArr.push(savedForm._id);
+        console.log("savedFormID?: " + savedForm._id);
+        //cb(savedForm);
+        return savedForm;
+    }, function(rejected) {
+        console.log("rejected promise: " + rejected);
     });
 };
 

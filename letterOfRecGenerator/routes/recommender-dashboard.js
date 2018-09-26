@@ -27,66 +27,59 @@ router.get('/', function (req, res, next) {
             // have to make sure forms is correct number here
             // so when it passes to frontend, it's correct number
 
-            for(let i=0; i<forms.length; i++) {
-                console.log("FORM ***********************************");
-                // if this form.duplicate == false
-                if(!forms[i].duplicated) {
-                    console.log(forms[i]._id);
-                    let responses = forms[i].responses;
-                    for (let j = 0; j < responses.length; j++) {
-                        let tag = responses[j].tag;
-                        // console.log(tag);
-                        if (tag === '<!ORG>') {
-                            let organizationsList = responses[j].response.trim();
-                            let organizationsArr = organizationsList.split(", ");
-                            console.log("LENGTH OF ORGS: " + organizationsArr.length);
-                            console.log("list: " + organizationsList);
-                            let numOrganizations = organizationsArr.length;
-                            let formToDuplicate = forms[i];
+            // for(let i=0; i<forms.length; i++) {
+            //     console.log("FORM ***********************************");
+            //     // if this form.duplicate == false
+            //     if(!forms[i].duplicated) {
+            //         console.log(forms[i]._id);
+            //         let responses = forms[i].responses;
+            //         for (let j = 0; j < responses.length; j++) {
+            //             let tag = responses[j].tag;
+            //             // console.log(tag);
+            //             if (tag === '<!ORG>') {
+            //                 let organizationsList = responses[j].response.trim();
+            //                 let organizationsArr = organizationsList.split(", ");
+            //                 console.log("LENGTH OF ORGS: " + organizationsArr.length);
+            //                 console.log("list: " + organizationsList);
+            //                 let numOrganizations = organizationsArr.length;
+            //                 let formToDuplicate = forms[i];
 
-                            formToDuplicate.setDuplicatedTrueAndSave();
-                            console.log("numOrganizations: " + numOrganizations);
+            //                 formToDuplicate.setDuplicatedTrueAndSave();
+            //                 console.log("numOrganizations: " + numOrganizations);
 
-                            // // edit this form so that its organization
-                            formToDuplicate.setOrganization(organizationsArr[0]);
+            //                 // // edit this form so that its organization
+            //                 formToDuplicate.setOrganization(organizationsArr[0]);
 
-                            // duplicate (numOrganizations - 1) many forms and add organizations value
-                            let duplicatedForms = [];
-                            for (let k = 1; k < numOrganizations; k++) {
-                                console.log("============= in for loop ==============");
-                                Form.duplicateForm(formToDuplicate, organizationsArr[k] , function (err, form) {
-                                    console.log("Duplicated success: " + k);
-                                    if (err) {
-                                        console.log("error in Form.duplicateForm");
-                                    } else {
-                                        //form.setOrganization("haha");
-                                        duplicatedForms.push(form);
-                                        console.log("DUPLICATED FORMS SIZE: " + duplicatedForms.length);
-                                        if(duplicatedForms.length === (numOrganizations-1)) {
-                                            console.log("Done!");
+            //                 // duplicate (numOrganizations - 1) many forms and add organizations value
+            //                 let duplicatedForms = [];
+            //                 for (let k = 1; k < numOrganizations; k++) {
+            //                     console.log("============= in for loop ==============");
+            //                     Form.duplicateForm(formToDuplicate, organizationsArr[k] , function (err, form) {
+            //                         console.log("Duplicated success: " + k);
+            //                         if (err) {
+            //                             console.log("error in Form.duplicateForm");
+            //                         } else {
+            //                             //form.setOrganization("haha");
+            //                             duplicatedForms.push(form);
+            //                             console.log("DUPLICATED FORMS SIZE: " + duplicatedForms.length);
+            //                             if(duplicatedForms.length === (numOrganizations-1)) {
+            //                                 console.log("Done!");
 
-                                            req.user.addMultipleForms(duplicatedForms, function (err) {
-                                                console.log("addForm success: " + k);
-                                                console.log("form ID: " + forms._id);
-                                                if (err) {
-                                                    console.log(`error: ${err}`);
-                                                    return;
-                                                }
-                                            });
-
-                                        }
-                                    }
-                                });
-
-                            }
-
-
-
-                        }
-                    }
-                }
-            }
-
+            //                                 req.user.addMultipleForms(duplicatedForms, function (err) {
+            //                                     console.log("addForm success: " + k);
+            //                                     if (err) {
+            //                                         console.log(`error: ${err}`);
+            //                                         return;
+            //                                     }
+            //                                 });
+            //                             }
+            //                         }
+            //                     });
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
 
             if (err) {
                 console.log(`error: ${err}`);
@@ -97,12 +90,7 @@ router.get('/', function (req, res, next) {
                     forms: forms,
                 });
             }
-        });
-    //});
-
-    //console.log(req.user.getForms)
-
-    
+        }); 
 });
 
 router.post('/', function (req, res, next) {
@@ -118,9 +106,10 @@ router.post('/', function (req, res, next) {
         return;
     }
 
-
-
-    Form.createForm(toEmail, req.user.getTemplate(req.body.templateId), function (err, form) {
+    var currentUser = req.user;
+    var userId = currentUser._id;
+    //console.log("what is user id?: " + objectId);
+    Form.createForm(toEmail, req.user.getTemplate(req.body.templateId), userId, function (err, form) {
         if (err) {
             console.log(`error: ${err}`);
         } else {

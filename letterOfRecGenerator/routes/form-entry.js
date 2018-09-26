@@ -29,7 +29,10 @@ router.get('/:hash', function (req, res, next) {
  */
 router.post('/', function (req, res, next) {
     console.log(req.body.responseData);
-    Form.submitForm(req.body.id, req.body.responseData, function (err, form) {
+    var duplicatedFormArr = [];
+    Form.submitForm(req.body.id, req.body.responseData, duplicatedFormArr, function (err) {
+        console.log("is there error is router?: " + err);
+        console.log("in router: " + duplicatedFormArr.length);
         if (err) {
             res.send("unable to update responses of user form");
         } else {
