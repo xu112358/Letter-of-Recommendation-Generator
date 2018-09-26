@@ -1,16 +1,14 @@
 var id = parseAttribute('id');
 
-const ADD_QUESTION_MODAL_ID = "add-question-modal";
-const LETTER_CONTAINER_ID = "letter-container";
-const TRIX_EDITOR = "trix-editor";
-const OUTER_CONTAINER = "outer-container";
-
 var innerContainer;
 var form;
 var letterHTML;
 var templateData;
 var tagRegex = /\<\![a-z0-9_]+\>/ig;
 
+const EMAIL_SUBECT_TEXT_AREA_ID = "email-subject-text-area";
+const EMAIL_BODY_TEXT_AREA_ID = "email-body-text-area";
+const EMAIL_TEMPLATES = "email-templates";
 // body
 function onLoad() {
     $.ajax({
@@ -26,7 +24,7 @@ function onLoad() {
                 success: function (dat) {
                     console.log(data.template._id);
                     templateData = dat;
-                    console.log(templateData);
+                    // console.log(templateData);
                     templateData.letterheadImg = templateData.letterheadImg || form.template.letterheadImg;
                     templateData.footerImg = templateData.footerImg || form.template.footerImg;
                     console.log('success');
@@ -202,3 +200,64 @@ function parseAttribute(attr) {
 function encodeLetterHTML(text) {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
 }
+
+function addEmailHistory() {
+    console.log("saveEmailTemplate called");
+
+    var Email = {
+        title: document.getElementById(EMAIL_TEMPLATES).value,
+        subject: document.getElementById(EMAIL_SUBECT_TEXT_AREA_ID).value,
+        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).value
+    };
+
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/addEmailHistory',
+        data: {
+            id: id,
+            Email: Email
+        },
+        type: 'POST',
+        complete: function () {
+            console.log('complete');
+        },
+        success: function (data) {
+            id = data.id;
+
+            console.log('success');
+            window.location.href = 'http://localhost:3000/history'
+        },
+        error: function () {
+            console.log('error');
+        }
+    });
+    // if (!validate(Emailtemplate)) {
+    //     window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
+    //     emphasizeTags();
+    //     return;
+    // }
+}
+
+    // if (id) {
+    //     console.log("updating template");
+    //     console.log(id, template);
+    //     $.ajax({
+    //         url: 'http://localhost:3000/template-editor/update',
+    //         data: {
+    //             id: id,
+    //             template: template
+    //         },
+    //         type: 'POST',
+    //         cache: false,
+    //         complete: function (data) {
+    //             console.log('complete');
+    //         },
+    //         success: function (data) {
+    //             console.log('success');
+    //             window.location.href = 'http://localhost:3000/template-dashboard'
+    //         },
+    //         error: function () {
+    //             console.log('error');
+    //         }
+    //     });
+    // } else {
+    

@@ -54,9 +54,19 @@
             <% } %>
         </td>
         <td class="center">
-            <img class="icon clickable" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
-                id: form._id
+            <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
+                id: form._id, email: form.email
+            }) %>)"/>
+            <% if (form.status == 'Sent') { %>
+            <img class="icon" src="/images/mail_not_sent.png" onclick="openLetterPreview(<%= JSON.stringify({
+                id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
+            <% } else { %>
+            <img class="icon" src="/images/mail_sent.png" onclick="openLetterPreview(<%= JSON.stringify({
+                id: form._id, email: form.email
+            }) %>, '<%= form.status %>')"/>
+            <% } %>
+            <img class="icon clickable" src="/images/preview.png"/>
             <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
     </tr>
@@ -100,6 +110,11 @@
                 console.log('error');
             }
         });
+    }
+
+    function openHistory(params) {
+        // Check to see if the status is green, if not then show error dialog
+        window.location.href = getDestinationRoute('http://localhost:3000/history', params);
     }
 
     // When the user clicks the preview icon, take them to the letter preview page.

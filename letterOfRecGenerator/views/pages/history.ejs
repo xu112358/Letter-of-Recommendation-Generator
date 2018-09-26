@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><% title%></title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/history.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="close-container">
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <p class="modal-title">Subject: </p>
+            <input class="modal-input" id='modal-subject' readonly="readonly"></input>
+            <p class="modal-title">Body: </p>
+            <input class="modal-input" id='modal-body' readonly="readonly"></input>
+        
+        </div>
+</div>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <h1 class="title"><% title%></h1>
+
+    <table>
+        <thead>
+        <td class="center"><b>Email History</b></td>
+        <tr class="center">
+            <td>Date</td>
+            <td>Template</td>
+            <td>School</td>
+            <td class="icons"></td>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (var email of emailHistory) { %>
+        <tr>
+            <td>
+                  
+               <div class="template-name"><%= email._id.getTimestamp().toString().substring(0,25) %></div> 
+            </td>
+            <td>
+                <div class="template-name"><%= email.title %></div>
+            </td>
+            <td>
+                <div class="template-name"><%= email.title %></div>
+            </td>
+            <td>
+                <img class="icon" src="/images/preview.png" onclick="openModal( <%= JSON.stringify(email) %>)"/>
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+</body>
+</html> 
+
+<script>
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // When the user clicks on the button, open the modal
+    function openModal(email) {
+        $('#modal-subject',$('#myModal')).val(email.subject);
+        $('#modal-body',$('#myModal')).val(email.body_text);
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>

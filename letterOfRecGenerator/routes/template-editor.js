@@ -32,9 +32,8 @@ router.get('/', function (req, res, next) {
 router.get('/edit', function (req, res, next) {
     if (req.query.id) {
         var templateName = req.user.getTemplate(req.query.id).getName();
-
         res.json({
-            title: templateName,
+            templateName: templateName,
             id: req.query.id
         });
     } else {

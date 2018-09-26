@@ -12,6 +12,7 @@ var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
 
 var createTemplate = require('./routes/template-editor');
+var createEmailTemplate = require('./routes/email-template-editor');
 var formCompleted = require('./routes/form-completed');
 var formEntry = require('./routes/form-entry');
 var index = require('./routes/login');
@@ -20,6 +21,7 @@ var login = require('./routes/login');
 var recommenderDashboard = require('./routes/recommender-dashboard');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
+var history = require('./routes/history');
 
 var app = express();
 
@@ -64,6 +66,7 @@ app.use('/logout', (req, res) => {
 
 app.use('/', index);
 app.use('/template-editor', isAuthenticated, createTemplate);
+app.use('/email-template-editor',isAuthenticated, createEmailTemplate);
 app.use('/form-completed', formCompleted);
 app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
@@ -71,6 +74,7 @@ app.use('/login', login);
 app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
 app.use('/template-dashboard', isAuthenticated, templateDashboard);
 app.use('/users', isAuthenticated, users);
+app.use('/history', history);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

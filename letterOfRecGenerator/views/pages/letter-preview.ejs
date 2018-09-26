@@ -4,6 +4,7 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/email.css"/>
     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
     <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
     <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
@@ -16,19 +17,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
 </head>
 <body onload="onLoad()">
-<header>
-    <% include ../partials/header %>
-</header>
+ <header>
+<% include ../partials/header %></header> 
 <h1 class="title"><%= title %></h1>
-<div id="outer-container">
+<!-- <div id="outer-container">
 
-</div>
+</div>-->
 
-</body>
+ </body>
 
-<div id="add-question-modal">
-    <div class="inside">
-
+<!-- <div id="add-question-modal">
+    <div class="inside"> -->
+<!-- 
         <form class="ui form example">
             <div class="ui message error"></div>
 
@@ -40,12 +40,12 @@
         <div class="flex-row">
             <button class="convert-pdf" onclick="saveEditModal()">Save</button>
             <button class="convert-pdf" onclick="cancelEditModal()">Cancel</button>
-        </div>
+        </div> -->
 
-    </div>
-</div>
-<button class="convert-pdf" id = "convertPDF">Convert to PDF</button>
-<script type = 'text/javascript'>
+    <!-- </div>
+</div> -->
+<!-- <button class="convert-pdf" id = "convertPDF">Convert to PDF</button> -->
+<!-- <script type = 'text/javascript'>
     function imageToDataUri(img, width, height) {
         var canvas = document.createElement('canvas'),
             ctx = canvas.getContext('2d');
@@ -99,6 +99,41 @@
             }
         });
 
+    });
+
+</script> -->
+
+<form class="input-form">
+    <h5> Choose a template: </h5>
+    <select id="email-templates" name="templates">
+        <% var options = []; %>
+        <% for (var template of templates) {  
+            if(template.active == true){
+            %>
+          <option data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
+        <% }} %>
+    </select>
+
+    <div id="email-subject-container">
+        <input id="email-subject-text-area" contentEditable="true" name="subject" >
+    </div>
+
+    <div id="email-body-container">
+        <input id="email-body-text-area" contentEditable="true" name="body">
+    </div>
+    <button class="email-button" id = "sendEmail" onClick= "addEmailHistory()"> Send </button>
+</form>
+
+<script>
+
+    window.onload = function() {
+        document.getElementById("email-subject-text-area").value = $("#email-templates").find(':selected').data('subject');
+        document.getElementById("email-body-text-area").value = $("#email-templates").find(':selected').data('body');
+    };
+
+    $("#email-templates").change(function () {
+        document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');
+        document.getElementById("email-body-text-area").value = $(this).find(':selected').data('body');
     });
 
 

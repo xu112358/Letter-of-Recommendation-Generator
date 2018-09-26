@@ -260,8 +260,6 @@ function saveTemplate() {
     }
 
     if (id) {
-        console.log("updating template");
-        console.log(id, template);
         $.ajax({
             url: 'http://localhost:3000/template-editor/update',
             data: {

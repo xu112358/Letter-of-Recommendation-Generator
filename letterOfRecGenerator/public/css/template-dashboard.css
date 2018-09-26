@@ -23,7 +23,7 @@ body {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.addBtn {
+/* .addBtn {
     background-color: #C4C4C4;
     border-radius: 50%;
     bottom: 8px;
@@ -38,6 +38,18 @@ body {
     vertical-align: middle;
     width: 40px;
     z-index: 1;
+} */
+
+.addBtn{
+    background-color: #C4C4C4;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    float: right;
+    font-size: 16px;
 }
 
 /* Modal Content/Box */
