@@ -31,10 +31,6 @@ var FormSchema = new Schema({
 
 
 FormSchema.methods.getResponses = function () {
-    // console.log("this form's responses: ");
-    // console.log(this.responses);
-
-    // if there are multiple schools, create copies
     return this.responses;
 };
 
@@ -63,28 +59,6 @@ FormSchema.statics.createForm = function (email, template, userId, cb) {
         }
     });
 };
-
-/**
- * Duplicated a form and adds organization value
- * @param form - form to be duplicated
- * @param organization - organization that unique to the duplicated form
- * @param cb
- */
-FormSchema.statics.duplicateForm = function (form, organization, cb) {
-    console.log("IN FORMSCHEMA DUPLICATEFORM");
-    Form.create({
-        email: form.email,
-        status: form.status,
-        template: form.template,
-        link: form.link,
-        responses: form.responses,
-        meta: form.meta,
-        letter: form.letter,
-        duplicated: true,
-        organization: organization
-    }, cb);
-};
-
 
 FormSchema.statics.findForm = function (id, cb) {
     Form.findOne({_id: id}, cb);
@@ -139,13 +113,19 @@ FormSchema.methods.setOrganization = function (organization) {
     this.save();
 };
 
-FormSchema.methods.setDuplicatedTrueAndSave = function() {
-    this.duplicated = true;
-    this.save();
-};
-
-FormSchema.statics.submitForm = function (id, responseData, duplicatedFormArr, cb) {
+/**
+ * Happens when student submits his/her response. 
+ * Receives the response, updates the response in the form,
+ * check if there are multiple organizations, and if there are,
+ * create duplicates with seperate organization names and 
+ * add the form._id to the correct owner (user).
+ * @param id - id of form
+ * @param responseData - responseData collected from the submitted response
+ * @param cb
+ */
+FormSchema.statics.submitForm = function (id, responseData, cb) {
     var organizationArr = [];
+    var savedFormIdArr = [];
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
             cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
@@ -196,20 +176,11 @@ FormSchema.statics.submitForm = function (id, responseData, duplicatedFormArr, c
             form['meta']['submitted'] = Date.now();
               
             form.save().then(function(savedForm){
-                // console.log("promise success: " + savedForm);
                 if(organizationArr.length > 1){
                     console.log("started making duplicates")
                     for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
-                        console.log("============= in for loop ==============");
-    
-                        // form.duplicateFormTest(savedForm, organizationArr[orgIndex]).then(
-                        //     function(duplicatedForm){
-                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm);
-                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm._id);
-                        //     duplicateFormArr.push(duplicatedForm);
-                        // }, function(err){
-                        //     console.log("duplicateFormTest promise err: " + err);
-                        // });
+                    /* Here we create duplicate forms and then add the form._id to the 
+                    owner of the original form, which is the user. */
                         var promise = Form.create({
                             email: savedForm.email,
                             status: savedForm.status,
@@ -219,75 +190,34 @@ FormSchema.statics.submitForm = function (id, responseData, duplicatedFormArr, c
                             meta: savedForm.meta,
                             letter: savedForm.letter,
                             duplicated: true,
-                            organization: organizationArr[orgIndex]
+                            organization: organizationArr[orgIndex],
+                            owner: savedForm.owner
                         });
                     
                         promise.then(function(savedForm){
-                            //console.log("so...what is this?: " + savedForm);
-                            //duplicateFormIdArr.push(savedForm._id);
                             console.log("savedFormID?: " + savedForm._id);
-                            //cb(savedForm);
-                            duplicatedFormArr.push(savedForm);
-                            arrPromise.then(function(array){
-                                console.log("arrPromise: duplicatedFormArr.length: " + duplicatedFormArr.length);
-                            }, function(welp) {
-                                console.log("welp");
-                            });
+                            savedFormIdArr.push(savedForm._id);
                         }, function(rejected) {
                             console.log("rejected promise: " + rejected);
                         });
-
-                        // var promise = form.duplicateFormTest(savedForm, organizationArr[orgIndex]);
-                        // promise.then(function(duplicatedForm){
-                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm);
-                        //     console.log("duplicatedForm created, what is id?: " + duplicatedForm._id);
-                        //     duplicateFormArr.push(duplicatedForm);
-                        // }, function(err) {
-                        //     console.log("duplicateFormTest promise err: " + err);
-                        // });
                     }
-                    console.log("duplicateFormIdArr.length: " + duplicatedFormArr.length);
-                }           
+                }       
+                console.log("userId? " + form.owner);
+                db.model('User').findOne({_id: form.owner}).populate('forms').exec( function(err, user) {
+                    if(err) {
+                        console.log("error in form User.findOne");
+                    } else {
+                        for(formId in savedFormIdArr) {
+                            user.forms.push(formId);
+                        }
+                        user.save();
+                    }
+                });    
             }, function(err) {
                 console.log("promise error: " + err);
-            });
-            
-            // console.log("owner?? " + this.owner);
-            // UserModel.findUser(this.owner, function(err, user){
-            //     if(err) {
-            //         console.log( "error!!!!");
-            //     } else {
-            //         console.log("id???found?: " + user._id);
-            //     }
-            // });
+            });          
         }
         cb(err);
-    });
-};
-
-FormSchema.methods.duplicateFormTest = function (form, org) {
-
-    var promise = Form.create({
-        email: form.email,
-        status: form.status,
-        template: form.template,
-        link: form.link,
-        responses: form.responses,
-        meta: form.meta,
-        letter: form.letter,
-        duplicated: true,
-        organization: org
-    });
-
-    console.log("what is promise?: " + promise);
-    promise.then(function(savedForm){
-        //console.log("so...what is this?: " + savedForm);
-        //duplicateFormIdArr.push(savedForm._id);
-        console.log("savedFormID?: " + savedForm._id);
-        //cb(savedForm);
-        return savedForm;
-    }, function(rejected) {
-        console.log("rejected promise: " + rejected);
     });
 };
 

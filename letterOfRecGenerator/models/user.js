@@ -80,27 +80,12 @@ UserSchema.methods.removeTemplate = function (id, cb) {
     this.save(cb);
 };
 
-UserSchema.methods.addMultipleForms = function (formArr, cb) {
-    console.log("formArr.length: " + formArr.length);
-    for(let i=0; i<formArr.length; i++) {
-        this.forms.push(formArr[i]._id);
-        this.save(cb);
-    }
-};
-
-
 UserSchema.methods.addForm = function (form, cb) {
 //UserSchema.statics.addForm = function (form, cb) {
     this.forms.push(form._id);
     this.save(cb);
 };
 
-
-UserSchema.methods.duplicateForms = function (cb) {
-    User.findOne({id: this.id}).populate('forms').exec(function (err, user) {
-        cb(err, user.forms);
-    })
-};
 
 UserSchema.methods.getForms = function (cb) {
     // try getting all forms under this user id
