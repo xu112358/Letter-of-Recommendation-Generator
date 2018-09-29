@@ -13,7 +13,7 @@ var footerImgData = parseAttribute('footerImgData');
  * Prototype class for Questions
  */
 class Question {
-    constructor(type, value, tag, optional = false) {
+    constructor(type, value, tag, optional = false, orgQuestion = false) {
         // Text, Radio Button, Checkbox
         this.type = type;
         this.value = value;
@@ -25,6 +25,7 @@ class Question {
         // tag is always empty string for radio button options
         this.options = [];
         nextQuestionIdToUse++;
+        this.isOrganizationQuestion = orgQuestion;
     }
     
     setId(id) {
@@ -33,6 +34,10 @@ class Question {
 
     setOptions(options) {
         this.options = options;
+    }
+
+    setOrganizationQuestion (booleanValue) {
+        this.isOrganizationQuestion = booleanValue;
     }
 }
 
@@ -70,7 +75,7 @@ window.onload = function () {
             success: function (data) {
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
                 data.questions.forEach(question => {
-                    var savedQuestion = new Question(question.type, question.question, question.tag, question.optional);
+                    var savedQuestion = new Question(question.type, question.question, question.tag, question.optional, question.isOrganizationQuestion);
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
@@ -89,11 +94,15 @@ window.onload = function () {
     }
 };
 
+// creates default questions
 function loadDefaultQuestions() {
     var default0 = new Question("Text", "What is your first name?", "<!FNAME>");
     questions.push(default0);
     var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
     questions.push(default1);
+    var organizationQuestion = new Question("Text", "Name the organizations you are applying to, seperated with commas.", "<!ORG>");
+    organizationQuestion.setOrganizationQuestion(true);
+    questions.push(organizationQuestion);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
     questions.push(default2);
@@ -103,6 +112,8 @@ function loadDefaultQuestions() {
     var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
     default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default4);
+
+    console.log("pushed default");
 }
 
 function setUpEventHandlers() {
@@ -334,10 +345,12 @@ function getQuestions() {
         var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
         var dataID = questionsOuterContainer[0].getAttribute("data-id");
         console.log("dataID= " + dataID);
-        var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional);
+        var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional, questions[dataID].isOrganizationQuestion);
         newQuestion.setOptions(questions[dataID].options);
         newQuestion.setId(i);
         updatedQuestions.push(newQuestion);
+        console.log("value: "+ newQuestion.value);
+        console.log("flag: "+ newQuestion.isOrganizationQuestion);
     }
 
     updatedQuestions.forEach(question => dbQuestions.push({
@@ -346,7 +359,9 @@ function getQuestions() {
         question: question.value,
         options: question.options,
         tag: question.tag,
-        optional: question.optional
+        optional: question.optional,
+        organizationFlag: question.isOrganizationQuestion
+
     }));
 
     return dbQuestions;
