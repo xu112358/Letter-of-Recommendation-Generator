@@ -137,11 +137,9 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                 attempt to extract the organizations (seperated with , )
                 and make additional Forms with the different organization names */
                 if(question.organizationFlag){
-                    console.log("found organization Question")
                     let organizationList = response.trim();
                     organizationArr = organizationList.split(", ");
-                    console.log("Length of Orgs: " + organizationArr.length);
-                    
+                    response = organizationArr[0]; //update response to right organization
                 }
                 //If response is empty
                 if (!response.length) {
@@ -197,25 +195,53 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         promise.then(function(savedForm){
                             console.log("savedFormID?: " + savedForm._id);
                             savedFormIdArr.push(savedForm._id);
+
+                            /* We update the response for organization to the right ones here */
+                            FormSchema.statics.findForm(savedForm._id, function (err, foundForm) {
+                                if (err) {
+                                    console.log("error finding saved Form");
+                                } else {
+                                    console.log("so...: " + foundForm);
+                                    let duplicateResponse =  foundForm['responses'];
+                                    foundForm['template']['questions'].forEach(function (question){  
+                                        if(question.organizationFlag){
+                                            var savedFormResponse = duplicateResponse[question.number - 1];
+                                            console.log("\nsavedFormRespone: " + savedFormResponse);
+                                            console.log("org?: " + organizationArr[orgIndex]);
+                                            savedFormResponse.response = organizationArr[orgIndex];
+                                            foundForm.save().then(function(updatedForm){
+                                                console.log("saved response!!: " + updatedForm._id);
+                                            }, function(rejected) {
+                                                console.log("rejected save: " + rejected);
+                                            });
+                                        } 
+                                    });
+                                }
+                            });
                         }, function(rejected) {
                             console.log("rejected promise: " + rejected);
                         });
                     }
-                }       
-                console.log("userId? " + form.owner);
+                }
+
+                //Adding form._id to user (who is the owner of the original form)
                 db.model('User').findOne({_id: form.owner}).populate('forms').exec( function(err, user) {
                     if(err) {
                         console.log("error in form User.findOne");
                     } else {
-                        for(formId in savedFormIdArr) {
-                            user.forms.push(formId);
+                        if(savedFormIdArr.length == organizationArr.length-1)
+                        for(let i=0; i < savedFormIdArr.length; i++) {
+                            console.log("what is this?: " + savedFormIdArr[i]);
+                            user.forms.push(savedFormIdArr[i]);
                         }
                         user.save();
                     }
-                });    
+                });
+                
+                
             }, function(err) {
                 console.log("promise error: " + err);
-            });          
+            });  
         }
         cb(err);
     });
