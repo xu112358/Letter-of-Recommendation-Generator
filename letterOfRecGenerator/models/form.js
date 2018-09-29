@@ -175,7 +175,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
               
             form.save().then(function(savedForm){
                 if(organizationArr.length > 1){
-                    console.log("started making duplicates")
                     for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
                     /* Here we create duplicate forms and then add the form._id to the 
                     owner of the original form, which is the user. */
@@ -201,16 +200,13 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                 if (err) {
                                     console.log("error finding saved Form");
                                 } else {
-                                    console.log("so...: " + foundForm);
                                     let duplicateResponse =  foundForm['responses'];
                                     foundForm['template']['questions'].forEach(function (question){  
                                         if(question.organizationFlag){
                                             var savedFormResponse = duplicateResponse[question.number - 1];
-                                            console.log("\nsavedFormRespone: " + savedFormResponse);
-                                            console.log("org?: " + organizationArr[orgIndex]);
                                             savedFormResponse.response = organizationArr[orgIndex];
                                             foundForm.save().then(function(updatedForm){
-                                                console.log("saved response!!: " + updatedForm._id);
+                                                console.log("saved response" + updatedForm._id);
                                             }, function(rejected) {
                                                 console.log("rejected save: " + rejected);
                                             });
