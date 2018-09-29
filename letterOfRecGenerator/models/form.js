@@ -41,7 +41,6 @@ FormSchema.methods.getResponses = function () {
  * @param cb
  */
 FormSchema.statics.createForm = function (email, template, userId, cb) {
-    console.log("inside createForm, id: " + userId);
     Link.generateLink(email, function (err, link) {
         if (err) {
             cb(err, null);
@@ -192,9 +191,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         });
                     
                         promise.then(function(savedForm){
-                            console.log("savedFormID?: " + savedForm._id);
                             savedFormIdArr.push(savedForm._id);
-
                             /* We update the response for organization to the right ones here */
                             FormSchema.statics.findForm(savedForm._id, function (err, foundForm) {
                                 if (err) {
@@ -206,7 +203,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                             var savedFormResponse = duplicateResponse[question.number - 1];
                                             savedFormResponse.response = organizationArr[orgIndex];
                                             foundForm.save().then(function(updatedForm){
-                                                console.log("saved response" + updatedForm._id);
+                                                console.log("saved response");
                                             }, function(rejected) {
                                                 console.log("rejected save: " + rejected);
                                             });
@@ -227,7 +224,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     } else {
                         if(savedFormIdArr.length == organizationArr.length-1)
                         for(let i=0; i < savedFormIdArr.length; i++) {
-                            console.log("what is this?: " + savedFormIdArr[i]);
                             user.forms.push(savedFormIdArr[i]);
                         }
                         user.save();
