@@ -21,15 +21,15 @@ router.get('/', function (req, res, next) {
     });
 });
 
-// router.get('/form', function (req, res, next) {
-//     req.user.getForm(req.query.id, function (err, form) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             res.json(form);
-//         }
-//     });
-// });
+router.get('/form', function (req, res, next) {
+    req.user.getForm(req.query.id, function (err, form) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(form);
+        }
+    });
+});
 
 // router.post('/save', function (req, res, next) {
 //     Form.completeForm(req.body.id, req.body.letter, function (err, form) {

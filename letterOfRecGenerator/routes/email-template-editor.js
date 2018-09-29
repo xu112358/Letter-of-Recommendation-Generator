@@ -65,6 +65,7 @@ router.get('/edit', function (req, res, next) {
         var subject = req.user.getEmailTemplate(req.query.id).getSubject();
         var body = req.user.getEmailTemplate(req.query.id).getBodyText();
         res.json({
+            title: 'EDIT AN EMAIL TEMPLATE',
             templateName: templateName,
             subject: subject,
             body: body,

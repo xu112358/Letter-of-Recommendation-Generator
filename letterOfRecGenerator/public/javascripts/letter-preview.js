@@ -151,46 +151,101 @@ function createLetterPreview(form, letter) {
     });
 }
 
-function parseLetter(form) {
-    var letter = form.template.text;
-    var responses = form.responses;
+// function parseLetter(form) {
+//     var letter = form.template.text;
+//     var responses = form.responses;
 
-    var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-            return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
-        });
-        return response ? response.response : '';
-    }).replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-            return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
-        });
-        return response ? response.response : '';
-    }));
+//     var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
+//         var response = responses.find(function (item) {
+//             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
+//         });
+//         return response ? response.response : '';
+//     }).replace(tagRegex, function (match) {
+//         var response = responses.find(function (item) {
+//             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
+//         });
+//         return response ? response.response : '';
+//     }));
 
-    for (var i = 0; i < noCapitalization.length; i++) {
+//     for (var i = 0; i < noCapitalization.length; i++) {
 
-        // Found ending punctuation that isn't the last letter in the text
-        if ((noCapitalization[i] == '.' || noCapitalization[i] == '?' || noCapitalization[i] == '!') && i != noCapitalization.length - 1) {
+//         // Found ending punctuation that isn't the last letter in the text
+//         if ((noCapitalization[i] == '.' || noCapitalization[i] == '?' || noCapitalization[i] == '!') && i != noCapitalization.length - 1) {
 
-            // Make sure exclamation point is not from a tag
-            if (noCapitalization[i] == '!' && i > 0 && noCapitalization[i - 1] == '<') {
-                continue;
+//             // Make sure exclamation point is not from a tag
+//             if (noCapitalization[i] == '!' && i > 0 && noCapitalization[i - 1] == '<') {
+//                 continue;
+//             }
+
+//             // Look for the next alphabetical character to capitalize
+//             var j = i + 1;
+//             while (!((noCapitalization[j] >= 'a' && noCapitalization[j] <= 'z') || (noCapitalization[j] >= 'A' && noCapitalization[j] <= 'Z')) && j < noCapitalization.length) {
+//                 j++;
+//             }
+
+//             // Found character to capitalize
+//             if (j < noCapitalization.length) {
+//                 noCapitalization[j] = noCapitalization[j].toUpperCase();
+//             }
+//         }
+//     }
+
+//     return noCapitalization.join("");
+// }
+
+function parseLetter(body) {
+
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/form',
+        data: {id},
+        type: 'GET',
+        success: function (data) {
+            form = data;
+            var letter = body;
+            var responses = form.responses;
+            var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
+                var response = responses.find(function (item) {
+                    return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
+                });
+                return response ? response.response : '';
+            }).replace(tagRegex, function (match) {
+                var response = responses.find(function (item) {
+                    return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
+                });
+                return response ? response.response : '';
+            }));
+        
+            for (var i = 0; i < noCapitalization.length; i++) {
+        
+                // Found ending punctuation that isn't the last letter in the text
+                if ((noCapitalization[i] == '.' || noCapitalization[i] == '?' || noCapitalization[i] == '!') && i != noCapitalization.length - 1) {
+        
+                    // Make sure exclamation point is not from a tag
+                    if (noCapitalization[i] == '!' && i > 0 && noCapitalization[i - 1] == '<') {
+                        continue;
+                    }
+        
+                    // Look for the next alphabetical character to capitalize
+                    var j = i + 1;
+                    while (!((noCapitalization[j] >= 'a' && noCapitalization[j] <= 'z') || (noCapitalization[j] >= 'A' && noCapitalization[j] <= 'Z')) && j < noCapitalization.length) {
+                        j++;
+                    }
+        
+                    // Found character to capitalize
+                    if (j < noCapitalization.length) {
+                        noCapitalization[j] = noCapitalization[j].toUpperCase();
+                    }
+                }
             }
 
-            // Look for the next alphabetical character to capitalize
-            var j = i + 1;
-            while (!((noCapitalization[j] >= 'a' && noCapitalization[j] <= 'z') || (noCapitalization[j] >= 'A' && noCapitalization[j] <= 'Z')) && j < noCapitalization.length) {
-                j++;
-            }
-
-            // Found character to capitalize
-            if (j < noCapitalization.length) {
-                noCapitalization[j] = noCapitalization[j].toUpperCase();
-            }
+            var parsed_letter = noCapitalization.join("");
+            document.getElementById("email-body-text-area").value = parsed_letter;
+            
+        },
+        error: function () {
+            console.log('error');
         }
-    }
-
-    return noCapitalization.join("");
+    });
 }
 
 function parseAttribute(attr) {

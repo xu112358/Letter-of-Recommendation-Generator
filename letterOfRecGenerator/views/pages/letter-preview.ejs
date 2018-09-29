@@ -124,18 +124,17 @@
     <button class="email-button" id = "sendEmail" onClick= "addEmailHistory()"> Send </button>
 </form>
 
-<script>
-
+<script>s
     window.onload = function() {
         document.getElementById("email-subject-text-area").value = $("#email-templates").find(':selected').data('subject');
-        document.getElementById("email-body-text-area").value = $("#email-templates").find(':selected').data('body');
+        parseLetter($("#email-templates").find(':selected').data('body'));
+        // document.getElementById("email-body-text-area").value = $("#email-templates").find(':selected').data('body');
     };
 
     $("#email-templates").change(function () {
         document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');
-        document.getElementById("email-body-text-area").value = $(this).find(':selected').data('body');
+        parseLetter($(this).find(':selected').data('body'));
+        // document.getElementById("email-body-text-area").value =  parseLetter($(this).find(':selected').data('body'));
     });
-
-
 </script>
 </html>
