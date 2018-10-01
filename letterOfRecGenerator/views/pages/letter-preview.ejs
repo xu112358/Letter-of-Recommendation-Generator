@@ -8,101 +8,16 @@
     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
     <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
     <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"> -->
-    <script src="http://manova.surge.sh/javascript/jquery.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
 </head>
-<body onload="onLoad()">
  <header>
 <% include ../partials/header %></header> 
 <h1 class="title"><%= title %></h1>
-<!-- <div id="outer-container">
 
-</div>-->
-
- </body>
-
-<!-- <div id="add-question-modal">
-    <div class="inside"> -->
-<!-- 
-        <form class="ui form example">
-            <div class="ui message error"></div>
-
-            <input id="content" value="" type="hidden" name="content">
-            <trix-editor input="content"></trix-editor>
-
-        </form>
-
-        <div class="flex-row">
-            <button class="convert-pdf" onclick="saveEditModal()">Save</button>
-            <button class="convert-pdf" onclick="cancelEditModal()">Cancel</button>
-        </div> -->
-
-    <!-- </div>
-</div> -->
-<!-- <button class="convert-pdf" id = "convertPDF">Convert to PDF</button> -->
-<!-- <script type = 'text/javascript'>
-    function imageToDataUri(img, width, height) {
-        var canvas = document.createElement('canvas'),
-            ctx = canvas.getContext('2d');
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        return canvas.toDataURL();
-    }
-
-    $('#convertPDF').click(function() {
-        var element = document.getElementById('print');
-        html2pdf(element, {
-          margin:       1,
-          filename:     'letterOfRec.pdf',
-          image:        { type: 'png', quality: 0.98 },
-          html2canvas:  { dpi: 300, letterRendering: true },
-          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        });
-        var letterheadImg = imageToDataUri(document.getElementById('letterhead-img'),
-            $('#letterhead-img').width(),
-            $('#letterhead-img').height());
-        var footerImg = imageToDataUri(document.getElementById('footer-img'),
-            $('#footer-img').width(),
-            $('#footer-img').height());
-        console.log(form.template);
-        form.template.letterheadImg = letterheadImg;
-        form.template.footerImg = footerImg;
-        console.log(form.template);
-
-
-        $.ajax({
-            url: 'http://localhost:3000/template-editor/update',
-            data: {
-                id: form.template._id,
-                template: form.template
-            },
-            type: 'POST',
-            success: function (data) {
-                console.log('form saved');
-                $.ajax({
-                    url: 'http://localhost:3000/template-editor/template',
-                    data: {id: form.template._id},
-                    type: 'GET',
-                    success: function (dat) {
-                        console.log(dat);
-                    }
-                });
-            },
-            error: function () {
-                console.log('error');
-            }
-        });
-
-    });
-
-</script> -->
-
+</body>
 <form class="input-form">
     <h5> Choose a template: </h5>
     <select id="email-templates" name="templates">
@@ -124,17 +39,15 @@
     <button class="email-button" id = "sendEmail" onClick= "addEmailHistory()"> Send </button>
 </form>
 
-<script>s
+<script>
     window.onload = function() {
         document.getElementById("email-subject-text-area").value = $("#email-templates").find(':selected').data('subject');
-        parseLetter($("#email-templates").find(':selected').data('body'));
-        // document.getElementById("email-body-text-area").value = $("#email-templates").find(':selected').data('body');
+        parseLetter( $("#email-templates").find(':selected').data('body') );
     };
 
     $("#email-templates").change(function () {
         document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');
         parseLetter($(this).find(':selected').data('body'));
-        // document.getElementById("email-body-text-area").value =  parseLetter($(this).find(':selected').data('body'));
     });
 </script>
 </html>

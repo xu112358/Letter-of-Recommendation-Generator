@@ -3,21 +3,6 @@ var User = require('../models/user');
 
 var router = express.Router();
 
-// router.get('/', function (req, res, next) {
-//     req.user.getForm(req.query.id, function (err, form) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             res.render('pages/letter-preview', {
-//                 title: 'Send a confirmation email for ' + form.email,
-//                 templates: req.user.getEmailTemplates(),
-//                 id: req.query.id,
-//             });
-//         }
-//     });
-// });
-
-
 router.get('/', function (req, res, next) {
 
     if (req.query.id) {
@@ -78,37 +63,6 @@ router.get('/edit', function (req, res, next) {
         });
     }
 });
-
-// router.get('/template', function (req, res, next) {
-//     res.json({
-//         title: req.user.getTemplate(req.query.id).getTitle(),
-//         subject: req.user.getTemplate(req.query.id).getSubject(),
-//         body: req.user.getTemplate(req.query.id).getBodyText(),
-//     });
-// });
-
-// router.get('/template', function (req, res, next) {
-//     res.json({
-//         letter: req.user.getTemplate(req.query.id).getText(),
-//         questions: req.user.getTemplate(req.query.id).getQuestions(),
-//         letterheadImg: req.user.getTemplate(req.query.id).getLetterheadImg(),
-//         footerImg: req.user.getTemplate(req.query.id).getFooterImg(),
-//     });
-// });
-
-// router.post('/create', function (req, res, next) {
-//     req.user.addTemplate(req.body.template, function (err, id) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             res.json({
-//                 success: "Created Successfully",
-//                 status: 200,
-//                 id: id
-//             });
-//         }
-//     });
-// });
 
 router.post('/update', function (req, res, next) {
     req.user.updateEmailTemplate(req.body.id, req.body.Email, function (err) {

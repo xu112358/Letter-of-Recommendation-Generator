@@ -57,7 +57,7 @@
             <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>)"/>
-            <% if (form.status == 'Sent') { %>
+            <% if (form.email_sent == false) { %>
             <img class="icon" src="/images/mail_not_sent.png" onclick="openLetterPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
