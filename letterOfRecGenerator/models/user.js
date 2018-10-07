@@ -158,11 +158,14 @@ UserSchema.methods.removeEmailTemplate = function (id, cb) {
 };
 
 UserSchema.methods.addForm = function (form, cb) {
+//UserSchema.statics.addForm = function (form, cb) {
     this.forms.push(form._id);
     this.save(cb);
 };
 
+
 UserSchema.methods.getForms = function (cb) {
+    // try getting all forms under this user id
     User.findOne({id: this.id}).populate('forms').exec(function (err, user) {
         cb(err, user.forms);
     })

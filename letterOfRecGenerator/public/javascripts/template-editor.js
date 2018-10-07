@@ -13,7 +13,7 @@ var footerImgData = parseAttribute('footerImgData');
  * Prototype class for Questions
  */
 class Question {
-    constructor(type, value, tag, optional = false) {
+    constructor(type, value, tag, optional = false, orgQuestion = false) {
         // Text, Radio Button, Checkbox
         this.type = type;
         this.value = value;
@@ -25,6 +25,19 @@ class Question {
         // tag is always empty string for radio button options
         this.options = [];
         nextQuestionIdToUse++;
+        this.isOrganizationQuestion = orgQuestion;
+    }
+    
+    setId(id) {
+        this.id = id;
+    }
+
+    setOptions(options) {
+        this.options = options;
+    }
+
+    setOrganizationQuestion (booleanValue) {
+        this.isOrganizationQuestion = booleanValue;
     }
 }
 
@@ -62,7 +75,7 @@ window.onload = function () {
             success: function (data) {
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
                 data.questions.forEach(question => {
-                    var savedQuestion = new Question(question.type, question.question, question.tag, question.optional);
+                    var savedQuestion = new Question(question.type, question.question, question.tag, question.optional, question.isOrganizationQuestion);
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
@@ -74,15 +87,22 @@ window.onload = function () {
                 console.log('error');
             }
         });
+
     } else {
         loadDefaultQuestions();
         displayQuestions();
     }
 };
 
+// creates default questions
 function loadDefaultQuestions() {
-    var default1 = new Question("Text", "What is your name?", "<!NAME>");
+    var default0 = new Question("Text", "What is your first name?", "<!FNAME>");
+    questions.push(default0);
+    var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
     questions.push(default1);
+    var organizationQuestion = new Question("Text", "Name the organizations you are applying to, seperated with commas.", "<!ORG>");
+    organizationQuestion.setOrganizationQuestion(true);
+    questions.push(organizationQuestion);
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
     questions.push(default2);
@@ -92,6 +112,8 @@ function loadDefaultQuestions() {
     var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
     default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default4);
+
+    console.log("pushed default");
 }
 
 function setUpEventHandlers() {
@@ -140,12 +162,15 @@ window.onclick = function (event) {
 function displayQuestions() {
     // grab the container that will hold all questions
     var container = document.getElementById(QUESTIONS_CONTAINER_ID);
-
+    
     // fill in with questions
     container.innerHTML = "";
     for (var i = 0; i < questions.length; i++) {
         container.innerHTML += getQuestionHTML(questions[i]);
     }
+
+    let list = document.getElementById(QUESTIONS_CONTAINER_ID);
+    Sortable.create(list);
 }
 
 function getQuestionHTML(q) {
@@ -169,7 +194,8 @@ function getQuestionHTML(q) {
             break;
     }
 
-    var html = "<h2 class=\"question-header\">" + question_type_label + "</h2>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+    var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\">" + question_type_label + "</h2>" + "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+
     // "required" checkbox
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
@@ -182,7 +208,7 @@ function getQuestionHTML(q) {
     html += "</div>";
     // delete button
     html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
-    html += "</div></div>";
+    html += "</div></div></div>";
     return html;
 }
 
@@ -305,13 +331,35 @@ function getQuestions() {
     var dbQuestions = [];
     var questionNumber = 1;
 
-    questions.forEach(question => dbQuestions.push({
+    var sortableQuestionsHTML = document.getElementById(QUESTIONS_CONTAINER_ID).getElementsByClassName("sortable-questions");
+    var updatedQuestions = [];
+    var newQuestionIndex = 0;
+
+    for(var i=0; i<sortableQuestionsHTML.length; i++){
+        console.log("i= "+ i);
+        console.log("sortableQuestionsHTML= " + sortableQuestionsHTML[i]);
+        var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName("error-container");
+        console.log("errorContainerHTML= " + errorContainerHTML[0]);
+        var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
+        var dataID = questionsOuterContainer[0].getAttribute("data-id");
+        console.log("dataID= " + dataID);
+        var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional, questions[dataID].isOrganizationQuestion);
+        newQuestion.setOptions(questions[dataID].options);
+        newQuestion.setId(i);
+        updatedQuestions.push(newQuestion);
+        console.log("value: "+ newQuestion.value);
+        console.log("flag: "+ newQuestion.isOrganizationQuestion);
+    }
+
+    updatedQuestions.forEach(question => dbQuestions.push({
         number: questionNumber++,
         type: question.type,
         question: question.value,
         options: question.options,
         tag: question.tag,
-        optional: question.optional
+        optional: question.optional,
+        organizationFlag: question.isOrganizationQuestion
+
     }));
 
     return dbQuestions;

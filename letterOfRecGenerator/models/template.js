@@ -19,7 +19,8 @@ var TemplateSchema = new Schema({
             fill: String,
             tag: String
         }],
-        optional: Boolean
+        optional: Boolean,
+        organizationFlag: Boolean
     }],
     letterheadImg: String,
     footerImg: String
