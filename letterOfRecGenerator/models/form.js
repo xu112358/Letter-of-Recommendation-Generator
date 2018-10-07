@@ -182,6 +182,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         var promise = Form.create({
                             email: savedForm.email,
                             status: savedForm.status,
+                            email_sent: savedForm.email_sent,
                             template: savedForm.template,
                             link: savedForm.link,
                             responses: savedForm.responses,
@@ -231,8 +232,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         user.save();
                     }
                 });
-                
-                
             }, function(err) {
                 console.log("promise error: " + err);
             });  

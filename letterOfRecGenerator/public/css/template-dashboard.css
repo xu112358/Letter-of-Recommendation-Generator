@@ -41,15 +41,15 @@ body {
 } */
 
 .addBtn{
-    background-color: #C4C4C4;
+    background-color: transparent;
     border: none;
-    color: white;
-    padding: 15px 32px;
+    padding: 15px 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     float: right;
     font-size: 16px;
+    outline-style: none;
 }
 
 /* Modal Content/Box */
