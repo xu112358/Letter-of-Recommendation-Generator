@@ -12,6 +12,7 @@ var FormSchema = new Schema({
         type: String,
         enum: ['Sent', 'Submitted', 'Complete']
     },
+    email_sent: Boolean,
     template: Template.schema,
     link: Link.schema,
     responses: [{
@@ -48,6 +49,7 @@ FormSchema.statics.createForm = function (email, template, userId, cb) {
             Form.create({
                 email: email,
                 status: 'Sent',
+                email_sent: false,
                 template: template,
                 link: link,
                 'meta.sent': Date.now(),
@@ -238,6 +240,20 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
         cb(err);
     });
 };
+
+FormSchema.statics.setEmailSent = function (id, cb) {
+    console.log("in form setemail sent");
+    FormSchema.statics.findForm(id, function (err, form) {
+        if (err) {
+            cb(err, null);
+        } else {
+            form.email_sent = true;
+            form.save(function (err) {
+                cb(err, form);
+            });
+        }
+    });
+}
 
 FormSchema.statics.completeForm = function (id, letter, cb) {
     FormSchema.statics.findForm(id, function (err, form) {

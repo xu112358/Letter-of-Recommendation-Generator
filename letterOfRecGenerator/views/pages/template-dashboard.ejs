@@ -10,23 +10,37 @@
     <% include ../partials/header %>
 </header>
 <p class="title"><%= title %></p>
-<div class="addBtn" onclick="openModal()">+</div>
 
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="close-container">
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
-        <p class="modal-title">Create New Template</p>
+        <p class="modal-title">Create New Recommendation Template</p>
         <form class="input-form" method="GET" action="/template-editor">
             <input class="input-text" type="text" name="title">
             <input class="input-submit" type="submit" value="Create">
         </form>
     </div>
 </div>
+
+<div id="myModal_email" class="modal">
+        <div class="modal-content">
+            <div class="close-container">
+                <span class="close" onclick="closeEmailModal()">&times;</span>
+            </div>
+            <p class="modal-title">Create New Email Template</p>
+            <form class="input-form" method="GET" action="/email-template-editor">
+                <input class="input-text" type="text" name="title">
+                <input class="input-submit" type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+
+
 <table>
     <thead>
-    <td class="center">Templates</td>
+    <td class="center"><b>Recommandation Templates</b></td>
     </thead>
     <tbody>
     <% for (var template of templates) { %>
@@ -42,20 +56,55 @@
     <% } %>
     </tbody>
 </table>
+<table>
+    <thead>
+    <td class="center"><b>Email Templates</b></td>
+    </thead>
+    <tbody>
+    <% for (var template of emailtemplates) {
+        if (template.active == true) {
+    %>
+    <tr>
+        <td>
+            <div class="template-name"><%= template.title %></div>
+            <div class="image-container">
+                <img class="icon" src="/images/pencil.png" onclick="editEmailTemplate('<%= template._id %>')"/>
+                <img class="icon" src="/images/delete.png" onclick="deleteEmailRow('<%= template._id %>')"/>
+            </div>
+        </td>
+    </tr>
+    <% }}
+     %>
+    </tbody>
+</table>
+
+<button class = 'addBtn' onclick="openModal()">+R</button>
+<button class = 'addBtn' onclick="openEmailModal()">+E</button>
+
+
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
     // Get the modal
     var modal = document.getElementById('myModal');
+    var modal_email = document.getElementById('myModal_email');
 
     // When the user clicks on the button, open the modal
     function openModal() {
         modal.style.display = "block";
     }
 
+    function openEmailModal() {
+        modal_email.style.display = "block";
+    }
+
     // When the user clicks on <span> (x), close the modal
     function closeModal() {
         modal.style.display = "none";
+    }
+    
+    function closeEmailModal() {
+        modal_email.style.display = "none";
     }
 
     function editTemplate(id) {
@@ -74,10 +123,41 @@
         });
     }
 
+    function editEmailTemplate(id) {
+        $.ajax({
+            url: 'http://localhost:3000/email-template-editor/edit',
+            data: {id},
+            type: 'GET',
+            complete: function (data) {
+                var params = data.responseJSON;
+                console.log('complete');
+                window.location.href = getDestinationRoute('http://localhost:3000/email-template-editor', params);
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
     // On click for trash icon
     function deleteRow(id) {
         $.ajax({
             url: 'http://localhost:3000/template-dashboard/delete',
+            data: {id},
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+                window.location.reload(false);
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
+     function deleteEmailRow(id) {
+        $.ajax({
+            url: 'http://localhost:3000/template-dashboard/delete-email',
             data: {id},
             type: 'POST',
             complete: function () {

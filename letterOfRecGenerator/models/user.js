@@ -1,6 +1,7 @@
 var db = require('../db');
 var Form = require("./form");
 var Template = require("./template");
+var Email = require("./email");
 
 var Schema = db.Schema;
 
@@ -9,10 +10,12 @@ var UserSchema = new Schema({
     displayName: String,
     accessToken: String,
     templates: [Template.schema],
+    emailTemplates: [Email.schema],
     forms: [{
         type: db.Schema.Types.ObjectId,
         ref: 'Form'
-    }]
+    }],
+    emailhistory: [Email.schema]
 });
 
 UserSchema.statics.findUser = function (id, cb) {
@@ -42,6 +45,42 @@ UserSchema.methods.addTemplate = function (template, cb) {
     this.save(function (err) {
         cb(err, newTemplate.getId());
     })
+};
+
+UserSchema.methods.addEmailHistory = function (email, cb) {
+    this.emailhistory.push(email);
+    var newTemplate = this.emailhistory[this.emailhistory.length - 1];
+    this.save(function (err, id) {
+        cb(err, newTemplate.getId());
+    })
+};
+
+UserSchema.methods.addEmailTemplate = function (email, cb) {
+    this.emailTemplates.push(email);
+    var newTemplate = this.emailTemplates[this.emailTemplates.length - 1];
+    this.save(function (err, id) {
+        cb(err, newTemplate.getId());
+    })
+};
+
+UserSchema.methods.updateEmailTemplate = function (id, email, cb) {
+    var user = this;
+    var updatedTemplate = this.emailTemplates.id(id);
+
+    updatedTemplate.title = email.title;
+    updatedTemplate.subject = email.subject;
+    updatedTemplate.body_text = email.body_text;
+
+    User.findOneAndUpdate({
+        "id": user.id,
+        "emailTemplates._id": id
+    }, {
+        "$set": {
+            "emailTemplates.$": updatedTemplate
+        }
+    }, function (err, user) {
+        cb(err);
+    });
 };
 
 UserSchema.methods.updateTemplate = function (id, template, cb) {
@@ -75,9 +114,47 @@ UserSchema.methods.getTemplate = function (id) {
     return this.templates.id(id);
 };
 
+UserSchema.methods.getEmailTemplates = function () {
+    return this.emailTemplates;
+};
+
+UserSchema.methods.getEmailTemplate = function (id) {
+    return this.emailTemplates.id(id);
+};
+
+UserSchema.methods.getEmailHistory = function () {
+    return this.emailhistory;
+};
+
+UserSchema.methods.getAnEmailHistory = function (id) {
+    return this.emailhistory.id(id);
+};
+
 UserSchema.methods.removeTemplate = function (id, cb) {
     this.getTemplate(id).remove();
     this.save(cb);
+};
+
+UserSchema.methods.removeEmailTemplate = function (id, cb) {
+    // this.getEmailTemplate(id).remove();
+    // this.save(cb);
+    var user = this;
+    // var updatedTemplate = this.emailTemplates.id(id);
+
+    // updatedTemplate.title = email.title;
+    // updatedTemplate.subject = email.subject;
+    // updatedTemplate.body_text = email.body_text;
+
+    User.findOneAndUpdate({
+        "id": user.id,
+        "emailTemplates._id": id
+    }, {
+        "$set": {
+            "emailTemplates.$.active": false
+        }
+    }, function (err, user) {
+        cb(err);
+    });
 };
 
 UserSchema.methods.addForm = function (form, cb) {
