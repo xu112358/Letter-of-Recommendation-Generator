@@ -123,8 +123,15 @@ FormSchema.methods.setOrganization = function (organization) {
  * @param cb
  */
 FormSchema.statics.submitForm = function (id, responseData, cb) {
+    console.log("response data: ");
+    console.log(responseData);
+    console.log("----------------------------------------");
+
     var organizationArr = [];
     var savedFormIdArr = [];
+
+    let totalForms = 0;
+    let fieldsByForm = [];
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
             cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
@@ -139,6 +146,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     let organizationList = response.trim();
                     organizationArr = organizationList.split(", ");
                     response = organizationArr[0]; //update response to right organization
+                    totalForms = organizationArr.length;
                 }
                 //If response is empty
                 if (!response.length) {
@@ -152,26 +160,134 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         tag: question.tag,
                         response: response
                     });
-                } else {
+                } else if (question.type === "Custom") { // custom
+                    let questionOptions = question.options;
+                    console.log("all question options for this custom question");
+                    console.log(questionOptions); // University, Degree, Department
+
+                    let allFields = [];
+                    for(let i=0; i<questionOptions.length; i++) {
+                        let field = {
+                            fieldName: questionOptions[i].option, // University
+                            fieldTag: questionOptions[i].tag // <!Uni>
+                        };
+                        allFields.push(field);
+                    }
+
+
+
+                    /* optionText -->
+                        USC
+                        MIT
+                        NYU
+                        UCLA
+
+                        USC degree
+                        MIT degree
+                        NYU degree
+                        UCLA degree
+
+                        USC department
+                        MIT department
+                        NYU department
+                        UCLA department
+                     */
+
+                    // num organizations = len / number of options
+                    let numResponse = response.length;
+                    let numOptions = questionOptions.length;
+                    let numOrganizations = numResponse / numOptions;
+
+                    // todo: get rid of hardcoded 3
+                    for(let k=0; k<numOrganizations; k++) {
+                        fieldsByForm[k] = {
+                            num: k,
+                            fields: []
+                        };
+                    }
+
+                    let i = 0;
+                    response.forEach(function (optionText) {
+                        // split by "/"
+                        console.log("i: " + i);
+                        console.log(optionText + "------------");
+
+                        // i can be calculated -- hack y
+                        // todo: get rid of hardcoded 3 (number of options)
+                        //let formIndex = i % 3;
+                        let formIndex = Math.floor(i/numOptions);
+                        let optionIndex = i % numOptions;
+                        let field = {
+                            fieldName: allFields[optionIndex].fieldName,
+                            fieldTag: allFields[optionIndex].fieldTag,
+                            response: optionText
+                        };
+
+                        console.log("created field obj");
+                        console.log(field);
+                        fieldsByForm[formIndex].fields.push(field);
+
+
+                        console.log("=================");
+                        console.log(fieldsByForm);
+                        console.log("=================");
+                        console.log("each fieldsByForm element");
+                        for(let k = 0; k<fieldsByForm.length; k++) {
+                            console.log("form k: " + k);
+                            console.log(fieldsByForm[k].fields);
+                        }
+                        console.log("=================");
+
+                        //allFields[i].response = optionText;
+                        // why do i need to do this???
+                        // allFields[formIndex].response = optionText;
+                        // console.log("allFields array");
+                        // console.log(allFields);
+
+                        i++;
+                    });
+                }
+                else { // checkbox (?)
                     response.forEach(function (optionText) {
                         var option = question.options.find(function (option) {
                             return option.fill === optionText;
                         });
 
+                        console.log("option: ");
+                        console.log(option);
+
                         responses.push({
                             tag: option.tag,
                             response: option.fill
                         });
+
+                        console.log("resposne: ");
+                        console.log(responses);
                     });
                 }
             });
+
             //Update organization to be the first one
             form.organization = organizationArr[0];
             form.duplicated = true;
             form.status = 'Submitted';
-            form['responses'] = responses;
+
             form['meta']['submitted'] = Date.now();
-              
+
+            // set responses form 0th
+            // todo: for each fieldsByForm[0].fields, push the field as a response
+            let allFieldsInForm = fieldsByForm[0].fields;
+            for(let k=0; k<allFieldsInForm.length; k++) {
+                responses.push({
+                    tag: allFieldsInForm[k].fieldTag,
+                    response: allFieldsInForm[k].response
+                });
+            }
+
+
+            // todo: set the response
+            form['responses'] = responses;
+
             form.save().then(function(savedForm){
                 if(organizationArr.length > 1){
                     for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
@@ -189,7 +305,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                             organization: organizationArr[orgIndex],
                             owner: savedForm.owner
                         });
-                    
+
+                        // for each orgIndex, push remaining here
                         promise.then(function(savedForm){
                             savedFormIdArr.push(savedForm._id);
                             /* We update the response for organization to the right ones here */
@@ -198,7 +315,18 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                     console.log("error finding saved Form");
                                 } else {
                                     let duplicateResponse =  foundForm['responses'];
-                                    foundForm['template']['questions'].forEach(function (question){  
+
+                                    // setting correct tags, take in account for custom q
+                                    let allFieldsInForm = fieldsByForm[orgIndex].fields;
+                                    for(let j=0; j<duplicateResponse.length; j++) {
+                                        for(let k=0; k<allFieldsInForm.length; k++) {
+                                            if(duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
+                                                duplicateResponse[j].response = allFieldsInForm[k].response;
+                                            }
+                                        }
+                                    }
+
+                                    foundForm['template']['questions'].forEach(function (question){
                                         if(question.organizationFlag){
                                             var savedFormResponse = duplicateResponse[question.number - 1];
                                             savedFormResponse.response = organizationArr[orgIndex];
