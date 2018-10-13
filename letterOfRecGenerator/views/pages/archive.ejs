@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/archive.css"/>
+</head>
+<body>
+<header>
+    <% include ../partials/header %>
+</header>
+<h1 class="title"><%= title %></h1>
+<table>
+    <thead>
+        <td class="center" style="font-size: 25px;"><b>Archived Recommendations</b></td>
+    </thead>
+</table>
+<table>
+    <thead>
+    <tr>
+        <td>Name</td>
+        <td>Organization</td>
+        <td>Template</td>
+        <td class="center">Form Status</td>
+        <td class="icons"></td>
+    </tr>
+    </thead>
+    <tbody>
+    <% if (!forms.length) { %> 
+        <tr>
+            <td colspan="5" style="text-align: center;">No Archived Recommendations</td>
+        </tr>
+    <%   } else {
+         for (var form of forms) { %>
+    <tr>
+        <td><%= form.email %></td>
+        <td><%= form.organization %></td>
+        <td><%= form.template.name %></td>
+        <td class="center">
+                <% if (form.status == 'Sent') { %>
+                <img class="icon" src="/images/red_x.png"/>
+                <% } else { %>
+                <img class="icon" src="/images/green_checkmark.png"/>
+                <% } %>
+        </td>
+        <td class="center">
+            <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
+                id: form._id, email: form.email
+            }) %>)"/>
+            <img class="icon clickable" src="/images/preview.png"/>
+        </td>
+    </tr>
+    <% }} %>
+    </tbody>
+</table>
+<table>
+    <thead>
+    <td class="center" style="font-size: 25px;"><b>Archived Templates</b></td>
+    </thead>
+    <tbody>
+    <% if (!templates.length)  { %>
+        <tr>
+            <td>
+                <div class="template-name">No Existing Recommendation Template</div>
+            </td>
+        </tr>
+    <% } else {
+        for (var template of templates) { %>
+    <tr>
+        <td>
+            <div class="template-name"><%= template.name %></div>
+            <div class="image-container">
+                <img class="icon" src="/images/pencil.png" onclick="editTemplate('<%= template._id %>')"/>
+                <img class="icon" src="/images/restore.png" onclick="restoreTemplate('<%= template._id %>')"/>
+            </div>
+        </td>
+    </tr>
+    <% }} %>
+    </tbody>
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+
+    function openHistory(params) {
+        // Check to see if the status is green, if not then show error dialog
+        window.location.href = getDestinationRoute('http://localhost:3000/history', params);
+    }
+
+    // When the user clicks the preview icon, take them to the letter preview page.
+    function openLetterPreview(params, status) {
+        console.log(status);
+        // Check to see if the status is green, if not then show error dialog
+        if(status === 'Sent'){
+            window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
+        } else {
+            window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+        }  
+    }
+
+    function editTemplate(id) {
+        $.ajax({
+            url: 'http://localhost:3000/template-editor/edit',
+            data: {id},
+            type: 'GET',
+            complete: function (data) {
+                var params = data.responseJSON;
+                console.log('complete');
+                window.location.href = getDestinationRoute('http://localhost:3000/template-editor', params);
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
+    function restoreTemplate(id) {
+        $.ajax({
+            url: 'http://localhost:3000/archive/restore-template',
+            data: {id},
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+                window.location.reload(false);
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
+    function getDestinationRoute(address, params) {
+        return address + '?' + $.param(params);
+    }
+
+</script>
+</body>
+</html>

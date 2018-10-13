@@ -69,6 +69,8 @@ FormSchema.statics.findFromLink = function (link, cb) {
     Form.findOne({'link.link': link}, cb);
 };
 
+/* Removes form from database. However, we do not use this
+because we deactivate forms, not remove them */
 FormSchema.statics.removeForm = function (id, cb) {
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
@@ -228,6 +230,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         if(savedFormIdArr.length == organizationArr.length-1)
                         for(let i=0; i < savedFormIdArr.length; i++) {
                             user.forms.push(savedFormIdArr[i]);
+                            console.log("saving Form to user: " + user.displayName + " " + savedFormIdArr[i]);
                         }
                         user.save();
                     }
