@@ -22,6 +22,7 @@ var recommenderDashboard = require('./routes/recommender-dashboard');
 var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
 var history = require('./routes/history');
+var archive = require('./routes/archive');
 
 var app = express();
 
@@ -75,6 +76,7 @@ app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
 app.use('/template-dashboard', isAuthenticated, templateDashboard);
 app.use('/users', isAuthenticated, users);
 app.use('/history', history);
+app.use('/archive', archive);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -1,0 +1,90 @@
+.title {
+    background-color: #FFFFFF;
+    font-size: 32px;
+    margin: 0px;
+    padding: 20px 8px;
+}
+
+body {
+    background-color: #F2F2F2;
+}
+
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 20px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.close-container {
+    height: 20px;
+}
+
+.icons {
+    width: 200px;
+}
+
+table {
+    background-color: #FFFFFF;
+    border-collapse: collapse;
+    font-size: 20px;
+    width: 100%;
+}
+
+td {
+    padding-left: 8px;
+}
+
+table thead tr {
+    border-bottom: solid 1px black;
+}
+
+table tbody tr {
+    border-bottom: solid 1px black;
+    height: 150px;
+}
+
+td.center {
+    text-align: center;
+}
+
+table tbody tr:last-child {
+    border-bottom: none;
+}
+
+table tbody tr td {
+    position: relative;
+}
+
+img.icon {
+    height: 30px;
+    width: 30px;
+}
+
+img.clickable {
+    cursor: pointer;
+}
+
+.image-container {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.template-name {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

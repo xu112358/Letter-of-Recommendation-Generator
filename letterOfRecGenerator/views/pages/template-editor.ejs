@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/template-editor.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
-            letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>"></script>
+            letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>"></script>
     <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
 </head>
 <body>
@@ -65,10 +65,14 @@
 
         <div id="questions-container"></div>
 
-        <button class="large-circle-button" onclick="addQuestion()">+</button>
+        <%  console.log(saveSwitch);
+            if (saveSwitch=="true") { %>
+            <button class="large-circle-button" onclick="addQuestion()">+</button>
         <div class="flex-row">
             <button id="save-button" onclick="saveTemplate()">Save</button>
         </div>
+        <% } %>
+        
     </div>
 
 </body>

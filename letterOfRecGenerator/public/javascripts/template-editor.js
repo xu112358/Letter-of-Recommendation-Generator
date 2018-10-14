@@ -8,6 +8,7 @@ var errorScrollCoordinates = {
 var id = parseAttribute('id');
 var letterheadImgData = parseAttribute('letterheadImgData');
 var footerImgData = parseAttribute('footerImgData');
+var saveSwitchData = parseAttribute('saveSwitchData');
 
 /**
  * Prototype class for Questions
@@ -70,7 +71,7 @@ window.onload = function () {
     if (id) {
         $.ajax({
             url: 'http://localhost:3000/template-editor/template',
-            data: {id},
+            data: {id, saveSwitchData},
             type: 'GET',
             success: function (data) {
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);

@@ -40,10 +40,17 @@
 
 <table>
     <thead>
-    <td class="center"><b>Recommendation Templates</b></td>
+    <td class="center" style="font-size: 25px;"><b>Recommendation Templates</b></td>
     </thead>
     <tbody>
-    <% for (var template of templates) { %>
+    <% if (!templates.length)  { %>
+    <tr>
+        <td>
+            <div class="template-name">No Existing Recommendation Template</div>
+        </td>
+    </tr>
+    <% } else {
+            for (var template of templates) { %>
     <tr>
         <td>
             <div class="template-name"><%= template.name %></div>
@@ -53,15 +60,24 @@
             </div>
         </td>
     </tr>
-    <% } %>
+    <%      }
+       }  %>
     </tbody>
 </table>
 <table>
     <thead>
-    <td class="center"><b>Email Templates</b></td>
+    <td class="center" style="font-size: 25px;"><b>Email Templates</b></td>
     </thead>
     <tbody>
-    <% for (var template of emailtemplates) {
+    <% if (!templates.length)  { %>
+        <tr>
+            <td>
+                <div class="template-name">No Existing Email Template</div>
+            </td>
+        </tr>
+
+    <% } else {
+        for (var template of emailtemplates) {
         if (template.active == true) {
     %>
     <tr>
@@ -73,7 +89,7 @@
             </div>
         </td>
     </tr>
-    <% }}
+    <% }}}
      %>
     </tbody>
 </table>
