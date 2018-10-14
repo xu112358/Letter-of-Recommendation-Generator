@@ -123,10 +123,6 @@ FormSchema.methods.setOrganization = function (organization) {
  * @param cb
  */
 FormSchema.statics.submitForm = function (id, responseData, cb) {
-    console.log("response data: ");
-    console.log(responseData);
-    console.log("----------------------------------------");
-
     var organizationArr = [];
     var savedFormIdArr = [];
 
@@ -162,8 +158,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     });
                 } else if (question.type === "Custom") { // custom
                     let questionOptions = question.options;
-                    console.log("all question options for this custom question");
-                    console.log(questionOptions); // University, Degree, Department
 
                     let allFields = [];
                     for(let i=0; i<questionOptions.length; i++) {
@@ -174,31 +168,10 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         allFields.push(field);
                     }
 
-
-
-                    /* optionText -->
-                        USC
-                        MIT
-                        NYU
-                        UCLA
-
-                        USC degree
-                        MIT degree
-                        NYU degree
-                        UCLA degree
-
-                        USC department
-                        MIT department
-                        NYU department
-                        UCLA department
-                     */
-
                     // num organizations = len / number of options
                     let numResponse = response.length;
                     let numOptions = questionOptions.length;
                     let numOrganizations = numResponse / numOptions;
-
-                    // todo: get rid of hardcoded 3
                     for(let k=0; k<numOrganizations; k++) {
                         fieldsByForm[k] = {
                             num: k,
@@ -208,13 +181,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
 
                     let i = 0;
                     response.forEach(function (optionText) {
-                        // split by "/"
-                        console.log("i: " + i);
-                        console.log(optionText + "------------");
-
-                        // i can be calculated -- hack y
-                        // todo: get rid of hardcoded 3 (number of options)
-                        //let formIndex = i % 3;
+                        // i can be calculated -- hack-y
                         let formIndex = Math.floor(i/numOptions);
                         let optionIndex = i % numOptions;
                         let field = {
@@ -222,28 +189,12 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                             fieldTag: allFields[optionIndex].fieldTag,
                             response: optionText
                         };
-
-                        console.log("created field obj");
-                        console.log(field);
                         fieldsByForm[formIndex].fields.push(field);
 
-
-                        console.log("=================");
-                        console.log(fieldsByForm);
-                        console.log("=================");
-                        console.log("each fieldsByForm element");
                         for(let k = 0; k<fieldsByForm.length; k++) {
                             console.log("form k: " + k);
                             console.log(fieldsByForm[k].fields);
                         }
-                        console.log("=================");
-
-                        //allFields[i].response = optionText;
-                        // why do i need to do this???
-                        // allFields[formIndex].response = optionText;
-                        // console.log("allFields array");
-                        // console.log(allFields);
-
                         i++;
                     });
                 }
@@ -275,7 +226,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             form['meta']['submitted'] = Date.now();
 
             // set responses form 0th
-            // todo: for each fieldsByForm[0].fields, push the field as a response
             let allFieldsInForm = fieldsByForm[0].fields;
             for(let k=0; k<allFieldsInForm.length; k++) {
                 responses.push({
@@ -283,11 +233,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     response: allFieldsInForm[k].response
                 });
             }
-
-
-            // todo: set the response
             form['responses'] = responses;
-
             form.save().then(function(savedForm){
                 if(organizationArr.length > 1){
                     for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
