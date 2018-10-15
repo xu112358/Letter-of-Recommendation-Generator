@@ -34,7 +34,7 @@
             <input id="name-container-text-field" contentEditable="true" value="<%= templateName %>">
         </div>
     </div>
-
+<!-- 
     <h5> Choose from inactive templates: </h5>
     <select id="email-templates" name="templates">
         <% var options = []; %>
@@ -43,7 +43,7 @@
             %>
           <option data-title="<%= template.title %>" data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
         <% }} %>
-    </select>
+    </select> -->
 
     <form class="input-form" method="POST" action="/email-template-editor"></form>
     
@@ -69,9 +69,6 @@
 
   
 </html>
-
-
-
 <script>
     $("#email-templates").change(function () {
         document.getElementById("name-container-text-field").value = $(this).find(':selected').data('title');

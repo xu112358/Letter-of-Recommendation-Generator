@@ -352,17 +352,11 @@ FormSchema.statics.completeForm = function (id, letter, cb) {
 };
 
 FormSchema.methods.addEmailHistory_Form = function (email, cb) {
-    // FormSchema.statics.findForm(id, function (err, form){
-    //     if(err){
-    //         console.log(err);
-    //     }else{
-            this.emailhistory.push(email);
-            var newTemplate = this.emailhistory[this.emailhistory.length - 1];
-            this.save(function (err, id) {
-                cb(err, newTemplate.getId());
-            })
-    //     }
-    // })    
+    this.emailhistory.push(email);
+    var newTemplate = this.emailhistory[this.emailhistory.length - 1];
+    this.save(function (err, id) {
+        cb(err, newTemplate.getId());
+})    
 };
 
 var Form = db.model('Form', FormSchema);

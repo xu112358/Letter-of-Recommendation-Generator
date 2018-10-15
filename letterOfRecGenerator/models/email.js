@@ -5,7 +5,6 @@ var EmailSchema = new Schema({
     title: String,
     subject: String,
     body_text: String,
-    active: Boolean
 });
 
 EmailSchema.methods.getId = function () {
@@ -24,9 +23,9 @@ EmailSchema.methods.getBodyText = function () {
     return this.body_text;
 };
 
-EmailSchema.methods.getActive = function () {
-    return this.active;
-};
+// EmailSchema.methods.getActive = function () {
+//     return this.active;
+// };
 
 
 var Email = db.model('Email', EmailSchema);

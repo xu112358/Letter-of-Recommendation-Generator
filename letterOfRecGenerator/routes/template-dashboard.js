@@ -27,7 +27,7 @@ router.post('/delete', function (req, res, next) {
 
 router.post('/delete-email', function (req, res, next) {
     var user = req.user;
-    user.removeEmailTemplate(req.body.id, function (err) {
+    user.deactivateEmailTemplate(req.body.id, function (err) {
         if (err) {
             console.log(err);
         } else {

@@ -10,6 +10,7 @@ router.get('/', function (req, res, next) {
             res.render('pages/archive', {
                 title: 'Archive Page',
                 forms: deactivatedForms,
+                emailtemplates: req.user.getDeactivatedEmailTemplates(),
                 templates: req.user.getDeactivatedTemplates(),
             });
         }
@@ -28,6 +29,28 @@ router.post('/restore-template', function (req, res, next) {
                     res.render('pages/archive', {
                         title: 'Archive Page',
                         forms: deactivatedForms,
+                        emailtemplates: req.user.getDeactivatedEmailTemplates(),
+                        templates: req.user.getDeactivatedTemplates(),
+                    });
+                }
+            });
+        }
+    });
+});
+
+router.post('/restore-email-template', function (req, res, next) {
+    req.user.activateEmailTemplate(req.body.id, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            req.user.getDeactivatedForms( function (err, deactivatedForms) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render('pages/archive', {
+                        title: 'Archive Page',
+                        forms: deactivatedForms,
+                        emailtemplates: req.user.getDeactivatedEmailTemplates(),
                         templates: req.user.getDeactivatedTemplates(),
                     });
                 }

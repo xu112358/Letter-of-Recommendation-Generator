@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
             letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>"></script>
     <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
+
 </head>
 <body>
     <header>
@@ -52,6 +53,10 @@
         </div>
 
         <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
+        <h4>Tags</h4>
+        <% for (var tag of tags) {  %>
+            <button id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
+        <% } %>
         <div class="error-container">
             <div id="letter-container">
                 <div id="letter-text-area" contentEditable="true" id="text" onfocus="deemphasizeTags()"
@@ -117,3 +122,12 @@
     </div>
 </div>
 </html>
+
+<script>
+    $("button[name='tag_buttons']").on("click", function(e) {
+        var val = $(this).val();
+        var theDiv = document.getElementById("letter-text-area");
+        var content = document.createTextNode(" "+ val);
+        theDiv.appendChild(content);
+    }); 
+</script>

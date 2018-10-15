@@ -55,7 +55,7 @@
 </table>
 <table>
     <thead>
-    <td class="center" style="font-size: 25px;"><b>Archived Templates</b></td>
+    <td class="center" style="font-size: 25px;"><b>Archived Recommendation Templates</b></td>
     </thead>
     <tbody>
     <% if (!templates.length)  { %>
@@ -72,6 +72,31 @@
             <div class="image-container">
                 <img class="icon" src="/images/preview.png" onclick="editTemplate('<%= template._id %>')"/>
                 <img class="icon" src="/images/restore.png" onclick="restoreTemplate('<%= template._id %>')"/>
+            </div>
+        </td>
+    </tr>
+    <% }} %>
+    </tbody>
+</table>
+<table>
+    <thead>
+    <td class="center" style="font-size: 25px;"><b>Archived letter Templates</b></td>
+    </thead>
+    <tbody>
+    <% if (!emailtemplates.length)  { %>
+        <tr>
+            <td>
+                <div class="template-name">No Existing letter Template</div>
+            </td>
+        </tr>
+    <% } else {
+        for (var template of emailtemplates) { %>
+    <tr>
+        <td>
+            <div class="template-name"><%= template.title %></div>
+            <div class="image-container">
+                <img class="icon" src="/images/pencil.png" onclick="editTemplate('<%= template._id %>')"/>
+                <img class="icon" src="/images/restore.png" onclick="restoreEmailTemplate('<%= template._id %>')"/>
             </div>
         </td>
     </tr>
@@ -116,6 +141,21 @@
     function restoreTemplate(id) {
         $.ajax({
             url: 'http://localhost:3000/archive/restore-template',
+            data: {id},
+            type: 'POST',
+            complete: function () {
+                console.log('complete');
+                window.location.reload(false);
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
+    function restoreEmailTemplate(id) {
+        $.ajax({
+            url: 'http://localhost:3000/archive/restore-email-template',
             data: {id},
             type: 'POST',
             complete: function () {
