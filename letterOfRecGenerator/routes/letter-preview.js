@@ -32,22 +32,18 @@ router.get('/form', function (req, res, next) {
 });
 
 router.post('/addEmailHistory', function (req, res, next) {
-    console.log("in add email history router");
     req.user.getForm(req.query.id, function (err, form) {
         if (err) {
             console.log("get form " + err);
         } else {
-            console.log("getForm - success ");
-            
             Form.setEmailSent(req.body.id, function (err, form) {
                 if (err) {
                     console.log(err);
                 } else {
-                    req.user.addEmailHistory_Form(req.query.id, req.body.Email, function (err, id) {
+                    form.addEmailHistory_Form(req.body.Email, function (err, id) {
                         if (err) {
                             console.log("add email history " +err);
                         } else {
-                    
                             var email = form.email; // temp
                             var gmailClass = google.gmail('v1');
                             var email_lines = [];
@@ -78,13 +74,8 @@ router.post('/addEmailHistory', function (req, res, next) {
                                     raw: base64EncodedEmail
                                 }
                             });
-                            // res.redirect('/recommender-dashboard');
-                
-                            res.json({
-                                success: "Created Successfully",
-                                status: 200,
-                                id:id
-                            });
+
+                            res.redirect('/recommender-dashboard');
                         }
                     }); 
                 }

@@ -2,7 +2,7 @@ var db = require('../db');
 var Link = require('./link');
 var User = require('./user');
 var Template = require('./template');
-
+var Email = require('./email');
 
 var Schema = db.Schema;
 
@@ -13,6 +13,7 @@ var FormSchema = new Schema({
         enum: ['Sent', 'Submitted', 'Complete']
     },
     email_sent: Boolean,
+    emailhistory: [Email.schema],
     template: Template.schema,
     link: Link.schema,
     responses: [{
@@ -230,14 +231,12 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             form['meta']['submitted'] = Date.now();
 
             // set responses form 0th
-            if(fieldsByForm.length) {
-                let allFieldsInForm = fieldsByForm[0].fields;
-                for(let k=0; k<allFieldsInForm.length; k++) {
-                    responses.push({
-                        tag: allFieldsInForm[k].fieldTag,
-                        response: allFieldsInForm[k].response
-                    });
-                }
+            let allFieldsInForm = fieldsByForm[0].fields;
+            for(let k=0; k<allFieldsInForm.length; k++) {
+                responses.push({
+                    tag: allFieldsInForm[k].fieldTag,
+                    response: allFieldsInForm[k].response
+                });
             }
             form['responses'] = responses;
             form.save().then(function(savedForm){
@@ -270,13 +269,11 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                     let duplicateResponse =  foundForm['responses'];
 
                                     // setting correct tags, take in account for custom q
-                                    if(fieldsByForm.length){
-                                        let allFieldsInForm = fieldsByForm[orgIndex].fields;
-                                        for(let j=0; j<duplicateResponse.length; j++) {
-                                            for(let k=0; k<allFieldsInForm.length; k++) {
-                                                if(duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
-                                                    duplicateResponse[j].response = allFieldsInForm[k].response;
-                                                }
+                                    let allFieldsInForm = fieldsByForm[orgIndex].fields;
+                                    for(let j=0; j<duplicateResponse.length; j++) {
+                                        for(let k=0; k<allFieldsInForm.length; k++) {
+                                            if(duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
+                                                duplicateResponse[j].response = allFieldsInForm[k].response;
                                             }
                                         }
                                     }
@@ -354,6 +351,19 @@ FormSchema.statics.completeForm = function (id, letter, cb) {
     });
 };
 
+FormSchema.methods.addEmailHistory_Form = function (email, cb) {
+    // FormSchema.statics.findForm(id, function (err, form){
+    //     if(err){
+    //         console.log(err);
+    //     }else{
+            this.emailhistory.push(email);
+            var newTemplate = this.emailhistory[this.emailhistory.length - 1];
+            this.save(function (err, id) {
+                cb(err, newTemplate.getId());
+            })
+    //     }
+    // })    
+};
 
 var Form = db.model('Form', FormSchema);
 
