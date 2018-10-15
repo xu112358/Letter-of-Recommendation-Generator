@@ -55,6 +55,39 @@ UserSchema.methods.addEmailHistory = function (email, cb) {
     })
 };
 
+UserSchema.methods.findEmail = function (email, cb) {
+    var user = this;
+    User.find({
+        "id": user.id,
+        "emailTemplates.title": email.title}, function (err, result) {
+
+            if(result.length != 0){
+                User.findOneAndUpdate({
+                    "id": user.id,
+                    "emailTemplates.title": email.title
+                }, {
+                    "$set": {
+                        "emailTemplates.$.active": true
+                    }
+                });
+            }
+
+            cb(err, result);
+    });
+};
+
+
+UserSchema.methods.FindOrAddEmailTemplate = function (email, cb) {
+    UserSchema.methods.findEmail(email, function (err, result) {
+        if (result.length == 0) {
+            UserSchema.methods.addEmailTemplate(email, cb);
+        } else {
+            cb(err, email);
+        }
+    });
+};
+
+
 UserSchema.methods.addEmailTemplate = function (email, cb) {
     this.emailTemplates.push(email);
     var newTemplate = this.emailTemplates[this.emailTemplates.length - 1];
@@ -62,6 +95,28 @@ UserSchema.methods.addEmailTemplate = function (email, cb) {
         cb(err, newTemplate.getId());
     })
 };
+
+// UserSchema.methods.FindOrAddEmailTemplate = function (email, cb) {
+//     var user = this;
+//     console.log(email);
+//     // if email title exist in the database set active = true 
+//     User.find({
+//         "id": user.id,
+//         "emailTemplates.title": email.title}, function (err, result) {
+//             if(result.length != 0){
+//                 User.findOneAndUpdate({
+//                     "id": user.id,
+//                     "emailTemplates.title": email.title
+//                 }, {
+//                     "$set": {
+//                         "emailTemplates.$.active": true
+//                     }
+//                 });
+//             }else{
+//                 UserSchema.methods.addEmailTemplate(email, cb);
+//             }
+//     });
+// };
 
 UserSchema.methods.updateEmailTemplate = function (id, email, cb) {
     var user = this;
@@ -136,14 +191,7 @@ UserSchema.methods.removeTemplate = function (id, cb) {
 };
 
 UserSchema.methods.removeEmailTemplate = function (id, cb) {
-    // this.getEmailTemplate(id).remove();
-    // this.save(cb);
     var user = this;
-    // var updatedTemplate = this.emailTemplates.id(id);
-
-    // updatedTemplate.title = email.title;
-    // updatedTemplate.subject = email.subject;
-    // updatedTemplate.body_text = email.body_text;
 
     User.findOneAndUpdate({
         "id": user.id,

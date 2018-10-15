@@ -58,11 +58,11 @@
                 id: form._id, email: form.email
             }) %>)"/>
             <% if (form.email_sent == false) { %>
-            <img class="icon" src="/images/mail_not_sent.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon" src="/images/email_incomplete.png" onclick="openLetterPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } else { %>
-            <img class="icon" src="/images/mail_sent.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon" src="/images/email_complete.png" onclick="openLetterPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } %>
