@@ -43,7 +43,7 @@ router.post('/addEmailHistory', function (req, res, next) {
                 if (err) {
                     console.log(err);
                 } else {
-                    req.user.addEmailHistory(req.body.Email, function (err, id) {
+                    req.user.addEmailHistory_Form(req.query.id, req.body.Email, function (err, id) {
                         if (err) {
                             console.log("add email history " +err);
                         } else {
