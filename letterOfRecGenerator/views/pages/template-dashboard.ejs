@@ -40,10 +40,17 @@
 
 <table>
     <thead>
-    <td class="center"><b>Recommandation Templates</b></td>
+    <td class="center" style="font-size: 25px;"><b>Recommendation Templates</b></td>
     </thead>
     <tbody>
-    <% for (var template of templates) { %>
+    <% if (!templates.length)  { %>
+    <tr>
+        <td>
+            <div class="template-name">No Existing Recommendation Template</div>
+        </td>
+    </tr>
+    <% } else {
+            for (var template of templates) { %>
     <tr>
         <td>
             <div class="template-name"><%= template.name %></div>
@@ -53,15 +60,24 @@
             </div>
         </td>
     </tr>
-    <% } %>
+    <%      }
+       }  %>
     </tbody>
 </table>
 <table>
     <thead>
-    <td class="center"><b>Email Templates</b></td>
+    <td class="center" style="font-size: 25px;"><b>Email Templates</b></td>
     </thead>
     <tbody>
-    <% for (var template of emailtemplates) {
+    <% if (!templates.length)  { %>
+        <tr>
+            <td>
+                <div class="template-name">No Existing Email Template</div>
+            </td>
+        </tr>
+
+    <% } else {
+        for (var template of emailtemplates) {
         if (template.active == true) {
     %>
     <tr>
@@ -73,17 +89,23 @@
             </div>
         </td>
     </tr>
-    <% }}
+    <% }}}
      %>
     </tbody>
 </table>
 
-<button class = 'addBtn' onclick="openModal()">+R</button>
-<button class = 'addBtn' onclick="openEmailModal()">+E</button>
+<button class="addBtn" onclick="openModal()" style="padding-left: 5px; padding-right: 60px;"><img class="icon" src="/images/add_template.png" width="30" height="10"></button>
+<button class="addBtn" onclick="openEmailModal()" style="padding-right: 5px;"><img class="icon" src="/images/add_email_template.png" width="50" height="70"></button>
 
 
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var recommendation_button = document.getElementById("recommendation-button");
+    recommendation_button.innerHTML = '<img src="/images/add_template.png" />';
+    var email_button = document.getElementById("email-button");
+    email_button.innerHTML = '<img src="/images/add_email_template.png" />';
+</script>
 <script>
     // Get the modal
     var modal = document.getElementById('myModal');

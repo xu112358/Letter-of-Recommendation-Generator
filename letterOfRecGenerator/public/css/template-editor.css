@@ -408,3 +408,13 @@
 #upload-letterhead, #upload-footer {
     margin-top: 50px;
 }
+
+.option-cont {
+    opacity: 1.0;
+    transition: 0.4s;
+}
+
+.option-cont:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}

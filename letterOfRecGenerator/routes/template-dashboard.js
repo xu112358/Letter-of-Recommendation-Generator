@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 
 router.post('/delete', function (req, res, next) {
     var user = req.user;
-    user.removeTemplate(req.body.id, function (err) {
+    user.deactivateTemplate(req.body.id, function (err) {
         if (err) {
             console.log(err);
         } else {

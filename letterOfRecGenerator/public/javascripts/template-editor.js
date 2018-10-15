@@ -8,6 +8,8 @@ var errorScrollCoordinates = {
 var id = parseAttribute('id');
 var letterheadImgData = parseAttribute('letterheadImgData');
 var footerImgData = parseAttribute('footerImgData');
+var saveSwitchData = parseAttribute('saveSwitchData');
+
 
 /**
  * Prototype class for Questions
@@ -47,6 +49,8 @@ const QUESTIONS_CONTAINER_ID = "questions-container";
 const ADD_QUESTION_MODAL_ID = "add-question-modal";
 const WARNING_MODAL_ID = "warning-modal";
 
+const CUSTOM_QUESTION_TYPE = "Custom";
+
 let letter = "";
 var questions = [];
 var warningModalFunction;
@@ -70,7 +74,7 @@ window.onload = function () {
     if (id) {
         $.ajax({
             url: 'http://localhost:3000/template-editor/template',
-            data: {id},
+            data: {id, saveSwitchData},
             type: 'GET',
             success: function (data) {
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
@@ -173,6 +177,11 @@ function displayQuestions() {
     Sortable.create(list);
 }
 
+/**
+ * Creates HTML for the different question types
+ * @param q
+ * @returns {string}
+ */
 function getQuestionHTML(q) {
     var data_id_attribute = "data-id=\"" + q.id + "\"";
     var delete_onclick_attribute = "onclick=\"deleteQuestionWithWarning(" + q.id + ")\"";
@@ -190,6 +199,9 @@ function getQuestionHTML(q) {
         case "Checkbox":
             question_type_label = "CHECKBOX";
             break;
+        case "Custom":
+            question_type_label = "Custom";
+            break;
         default:
             break;
     }
@@ -200,21 +212,62 @@ function getQuestionHTML(q) {
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
     html += ">" + "</div>";
+
     // question box
-    html += "<div class=\"question-container\">" + getTextAreaHTML(placeholder, q.value) + multiple_choice_fields_html;
-    if (q.type !== "Checkbox") {
-        html += "<span class=\"line\"></span>" + getTagTextInputHTML(q.tag);
+    // CUSTOM_QUESTION_TYPE
+    if(q.type === "asdsad") {
+        let add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
+
+        let container_html = [
+            "<div class='question-container'> " +
+                "<p> Custom your question <button " + add_multiple_choice_attribute + "> Add Field </button> </p> " +
+                "<table>" +
+                    "<tr>" +
+                        "<td>University</td>" +
+                        "<td> !ORG </td>" +
+                    "</tr> " +
+                    "<tr>" +
+                        "<td>Program</td>" +
+                        "<td> !PROGRAM </td>" +
+                    "</tr> " +
+                    "<tr>" +
+                        "<td>" + getTextAreaHTML("Enter field name", q.value) + "</td>" +
+                        "<td>" + getTextAreaHTML("Enter tag name", q.value) + "</td>" +
+                        // "<td> <input type='text' placeholder='Enter field Name'/> </td>" +
+                        // "<td> <input type='text' placeholder='Enter tag name'/> </td>" +
+                    "</tr> " +
+                "</table>" +
+            "</div>"
+        ];
+
+        html += container_html;
+
+    } else {
+        // console.log("q.value: " + q.value);
+        // console.log(q);
+        html += [
+            "<div class=\"question-container\">" +
+                getTextAreaHTML(placeholder, q.value) +
+                multiple_choice_fields_html
+        ];
+
+        if (q.type !== "Checkbox" && q.type !== "Custom") {
+            html += "<span class=\"line\"></span>" + getTagTextInputHTML(q.tag);
+        }
+        html += "</div>";
+
+        // delete button
+        html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
+
     }
-    html += "</div>";
-    // delete button
-    html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
     html += "</div></div></div>";
+
     return html;
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
 function getMultipleChoiceFieldsHTML(q) {
-    if (q.type != "Radio Button" && q.type != "Checkbox") return "";
+    if (q.type !== "Radio Button" && q.type !== "Checkbox" && q.type !== "Custom") return "";
 
     var option_placeholder = "Enter option here...";
     var fill_placeholder = "Enter text that will replace the tag... (optional)";
@@ -224,7 +277,7 @@ function getMultipleChoiceFieldsHTML(q) {
         var delete_onclick_attribute = "onclick=\"deleteMultipleChoiceFieldWithWarning(this," + i + ")\"";
 
         var text_area_elements = "<div class=\"text-area-container\">" + getTextAreaHTML(option_placeholder, q.options[i].option, 'option') + getTextAreaHTML(fill_placeholder, q.options[i].fill);
-        if (q.type === "Checkbox") {
+        if (q.type === "Checkbox" || q.type === "Custom") {
             //text_area_elements += getTextAreaHTML()
             text_area_elements += getTagTextInputHTML(q.options[i].tag);
         }
@@ -238,6 +291,13 @@ function getMultipleChoiceFieldsHTML(q) {
     return html;
 }
 
+/**
+ * Generates html for input field
+ * @param placeholder - of input field
+ * @param value
+ * @param name
+ * @returns {string}
+ */
 function getTextAreaHTML(placeholder, value, name) {
     if (name) {
         return "<textarea name=\"" + name + "\" data-type=\"value\" class=\"text-area\" type=\"text\" placeholder=\"" + placeholder + "\" onkeyup=\"auto_grow(this)\">" + value + "</textarea>";
@@ -421,6 +481,21 @@ function addCheckboxQuestion() {
     hideAddQuestionModal();
 }
 
+/**
+ * Creates a custom question
+ */
+function addCustomQuestion() {
+    console.log("addTestAnswerQuestion called");
+    updateQuestions();
+    let question = new Question("Custom", "", "");
+    question.options.push(constructOptionObject("", ""));
+    questions.push(question);
+    displayQuestions();
+    hideAddQuestionModal();
+
+    // add a field
+}
+
 function updateQuestions() {
     // update the letter
     letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
@@ -435,7 +510,7 @@ function updateQuestions() {
 
         question.value = questionEl.querySelector("[data-type='value']").value;
         // Checkbox questions do not have a general tag (as there are tags associated with each option instead)
-        if (question.type !== "Checkbox") {
+        if (question.type !== "Checkbox" || question.type !== CUSTOM_QUESTION_TYPE) {
             question.tag = questionEl.querySelector("[data-type='tag']").value;
         }
 
@@ -447,7 +522,7 @@ function updateQuestions() {
 
             question.options[j].option = mc.querySelectorAll("[data-type='value']")[0].value;
             question.options[j].fill = mc.querySelectorAll("[data-type='value']")[1].value;
-            if (question.type === "Checkbox") {
+            if (question.type === "Checkbox" || question.type === CUSTOM_QUESTION_TYPE) {
                 question.options[j].tag = mc.querySelector("[data-type='tag']").value;
             }
         }
@@ -549,7 +624,7 @@ function validate(template) {
 
         var totalFields = 3;
         if (question.options.length) {
-            totalFields = question.type === 'Checkbox' ? 4 + 3 * question.options.length : 4 + 2 * question.options.length;
+            totalFields = (question.type === 'Checkbox' || question.type === CUSTOM_QUESTION_TYPE) ? 4 + 3 * question.options.length : 4 + 2 * question.options.length;
         }
 
         if (isNotValid(question.question)) {
@@ -588,7 +663,7 @@ function validate(template) {
             }
         }
 
-        if (question.type === 'Checkbox') {
+        if (question.type === 'Checkbox' || question.type === CUSTOM_QUESTION_TYPE) {
             for (var j = 0; j < question.options.length; j++) {
                 var option = question.options[j];
                 var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
@@ -830,7 +905,7 @@ function isTagsExist(letter, questions) {
 
         if (!question) {
             questions.forEach(function (question) {
-                if (question.type === 'Checkbox') {
+                if (question.type === 'Checkbox' || question.type === CUSTOM_QUESTION_TYPE) {
                     question.options.forEach(function (option) {
                         if (option.tag === tags[i]) {
                             found = true;
