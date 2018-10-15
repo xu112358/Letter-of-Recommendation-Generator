@@ -34,7 +34,6 @@ router.get('/', function (req, res, next) {
             });
         }
 
-        
     } else {
         res.render('pages/template-editor', {
             title: 'CREATE A NEW TEMPLATE',
