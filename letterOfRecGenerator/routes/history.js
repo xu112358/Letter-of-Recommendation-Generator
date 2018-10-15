@@ -10,7 +10,8 @@ router.get('/', function (req, res, next) {
         } else {
             res.render('pages/history', {
                 title: 'History for ' + form.email,
-                emailHistory: req.user.getEmailHistory(),
+                emailHistory : form.emailhistory,
+                // emailHistory: req.user.getEmailHistory(),
                 id: req.query.id,
             });
         }

@@ -250,6 +250,26 @@ UserSchema.methods.getForm = function (id, cb) {
     })
 };
 
+UserSchema.methods.addEmailHistory_Form = function (id, email, cb) {
+    User.findOne({id: this.id}).populate({
+        path: 'forms',
+        match: {_id: id}
+    }).exec(function (err, user) {
+        if (user.forms.length != 1) {
+            console.log('error');
+        } else {
+            // cb(err, user.forms[0]);
+            // user.forms[0]
+            this.emailhistory.push(email);
+            var newTemplate = this.emailhistory[this.emailhistory.length - 1];
+            user.forms[0].save(function (err, id) {
+                cb(err, newTemplate.getId());
+            })
+        }
+    })
+
+};
+
 UserSchema.methods.getDeactivatedForms = function (cb) {
     // try getting all forms under this user id
     User.findOne({id: this.id}).populate('deactivatedForms').exec(function (err, user) {
