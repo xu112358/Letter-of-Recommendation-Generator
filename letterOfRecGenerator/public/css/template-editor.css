@@ -380,3 +380,31 @@
     border-radius: 0.2em;
     box-shadow: 1.5px 1.5px 2px #b9b9b9;
 }
+
+/* question */
+.icon-effects {
+    opacity: 0.5;
+    transition: 0.4s;
+}
+
+.icon-effects:hover {
+    opacity: 1.0;
+    cursor: pointer;
+}
+
+#template-editor-container {
+    margin: 50px 20px 100px;
+}
+
+#letter-boilerplate {
+    margin-top: 75px;
+    margin-bottom: 20px;
+}
+
+#custom-questions {
+    margin-top: 75px;
+}
+
+#upload-letterhead, #upload-footer {
+    margin-top: 50px;
+}

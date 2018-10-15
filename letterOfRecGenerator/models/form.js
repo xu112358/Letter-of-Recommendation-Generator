@@ -1,5 +1,6 @@
 var db = require('../db');
-var Link = require('./link')
+var Link = require('./link');
+var User = require('./user');
 var Template = require('./template');
 
 
@@ -23,10 +24,24 @@ var FormSchema = new Schema({
         submitted: Date,
         completed: Date
     },
-    letter: String
+    letter: String,
+    duplicated: Boolean,
+    organization: String,
+    owner: {type: db.Schema.Types.ObjectId, ref: 'User'}
 });
 
-FormSchema.statics.createForm = function (email, template, cb) {
+
+FormSchema.methods.getResponses = function () {
+    return this.responses;
+};
+
+/**
+ * Creates a new form and initializes values
+ * @param email Students email address
+ * @param template
+ * @param cb
+ */
+FormSchema.statics.createForm = function (email, template, userId, cb) {
     Link.generateLink(email, function (err, link) {
         if (err) {
             cb(err, null);
@@ -37,7 +52,10 @@ FormSchema.statics.createForm = function (email, template, cb) {
                 email_sent: false,
                 template: template,
                 link: link,
-                'meta.sent': Date.now()
+                'meta.sent': Date.now(),
+                duplicated: false,
+                organization: "unspecified",
+                owner: userId
             }, cb);
         }
     });
@@ -87,21 +105,51 @@ FormSchema.methods.getTemplate = function () {
     return this.template;
 };
 
+/**
+ * Setter for organization
+ * @param organization
+ */
+FormSchema.methods.setOrganization = function (organization) {
+    this.organization = organization;
+    this.save();
+};
+
+/**
+ * Happens when student submits his/her response. 
+ * Receives the response, updates the response in the form,
+ * check if there are multiple organizations, and if there are,
+ * create duplicates with seperate organization names and 
+ * add the form._id to the correct owner (user).
+ * @param id - id of form
+ * @param responseData - responseData collected from the submitted response
+ * @param cb
+ */
 FormSchema.statics.submitForm = function (id, responseData, cb) {
+    var organizationArr = [];
+    var savedFormIdArr = [];
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
-            cb(err, null);
+            cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
         } else {
             var responses = [];
             form['template']['questions'].forEach(function (question) {
                 var response = responseData[question.number - 1];
-
+                /* If the question has a organizationFlag that is true, 
+                attempt to extract the organizations (seperated with , )
+                and make additional Forms with the different organization names */
+                if(question.organizationFlag){
+                    let organizationList = response.trim();
+                    organizationArr = organizationList.split(", ");
+                    response = organizationArr[0]; //update response to right organization
+                }
+                //If response is empty
                 if (!response.length) {
                     responses.push({
                         tag: question.tag,
                         response: ''
                     });
                 } else if (!(response instanceof Array)) {
+                    //other response types are from here
                     responses.push({
                         tag: question.tag,
                         response: response
@@ -119,15 +167,77 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     });
                 }
             });
-
+            //Update organization to be the first one
+            form.organization = organizationArr[0];
+            form.duplicated = true;
             form.status = 'Submitted';
             form['responses'] = responses;
             form['meta']['submitted'] = Date.now();
+              
+            form.save().then(function(savedForm){
+                if(organizationArr.length > 1){
+                    for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
+                    /* Here we create duplicate forms and then add the form._id to the 
+                    owner of the original form, which is the user. */
+                        var promise = Form.create({
+                            email: savedForm.email,
+                            status: savedForm.status,
+                            template: savedForm.template,
+                            link: savedForm.link,
+                            responses: savedForm.responses,
+                            meta: savedForm.meta,
+                            letter: savedForm.letter,
+                            duplicated: true,
+                            organization: organizationArr[orgIndex],
+                            owner: savedForm.owner
+                        });
+                    
+                        promise.then(function(savedForm){
+                            savedFormIdArr.push(savedForm._id);
+                            /* We update the response for organization to the right ones here */
+                            FormSchema.statics.findForm(savedForm._id, function (err, foundForm) {
+                                if (err) {
+                                    console.log("error finding saved Form");
+                                } else {
+                                    let duplicateResponse =  foundForm['responses'];
+                                    foundForm['template']['questions'].forEach(function (question){  
+                                        if(question.organizationFlag){
+                                            var savedFormResponse = duplicateResponse[question.number - 1];
+                                            savedFormResponse.response = organizationArr[orgIndex];
+                                            foundForm.save().then(function(updatedForm){
+                                                console.log("saved response");
+                                            }, function(rejected) {
+                                                console.log("rejected save: " + rejected);
+                                            });
+                                        } 
+                                    });
+                                }
+                            });
+                        }, function(rejected) {
+                            console.log("rejected promise: " + rejected);
+                        });
+                    }
+                }
 
-            form.save(function (err) {
-                cb(err, form);
-            });
+                //Adding form._id to user (who is the owner of the original form)
+                db.model('User').findOne({_id: form.owner}).populate('forms').exec( function(err, user) {
+                    if(err) {
+                        console.log("error in form User.findOne");
+                    } else {
+                        if(savedFormIdArr.length == organizationArr.length-1)
+                        for(let i=0; i < savedFormIdArr.length; i++) {
+                            user.forms.push(savedFormIdArr[i]);
+                        }
+                        user.save();
+                    }
+                });
+                
+                
+            }, function(err) {
+                console.log("promise error: " + err);
+            });  
         }
+        cb(err);
     });
 };
 
@@ -163,6 +273,7 @@ FormSchema.statics.completeForm = function (id, letter, cb) {
         }
     });
 };
+
 
 var Form = db.model('Form', FormSchema);
 
