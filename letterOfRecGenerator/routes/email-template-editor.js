@@ -33,7 +33,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/addEmailTemplate', function (req, res, next) {
-    req.user.FindOrAddEmailTemplate(req.body.Email, function (err, id) {
+    req.user.addEmailTemplate(req.body.Email, function (err, id) {
         if (err) {
             console.log(err);
         } else {

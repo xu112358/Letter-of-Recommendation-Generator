@@ -28,8 +28,7 @@ function saveEmailTemplate() {
     var Email = {
         title: document.getElementById(EMAIL_TITLE_ID).value,
         subject: document.getElementById(EMAIL_SUBECT_TEXT_AREA_ID).value,
-        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).value,
-        active: true
+        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).value
     };
 
     if (!validate(Email)) {
