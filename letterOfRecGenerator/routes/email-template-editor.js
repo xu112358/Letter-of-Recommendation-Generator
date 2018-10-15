@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
         body = req.user.getEmailTemplate(req.query.id).body_text;
 
         res.render('pages/email-template-editor', {
-            title: 'CREATE A NEW EMAIL TEMPLATE',
+            title: 'EDIT TEMPLATE',
             templateName: templateName,
             templates: req.user.getEmailTemplates(),
             tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
@@ -24,6 +24,7 @@ router.get('/', function (req, res, next) {
                 title: 'CREATE A NEW TEMPLATE',
                 templateName: req.query.title,
                 templates: req.user.getEmailTemplates(),
+                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
                 id: req.query.id,
                 subject: null,
                 body: null

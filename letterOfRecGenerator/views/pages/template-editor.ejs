@@ -65,15 +65,19 @@
 
         <div id="questions-container"></div>
 
-        <%  console.log("saveSwitch: " + saveSwitch);
-            console.log(typeof saveSwitch);
-            if (saveSwitch) { %>
+        <%  if (typeof saveSwitch == "boolean") { 
+                if(saveSwitch){%>
             <button class="large-circle-button" onclick="addQuestion()">+</button>
-        <div class="flex-row">
-            <button id="save-button" onclick="saveTemplate()">Save</button>
-        </div>
-        <% } %>
-        
+            <div class="flex-row">
+                <button id="save-button" onclick="saveTemplate()">Save</button>
+            </div>
+        <% }} else if (typeof saveSwitch == "string") { 
+                if (saveSwitch == "true"){%>
+            <button class="large-circle-button" onclick="addQuestion()">+</button>
+            <div class="flex-row">
+                <button id="save-button" onclick="saveTemplate()">Save</button>
+            </div>
+        <% }} %>
     </div>
 
 </body>

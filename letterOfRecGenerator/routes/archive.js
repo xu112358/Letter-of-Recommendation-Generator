@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var Form = require('../models/form');
 
-/* GET Templates page. */
 router.get('/', function (req, res, next) {
     req.user.getDeactivatedForms( function (err, deactivatedForms) {
         if (err) {
