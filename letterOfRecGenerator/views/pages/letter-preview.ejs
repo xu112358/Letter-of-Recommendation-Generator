@@ -19,15 +19,13 @@
 
 </body>
 <form class="input-form">
-    <!-- <h5> Choose a template: </h5>
+    <h5> Choose a template: </h5>
     <select id="email-templates" name="templates">
         <% var options = []; %>
-        <% for (var template of templates) {  
-            if(template.active == true){
-            %>
+        <% for (var template of templates) { %>
           <option data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
-        <% }} %>
-    </select> -->
+        <% } %>
+    </select>
 
     <div id="email-subject-container">
         <input id="email-subject-text-area" contentEditable="true" name="subject" >

@@ -231,13 +231,16 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             form['meta']['submitted'] = Date.now();
 
             // set responses form 0th
-            let allFieldsInForm = fieldsByForm[0].fields;
-            for(let k=0; k<allFieldsInForm.length; k++) {
-                responses.push({
-                    tag: allFieldsInForm[k].fieldTag,
-                    response: allFieldsInForm[k].response
-                });
+            if(fieldsByForm.length){
+                let allFieldsInForm = fieldsByForm[0].fields;
+                for(let k=0; k<allFieldsInForm.length; k++) {
+                    responses.push({
+                        tag: allFieldsInForm[k].fieldTag,
+                        response: allFieldsInForm[k].response
+                    });
+                }
             }
+            
             form['responses'] = responses;
             form.save().then(function(savedForm){
                 if(organizationArr.length > 1){
@@ -269,11 +272,13 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                     let duplicateResponse =  foundForm['responses'];
 
                                     // setting correct tags, take in account for custom q
-                                    let allFieldsInForm = fieldsByForm[orgIndex].fields;
-                                    for(let j=0; j<duplicateResponse.length; j++) {
-                                        for(let k=0; k<allFieldsInForm.length; k++) {
-                                            if(duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
-                                                duplicateResponse[j].response = allFieldsInForm[k].response;
+                                    if(fieldsByForm.length){
+                                        let allFieldsInForm = fieldsByForm[orgIndex].fields;
+                                        for(let j=0; j<duplicateResponse.length; j++) {
+                                            for(let k=0; k<allFieldsInForm.length; k++) {
+                                                if(duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
+                                                    duplicateResponse[j].response = allFieldsInForm[k].response;
+                                                }
                                             }
                                         }
                                     }
