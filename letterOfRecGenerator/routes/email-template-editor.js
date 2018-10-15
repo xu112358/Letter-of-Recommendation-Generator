@@ -14,6 +14,7 @@ router.get('/', function (req, res, next) {
             title: 'CREATE A NEW EMAIL TEMPLATE',
             templateName: templateName,
             templates: req.user.getEmailTemplates(),
+            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
             id: req.query.id,
             subject: subject,
             body: body
@@ -31,7 +32,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/addEmailTemplate', function (req, res, next) {
-    req.user.addEmailTemplate(req.body.Email, function (err, id) {
+    req.user.FindOrAddEmailTemplate(req.body.Email, function (err, id) {
         if (err) {
             console.log(err);
         } else {
