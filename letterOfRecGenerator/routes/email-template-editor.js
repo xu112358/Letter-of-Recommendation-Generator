@@ -21,12 +21,13 @@ router.get('/', function (req, res, next) {
         });
     }else {
             res.render('pages/email-template-editor', {
-                title: 'CREATE A NEW TEMPLATE',
+                title: 'EDIT TEMPLATE',
                 templateName: req.query.title,
                 templates: req.user.getEmailTemplates(),
                 id: req.query.id,
                 subject: null,
-                body: null
+                body: null,
+                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
             });
         }
 });
