@@ -19,7 +19,7 @@ router.get('/', function (req, res, next) {
                 letterheadImage: letterheadImg,
                 footerImage: footerImg,
                 saveSwitch: req.query.saveSwitch,
-                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+                tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
             });
         } else {
             letterheadImg = req.user.getDeactivatedTemplate(req.query.id).letterheadImg;
@@ -32,7 +32,7 @@ router.get('/', function (req, res, next) {
                 letterheadImage: letterheadImg,
                 footerImage: footerImg,
                 saveSwitch: req.query.saveSwitch,
-                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+                tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
             });
         }
 
@@ -44,7 +44,7 @@ router.get('/', function (req, res, next) {
             letterheadImage: null,
             footerImage: null,
             saveSwitch: true,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
 });
@@ -56,14 +56,14 @@ router.get('/edit', function (req, res, next) {
             title: templateName,
             id: req.query.id,
             saveSwitch: true,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     } else {
         res.json({
             title: null,
             id: null,
             saveSwitch: true,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
 });
@@ -75,14 +75,14 @@ router.get('/deactivated-edit', function (req, res, next) {
             title: templateName,
             id: req.query.id,
             saveSwitch: false,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     } else {
         res.json({
             title: null,
             id: null,
             saveSwitch: false,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
 });
@@ -95,7 +95,7 @@ router.get('/template', function (req, res, next) {
             letterheadImg: req.user.getTemplate(req.query.id).getLetterheadImg(),
             footerImg: req.user.getTemplate(req.query.id).getFooterImg(),
             saveSwitch: req.query.saveSwitchData,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     } else {
         res.json({
@@ -104,7 +104,7 @@ router.get('/template', function (req, res, next) {
             letterheadImg: req.user.getDeactivatedTemplate(req.query.id).getLetterheadImg(),
             footerImg: req.user.getDeactivatedTemplate(req.query.id).getFooterImg(),
             saveSwitch: req.query.saveSwitchData,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
     

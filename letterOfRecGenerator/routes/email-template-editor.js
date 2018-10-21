@@ -14,7 +14,7 @@ router.get('/', function (req, res, next) {
             title: 'EDIT TEMPLATE',
             templateName: templateName,
             templates: req.user.getEmailTemplates(),
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
             id: req.query.id,
             subject: subject,
             body: body
@@ -24,11 +24,10 @@ router.get('/', function (req, res, next) {
                 title: 'EDIT TEMPLATE',
                 templateName: req.query.title,
                 templates: req.user.getEmailTemplates(),
-                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
+                tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
                 id: req.query.id,
                 subject: null,
                 body: null,
-                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
             });
         }
 });
