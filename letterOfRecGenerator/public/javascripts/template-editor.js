@@ -361,8 +361,8 @@ function saveTemplate() {
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },
-            error: function () {
-                console.log('error');
+            error: function (err) {
+                console.log('error in saveTemplate:' + err);
             }
         });
     } else {
@@ -380,8 +380,8 @@ function saveTemplate() {
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },
-            error: function () {
-                console.log('error');
+            error: function (err) {
+                console.log('error in saveTemplate:' + err);
             }
         });
     }

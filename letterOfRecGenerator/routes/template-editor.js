@@ -113,7 +113,7 @@ router.get('/template', function (req, res, next) {
 router.post('/create', function (req, res, next) {
     req.user.addTemplate(req.body.template, function (err, id) {
         if (err) {
-            console.log(err);
+            console.log("template create error: " + err);
         } else {
             res.json({
                 success: "Created Successfully",

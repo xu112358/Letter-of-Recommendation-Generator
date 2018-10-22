@@ -52,11 +52,17 @@
             </form>
         </div>
 
+        <h2 id="custom-questions" class="section-header">Custom Questions</h2>
+
+        <div id="questions-container"></div>
+
         <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
-        <h4>Tags</h4>
-        <% for (var tag of tags) {  %>
-            <button id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
-        <% } %>
+        <div id="tag-container">
+            <h4 class="inline-block"> Tags: </h4>
+            <% for (var tag of tags) {  %>
+                <button lass="inline-block" id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
+            <% } %>
+        </div> 
         <div class="error-container">
             <div id="letter-container">
                 <div id="letter-text-area" contentEditable="true" id="text" onfocus="deemphasizeTags()"
@@ -66,12 +72,9 @@
             </div>
         </div>
 
-        <h2 id="custom-questions" class="section-header">Custom Questions</h2>
-
-        <div id="questions-container"></div>
-
+        <br/><br/>
         <%  if (typeof saveSwitch == "boolean") { 
-                if(saveSwitch){%>
+            if(saveSwitch){%>
             <button class="large-circle-button" onclick="addQuestion()">+</button>
             <div class="flex-row">
                 <button id="save-button" onclick="saveTemplate()">Save</button>
