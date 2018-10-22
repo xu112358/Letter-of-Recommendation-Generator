@@ -53,6 +53,7 @@ const CUSTOM_QUESTION_TYPE = "Custom";
 
 let letter = "";
 var questions = [];
+var tags = [];
 var warningModalFunction;
 
 window.onload = function () {
@@ -82,6 +83,9 @@ window.onload = function () {
                     var savedQuestion = new Question(question.type, question.question, question.tag, question.optional, question.isOrganizationQuestion);
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
+                });
+                data.tags.forEach(tag => {
+                    tags.push(tag);
                 });
                 console.log('success');
                 displayQuestions();

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/template-editor.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
-            letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>"></script>
+            letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>" tags="<%= tags %>"></script>
     <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
 
 </head>
@@ -56,11 +56,18 @@
 
         <div id="questions-container"></div>
 
+        <button class="large-circle-button" onclick="addQuestion()">+</button>
+
         <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
         <div id="tag-container">
             <h4 class="inline-block"> Tags: </h4>
-            <% for (var tag of tags) {  %>
-                <button lass="inline-block" id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
+            <% for (var q=0; q < tags.length; q++) {  %>
+
+                <button class="popup"  name="tag_buttons" value ="<%= tags[q].tag %>"><%= tags[q].tag %>
+                    <span class="popup-text">
+                        <%= tags[q].question %>
+                    </span>
+                </button>
             <% } %>
         </div> 
         <div class="error-container">
@@ -75,13 +82,11 @@
         <br/><br/>
         <%  if (typeof saveSwitch == "boolean") { 
             if(saveSwitch){%>
-            <button class="large-circle-button" onclick="addQuestion()">+</button>
             <div class="flex-row">
                 <button id="save-button" onclick="saveTemplate()">Save</button>
             </div>
         <% }} else if (typeof saveSwitch == "string") { 
                 if (saveSwitch == "true"){%>
-            <button class="large-circle-button" onclick="addQuestion()">+</button>
             <div class="flex-row">
                 <button id="save-button" onclick="saveTemplate()">Save</button>
             </div>
