@@ -113,9 +113,7 @@ router.post('/drive', function(req,res,next) {
             console.log("form" + form)
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
-            // console.log("fname" + form.responses[0].response)
-            // console.log("lname" + form.responses[1].response)
-            // if(form.responses[0] )
+
             var footerImg = template.footerImg;
             var headerImg = template.letterheadImg;
             // var base64 = footerImg.substring(0, footerImg.indexOf("base64,"));
@@ -138,11 +136,7 @@ router.post('/drive', function(req,res,next) {
             var headerPath = __dirname + '/uploads/' + 'header.docx';
             headStream.pipe(fs.createWriteStream(headerPath));
 
-            // footStream.end();
-            // headStream.end();
-
-            
-            var outputName = templateName + fname + "_" + lname + ".docx";
+            var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
             var output = __dirname + '/uploads/' + outputName;
             docx.leftAlign();
             docx.insertText(text);
@@ -189,7 +183,6 @@ router.post('/drive', function(req,res,next) {
                               }
                           });
                       }
-                    
                     });
 
                 })
