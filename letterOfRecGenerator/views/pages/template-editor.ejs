@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
-            letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>" tags="<%= tags %>"></script>
+            letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>"></script>
     <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
 
 </head>
@@ -61,11 +61,11 @@
         <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
         <div id="tag-container">
             <h4 class="inline-block"> Tags: </h4>
-            <% for (var q=0; q < tags.length; q++) {  %>
-
-                <button class="popup"  name="tag_buttons" value ="<%= tags[q].tag %>"><%= tags[q].tag %>
+            <% for (var q=0; q < questions.length; q++) {  
+                    console.log("editor: " + questions[q].tag ); %>
+                <button class="popup"  name="tag_buttons" value ="<%= questions[q].tag %>"><%= questions[q].tag %>
                     <span class="popup-text">
-                        <%= tags[q].question %>
+                        <%= questions[q].question %>
                     </span>
                 </button>
             <% } %>

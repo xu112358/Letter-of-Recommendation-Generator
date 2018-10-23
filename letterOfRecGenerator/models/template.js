@@ -3,10 +3,7 @@ var db = require('../db');
 var Schema = db.Schema;
 
 var TemplateSchema = new Schema({
-    name: {
-        type: String,
-        unique: true 
-    },
+    name: String,
     text: String,
     questions: [{
         number: Number,

@@ -34,8 +34,9 @@
 </div>
 
 <div class="recommendations">
-    <div class="add-btn" onclick="openModal()">+ Create Recommendation</div>
-
+<% if (templates.length) { %>
+<div class="add-btn" onclick="openModal()">+ Create Recommendation</div>
+<% } %>
 <table>
     <thead>
     <tr>

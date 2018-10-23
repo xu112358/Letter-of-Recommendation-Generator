@@ -84,9 +84,6 @@ window.onload = function () {
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
-                data.tags.forEach(tag => {
-                    tags.push(tag);
-                });
                 console.log('success');
                 displayQuestions();
                 emphasizeTags();
@@ -108,11 +105,6 @@ function loadDefaultQuestions() {
     questions.push(default0);
     var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
     questions.push(default1);
-
-    // var organizationQuestion = new Question("Text", "Name the organizations you are applying to, seperated with commas.", "<!ORG>");
-    // organizationQuestion.setOrganizationQuestion(true);
-    // questions.push(organizationQuestion);
-
     var default2 = new Question("Radio Button", "What is your preferred personal pronoun (subject)?", "<!SUB_PRONOUN>");
     default2.options = [constructOptionObject("He", "he"), constructOptionObject("She", "she"), constructOptionObject("They", "they")];
     questions.push(default2);
@@ -122,8 +114,7 @@ function loadDefaultQuestions() {
     var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
     default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default4);
-
-    var orgQuestion = new Question("Custom", "What organizations are you applying to", "<!HI>");
+    var orgQuestion = new Question("Custom", "What organizations are you applying to?", "<!HI>");
     orgQuestion.options.push(constructOptionObject("Organization", "", "<!ORG>"));
     orgQuestion.setOrganizationQuestion(true);
     questions.push(orgQuestion);
