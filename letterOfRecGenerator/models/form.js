@@ -131,7 +131,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
     var organizationArr = [];
     var savedFormIdArr = [];
 
-    let totalForms = 0;
+    var totalForms = 1;
     let fieldsByForm = [];
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
@@ -143,12 +143,12 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                 /* If the question has a organizationFlag that is true, 
                 attempt to extract the organizations (seperated with , )
                 and make additional Forms with the different organization names */
-                if(question.organizationFlag){
-                    let organizationList = response.trim();
-                    organizationArr = organizationList.split(", ");
-                    response = organizationArr[0]; //update response to right organization
-                    totalForms = organizationArr.length;
-                }
+                // if(question.organizationFlag){
+                //     let organizationList = response.trim();
+                //     organizationArr = organizationList.split(", ");
+                //     response = organizationArr[0]; //update response to right organization
+                //     totalForms = organizationArr.length;
+                // }
                 //If response is empty
                 if (!response.length) {
                     responses.push({
@@ -162,46 +162,65 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         response: response
                     });
                 } else if (question.type === "Custom") { // custom
-                    let questionOptions = question.options;
 
-                    let allFields = [];
-                    for(let i=0; i<questionOptions.length; i++) {
-                        let field = {
-                            fieldName: questionOptions[i].option, // University
-                            fieldTag: questionOptions[i].tag // <!Uni>
-                        };
-                        allFields.push(field);
-                    }
+                    // todo: account for custom qs that aren't organization qs, or only have 1 custom q per form?
 
-                    // num organizations = len / number of options
-                    let numResponse = response.length;
-                    let numOptions = questionOptions.length;
-                    let numOrganizations = numResponse / numOptions;
-                    for(let k=0; k<numOrganizations; k++) {
-                        fieldsByForm[k] = {
-                            num: k,
-                            fields: []
-                        };
-                    }
+                    console.log("is organization q");
+                    console.log(question.organizationFlag);
+                    if(question.organizationFlag) {
+                        console.log("in here");
 
-                    let i = 0;
-                    response.forEach(function (optionText) {
-                        // i can be calculated -- hack-y
-                        let formIndex = Math.floor(i/numOptions);
-                        let optionIndex = i % numOptions;
-                        let field = {
-                            fieldName: allFields[optionIndex].fieldName,
-                            fieldTag: allFields[optionIndex].fieldTag,
-                            response: optionText
-                        };
-                        fieldsByForm[formIndex].fields.push(field);
+                        //response = "idk"; //update response to right organization
 
-                        for(let k = 0; k<fieldsByForm.length; k++) {
-                            console.log("form k: " + k);
-                            console.log(fieldsByForm[k].fields);
+                        let questionOptions = question.options;
+
+                        let allFields = [];
+                        for (let i = 0; i < questionOptions.length; i++) {
+                            let field = {
+                                fieldName: questionOptions[i].option, // University
+                                fieldTag: questionOptions[i].tag // <!Uni>
+                            };
+                            allFields.push(field);
                         }
-                        i++;
-                    });
+
+                        // num organizations = len / number of options
+                        let numResponse = response.length;
+
+                        console.log("numResposne: " + numResponse);
+                        let numOptions = questionOptions.length;
+                        console.log("numOptions: " + numOptions);
+                        let numOrganizations = numResponse / numOptions;
+                        totalForms = numOrganizations;
+                        console.log("total forms here: " + totalForms);
+                        console.log("response below: ");
+                        console.log(response);
+
+                        for (let k = 0; k < numOrganizations; k++) {
+                            fieldsByForm[k] = {
+                                num: k,
+                                fields: []
+                            };
+                        }
+
+                        let i = 0;
+                        response.forEach(function (optionText) {
+                            // i can be calculated -- hack-y
+                            let formIndex = Math.floor(i / numOptions);
+                            let optionIndex = i % numOptions;
+                            let field = {
+                                fieldName: allFields[optionIndex].fieldName,
+                                fieldTag: allFields[optionIndex].fieldTag,
+                                response: optionText
+                            };
+                            fieldsByForm[formIndex].fields.push(field);
+
+                            for (let k = 0; k < fieldsByForm.length; k++) {
+                                console.log("form k: " + k);
+                                console.log(fieldsByForm[k].fields);
+                            }
+                            i++;
+                        });
+                    } // isOrganzationFlag
                 }
                 else { // checkbox (?)
                     response.forEach(function (optionText) {
@@ -224,11 +243,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             });
 
             //Update organization to be the first one
-            form.organization = organizationArr[0];
-            form.duplicated = true;
-            form.status = 'Submitted';
+            //form.organization = organizationArr[0];
 
-            form['meta']['submitted'] = Date.now();
 
             // set responses form 0th
             if(fieldsByForm.length){
@@ -240,11 +256,28 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     });
                 }
             }
+
+
+            if(fieldsByForm === undefined) { // why doesnt it work for only 1 or 2 orgs???
+                form.organization = "something";
+            } else {
+                form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
+            }
+            //form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
+            form.duplicated = true;
+            form.status = 'Submitted';
+
+            form['meta']['submitted'] = Date.now();
+
+            // totalForms
             
             form['responses'] = responses;
             form.save().then(function(savedForm){
-                if(organizationArr.length > 1){
-                    for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
+                console.log("totalForms: " + totalForms);
+                if(totalForms > 1){
+                //if(organizationArr.length > 1){
+                    for (let orgIndex = 1; orgIndex < totalForms; orgIndex++) {
+                    //for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
                     /* Here we create duplicate forms and then add the form._id to the 
                     owner of the original form, which is the user. */
                         var promise = Form.create({
@@ -257,7 +290,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                             meta: savedForm.meta,
                             letter: savedForm.letter,
                             duplicated: true,
-                            organization: organizationArr[orgIndex],
+                            //organization: organizationArr[orgIndex],
+                            organization: fieldsByForm[orgIndex].fields[0].response,
                             owner: savedForm.owner
                         });
 
@@ -286,7 +320,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                     foundForm['template']['questions'].forEach(function (question){
                                         if(question.organizationFlag){
                                             var savedFormResponse = duplicateResponse[question.number - 1];
-                                            savedFormResponse.response = organizationArr[orgIndex];
+                                            //savedFormResponse.response = organizationArr[orgIndex];
+                                            savedFormResponse.response = "replace here";
                                             foundForm.save().then(function(updatedForm){
                                                 console.log("saved response");
                                             }, function(rejected) {
@@ -307,7 +342,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     if(err) {
                         console.log("error in form User.findOne");
                     } else {
-                        if(savedFormIdArr.length == organizationArr.length-1)
+                        if(savedFormIdArr.length === totalForms-1)
+                        //if(savedFormIdArr.length === organizationArr.length-1)
                         for(let i=0; i < savedFormIdArr.length; i++) {
                             user.forms.push(savedFormIdArr[i]);
                             console.log("saving Form to user: " + user.displayName + " " + savedFormIdArr[i]);
