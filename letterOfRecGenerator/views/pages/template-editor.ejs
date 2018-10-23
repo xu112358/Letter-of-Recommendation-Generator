@@ -4,6 +4,7 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" href="/css/template-editor.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
             letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>" tags="<%= tags %>"></script>
@@ -11,18 +12,37 @@
 
 </head>
 <body>
+<div class = "templates">
     <header>
         <% include ../partials/header %>
     </header>
-
+    <p class="title"><%= title %></p>
     <div id="template-editor-container">
-        <h1 class="title"><%= title %></h1>
-
         <h2 class="section-header">Template Name</h2>
         <div class="error-container">
             <div id="name-container">
                 <input id="name-container-text-field" type="text" class="text-field" placeholder="Enter a template name here..."
                        value="<%= templateName %>"/>
+            </div>
+        </div>
+
+        <h2 id="custom-questions" class="section-header">Custom Questions</h2>
+
+        <div id="questions-container"></div>
+
+        <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
+        <div id="tag-container">
+            <h4 class="inline-block"> Tags: </h4>
+            <% for (var tag of tags) {  %>
+                <button class="button" id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
+            <% } %>
+        </div> 
+        <div class="error-container">
+            <div id="letter-container">
+                <div id="letter-text-area" contentEditable="true" id="text" onfocus="deemphasizeTags()"
+                     onblur="emphasizeTags()"></div>
+                <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding question's answer</h3>
+                <h3>Tags can be nested in the replacement text of other questions.</h3>
             </div>
         </div>
 
@@ -93,6 +113,7 @@
         <% }} %>
     </div>
 
+</div>
 </body>
 
 <div id="add-question-modal">

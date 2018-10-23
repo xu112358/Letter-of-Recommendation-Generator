@@ -9,9 +9,9 @@
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+} */
 
-/* Modal Content/Box */
+/* Modal Content/Box  */
 .modal-content {
     background-color: #FFFFFF;
     margin: 15% auto; /* 15% from the top and centered */
@@ -79,4 +79,8 @@ td.center {
 
 table tbody tr:last-child {
     border-bottom: none;
+}  
+
+.history{
+    background-color: #FFFFFF;
 }
