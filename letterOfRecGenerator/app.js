@@ -23,6 +23,7 @@ var templateDashboard = require('./routes/template-dashboard');
 var users = require('./routes/users');
 var history = require('./routes/history');
 var archive = require('./routes/archive');
+var response = require('./routes/response');
 
 var app = express();
 
@@ -77,6 +78,7 @@ app.use('/template-dashboard', isAuthenticated, templateDashboard);
 app.use('/users', isAuthenticated, users);
 app.use('/history', history);
 app.use('/archive', archive);
+app.use('/response', response);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

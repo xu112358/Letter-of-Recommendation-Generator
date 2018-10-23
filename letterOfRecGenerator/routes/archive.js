@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
             console.log(err);
         } else {
             res.render('pages/archive', {
-                title: 'ARCHIVE',
+                title: 'Archive Page',
                 forms: deactivatedForms,
                 emailtemplates: req.user.getDeactivatedEmailTemplates(),
                 templates: req.user.getDeactivatedTemplates(),

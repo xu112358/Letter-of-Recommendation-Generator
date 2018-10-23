@@ -3,7 +3,7 @@
 <head>
     <title><% title%></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/history.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/response.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
@@ -11,35 +11,33 @@
     <header>
         <% include ../partials/header %>
     </header>
-    <h1 class="title"><% title%></h1>
+    <div class = "response">
+    <h1 class="title"><%= title%></h1>
 
     <table>
         <thead>
-        <td class="center"><b>Resp</b></td>
         <tr class="center">
             <td>Question</td>
             <td>Answer</td>
         </tr>
         </thead>
         <tbody>
-        <% for (var email of emailHistory) { %>
+        <% for (var q=0; q < questions.length; q++) { %>
         <tr>
             <td>
-                  
-               <div class="template-name"><%= email._id.getTimestamp().toString().substring(0,25) %></div> 
+               <div>
+                    <%= questions[q].question %>
+               </div> 
             </td>
             <td>
-                <div class="template-name"><%= email.title %></div>
-            </td>
-            <td>
-                <div class="template-name"><%= email.title %></div>
-            </td>
-            <td>
-                <img class="icon" src="/images/preview.png" onclick="openModal( <%= JSON.stringify(email) %>)"/>
+                <div>
+                    <%= responses[q].response %>
+                </div>
             </td>
         </tr>
         <% } %>
         </tbody>
     </table>
+    </div>
 </body>
 </html> 
