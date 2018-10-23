@@ -4,15 +4,15 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/recommender-dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/table.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/modal.css"/>
 </head>
 <body>
 <header>
     <% include ../partials/header %>
 </header>
-<h1 class="title"><%= title %></h1>
-<% if (templates.length) { %>
-<div class="add-btn" onclick="openModal()">+</div>
-<% } %>
+<p class="title">RECOMMENDATIONS</p>
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="close-container">
@@ -32,6 +32,10 @@
         </form>
     </div>
 </div>
+
+<div class="recommendations">
+    <div class="add-btn" onclick="openModal()">+ Create Recommendation</div>
+
 <table>
     <thead>
     <tr>
@@ -65,14 +69,17 @@
                 id: form._id, email: form.email
             }) %>)"/>
             <% if (form.email_sent == false) { %>
-            <img class="icon" src="/images/email_incomplete.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon" src="/images/email_incomplete.png" onclick="openEmailPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } else { %>
-            <img class="icon" src="/images/email_complete.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon" src="/images/email_complete.png" onclick="openEmailPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } %>
+            <img class="icon clickable" src="/images/response.png" onclick="openResponses(<%= JSON.stringify({
+                id: form._id
+            }) %>, '<%= form.status %>')"/>
             <img class="icon clickable" src="/images/preview.png"/>
             <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
@@ -80,6 +87,7 @@
     <% }} %>
     </tbody>
 </table>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
 
@@ -124,8 +132,18 @@
         window.location.href = getDestinationRoute('http://localhost:3000/history', params);
     }
 
+    function openResponses(params) {
+        console.log(status);
+        // Check to see if the status is green, if not then show error dialog
+        if(status === 'Sent'){
+            window.alert("Responses cannot be seen because the recommendee has not filled out the form!");
+        }else {
+            window.location.href = getDestinationRoute('http://localhost:3000/response', params);
+        }
+    }
+
     // When the user clicks the preview icon, take them to the letter preview page.
-    function openLetterPreview(params, status) {
+    function openEmailPreview(params, status) {
         console.log(status);
         // Check to see if the status is green, if not then show error dialog
         if(status === 'Sent'){

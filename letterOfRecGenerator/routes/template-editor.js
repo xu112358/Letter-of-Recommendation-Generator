@@ -7,11 +7,12 @@ router.get('/', function (req, res, next) {
     var letterheadImg;
     var footerImg;
     var saveStatus = req.query.saveSwitch;
+    var tags;
     if (req.query.id) {
         if(saveStatus=="true"){
             letterheadImg = req.user.getTemplate(req.query.id).letterheadImg;
             footerImg = req.user.getTemplate(req.query.id).footerImg;
-
+            tags = req.user.getTemplate(req.query.id).getQuestions();
             res.render('pages/template-editor', {
                 title: 'EDITING TEMPLATE',
                 templateName: req.query.title,
@@ -19,12 +20,12 @@ router.get('/', function (req, res, next) {
                 letterheadImage: letterheadImg,
                 footerImage: footerImg,
                 saveSwitch: req.query.saveSwitch,
-                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+                tags: tags
             });
         } else {
             letterheadImg = req.user.getDeactivatedTemplate(req.query.id).letterheadImg;
             footerImg = req.user.getDeactivatedTemplate(req.query.id).footerImg;
-
+            tags = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
             res.render('pages/template-editor', {
                 title: 'VIEWING ARCHIVED TEMPLATE',
                 templateName: req.query.title,
@@ -32,7 +33,7 @@ router.get('/', function (req, res, next) {
                 letterheadImage: letterheadImg,
                 footerImage: footerImg,
                 saveSwitch: req.query.saveSwitch,
-                tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+                tags: tags
             });
         }
 
@@ -44,7 +45,7 @@ router.get('/', function (req, res, next) {
             letterheadImage: null,
             footerImage: null,
             saveSwitch: true,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
 });
@@ -52,18 +53,19 @@ router.get('/', function (req, res, next) {
 router.get('/edit', function (req, res, next) {
     if (req.query.id) {
         var templateName = req.user.getTemplate(req.query.id).getName();
+        var tags = req.user.getTemplate(req.query.id).getQuestions();
         res.json({
             title: templateName,
             id: req.query.id,
             saveSwitch: true,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: tags
         });
     } else {
         res.json({
             title: null,
             id: null,
             saveSwitch: true,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
 });
@@ -71,18 +73,19 @@ router.get('/edit', function (req, res, next) {
 router.get('/deactivated-edit', function (req, res, next) {
     if (req.query.id) {
         var templateName = req.user.getDeactivatedTemplate(req.query.id).getName();
+        var tags = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
         res.json({
             title: templateName,
             id: req.query.id,
             saveSwitch: false,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: tags
         });
     } else {
         res.json({
             title: null,
             id: null,
             saveSwitch: false,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
         });
     }
 });
@@ -95,7 +98,7 @@ router.get('/template', function (req, res, next) {
             letterheadImg: req.user.getTemplate(req.query.id).getLetterheadImg(),
             footerImg: req.user.getTemplate(req.query.id).getFooterImg(),
             saveSwitch: req.query.saveSwitchData,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: req.user.getTemplate(req.query.id).getQuestions()
         });
     } else {
         res.json({
@@ -104,7 +107,7 @@ router.get('/template', function (req, res, next) {
             letterheadImg: req.user.getDeactivatedTemplate(req.query.id).getLetterheadImg(),
             footerImg: req.user.getDeactivatedTemplate(req.query.id).getFooterImg(),
             saveSwitch: req.query.saveSwitchData,
-            tags: ["<!NAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            tags: req.user.getDeactivatedTemplate(req.query.id).getQuestions()
         });
     }
     
@@ -113,7 +116,7 @@ router.get('/template', function (req, res, next) {
 router.post('/create', function (req, res, next) {
     req.user.addTemplate(req.body.template, function (err, id) {
         if (err) {
-            console.log(err);
+            console.log("template create error: " + err);
         } else {
             res.json({
                 success: "Created Successfully",

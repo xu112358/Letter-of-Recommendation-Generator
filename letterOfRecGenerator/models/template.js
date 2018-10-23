@@ -3,7 +3,10 @@ var db = require('../db');
 var Schema = db.Schema;
 
 var TemplateSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        unique: true 
+    },
     text: String,
     questions: [{
         number: Number,
@@ -48,6 +51,15 @@ TemplateSchema.methods.getLetterheadImg = function () {
 
 TemplateSchema.methods.getFooterImg = function () {
     return this.footerImg;
+};
+
+TemplateSchema.methods.getTags = function () {
+    var allTags = [];
+    for(let q = 0; q < this.questions.length; q++) {
+        allTags.push(this.questions[q].tag);
+    }
+    console.log("inside getTags: " + allTags);
+    return allTags;
 };
 
 var Template = db.model('Template', TemplateSchema);

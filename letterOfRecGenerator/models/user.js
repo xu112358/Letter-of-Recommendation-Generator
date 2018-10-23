@@ -60,42 +60,6 @@ UserSchema.methods.addEmailHistory = function (email, cb) {
     })
 };
 
-// UserSchema.methods.findEmail = function (email, cb) {
-//     var user = this;
-//     User.find({
-//         "id": user.id,
-//         "emailTemplates.title": email.title}, function (err, result) {
-
-//             if(result.length != 0){
-//                 User.findOneAndUpdate({
-//                     "id": user.id,
-//                     "emailTemplates.title": email.title
-//                 }, {
-//                     "$set": {
-//                         "emailTemplates.$.active": true
-//                     }
-//                 });
-//             }
-
-//             cb(err, result);
-//     });
-// };
-
-
-// UserSchema.methods.FindOrAddEmailTemplate = function (email, cb) {
-//     let email_ = email;
-//     console.log(email);
-//     UserSchema.methods.findEmail(email, function (err, result) {
-//         console.log(result);
-//         if (result.length == 0) {
-//             UserSchema.methods.addEmailTemplate(email_, cb);
-//         } else {
-//             cb(err, email);
-//         }
-//     });
-// };
-
-
 UserSchema.methods.addEmailTemplate = function (email, cb) {
     this.emailTemplates.push(email);
     var newTemplate = this.emailTemplates[this.emailTemplates.length - 1];
@@ -103,28 +67,6 @@ UserSchema.methods.addEmailTemplate = function (email, cb) {
         cb(err, newTemplate.getId());
     })
 };
-
-// UserSchema.methods.FindOrAddEmailTemplate = function (email, cb) {
-//     var user = this;
-//     console.log(email);
-//     // if email title exist in the database set active = true 
-//     User.find({
-//         "id": user.id,
-//         "emailTemplates.title": email.title}, function (err, result) {
-//             if(result.length != 0){
-//                 User.findOneAndUpdate({
-//                     "id": user.id,
-//                     "emailTemplates.title": email.title
-//                 }, {
-//                     "$set": {
-//                         "emailTemplates.$.active": true
-//                     }
-//                 });
-//             }else{
-//                 UserSchema.methods.addEmailTemplate(email, cb);
-//             }
-//     });
-// };
 
 UserSchema.methods.updateEmailTemplate = function (id, email, cb) {
     var user = this;
@@ -235,21 +177,6 @@ UserSchema.methods.activateEmailTemplate = function (id, cb) {
     this.save(cb);
 };
 
-// UserSchema.methods.removeEmailTemplate = function (id, cb) {
-    
-    // var user = this;
-    // User.findOneAndUpdate({
-    //     "id": user.id,
-    //     "emailTemplates._id": id
-    // }, {
-    //     "$set": {
-    //         "emailTemplates.$.active": false
-    //     }
-    // }, function (err, user) {
-    //     cb(err);
-    // });
-// };
-
 UserSchema.methods.addForm = function (form, cb) {
     this.forms.push(form._id);
     this.save(cb);
@@ -274,26 +201,6 @@ UserSchema.methods.getForm = function (id, cb) {
         }
     })
 };
-
-// UserSchema.methods.addEmailHistory_Form = function (id, email, cb) {
-//     User.findOneAndUpdate({id: this.id}).populate({
-//         path: 'forms',
-//         match: {_id: id}
-//     }).exec(function (err, user) {
-//         if (user.forms.length != 1) {
-//             console.log('error');
-//         } else {
-//             // cb(err, user.forms[0]);
-//             // user.forms[0]
-//             this.emailhistory.push(email);
-//             var newTemplate = this.emailhistory[this.emailhistory.length - 1];
-//             user.forms[0].save(function (err, id) {
-//                 cb(err, newTemplate.getId());
-//             })
-//         }
-//     })
-
-// };
 
 UserSchema.methods.getDeactivatedForms = function (cb) {
     // try getting all forms under this user id

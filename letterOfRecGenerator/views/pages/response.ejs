@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><% title%></title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/response.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class = "response">
+    <h1 class="title"><%= title%></h1>
+
+    <table>
+        <thead>
+        <tr class="center">
+            <td>Question</td>
+            <td>Answer</td>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (var q=0; q < questions.length; q++) { %>
+        <tr>
+            <td>
+               <div>
+                    <%= questions[q].question %>
+               </div> 
+            </td>
+            <td>
+                <div>
+                    <%= responses[q].response %>
+                </div>
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+    </div>
+</body>
+</html> 
