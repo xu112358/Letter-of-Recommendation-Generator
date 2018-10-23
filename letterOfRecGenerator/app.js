@@ -10,6 +10,8 @@ var querystring = require('querystring');
 var url = require('url');
 var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
+var fileUpload = require('express-fileupload');
+var mammoth = require('mammoth');
 
 var createTemplate = require('./routes/template-editor');
 var createEmailTemplate = require('./routes/email-template-editor');
@@ -52,7 +54,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 app.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile', 'https://www.googleapis.com/auth/gmail.send'],
+    scope: ['profile', 'https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/drive'],
     prompt: 'select_account'
 }));
 

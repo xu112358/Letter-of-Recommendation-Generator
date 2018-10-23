@@ -81,7 +81,9 @@
             <img class="icon clickable" src="/images/response.png" onclick="openResponses(<%= JSON.stringify({
                 id: form._id
             }) %>, '<%= form.status %>')"/>
-            <img class="icon clickable" src="/images/preview.png"/>
+            <img class="icon clickable" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
+                id: form._id
+            }) %>, '<%= form.status %>')"/>
             <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
     </tr>
@@ -110,6 +112,31 @@
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    }
+
+    function openLetterPreview(params, status) {
+        console.log(status);
+        // Check to see if the status is green, if not then show error dialog
+        if(status === 'Sent'){
+            window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
+        } else {
+            console.log("that boy was clicked")
+            console.log(params)
+            // window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+            $.ajax({
+                url: 'http://localhost:3000/recommender-dashboard/drive',
+                data: {params},
+                type: 'POST',
+                complete: function() {
+                    console.log('worked');
+                    window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+                },
+                error: function () {
+                    console.log('error')
+                }
+            })
+            
+        }  
     }
 
     // On click for trash icon
