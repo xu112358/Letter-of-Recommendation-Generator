@@ -26,26 +26,6 @@
             </div>
         </div>
 
-        <h2 id="custom-questions" class="section-header">Custom Questions</h2>
-
-        <div id="questions-container"></div>
-
-        <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
-        <div id="tag-container">
-            <h4 class="inline-block"> Tags: </h4>
-            <% for (var tag of tags) {  %>
-                <button class="button" id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
-            <% } %>
-        </div> 
-        <div class="error-container">
-            <div id="letter-container">
-                <div id="letter-text-area" contentEditable="true" id="text" onfocus="deemphasizeTags()"
-                     onblur="emphasizeTags()"></div>
-                <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding question's answer</h3>
-                <h3>Tags can be nested in the replacement text of other questions.</h3>
-            </div>
-        </div>
-
         <h2 id="upload-letterhead" class="section-header">Upload Letterhead</h2>
         <div class="upload-preview-container">
             <% if(locals.letterheadImage){ %>
