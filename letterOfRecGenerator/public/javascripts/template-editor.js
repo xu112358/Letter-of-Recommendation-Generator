@@ -84,9 +84,6 @@ window.onload = function () {
                     savedQuestion.options = question.options;
                     questions.push(savedQuestion);
                 });
-                data.tags.forEach(tag => {
-                    tags.push(tag);
-                });
                 console.log('success');
                 displayQuestions();
                 emphasizeTags();
