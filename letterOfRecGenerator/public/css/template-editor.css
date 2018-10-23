@@ -444,3 +444,23 @@
     background-color: #f44336;
     color: white;
 }
+
+/* Question for Tag appear when hovering above the Tag buttons */
+.popup .popup-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    margin-left: -100px;
+    margin-top: 5px;
+}
+
+.popup:hover .popup-text {
+    visibility: visible;
+}
