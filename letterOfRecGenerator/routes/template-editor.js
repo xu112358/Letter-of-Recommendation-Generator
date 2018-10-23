@@ -7,12 +7,12 @@ router.get('/', function (req, res, next) {
     var letterheadImg;
     var footerImg;
     var saveStatus = req.query.saveSwitch;
-    var tags;
+    var questions;
     if (req.query.id) {
         if(saveStatus=="true"){
             letterheadImg = req.user.getTemplate(req.query.id).letterheadImg;
             footerImg = req.user.getTemplate(req.query.id).footerImg;
-            tags = req.user.getTemplate(req.query.id).getQuestions();
+            questions = req.user.getTemplate(req.query.id).getQuestions();
             res.render('pages/template-editor', {
                 title: 'EDITING TEMPLATE',
                 templateName: req.query.title,
@@ -20,12 +20,12 @@ router.get('/', function (req, res, next) {
                 letterheadImage: letterheadImg,
                 footerImage: footerImg,
                 saveSwitch: req.query.saveSwitch,
-                tags: tags
+                questions: questions
             });
         } else {
             letterheadImg = req.user.getDeactivatedTemplate(req.query.id).letterheadImg;
             footerImg = req.user.getDeactivatedTemplate(req.query.id).footerImg;
-            tags = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
+            questions = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
             res.render('pages/template-editor', {
                 title: 'VIEWING ARCHIVED TEMPLATE',
                 templateName: req.query.title,
@@ -33,7 +33,7 @@ router.get('/', function (req, res, next) {
                 letterheadImage: letterheadImg,
                 footerImage: footerImg,
                 saveSwitch: req.query.saveSwitch,
-                tags: tags
+                questions: questions
             });
         }
 
@@ -45,7 +45,18 @@ router.get('/', function (req, res, next) {
             letterheadImage: null,
             footerImage: null,
             saveSwitch: true,
-            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            questions: [{ question: "What is your first name?",
+                          tag: "<!FNAME>"},
+                        { question: "What is your last name?",
+                          tag: "<!LNAME>"}, 
+                        { question: "What is your preferred personal pronoun (subject)?",
+                          tag: "<!SUB_PRONOUN>"}, 
+                        { question: "What is your preferred personal pronoun (object)",
+                          tag: "<!OBJ_PRONOUN>"}, 
+                        { question: "What is your preferred possessive pronoun?",
+                          tag: "<!POS_PRONOUN>"}, 
+                        { question: "What organizations are you applying to?",
+                          tag: "<!ORG>"}]
         });
     }
 });
@@ -53,19 +64,30 @@ router.get('/', function (req, res, next) {
 router.get('/edit', function (req, res, next) {
     if (req.query.id) {
         var templateName = req.user.getTemplate(req.query.id).getName();
-        var tags = req.user.getTemplate(req.query.id).getQuestions();
+        var questions = req.user.getTemplate(req.query.id).getQuestions();
         res.json({
             title: templateName,
             id: req.query.id,
             saveSwitch: true,
-            tags: tags
+            questions: questions
         });
     } else {
         res.json({
             title: null,
             id: null,
             saveSwitch: true,
-            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            questions: [{ question: "What is your first name?",
+                            tag: "<!FNAME>"},
+                        { question: "What is your last name?",
+                            tag: "<!LNAME>"}, 
+                        { question: "What is your preferred personal pronoun (subject)?",
+                            tag: "<!SUB_PRONOUN>"}, 
+                        { question: "What is your preferred personal pronoun (object)",
+                            tag: "<!OBJ_PRONOUN>"}, 
+                        { question: "What is your preferred possessive pronoun?",
+                            tag: "<!POS_PRONOUN>"}, 
+                        { question: "What organizations are you applying to?",
+                            tag: "<!ORG>"}]
         });
     }
 });
@@ -73,19 +95,30 @@ router.get('/edit', function (req, res, next) {
 router.get('/deactivated-edit', function (req, res, next) {
     if (req.query.id) {
         var templateName = req.user.getDeactivatedTemplate(req.query.id).getName();
-        var tags = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
+        var questions = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
         res.json({
             title: templateName,
             id: req.query.id,
             saveSwitch: false,
-            tags: tags
+            questions: questions
         });
     } else {
         res.json({
             title: null,
             id: null,
             saveSwitch: false,
-            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ]
+            questions: [{ question: "What is your first name?",
+                            tag: "<!FNAME>"},
+                        { question: "What is your last name?",
+                            tag: "<!LNAME>"}, 
+                        { question: "What is your preferred personal pronoun (subject)?",
+                            tag: "<!SUB_PRONOUN>"}, 
+                        { question: "What is your preferred personal pronoun (object)",
+                            tag: "<!OBJ_PRONOUN>"}, 
+                        { question: "What is your preferred possessive pronoun?",
+                            tag: "<!POS_PRONOUN>"}, 
+                        { question: "What organizations are you applying to?",
+                            tag: "<!ORG>"}]
         });
     }
 });
@@ -98,7 +131,7 @@ router.get('/template', function (req, res, next) {
             letterheadImg: req.user.getTemplate(req.query.id).getLetterheadImg(),
             footerImg: req.user.getTemplate(req.query.id).getFooterImg(),
             saveSwitch: req.query.saveSwitchData,
-            tags: req.user.getTemplate(req.query.id).getQuestions()
+            questions: req.user.getTemplate(req.query.id).getQuestions()
         });
     } else {
         res.json({
@@ -107,7 +140,7 @@ router.get('/template', function (req, res, next) {
             letterheadImg: req.user.getDeactivatedTemplate(req.query.id).getLetterheadImg(),
             footerImg: req.user.getDeactivatedTemplate(req.query.id).getFooterImg(),
             saveSwitch: req.query.saveSwitchData,
-            tags: req.user.getDeactivatedTemplate(req.query.id).getQuestions()
+            questions: req.user.getDeactivatedTemplate(req.query.id).getQuestions()
         });
     }
     

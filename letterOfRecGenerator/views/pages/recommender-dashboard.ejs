@@ -12,7 +12,6 @@
 <header>
     <% include ../partials/header %>
 </header>
-<!-- <p class="title">Welcome <b><%= title %></b> !</p> -->
 <p class="title">RECOMMENDATIONS</p>
 <div id="myModal" class="modal">
     <div class="modal-content">
@@ -35,8 +34,9 @@
 </div>
 
 <div class="recommendations">
-    <div class="add-btn" onclick="openModal()">+ Create Recommendation</div>
-
+<% if (templates.length) { %>
+<div class="add-btn" onclick="openModal()">+ Create Recommendation</div>
+<% } %>
 <table>
     <thead>
     <tr>
@@ -70,15 +70,20 @@
                 id: form._id, email: form.email
             }) %>)"/>
             <% if (form.email_sent == false) { %>
-            <img class="icon" src="/images/email_incomplete.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon" src="/images/email_incomplete.png" onclick="openEmailPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } else { %>
-            <img class="icon" src="/images/email_complete.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon" src="/images/email_complete.png" onclick="openEmailPreview(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } %>
-            <img class="icon clickable" src="/images/preview.png"/>
+            <img class="icon clickable" src="/images/response.png" onclick="openResponses(<%= JSON.stringify({
+                id: form._id
+            }) %>, '<%= form.status %>')"/>
+            <img class="icon clickable" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
+                id: form._id
+            }) %>, '<%= form.status %>')"/>
             <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
     </tr>
@@ -109,6 +114,31 @@
         }
     }
 
+    function openLetterPreview(params, status) {
+        console.log(status);
+        // Check to see if the status is green, if not then show error dialog
+        if(status === 'Sent'){
+            window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
+        } else {
+            console.log("that boy was clicked")
+            console.log(params)
+            // window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+            $.ajax({
+                url: 'http://localhost:3000/recommender-dashboard/drive',
+                data: {params},
+                type: 'POST',
+                complete: function() {
+                    console.log('worked');
+                    window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+                },
+                error: function () {
+                    console.log('error')
+                }
+            })
+            
+        }  
+    }
+
     // On click for trash icon
     function deleteRow(id) {
         $.ajax({
@@ -130,8 +160,18 @@
         window.location.href = getDestinationRoute('http://localhost:3000/history', params);
     }
 
+    function openResponses(params) {
+        console.log(status);
+        // Check to see if the status is green, if not then show error dialog
+        if(status === 'Sent'){
+            window.alert("Responses cannot be seen because the recommendee has not filled out the form!");
+        }else {
+            window.location.href = getDestinationRoute('http://localhost:3000/response', params);
+        }
+    }
+
     // When the user clicks the preview icon, take them to the letter preview page.
-    function openLetterPreview(params, status) {
+    function openEmailPreview(params, status) {
         console.log(status);
         // Check to see if the status is green, if not then show error dialog
         if(status === 'Sent'){

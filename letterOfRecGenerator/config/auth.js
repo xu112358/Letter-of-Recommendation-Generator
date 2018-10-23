@@ -1,8 +1,8 @@
 var {google} = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 
-var GOOGLE_CLIENT_ID = "468934162681-cbfmk6ung8pm2jaqsf68r9e24vb888j5.apps.googleusercontent.com";
-var GOOGLE_CLIENT_SECRET = "5BktU-GsMF8nf-SFmQFD7vSJ";
+var GOOGLE_CLIENT_ID = "480026254338-1eg6arrhf0b113brg1vdoc3ldtp5bsgk.apps.googleusercontent.com";
+var GOOGLE_CLIENT_SECRET = "AUmL70GZSsowZujJCNb6AKCZ";
 var GOOGLE_CALLBACK = 'http://localhost:3000/auth/google/callback';
 
 var oauth2Client = new OAuth2(
