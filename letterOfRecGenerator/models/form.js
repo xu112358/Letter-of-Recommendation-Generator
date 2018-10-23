@@ -321,7 +321,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                         if(question.organizationFlag){
                                             var savedFormResponse = duplicateResponse[question.number - 1];
                                             //savedFormResponse.response = organizationArr[orgIndex];
-                                            savedFormResponse.response = "replace here";
+                                            savedFormResponse.response = fieldsByForm[orgIndex].fields[0].response;
                                             foundForm.save().then(function(updatedForm){
                                                 console.log("saved response");
                                             }, function(rejected) {
