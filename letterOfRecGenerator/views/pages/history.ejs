@@ -4,6 +4,9 @@
     <title><% title%></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/history.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/modal.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/table.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
@@ -21,14 +24,21 @@
 </div>
 
 <body>
+<div class = "history">
     <header>
         <% include ../partials/header %>
     </header>
-    <h1 class="title"><% title%></h1>
-
+    
+    <p class="title">History for <b> <%= title%> </b></p>
+    <br>
+    <br>
     <table>
         <thead>
-        <td class="center"><b>Email History</b></td>
+            <td class="center"><b>Email History</b></td>
+        </thead>
+    </table>
+    <table>
+        <thead>
         <tr class="center">
             <td>Date</td>
             <td>Template</td>
@@ -56,6 +66,7 @@
         <% } %>
         </tbody>
     </table>
+</div>
 </body>
 </html> 
 

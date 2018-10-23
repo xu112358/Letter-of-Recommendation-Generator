@@ -1,28 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- <title>Edit a template</title> -->
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
-    <link rel="stylesheet" href="/css/email.css"/>
+    <link rel="stylesheet" href="/css/email-template-editor.css"/>
     <link rel="stylesheet" href="/css/template-editor.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
-    <link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/modal.css"/>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap.js"></script>
     <script type="text/javascript" src="/javascripts/email-template-editor.js" id="<%= id %>"></script>
 </head>
-<div id="confirm" class="modal hide fade">
-    <div class="modal-body">
-      Are you sure?
-    </div>
-    <div class="modal-footer">
-      <button type="button" data-dismiss="modal" class="btn btn-primary" id="save">Save</button>
-      <button type="button" data-dismiss="modal" class="btn">Cancel</button>
-    </div>
-  </div>
 
 <body>
+    <div class="templates">
     <header>
         <% include ../partials/header %>
     </header>
@@ -34,16 +25,6 @@
             <input id="name-container-text-field" contentEditable="true" value="<%= templateName %>">
         </div>
     </div>
-<!-- 
-    <h5> Choose from inactive templates: </h5>
-    <select id="email-templates" name="templates">
-        <% var options = []; %>
-        <% for (var template of templates) {  
-            if(template.active == false){
-            %>
-          <option data-title="<%= template.title %>" data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
-        <% }} %>
-    </select> -->
 
     <form class="input-form" method="POST" action="/email-template-editor"></form>
     
@@ -52,23 +33,38 @@
         <input id="email-subject-text-area" id="text" name="subject" value="<%= subject %>" style='width:100%'> 
     </div>
     <h2 class="section-header">Content</h2>
-    <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding recomendee's information</h3>
-    <h4>Tags</h4>
-    <% for (var tag of tags) {  %>
-        <button id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
-    <% } %>
+    <div id="letter-container">
+        <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding recomendee's information</h3>
+    </div>
+    <div id="tag-container">
+        <h4 class="inline-block"> Tags: </h4>
+        <% for (var tag of tags) {  %>
+            <button class="button tag-button" id="<%= tag %>" name="tag_buttons" value ="<%= tag %>"><%= tag %></button>
+        <% } %>
+    </div>
 
     <div id="email-body-container">
-        <input id="email-body-text-area" contentEditable="true" id="text" name="body" value="<%= body %>" style='width:100%'>
+        <div id="email-body-text-area" contentEditable="true" name="body" ><%= body %></div> 
     </div>
-    <!-- onclick="saveEmailTemplate()" -->
     <form onSubmit="JavaScript:saveEmailTemplate()">
         <button name="save_template" class="email-button" id = "saveTemplate" >Save</button>
     </form>
-</form>
-
-  
+</form>  
+</div>
 </html>
+
+<div id="confirm" class="modal">
+    <div class="modal-content">
+        <div class="close-container">
+                <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-title"> Are you sure? </div>
+            <button type="button" data-dismiss="modal" class="modal-submit" id="save">Save</button>
+            <button type="button" data-dismiss="modal" class="modal-submit">Cancel</button>
+        </div>
+    </div>
+</div>
+    
 <script>
     $("#email-templates").change(function () {
         document.getElementById("name-container-text-field").value = $(this).find(':selected').data('title');
@@ -78,12 +74,20 @@
     
 
     $("button[name='tag_buttons']").on("click", function(e) {
+        // var val = $(this).val();
+        // document.getElementById("email-body-text-area").value += " "+ val;
         var val = $(this).val();
-        document.getElementById("email-body-text-area").value += " "+ val;
+        var theDiv = document.getElementById("email-body-text-area");
+        var content = document.createTextNode(" "+ val);
+        theDiv.appendChild(content);
     }); 
 
+
     $('button[name="save_template"]').on('click', function(e) {
+        console.log("clicked");
         var $form = $(this).closest('form');
+        var modal = document.getElementById('confirm');
+        modal.style.display = "block";
         e.preventDefault();
         $('#confirm').modal({
             backdrop: 'static',
@@ -93,4 +97,5 @@
             $form.trigger('submit');
             });
     });
+
 </script>

@@ -1,8 +1,8 @@
 #email-subject-container {
     background-color: #e8e8e8;
-    border: thick solid black;
+    border:black;
     margin: 15px auto;
-    width: 80%;
+    width: 50%;
 }
 
 #letter-container #email-subject-text-area {
@@ -14,9 +14,18 @@
 
 #email-body-container {
     background-color: #e8e8e8;
-    border: thick solid black;
+    border: black;
     margin: 15px auto;
     width: 80%;
+}
+
+#email-body-text-area {
+    height: 300px;
+    width: 800px;
+    flex-basis: auto;
+    border: black;
+    font-size: 13px;
+    overflow-y: scroll;
 }
 
 #email-body-container #email-body-text-area {

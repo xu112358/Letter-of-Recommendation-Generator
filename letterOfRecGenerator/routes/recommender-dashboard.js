@@ -26,7 +26,7 @@ router.get('/', function (req, res, next) {
                 console.log(`error: ${err}`);
             } else {
                 res.render('pages/recommender-dashboard', {
-                    title: 'Welcome ' + req.user.displayName + '!',
+                    title: req.user.displayName,
                     templates: req.user.getTemplates(),
                     forms: forms,
                 });

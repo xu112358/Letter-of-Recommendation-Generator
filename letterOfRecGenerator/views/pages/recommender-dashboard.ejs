@@ -4,15 +4,16 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/recommender-dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/table.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/modal.css"/>
 </head>
 <body>
 <header>
     <% include ../partials/header %>
 </header>
-<h1 class="title"><%= title %></h1>
-<% if (templates.length) { %>
-<div class="add-btn" onclick="openModal()">+</div>
-<% } %>
+<!-- <p class="title">Welcome <b><%= title %></b> !</p> -->
+<p class="title">RECOMMENDATIONS</p>
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="close-container">
@@ -32,6 +33,10 @@
         </form>
     </div>
 </div>
+
+<div class="recommendations">
+    <div class="add-btn" onclick="openModal()">+ Create Recommendation</div>
+
 <table>
     <thead>
     <tr>
@@ -80,6 +85,7 @@
     <% }} %>
     </tbody>
 </table>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
 
