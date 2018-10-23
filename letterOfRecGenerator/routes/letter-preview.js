@@ -77,7 +77,8 @@ router.post('/addEmailHistory', function (req, res, next) {
 
                             res.redirect('/recommender-dashboard');
                         }
-                    }); 
+                    }
+                ); 
                 }
             });
         }

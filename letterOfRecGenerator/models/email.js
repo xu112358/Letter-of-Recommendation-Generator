@@ -23,11 +23,6 @@ EmailSchema.methods.getBodyText = function () {
     return this.body_text;
 };
 
-// EmailSchema.methods.getActive = function () {
-//     return this.active;
-// };
-
-
 var Email = db.model('Email', EmailSchema);
 
 module.exports = Email;

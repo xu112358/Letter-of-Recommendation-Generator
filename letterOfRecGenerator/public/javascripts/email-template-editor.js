@@ -23,13 +23,14 @@ function parseAttribute(attr) {
 }
 
 function saveEmailTemplate() {
-    console.log("saveEmailTemplate called");
-
+    
     var Email = {
         title: document.getElementById(EMAIL_TITLE_ID).value,
         subject: document.getElementById(EMAIL_SUBECT_TEXT_AREA_ID).value,
-        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).value
+        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).innerHTML
     };
+
+    console.log(Email.body_text);
 
     if (!validate(Email)) {
         window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);

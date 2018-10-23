@@ -4,17 +4,46 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/archive.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/history.css"/>  <!-- for modal -->
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/table.css"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
+
+<div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="close-container">
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <p class="modal-title">Subject: </p>
+            <input class="modal-input" id='modal-subject' readonly="readonly"></input>
+            <p class="modal-title">Body: </p>
+            <input class="modal-input" id='modal-body' readonly="readonly"></input>
+        
+        </div>
+</div>
+
 <body>
 <header>
     <% include ../partials/header %>
 </header>
-<h1 class="title"><%= title %></h1>
+
+
+<div class = "archive">
+
+<p class="title"><%= title %></p>
+<br>
+<br>
+
 <table>
     <thead>
-        <td class="center" style="font-size: 25px;"><b>Archived Recommendations</b></td>
+        <td class="center"><b>Archived Recommendations</b></td>
+        <button id ="button-show-hide" onclick="showTable('table1')">+</button>
     </thead>
 </table>
+
+<div id = "table1" style="display: none;">
 <table>
     <thead>
     <tr>
@@ -53,10 +82,16 @@
     <% }} %>
     </tbody>
 </table>
+</div>
+<br>
 <table>
     <thead>
-    <td class="center" style="font-size: 25px;"><b>Archived Recommendation Templates</b></td>
+        <td class="center"><b>Archived Recommendation Templates</b></td>
+        <button id ="button-show-hide" onclick="showTable('table2')">+</button>
     </thead>
+</table>
+<div id = "table2" style="display: none;">
+<table>
     <tbody>
     <% if (!templates.length)  { %>
         <tr>
@@ -78,10 +113,16 @@
     <% }} %>
     </tbody>
 </table>
+</div>
+<br>
 <table>
-    <thead>
-    <td class="center" style="font-size: 25px;"><b>Archived Email Templates</b></td>
-    </thead>
+        <thead>
+        <td class="center"><b>Archived Email Templates</b></td>
+        <button id ="button-show-hide" onclick="showTable('table3')">+</button>
+        </thead>
+</table>
+<div id="table3" style="display: none;">
+<table>
     <tbody>
     <% if (!emailtemplates.length)  { %>
         <tr>
@@ -95,7 +136,7 @@
         <td>
             <div class="template-name"><%= template.title %></div>
             <div class="image-container">
-                <img class="icon" src="/images/preview.png" onclick="editTemplate('<%= template._id %>')"/>
+                <img class="icon" src="/images/preview.png" onclick="openModal( <%= JSON.stringify(template) %>)"/>
                 <img class="icon" src="/images/restore.png" onclick="restoreEmailTemplate('<%= template._id %>')"/>
             </div>
         </td>
@@ -103,8 +144,32 @@
     <% }} %>
     </tbody>
 </table>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</div>
+</div>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
 <script>
+
+     // Get the modal
+     var modal = document.getElementById('myModal');
+
+    // When the user clicks on the button, open the modal
+    function openModal(email) {
+        $('#modal-subject',$('#myModal')).val(email.subject);
+        $('#modal-body',$('#myModal')).val(email.body_text);
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 
     function openHistory(params) {
         // Check to see if the status is green, if not then show error dialog
@@ -170,6 +235,15 @@
 
     function getDestinationRoute(address, params) {
         return address + '?' + $.param(params);
+    }
+
+    function showTable(id){
+        var x = document.getElementById(id);
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
     }
 
 </script>

@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
             console.log(err);
         } else {
             res.render('pages/history', {
-                title: 'History for ' + form.email,
+                title: form.email,
                 emailHistory : form.emailhistory,
                 // emailHistory: req.user.getEmailHistory(),
                 id: req.query.id,
