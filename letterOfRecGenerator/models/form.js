@@ -138,40 +138,27 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
         } else {
             var responses = [];
-            form['template']['questions'].forEach(function (question) {
+            form['template']['questions'].forEach(function (question) {      
+                //console.log("Response data: ");  
+                //console.log(responseData); 
                 var response = responseData[question.number - 1];
+
                 /* If the question has a organizationFlag that is true, 
                 attempt to extract the organizations (seperated with , )
                 and make additional Forms with the different organization names */
-                // if(question.organizationFlag){
-                //     let organizationList = response.trim();
-                //     organizationArr = organizationList.split(", ");
-                //     response = organizationArr[0]; //update response to right organization
-                //     totalForms = organizationArr.length;
-                // }
                 //If response is empty
                 if (!response.length) {
                     responses.push({
                         tag: question.tag,
                         response: ''
                     });
-                } else if (!(response instanceof Array)) {
-                    //other response types are from here
+                }
+                else if (question.type === "Radio Button" || question.type === "Text") {
                     responses.push({
                         tag: question.tag,
-                        response: response
+                        response: response[0]
                     });
                 } else if (question.type === "Custom") { // custom
-
-                    // todo: account for custom qs that aren't organization qs, or only have 1 custom q per form?
-
-                    console.log("is organization q");
-                    console.log(question.organizationFlag);
-                    if(question.organizationFlag) {
-                        console.log("in here");
-
-                        //response = "idk"; //update response to right organization
-
                         let questionOptions = question.options;
 
                         let allFields = [];
@@ -185,15 +172,19 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
 
                         // num organizations = len / number of options
                         let numResponse = response.length;
+                        //console.log("numResposne: " + numResponse);
 
-                        console.log("numResposne: " + numResponse);
                         let numOptions = questionOptions.length;
-                        console.log("numOptions: " + numOptions);
+                        //console.log("numOptions: " + numOptions);
+
                         let numOrganizations = numResponse / numOptions;
                         totalForms = numOrganizations;
-                        console.log("total forms here: " + totalForms);
-                        console.log("response below: ");
-                        console.log(response);
+
+
+
+                        //console.log("total forms here: " + totalForms);
+                        //console.log("response below: ");
+                        //console.log(response);
 
                         for (let k = 0; k < numOrganizations; k++) {
                             fieldsByForm[k] = {
@@ -215,30 +206,39 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                             fieldsByForm[formIndex].fields.push(field);
 
                             for (let k = 0; k < fieldsByForm.length; k++) {
-                                console.log("form k: " + k);
-                                console.log(fieldsByForm[k].fields);
+                                //console.log("form k: " + k);
+                                //console.log(fieldsByForm[k].fields);
                             }
                             i++;
                         });
-                    } // isOrganzationFlag
-                }
-                else { // checkbox (?)
+                } else { // checkbox (?)
+                    //response.forEach(function (optionText) {
+                    // response for each optionText (chcolate, banana)
                     response.forEach(function (optionText) {
+                        //console.log("why does optiontext contain organization question responses")
+                        //console.log("optionText: " + optionText);
+
+                        // get questions.options (chcocolate, banana, )
+
                         var option = question.options.find(function (option) {
                             return option.fill === optionText;
                         });
 
-                        console.log("option: ");
-                        console.log(option);
+                        //console.log("why is option undefined????"); 
+                        //console.log("option: ");
+                        //console.log(option);
 
                         responses.push({
-                            tag: option.tag,
-                            response: option.fill
+                            //tag: "test tag",
+                            tag: option.tag, // can't read property tag of undefined
+                            response: option.fill // can;t read porperty fill of undefined
                         });
 
-                        console.log("resposne: ");
-                        console.log(responses);
+                       
                     });
+
+                    //console.log("Responses after editing: ");
+                    //console.log(responses);
                 }
             });
 
@@ -247,18 +247,25 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
 
 
             // set responses form 0th
+            console.log("fieldsnByformlength: " + fieldsByForm.length); 
             if(fieldsByForm.length){
                 let allFieldsInForm = fieldsByForm[0].fields;
+                // For the 0th form, push in parsed fields from custom question
                 for(let k=0; k<allFieldsInForm.length; k++) {
                     responses.push({
                         tag: allFieldsInForm[k].fieldTag,
                         response: allFieldsInForm[k].response
-                    });
+                    }); //THIS IS PUSHED IN THE END; NEED TO PUSH THIS WHEN WE ARE PARSING THAT Q SO THE RESPONSES ARE IN ORDER
                 }
+
+                //console.log("Final set of responses for 0th form: "); 
+                //console.log(responses); 
             }
 
 
-            if(fieldsByForm === undefined) { // why doesnt it work for only 1 or 2 orgs???
+
+
+            if(fieldsByForm === undefined) { // can delete this
                 form.organization = "something";
             } else {
                 form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
@@ -272,14 +279,15 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             // totalForms
             
             form['responses'] = responses;
-            form.save().then(function(savedForm){
-                console.log("totalForms: " + totalForms);
-                if(totalForms > 1){
-                //if(organizationArr.length > 1){
+            form.save().then(function (savedForm) {
+                //console.log("totalForms: " + totalForms);
+                // if there is more than one organization, then duplicate form
+                //if (totalForms > 1) { 
+                    // for each other org, duplicate the form
                     for (let orgIndex = 1; orgIndex < totalForms; orgIndex++) {
-                    //for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
-                    /* Here we create duplicate forms and then add the form._id to the 
-                    owner of the original form, which is the user. */
+                        //for (let orgIndex = 1; orgIndex < organizationArr.length; orgIndex++) {
+                        /* Here we create duplicate forms and then add the form._id to the 
+                        owner of the original form, which is the user. */
                         var promise = Form.create({
                             email: savedForm.email,
                             status: savedForm.status,
@@ -296,46 +304,55 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         });
 
                         // for each orgIndex, push remaining here
-                        promise.then(function(savedForm){
+                        promise.then(function (savedForm) {
                             savedFormIdArr.push(savedForm._id);
                             /* We update the response for organization to the right ones here */
                             FormSchema.statics.findForm(savedForm._id, function (err, foundForm) {
                                 if (err) {
                                     console.log("error finding saved Form");
                                 } else {
-                                    let duplicateResponse =  foundForm['responses'];
+                                    let duplicateResponse = foundForm['responses'];
+
+                                    //console.log("before-----");
+                                    //console.log(duplicateResponse); 
 
                                     // setting correct tags, take in account for custom q
-                                    if(fieldsByForm.length){
+                                    if (fieldsByForm.length) {
                                         let allFieldsInForm = fieldsByForm[orgIndex].fields;
-                                        for(let j=0; j<duplicateResponse.length; j++) {
-                                            for(let k=0; k<allFieldsInForm.length; k++) {
-                                                if(duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
+                                        for (let j = 0; j < duplicateResponse.length; j++) {
+                                            for (let k = 0; k < allFieldsInForm.length; k++) {
+                                                if (duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
                                                     duplicateResponse[j].response = allFieldsInForm[k].response;
                                                 }
-                                            }
+                                            }  
                                         }
                                     }
 
-                                    foundForm['template']['questions'].forEach(function (question){
-                                        if(question.organizationFlag){
-                                            var savedFormResponse = duplicateResponse[question.number - 1];
-                                            //savedFormResponse.response = organizationArr[orgIndex];
-                                            savedFormResponse.response = fieldsByForm[orgIndex].fields[0].response;
-                                            foundForm.save().then(function(updatedForm){
+                                    // what is this doing
+                                    foundForm['template']['questions'].forEach(function (question) {
+                                        if (question.type === "Custom") {
+                                            var savedFormResponse = duplicateResponse[question.number - 1]; // what is this for
+                                            //savedFormResponse.response = organizationArr[orgIndex]; // don't need this??
+                                            //console.log("--------- fieldsByForm[orgIndex].fields[0].response: " + fieldsByForm[orgIndex].fields[0].response + "---------------");
+                                            //savedFormResponse.response = fieldsByForm[orgIndex].fields[0].response;
+                                            foundForm.save().then(function (updatedForm) {
                                                 console.log("saved response");
-                                            }, function(rejected) {
+                                            }, function (rejected) {
                                                 console.log("rejected save: " + rejected);
-                                            });
-                                        } 
+                                                });
+                                            
+                                        }
                                     });
+
+                                    //console.log("Final set of response for this form: ");
+                                    console.log(duplicateResponse); 
                                 }
                             });
-                        }, function(rejected) {
+                        }, function (rejected) {
                             console.log("rejected promise: " + rejected);
                         });
-                    }
-                }
+                    } // for each form
+                //} // if totalForms > 1
 
                 //Adding form._id to user (who is the owner of the original form)
                 db.model('User').findOne({_id: form.owner}).populate('forms').exec( function(err, user) {

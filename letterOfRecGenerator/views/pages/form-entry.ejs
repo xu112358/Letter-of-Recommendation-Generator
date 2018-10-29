@@ -234,9 +234,16 @@
      * @returns {boolean}
      */
     function submitForm(id) {
+        // get all questions, figure out which is checkbox/custom and whcih is radiobox/text
 
+        
         // takes all responses and serializes into an object
         var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
+            console.log("obj: "); 
+            console.log(obj); 
+            console.log("item");
+            console.log(item); 
+            console.log("obj[item.name] " + obj[item.name] + " to " + "item " + item.value);
             if (obj[item.name]) {
                 if (!Array.isArray(obj[item.name])) {
                     var arr = [obj[item.name], item.value];
@@ -244,9 +251,10 @@
                 } else {
                     obj[item.name].push(item.value)
                 }
-            } else {
+            } else { // Joyce, Wang, she, her, org
                 obj[item.name] = item.value;
             }
+            // undefined -> hcocolate
             return obj;
         }, {});
 
@@ -255,9 +263,32 @@
 
         // takes responseData and puts each response as an element in responseArray
         var responseArray = [];
+        console.log("==============================="); 
+        console.log(questions); 
+        console.log("=============================="); 
         for (var i = 0; i < questions.length; i++) {
+            // if is checkbox or custom and is not as array, make it array
+            console.log(i+1); 
+            console.log(responseData[i + 1]);
+            
             if (responseData[i + 1]) {
-                responseArray.push(responseData[i + 1]);
+ 
+                /*if (!Array.isArray(responseData[i + 1]) && (questions[i].type === "Custom" || questions[i].type === "Checkbox")) {
+                    console.log("is custom or checkbox but not an array");
+                    var arr = [responseData[i + 1]];
+                    responseArray.push(arr);
+                } else {
+                    responseArray.push(responseData[i + 1]);
+                }*/
+
+                // push all as array
+                if (!Array.isArray(responseData[i + 1])) {
+                    var arr = [responseData[i + 1]];
+                    responseArray.push(arr);
+                } else {
+                    responseArray.push(responseData[i + 1]);
+                }
+                
             } else {
                 responseArray.push('');
             }
