@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= title %></title>
+    <title>Letter of Recommendation Generator</title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/css/recommender-dashboard.css"/>
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
@@ -87,7 +87,7 @@
             <td><%= form.meta.submitted.toDateString()%><br><%= form.meta.sent.toLocaleTimeString('en-US')%></td>
         <% } %>
         <td><%= form.email %></td>
-        <td><%= form.organization %></td>
+        <td class="center"><%= form.organization %></td>
         <td><%= form.template.name %></td>
         <td class="center">
             <% if (form.status == 'Sent') { %>
@@ -159,14 +159,15 @@
                 url: 'http://localhost:3000/recommender-dashboard/update',
                 data: { 
                     subject: subject,
-                    body: body},
+                    body: body
+                },
                 type: 'POST',
                 complete: function() {
-                    console.log('worked');
+                    console.log('worked for saveDefaultTemplate');
                     // window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
                 },
                 error: function () {
-                    console.log('error')
+                    console.log('error in saveDefaultTemplate')
                 }
             })
         closeSaveModal();

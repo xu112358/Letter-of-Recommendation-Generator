@@ -223,25 +223,22 @@ router.post('/update', function (req, res, next) {
 
     user.update_linkTemplate_subject(req.body.subject, function (err) {
         if (err) {
-            console.log(err);
+            console.log("error in update_linkTemplate_subject: " + err);
+            res.send(err);
         } else {
-            res.json({
-                success: "Updated Successfully",
-                status: 200
+            user.update_linkTemplate_body(req.body.body, function (err) {
+                if (err) {
+                    console.log("error in update_linkTemplate_body: " + err);
+                    res.send(err);
+                } else {
+                    res.json({
+                        success: "Updated Successfully",
+                        status: 200
+                    });
+                }
             });
         }
-    });
-
-    user.update_linkTemplate_body(req.body.body, function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json({
-                success: "Updated Successfully",
-                status: 200
-            });
-        }
-    });
+    });   
 });
 
 module.exports = router;
