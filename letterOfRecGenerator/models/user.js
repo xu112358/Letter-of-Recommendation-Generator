@@ -17,6 +17,8 @@ var UserSchema = new Schema({
         type: db.Schema.Types.ObjectId,
         ref: 'Form'
     }],
+    linkTemplate_subject: String,
+    linkTemplate_body: String,
     deactivatedForms: [{
         type: db.Schema.Types.ObjectId,
         ref: 'Form'
@@ -120,6 +122,35 @@ UserSchema.methods.updateTemplate = function (id, template, cb) {
     });
 };
 
+UserSchema.methods.update_linkTemplate_subject = function (subject, cb) {
+    var user = this;
+    this.linkTemplate_subject = subject;
+    User.findOneAndUpdate({
+        "id": user.id
+    }, {
+        "$set": {
+            "linkTemplate_subject": subject
+        }
+    }, function (err, user) {
+        cb(err);
+    });
+};
+
+
+UserSchema.methods.update_linkTemplate_body = function (body, cb) {
+    var user = this;
+    this.linkTemplate_body = body;
+    User.findOneAndUpdate({
+        "id": user.id
+    }, {
+        "$set": {
+            "linkTemplate_body": body
+        }
+    }, function (err, user) {
+        cb(err);
+    });
+};
+
 UserSchema.methods.getTemplates = function () {
     return this.templates;
 };
@@ -158,6 +189,14 @@ UserSchema.methods.getEmailHistory = function () {
 
 UserSchema.methods.getAnEmailHistory = function (id) {
     return this.emailhistory.id(id);
+};
+
+UserSchema.methods.getLinkTemplateSubject = function () {
+    return this.linkTemplate_subject;
+};
+
+UserSchema.methods.getLinkTemplateBody = function () {
+    return this.linkTemplate_body;
 };
 
 /* This removes a specified template from templates array

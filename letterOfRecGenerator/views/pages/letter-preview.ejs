@@ -6,40 +6,44 @@
     <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
     <link rel="stylesheet" type="text/css" href="/css/email.css"/>
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/template-editor.css"/>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
     <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
     <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
 </head>
+
+<div class="background">
  <header>
 <% include ../partials/header %></header> 
-<h1 class="title"><%= title %></h1>
+<p class="title">send a confirmation email for <%= title %></p>
 
 </body>
 <form class="input-form">
-    <h5> Choose a template: </h5>
+    <h2 class="section-header"> Choose a template: </h2>
+    <div id="name-container">
     <select id="email-templates" name="templates">
         <% var options = []; %>
         <% for (var template of templates) { %>
           <option data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
         <% } %>
     </select>
-
+    
     <div id="email-subject-container">
-        <input id="email-subject-text-area" contentEditable="true" name="subject" >
+        <input id="email-subject-text-area" contentEditable="true" name="subject"  style='width:100%' >
     </div>
 
     <div id="email-body-container">
-        <input id="email-body-text-area" contentEditable="true" name="body">
+        <div id="email-body-text-area" contentEditable="true" name="body"/>
     </div>
     <button class="email-button" id = "sendEmail" onClick= "addEmailHistory()"> Send </button>
+    </div>
 </form>
+</div>
+</body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
@@ -50,7 +54,12 @@
 
     $("#email-templates").change(function () {
         document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');
-        parseLetter($(this).find(':selected').data('body'));
+        // document.getElementById("email-body-text-area").value = $(this).find(':selected').data('body');
+        // parseLetter($(this).find(':selected').data('body'));
+        var val = $(this).find(':selected').data('body');
+        var theDiv = document.getElementById("email-body-text-area");
+        var content = document.createTextNode(" "+ val);
+        theDiv.appendChild(content);
     });
 </script>
 </html>

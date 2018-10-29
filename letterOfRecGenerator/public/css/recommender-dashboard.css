@@ -45,9 +45,28 @@
 }
 
 .input-text {
+    margin-left: 20px;
     font-size: 20px;
-    line-height: 20px;
+    line-height: 10px;
     width: 75%;
+}
+
+.subject-text{
+    height: 5px;
+}
+
+.email-container{
+    margin-left : 20px;
+}
+
+#body-text{
+    height: 300px;
+    width: 95%;
+    font-size: 13px;
+    padding-bottom: 5px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
 }
 
 .input-dropdown {
