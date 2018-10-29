@@ -45,11 +45,20 @@ UserSchema.statics.findOrCreate = function (id, cb) {
 };
 
 UserSchema.methods.addTemplate = function (template, cb) {
-    this.templates.push(template);
-    var newTemplate = this.templates[this.templates.length - 1];
-    this.save(function (err) {
-        cb(err, newTemplate.getId());
-    })
+    var errorFlag = false;
+    for(var i=0; i < this.templates.length; i++) {
+        if(this.templates[i].name == template.name) {
+            cb(new Error("DUPLICATE NAME"));
+            errorFlag = true;
+        }
+    }
+    if(!errorFlag) {
+        this.templates.push(template);
+        var newTemplate = this.templates[this.templates.length - 1];
+        this.save(function (err) {
+            cb(err, newTemplate.getId());
+        })
+    }
 };
 
 UserSchema.methods.addEmailHistory = function (email, cb) {
