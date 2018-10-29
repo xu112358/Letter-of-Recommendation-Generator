@@ -366,8 +366,13 @@ function saveTemplate() {
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },
-            error: function (err) {
+            error: function (err){
                 console.log('error in saveTemplate:' + err);
+                var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
+                addError(textField, 0, 'template name already exists');
+                window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
+                emphasizeTags();
+                return;
             }
         });
     } else {
@@ -381,12 +386,16 @@ function saveTemplate() {
             },
             success: function (data) {
                 id = data.id;
-
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },
             error: function (err) {
                 console.log('error in saveTemplate:' + err);
+                var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
+                addError(textField, 0, 'template name already exists');
+                window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
+                emphasizeTags();
+                return;
             }
         });
     }

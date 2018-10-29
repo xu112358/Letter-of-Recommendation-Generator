@@ -13,7 +13,7 @@ router.get('/', function (req, res, next) {
             console.log(err);
         } else {
             res.render('pages/letter-preview', {
-                title: 'Send a confirmation email for ' + form.email,
+                title: form.email,
                 templates: req.user.getEmailTemplates(),
                 id: req.query.id,
             });

@@ -241,11 +241,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     //console.log(responses);
                 }
             });
-
-            //Update organization to be the first one
-            //form.organization = organizationArr[0];
-
-
             // set responses form 0th
             console.log("fieldsnByformlength: " + fieldsByForm.length); 
             if(fieldsByForm.length){
@@ -270,14 +265,11 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             } else {
                 form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
             }
-            //form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
             form.duplicated = true;
             form.status = 'Submitted';
 
             form['meta']['submitted'] = Date.now();
 
-            // totalForms
-            
             form['responses'] = responses;
             form.save().then(function (savedForm) {
                 //console.log("totalForms: " + totalForms);
@@ -306,6 +298,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         // for each orgIndex, push remaining here
                         promise.then(function (savedForm) {
                             savedFormIdArr.push(savedForm._id);
+                            console.log("savedFormIdArr length?: " + savedFormIdArr.length);
                             /* We update the response for organization to the right ones here */
                             FormSchema.statics.findForm(savedForm._id, function (err, foundForm) {
                                 if (err) {
@@ -336,6 +329,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                             //console.log("--------- fieldsByForm[orgIndex].fields[0].response: " + fieldsByForm[orgIndex].fields[0].response + "---------------");
                                             //savedFormResponse.response = fieldsByForm[orgIndex].fields[0].response;
                                             foundForm.save().then(function (updatedForm) {
+
                                                 console.log("saved response");
                                             }, function (rejected) {
                                                 console.log("rejected save: " + rejected);
@@ -359,13 +353,13 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     if(err) {
                         console.log("error in form User.findOne");
                     } else {
-                        if(savedFormIdArr.length === totalForms-1)
-                        //if(savedFormIdArr.length === organizationArr.length-1)
-                        for(let i=0; i < savedFormIdArr.length; i++) {
-                            user.forms.push(savedFormIdArr[i]);
-                            console.log("saving Form to user: " + user.displayName + " " + savedFormIdArr[i]);
+                        if(savedFormIdArr.length == totalForms-1) {
+                            for(let i=0; i < savedFormIdArr.length; i++) {
+                                user.forms.push(savedFormIdArr[i]);
+                                console.log("saving Form to user: " + user.displayName + " " + savedFormIdArr[i]);
+                            }
+                            user.save();
                         }
-                        user.save();
                     }
                 });
             }, function(err) {

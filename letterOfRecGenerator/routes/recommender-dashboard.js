@@ -36,6 +36,8 @@ router.get('/', function (req, res, next) {
                 title: req.user.displayName,
                 templates: req.user.getTemplates(),
                 forms: forms,
+                subject: req.user.getLinkTemplateSubject(),
+                body: req.user.getLinkTemplateBody()
             });
         }
     }); 
@@ -45,7 +47,9 @@ router.post('/', function (req, res, next) {
     var gmailClass = google.gmail('v1');
     var email_lines = [];
     var toEmail = req.body.email;
-
+    var subject = req.body.subject_text;
+    var body = req.body.body_text;
+   
     if (!toEmail.length) {
         res.render('pages/recommender-dashboard', {
             title: 'RECOMMENDER DASHBOARD',
@@ -72,10 +76,10 @@ router.post('/', function (req, res, next) {
             email_lines.push('To: ' + toEmail);
             email_lines.push('Content-type: text/html;charset=iso-8859-1');
             email_lines.push('MIME-Version: 1.0');
-            email_lines.push('Subject: Invitation to Fill Recommendation Letter Questionairre');
+            email_lines.push('Subject: '+subject);
             email_lines.push('');
             var url = encodeURI('http://localhost:3000/form-entry/' + form.getLink());
-            email_lines.push('<p>Please click the following questionairre <a href = "' + url + '">link.</a></p>');
+            email_lines.push('<p>' + body + '<a href = "' + url + '">link.</a></p>');
 
             var email = email_lines.join('\r\n').trim();
             var base64EncodedEmail = new Buffer(email).toString('base64');
@@ -212,6 +216,29 @@ router.post('/delete', function (req, res, next) {
             });
         }
     });
+});
+
+router.post('/update', function (req, res, next) {
+    var user = req.user;
+
+    user.update_linkTemplate_subject(req.body.subject, function (err) {
+        if (err) {
+            console.log("error in update_linkTemplate_subject: " + err);
+            res.send(err);
+        } else {
+            user.update_linkTemplate_body(req.body.body, function (err) {
+                if (err) {
+                    console.log("error in update_linkTemplate_body: " + err);
+                    res.send(err);
+                } else {
+                    res.json({
+                        success: "Updated Successfully",
+                        status: 200
+                    });
+                }
+            });
+        }
+    });   
 });
 
 module.exports = router;
