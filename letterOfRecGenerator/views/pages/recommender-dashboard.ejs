@@ -40,6 +40,7 @@
 <table>
     <thead>
     <tr>
+        <td>Timestamp</td>
         <td>Name</td>
         <td>Organization</td>
         <td>Template</td>
@@ -50,11 +51,16 @@
     <tbody>
     <% if (!forms.length) { %> 
     <tr>
-        <td colspan="5" style="text-align: center;">No Existing Recommendations</td>
+        <td colspan="6" style="text-align: center;">No Existing Recommendations</td>
     </tr>
     <%   } else {
             for (var form of forms) { %>
     <tr>
+        <% if (!form.meta.submitted) {%>
+            <td><%= form.meta.sent.toDateString()%><br><%= form.meta.sent.toLocaleTimeString('en-US')%></td>
+        <% } else { %>
+            <td><%= form.meta.submitted.toDateString()%><br><%= form.meta.sent.toLocaleTimeString('en-US')%></td>
+        <% } %>
         <td><%= form.email %></td>
         <td><%= form.organization %></td>
         <td><%= form.template.name %></td>
