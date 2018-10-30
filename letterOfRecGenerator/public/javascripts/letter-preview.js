@@ -1,4 +1,5 @@
 var id = parseAttribute('id');
+console.log("what is id here is js?" + id);
 
 var innerContainer;
 var form;
@@ -39,7 +40,7 @@ function saveEditModal() {
             console.log('letter saved');
         },
         error: function () {
-            console.log('error');
+            console.log('error in saveEditModal');
         }
     });
 
@@ -159,7 +160,7 @@ function parseLetter(body) {
             
         },
         error: function () {
-            console.log('error');
+            console.log('error in parseLetter');
         }
     });
 }
@@ -193,12 +194,11 @@ function addEmailHistory() {
         },
         success: function (data) {
             id = data.id;
-
             console.log('success');
             window.location.href = 'http://localhost:3000/history'
         },
         error: function () {
-            console.log('error');
+            console.log('addEmailHistory error');
         }
     });
 }

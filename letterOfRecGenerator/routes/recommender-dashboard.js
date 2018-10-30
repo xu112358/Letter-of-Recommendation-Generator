@@ -76,7 +76,7 @@ router.post('/', function (req, res, next) {
             email_lines.push('To: ' + toEmail);
             email_lines.push('Content-type: text/html;charset=iso-8859-1');
             email_lines.push('MIME-Version: 1.0');
-            email_lines.push('Subject: '+subject);
+            email_lines.push('Subject: ' + subject);
             email_lines.push('');
             var url = encodeURI('http://localhost:3000/form-entry/' + form.getLink());
             email_lines.push('<p>' + body + '<a href = "' + url + '">link.</a></p>');

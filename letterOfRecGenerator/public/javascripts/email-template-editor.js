@@ -27,16 +27,16 @@ function saveEmailTemplate() {
     var Email = {
         title: document.getElementById(EMAIL_TITLE_ID).value,
         subject: document.getElementById(EMAIL_SUBECT_TEXT_AREA_ID).value,
-        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).innerHTML
+        body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).value
     };
 
     console.log(Email.body_text);
 
-    if (!validate(Email)) {
-        window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
-        emphasizeTags();
-        return;
-    }
+    // if (!validate(Email)) {
+    //     window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
+    //     emphasizeTags();
+    //     return;
+    // }
 
     if (id) {
 
@@ -52,7 +52,6 @@ function saveEmailTemplate() {
             },
             success: function (data) {
                 id = data.id;
-
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },
@@ -76,7 +75,6 @@ function saveEmailTemplate() {
             },
             success: function (data) {
                 id = data.id;
-
                 console.log('success');
                 window.location.href = 'http://localhost:3000/template-dashboard'
             },

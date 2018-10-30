@@ -29,12 +29,16 @@
     <form class="input-form" method="POST" action="/email-template-editor"></form>
     
     <h2 class="section-header">Subject</h2>
-    <div id="email-subject-container" >
-        <input id="email-subject-text-area" id="text" name="subject" value="<%= subject %>" style='width:100%'> 
+    <div class="error-container">
+        <div id="email-subject-container" >
+            <input id="email-subject-text-area" id="text" name="subject" value="<%= subject %>" style='width:100%'> 
+        </div>
     </div>
     <h2 class="section-header">Content</h2>
-    <div id="letter-container">
-        <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding recomendee's information</h3>
+    <div class="error-container">
+        <div id="letter-container">
+            <h3>&lt!TAG_NAME&gt in the letter will be replaced by the corresponding recomendee's information</h3>
+        </div>
     </div>
     <div id="tag-container">
         <h4 class="inline-block"> Tags: </h4>
@@ -43,12 +47,17 @@
         <% } %>
     </div>
 
-    <div id="email-body-container">
-        <div id="email-body-text-area" contentEditable="true" name="body" ><%= body %></div> 
+    <div class="error-container">
+        <div id="email-body-container">
+            <textarea id="email-body-text-area" contentEditable="true" name="body" value="<%= body %>"><%= body %></textarea> 
+        </div>
     </div>
-    <form onSubmit="JavaScript:saveEmailTemplate()">
+    <div class="flex-row">
+        <button id="save-button" onclick="saveEmailTemplate()">Save</button>
+    </div>
+    <!-- <form onSubmit="JavaScript:saveEmailTemplate()">
         <button name="save_template" class="email-button" id = "saveTemplate" >Save</button>
-    </form>
+    </form> -->
 </form>  
 </div>
 </html>
@@ -74,12 +83,11 @@
     
 
     $("button[name='tag_buttons']").on("click", function(e) {
-        // var val = $(this).val();
-        // document.getElementById("email-body-text-area").value += " "+ val;
         var val = $(this).val();
-        var theDiv = document.getElementById("email-body-text-area");
-        var content = document.createTextNode(" "+ val);
-        theDiv.appendChild(content);
+        var bodyValue = document.getElementById("email-body-text-area").value;
+        var content = document.createTextNode(" " + val);
+        newBodyValue = bodyValue + " " + val;
+        document.getElementById("email-body-text-area").value = newBodyValue;
     }); 
 
 

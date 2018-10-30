@@ -16,14 +16,15 @@
     background-color: #e8e8e8;
     border: black;
     margin: 15px auto;
-    width: 80%;
+    width: 800px;
+    height: 300px;
 }
 
 #email-body-text-area {
     height: 300px;
     width: 800px;
     flex-basis: auto;
-    border: black;
+    border: solid 1px black;
     font-size: 13px;
     overflow-y: scroll;
 }
