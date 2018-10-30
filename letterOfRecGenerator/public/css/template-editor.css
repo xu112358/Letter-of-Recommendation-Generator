@@ -112,6 +112,7 @@
 }
 
 #letter-container #letter-text-area {
+    margin-top: 50px;    
     height: 300px;
     width: 800px;
     flex-basis: auto;

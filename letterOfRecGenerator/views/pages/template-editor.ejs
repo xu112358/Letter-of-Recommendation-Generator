@@ -59,15 +59,29 @@
         <button class="large-circle-button" onclick="addQuestion()">+</button>
 
         <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
+        <h4 class="inline-block"> Tags: </h4>
         <div id="tag-container">
-            <h4 class="inline-block"> Tags: </h4>
-            <% for (var q=0; q < questions.length; q++) { %>
-                <button class="popup"  name="tag_buttons" value ="<%= questions[q].tag %>"><%= questions[q].tag %>
-                    <span class="popup-text">
-                        <%= questions[q].question %>
-                    </span>
-                </button>
+            <% for (var q=0; q < questions.length; q++) { %>   
+                <% let options = questions[q].options; %>
+                <% for (var o=0; o < options.length; o++) { %> 
+                    <% if(options[o].tag) { %>
+                        <button class="popup"  name="tag_buttons" value ="<%= options[o].tag %>"><%= options[o].tag %>
+                            <span class="popup-text">
+                                <%= questions[q].question %>
+                            </span>
+                        </button>
+                    <% } %>
+
+                <% } %>
+                <% if(questions[q].type === "Text" || questions[q].type === "Radio Button") { %>
+                    <button class="popup"  name="tag_buttons" value ="<%= questions[q].tag %>"><%= questions[q].tag %>
+                        <span class="popup-text">
+                            <%= questions[q].question %>
+                        </span>
+                    </button>
+                <% } %>
             <% } %>
+            <br/>   
         </div> 
         <div class="error-container">
             <div id="letter-container">
@@ -111,10 +125,6 @@
         <div class="flex-row option-cont">
             <button onclick="addCheckboxQuestion()">Checkbox</button>
         </div>
-        <!--<div class="line"></div>-->
-        <!--<div class="flex-row option-cont">-->
-            <!--<button onclick="addCustomQuestion()">Custom</button>-->
-        <!--</div>-->
     </div>
 </div>
 
@@ -132,7 +142,8 @@
 </html>
 
 <script>
-    $("button[name='tag_buttons']").on("click", function(e) {
+    $("button[name='tag_buttons']").on("click", function (e) {
+        console.log("in tag button click function");
         var val = $(this).val();
         var theDiv = document.getElementById("letter-text-area");
         var content = document.createTextNode(" "+ val);
@@ -142,8 +153,74 @@
 
 
 <script>
-	$(window).click(function(e) {
 
-	});
+    $(window).click(function (e) {
+        renderAllTagButtons(); 
+    });
+    
+    function renderAllTagButtons() {
+        // clear old tag buttons
+        let tagsContainer = document.getElementById("tag-container");
+        while (tagsContainer.firstChild) {
+            tagsContainer.removeChild(tagsContainer.firstChild);
+        }
+        // create new tags buttons
+        let allQuestions = document.querySelectorAll(".question-container");
+        for (var i = 0; i < allQuestions.length; i++) {
+            let currQuestonEle = allQuestions[i]; 
+            let questionText = currQuestonEle.querySelector("[data-type='value']").value; 
+            let allTagsInQuestion = currQuestonEle.querySelectorAll("[data-type='tag']");
+            for (var j = 0; j < allTagsInQuestion.length; j++) {
+                let currTagValue = allTagsInQuestion[j].value;
+                // create button
+                let tagValue = currTagValue.substring(currTagValue.lastIndexOf("!") + 1, currTagValue.lastIndexOf(">"));
+                if (tagValue) {
+                    let newButton = createTagButton(tagValue, questionText); 
+                    tagsContainer.appendChild(newButton);
+                }
+            }
+        }
+    }
+
+    function createTagButton(tagValue, questionText) {
+        let newButton = document.createElement("BUTTON");
+        newButton.type = "button";
+        newButton.value = "<!" + tagValue + ">";
+        newButton.innerHTML = "&lt!" + tagValue + "&gt";
+        newButton.name = "tag_buttons";
+        newButton.onclick = function () {
+            var val = $(this).val();
+            var theDiv = document.getElementById("letter-text-area");
+            var content = document.createTextNode(" " + val);
+            theDiv.appendChild(content);
+            return false;
+        };
+
+        // span child
+        let newSpan = document.createElement("span"); 
+        newSpan.className = "popup-text";
+        newSpan.style.visibility = "hidden";
+        newSpan.style.width = "200px";
+        newSpan.style.backgroundColor = "black";
+        newSpan.style.color = "#fff";
+        newSpan.style.textAlign = "center";
+        newSpan.style.padding = "5px 0";
+        newSpan.style.borderRadius = "6px";
+        newSpan.style.position = "absolute";
+        newSpan.style.zIndex = "1";
+        newSpan.style.marginLeft = "-100px";
+        newSpan.style.marginTop = "20px"; 
+        newSpan.innerHTML = questionText;
+
+        newButton.appendChild(newSpan); 
+        newButton.onmouseover = function() {
+            newSpan.style.visibility = "visible";
+        }
+        newButton.onmouseout = function() {
+            newSpan.style.visibility = "hidden";
+        }
+        
+        return newButton; 
+    }
 </script>
 
