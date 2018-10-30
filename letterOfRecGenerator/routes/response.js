@@ -10,7 +10,8 @@ router.get('/', function (req, res, next) {
         if(err) {
             console.log(err)
         } else {
-            questions = form['template']['questions'];
+            questions = form.getFormattedQuestions();
+            console.log("what is questions?: " + questions);
             res.render('pages/response', {
                 title: 'Received Responses for ' + form.email,
                 id: req.query.id,
