@@ -117,9 +117,12 @@ function parseLetter(body) {
         data: {id},
         type: 'GET',
         success: function (data) {
-            form = data;
+            form = data.form;
             var letter = body;
             var responses = form.responses;
+            console.log(letter);
+            console.log(form);
+            console.log(responses);
             var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
                 var response = responses.find(function (item) {
                     return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
@@ -131,7 +134,7 @@ function parseLetter(body) {
                 });
                 return response ? response.response : '';
             }));
-        
+            console.log(noCapitalization);
             for (var i = 0; i < noCapitalization.length; i++) {
         
                 // Found ending punctuation that isn't the last letter in the text

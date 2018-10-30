@@ -17,6 +17,7 @@ router.get('/', function (req, res, next) {
                 title: form.email,
                 templates: req.user.getEmailTemplates(),
                 id: req.query.id,
+                form: form,
             });
         }
     });

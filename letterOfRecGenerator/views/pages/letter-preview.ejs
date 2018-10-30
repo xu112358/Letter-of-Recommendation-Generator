@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
     <link rel="stylesheet" type="text/css" href="/css/template-editor.css"/>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <!-- <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script> -->
+    <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
     <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
@@ -21,6 +21,7 @@
 </header> 
 <p class="title">Send an email to <%= title %></p>
 <div style="display: none;" id="formId" value="<%= id %>"><%= id %></div>
+<div style="display: none;" id="form" value="<%= form %>"><%= form %></div>
 </body>
 <!-- <form class="input-form" method="POST" action="/letter-preview"> -->
     <h2 class="section-header"> Choose a template: </h2>
@@ -50,8 +51,8 @@
 <script>
     window.onload = function() {
         document.getElementById("email-subject-text-area").value = $("#email-templates").find(':selected').data('subject');
-        document.getElementById("email-body-text-area").value = $("#email-templates").find(':selected').data('body');
-        //parseLetter( $("#email-templates").find(':selected').data('body') );
+        var body = $("#email-templates").find(':selected').data('body');
+        parseLetter(body);
     };
 
     $("#email-templates").change(function () {
