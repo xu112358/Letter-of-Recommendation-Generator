@@ -40,26 +40,21 @@
     <table>
         <thead>
         <tr class="center">
-            <td>Date</td>
-            <td>Template</td>
-            <td>School</td>
-            <td class="icons"></td>
+            <td width="40%">Date</td>
+            <td width="40%">Template</td>
+            <td class="icons" width="20%" class="center"></td>
         </tr>
         </thead>
         <tbody>
         <% for (var email of emailHistory) { %>
         <tr>
-            <td>
-                  
-               <div class="template-name"><%= email._id.getTimestamp().toString().substring(0,25) %></div> 
+            <td width="40%">
+               <div><%= email._id.getTimestamp().toString().substring(0,25) %></div> 
             </td>
-            <td>
-                <div class="template-name"><%= email.title %></div>
+            <td width="40%">
+                <div><%= email.title %></div>
             </td>
-            <td>
-                <div class="template-name"><%= email.title %></div>
-            </td>
-            <td>
+            <td width="20%">
                 <img class="icon" src="/images/preview.png" onclick="openModal( <%= JSON.stringify(email) %>)"/>
             </td>
         </tr>
