@@ -31,6 +31,11 @@
     height: 100%; /* Full height */
 }
 
+.modal-input-body {
+    width: 100%; /* Full width */
+    height: 300px; /* Full height */
+}
+
 /* The Close Button */
 .close {
     color: #aaa;
@@ -48,38 +53,6 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
-
-table {
-    background-color: #FFFFFF;
-    border-collapse: collapse;
-    font-size: 20px;
-    width: 100%;
-}
-
-td {
-    padding-left: 8px;
-}
-
-table thead tr {
-    border-bottom: solid 1px black;
-}
-
-table tbody tr {
-    border-bottom: solid 1px black;
-    height: 150px;
-}
-
-table tbody tr td {
-    position: relative;
-}
-
-td.center {
-    text-align: center;
-}
-
-table tbody tr:last-child {
-    border-bottom: none;
-}  
 
 .history{
     background-color: #FFFFFF;

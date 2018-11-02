@@ -33,7 +33,9 @@ UserSchema.statics.findUser = function (id, cb) {
 };
 
 UserSchema.statics.createUser = function (id, cb) {
-    User.create({id: id}, cb);
+    User.create({id: id, 
+        linkTemplate_subject: 'Invitation to Fill Recommendation Letter Questionairre',
+        linkTemplate_body: 'Please click the following questionaire'}, cb);
 };
 
 UserSchema.statics.findOrCreate = function (id, cb) {
