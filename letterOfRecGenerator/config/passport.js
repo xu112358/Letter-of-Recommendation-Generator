@@ -36,8 +36,6 @@ passport.use(new GoogleStrategy({
 
             user.displayName = details.displayName;
             user.accessToken = token;
-            user.linkTemplate_subject = 'Invitation to Fill Recommendation Letter Questionairre';
-            user.linkTemplate_body = 'Please click the following questionaire';
             user.save();
             done(null, user);
         });
