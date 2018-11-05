@@ -80,7 +80,7 @@
         </td>
         <td class="center">
             <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
-                id: forms._id, email: forms.email }) %>)"/>
+                id: form._id, email: form.email }) %>)"/>
             <img class="icon clickable" src="/images/preview.png"/>
         </td>
     </tr>
@@ -110,9 +110,7 @@
         <td>
             <div class="template-name"><%= template.name %></div>
             <div class="image-container">
-                <img class="icon" src="/images/preview.png" onclick="openHistory(<%= JSON.stringify({
-                    id: form._id, email: form.email
-                }) %>)"/>
+                    <img class="icon" src="/images/preview.png" onclick="editTemplate('<%= template._id %>')"/>
                 <img class="icon" src="/images/restore.png" onclick="restoreTemplate('<%= template._id %>')"/>
             </div>
         </td>
