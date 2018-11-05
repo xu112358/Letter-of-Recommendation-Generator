@@ -7,7 +7,7 @@
 .addBtn{
     background-color: transparent;
     border: none;
-    padding: 15px 20px;
+    /*padding: 15px 20px;*/
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -41,19 +41,37 @@
     text-align: center;
 }
 
-.input-text {
+/*.input-text {
     font-size: 20px;
     line-height: 20px;
-    width: 100%;
-}
+    flex: 1;
+}*/
 
 .input-submit {
     background-color: #FF473A;
-    font-size: 16px;
-    margin-top: 16px;
-    width: 200px;
-    height: 50px;
+    font-size: 12px;
+    margin-top: 50px;
+    width: 180px;
+    height: 40px;
+    transition: 0.6s;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    letter-spacing: 2px;
+    float: right;
+    opacity: 1.0;
+    -webkit-box-shadow: 6px 4px 21px 1px rgba(0,0,0,0.21);
+    -moz-box-shadow: 6px 4px 21px 1px rgba(0,0,0,0.21);
+    box-shadow: 6px 4px 21px 1px rgba(0,0,0,0.21);
+    text-transform: uppercase;
 }
+
+.input-submit:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+
 
 .image-container {
     position: absolute;
@@ -70,7 +88,21 @@
 }
 
 img.icon {
-    cursor: pointer;
     height: 25px;
     width: 25px;
+    opacity: 1;
+    transition: 0.6s;
+}
+
+img.icon:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.subtitle {
+    font-size: 18px; 
+}
+
+.subtitle_cont {
+    padding-bottom: 10px; 
 }
