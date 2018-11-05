@@ -73,7 +73,7 @@ router.post('/', function (req, res, next) {
                             email_lines.push('');
                             email_lines.push(email_body);
                         
-                            //var email = email_lines.join('\r\n').trim();
+                            var email = email_lines.join('\r\n').trim();
                             var base64EncodedEmail = new Buffer(email).toString('base64');
                             base64EncodedEmail = base64EncodedEmail.replace(/\+/g, '-').replace(/\//g, '_');
                         

@@ -210,9 +210,12 @@ function getQuestionHTML(q) {
         default:
             break;
     }
-    var html = "<div class=\"sortable-questions\"> <div class=\"question-button\"> <img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">"
-   // delete button
-    html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button></div>";
+
+    var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\">" + question_type_label + "</h2>" + "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+     // "required" checkbox
+    html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
+    html += (q.optional ? "" : "checked");
+    html += ">" + "</div>";
 
     // question box
     // CUSTOM_QUESTION_TYPE
@@ -244,41 +247,22 @@ function getQuestionHTML(q) {
         html += container_html;
 
     } else {
-        // console.log("q.value: " + q.value);
-        // console.log(q);
-        // html += "<h5 class=\"question-header\"> Type: " + question_type_label + "</h5>" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
-        //  html += "<h5 class=\"question-header\"> "+
-        //             " Type: " +
-        //              question_type_label + "</h5>" + 
-        //              "<div class=\"error-container\"> <div class=\"question-outer-container\"" + 
-        //              data_id_attribute + ">";
 
-
-        //"<div class=\"error-container\"> <div class=\"question-outer-container\"" + data_id_attribute + ">" 
-        html += [
-            "<h5 class=\"question-container\"> Type: " + question_type_label +"<span class=\"line\"></span>"+ 
-            "<div class=\"question-area\"> Question: " + getTextAreaHTML(placeholder, q.value) + "</div>" + multiple_choice_fields_html  
-        ];
-
+        html += [ "<div class=\"question-container\">" +
+        getTextAreaHTML(placeholder, q.value) +
+        multiple_choice_fields_html ];
 
         if (q.type !== "Checkbox" && q.type !== "Custom") {
-            html += "<span class=\"line\"></span><p>Tag: " + getTagTextInputHTML(q.tag) + "</p> ";
+            html += "<span class=\"line\"></span>" + getTagTextInputHTML(q.tag);
         }
-
-        // "required" checkbox
-        html +=  "<span class=\"line\"></span> <div class=\"required-checkbox-container\"> <p> Required? <input type=\"checkbox\" ";
-        html += (q.optional ? "" : "checked");
-        html += "></p>" + "</div>";
-
         html += "</div>";
+        html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
     }
-
-    
     html += "</div></div></div>";
 
     return html;
 }
-
+   
 // Note: the html needs to be nested within a question-container element in order to properly work
 function getMultipleChoiceFieldsHTML(q) {
     if (q.type !== "Radio Button" && q.type !== "Checkbox" && q.type !== "Custom") return "";
@@ -526,7 +510,6 @@ function updateQuestions() {
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
         var question = questions[i];
-
         // grab the question element
         var query = "div[data-id='" + question.id + "'][class='question-outer-container']";
         var questionEl = document.querySelector(query);

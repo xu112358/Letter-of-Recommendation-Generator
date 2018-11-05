@@ -79,9 +79,9 @@ router.post('/', function (req, res, next) {
             email_lines.push('Subject: ' + subject);
             email_lines.push('');
             var url = encodeURI('http://localhost:3000/form-entry/' + form.getLink());
-            email_lines.push('<p>' + body + '<a href = "' + url + '">link.</a></p>');
+            email_lines.push('<p>' + body + '<a href = "' + url + '"> link</a></p>');
 
-            // var email = email_lines.join('\r\n').trim();
+            var email = email_lines.join('\r\n').trim();
             var base64EncodedEmail = new Buffer(email).toString('base64');
             base64EncodedEmail = base64EncodedEmail.replace(/\+/g, '-').replace(/\//g, '_');
 
