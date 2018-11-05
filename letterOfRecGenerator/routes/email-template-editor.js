@@ -17,7 +17,7 @@ router.get('/', function (req, res, next) {
             id: req.query.id,
             subject: subject,
             body: body,
-            question: [{ question: "What is your first name?",
+            questions: [{ question: "What is your first name?",
                         tag: "<!FNAME>"},
                     { question: "What is your last name?",
                         tag: "<!LNAME>"}, 
@@ -78,7 +78,19 @@ router.get('/edit', function (req, res, next) {
             templateName: templateName,
             subject: subject,
             body: body,
-            id: req.query.id
+            id: req.query.id,
+            questions: [{ question: "What is your first name?",
+                          tag: "<!FNAME>"},
+                        { question: "What is your last name?",
+                          tag: "<!LNAME>"}, 
+                        { question: "What is your preferred personal pronoun (subject)?",
+                          tag: "<!SUB_PRONOUN>"}, 
+                        { question: "What is your preferred personal pronoun (object)",
+                          tag: "<!OBJ_PRONOUN>"}, 
+                        { question: "What is your preferred possessive pronoun?",
+                          tag: "<!POS_PRONOUN>"}, 
+                        { question: "What organizations are you applying to?",
+                          tag: "<!ORG>"}]
         });
     } else {
         res.json({
