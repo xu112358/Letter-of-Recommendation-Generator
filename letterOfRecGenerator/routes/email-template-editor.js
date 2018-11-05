@@ -14,20 +14,42 @@ router.get('/', function (req, res, next) {
             title: 'EDIT TEMPLATE',
             templateName: templateName,
             templates: req.user.getEmailTemplates(),
-            tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
             id: req.query.id,
             subject: subject,
-            body: body
+            body: body,
+            question: [{ question: "What is your first name?",
+                        tag: "<!FNAME>"},
+                    { question: "What is your last name?",
+                        tag: "<!LNAME>"}, 
+                    { question: "What is your preferred personal pronoun (subject)?",
+                        tag: "<!SUB_PRONOUN>"}, 
+                    { question: "What is your preferred personal pronoun (object)",
+                        tag: "<!OBJ_PRONOUN>"}, 
+                    { question: "What is your preferred possessive pronoun?",
+                        tag: "<!POS_PRONOUN>"}, 
+                    { question: "What organizations are you applying to?",
+                        tag: "<!ORG>"}]
         });
     }else {
             res.render('pages/email-template-editor', {
                 title: 'EDIT TEMPLATE',
                 templateName: req.query.title,
                 templates: req.user.getEmailTemplates(),
-                tags: ["<!FNAME>", "<!LNAME>", "<!SUB_PRONOUN>", "<!OBJ_PRONOUN>", "<!POS_PRONOUN>" ],
                 id: req.query.id,
                 subject: null,
                 body: null,
+                questions: [{ question: "What is your first name?",
+                          tag: "<!FNAME>"},
+                        { question: "What is your last name?",
+                          tag: "<!LNAME>"}, 
+                        { question: "What is your preferred personal pronoun (subject)?",
+                          tag: "<!SUB_PRONOUN>"}, 
+                        { question: "What is your preferred personal pronoun (object)",
+                          tag: "<!OBJ_PRONOUN>"}, 
+                        { question: "What is your preferred possessive pronoun?",
+                          tag: "<!POS_PRONOUN>"}, 
+                        { question: "What organizations are you applying to?",
+                          tag: "<!ORG>"}]
             });
         }
 });
