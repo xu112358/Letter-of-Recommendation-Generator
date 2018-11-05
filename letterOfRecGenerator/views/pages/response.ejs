@@ -11,6 +11,7 @@
     <header>
         <% include ../partials/header %>
     </header>
+    <div style="display: none;" id="formId" value="<%= id %>"><%= id %></div>
     <div class = "response">
     <h1 class="title"><%= title%></h1>
 
@@ -30,8 +31,8 @@
                </div> 
             </td>
             <td>
-                <div>
-                    <%= responses[q].response %>
+                <div id="responses-container" contenteditable="true">
+                        <%= responses[q].response %>
                 </div>
             </td>
         </tr>
@@ -39,5 +40,40 @@
         </tbody>
     </table>
     </div>
+    <div class="flex-row">
+        <button id="save-button" onclick="saveTemplate()">Save</button>
+    </div>
 </body>
+<script>
+    
+    function saveEditedAnswers(){
+        var id = document.getElementById("formId").innerHTML;
+        var responseHTML = document.getElementById("responses-container");
+        var editedResponses = [];
+        for(i=0; i < responseHTML.length; i++) {
+            console.log("responseHTML= " + responseHTML[i]);
+            editedResponse.push(responseHTML[i].innerHTML);
+        }
+        $.ajax({
+                url: 'http://localhost:3000/recommender-dashboard/update',
+                data: { 
+                    editedResponses: editedResponses,
+                    id: id
+                },
+                type: 'POST',
+                complete: function() {
+                    console.log('worked for saveEditedAnswers')
+                    window.location.href = getDestinationRoute('http://localhost:3000/recommender-dashboard');
+                },
+                error: function () {
+                    console.log('error in saveEditedAnswers')
+                }
+            })
+        closeSaveModal();
+    }
+
+    function getDestinationRoute(address, params) {
+        return address + '?' + $.param(params);
+    }
+</script>
 </html> 

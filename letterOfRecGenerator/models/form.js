@@ -367,6 +367,13 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
     return formattedQuestions;
 }
 
+FormSchema.methods.updateResponse = function (editedResponses) {
+    for(i=0; i < this.responses.length; i++) {
+        this.responses[i].response = editedResponses[i];
+    }
+    this.save();
+}
+
 var Form = db.model('Form', FormSchema);
 
 module.exports = Form;
