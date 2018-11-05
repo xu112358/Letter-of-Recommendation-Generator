@@ -15,40 +15,59 @@
 <p class="title"><%= title %></p>
 
 <div class="templates">
-     <button class="addBtn" onclick="openModal()" style="padding-left: 5px;"><img class="icon" src="/images/add_template.png" width="30" height="10"></button>
-     <button class="addBtn" onclick="openEmailModal()" style="padding-right: 5px;"><img class="icon" src="/images/add_email_template.png" width="50" height="70"></button>
+     <!--<button class="addBtn" onclick="openModal()" style="padding-left: 5px;">
+        <img class="icon" src="/images/add_template.png" width="30" height="10">
+     </button>
+     <button class="addBtn" onclick="openEmailModal()" style="padding-right: 5px;">
+        <img class="icon" src="/images/add_email_template.png" width="50" height="70">
+     </button> -->
+
+
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="close-container">
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
-        <p class="modal-title">Create New Recommendation Template</p>
+        <p class="modal-title">Create A New Recommendation Template</p>
         <form class="input-form" method="GET" action="/template-editor">
-            <input class="input-text" type="text" name="title">
+            <div class="template-name-cont">
+                <label class="input-label"> Template Name: </label>
+                <input class="input-text" type="text" name="title">
+            </div>
             <input class="input-submit" type="submit" value="Create">
         </form>
     </div>
 </div>
 
 <div id="myModal_email" class="modal">
-        <div class="modal-content">
-            <div class="close-container">
-                <span class="close" onclick="closeEmailModal()">&times;</span>
-            </div>
-            <p class="modal-title">Create New Email Template</p>
-            <form class="input-form" method="GET" action="/email-template-editor">
-                <input class="input-text" type="text" name="title">
-                <input class="input-submit" type="submit" value="Create">
-            </form>
+    <div class="modal-content">
+        <div class="close-container">
+            <span class="close" onclick="closeEmailModal()">&times;</span>
         </div>
+        <p class="modal-title">Create A New Email Template</p>
+        <form class="input-form" method="GET" action="/email-template-editor">
+            <div class="template-name-cont">
+                <label class="input-label"> Template Name: </label>
+                <input class="input-text" type="text" name="title">
+            </div>
+            <input class="input-submit" type="submit" value="Create">
+        </form>
     </div>
+</div>
 
 <br>
 <br>
 
 <table>
     <thead>
-    <td class="center"><b>Recommendation Templates</b></td>
+        <tr>
+            <td class="subtitle_cont">
+                <b class="subtitle">My Recommendation Templates</b>
+                <button class="addBtn" onclick="openModal()">
+                    <img class="icon" src="/images/add_template.png" width="30" height="10">
+                </button>
+            </td>
+        </tr>
     </thead>
     <tbody>
     <% if (!templates.length)  { %>
@@ -75,7 +94,14 @@
 <br>
 <table>
     <thead>
-    <td class="center"><b>Email Templates</b></td>
+        <tr>
+            <td class="subtitle_cont">
+                <b class="subtitle">My Email Templates</b>
+                <button class="addBtn" onclick="openEmailModal()">
+                    <img class="icon" src="/images/add_email_template.png" width="50" height="70">
+                </button>
+            </td>
+        </tr>
     </thead>
     <tbody>
     <% if (!emailtemplates.length)  { %>
