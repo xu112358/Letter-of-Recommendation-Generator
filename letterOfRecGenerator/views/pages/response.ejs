@@ -25,12 +25,12 @@
         <tbody>
         <% for (var q=0; q < questions.length; q++) { %>
         <tr>
-            <td>
+            <td width="60%">
                <div>
                     <%= questions[q] %>
                </div> 
             </td>
-            <td>
+            <td width="40%">
                 <div id="responses-container" contenteditable="true">
                         <%= responses[q].response %>
                 </div>
@@ -41,35 +41,38 @@
     </table>
     </div>
     <div class="flex-row">
-        <button id="save-button" onclick="saveTemplate()">Save</button>
+        <button id="save-button" onclick="saveEditedAnswers()">Save</button>
     </div>
 </body>
 <script>
     
     function saveEditedAnswers(){
+        console.log("went into saveEditedAnswers");
         var id = document.getElementById("formId").innerHTML;
-        var responseHTML = document.getElementById("responses-container");
+        // var responseHTML = document.getElementById("responses-container");
+        var responseHTML = document.querySelectorAll("[id=responses-container]");
+        // var responseHTML = document.querySelectorAll("#responses-container]");
         var editedResponses = [];
         for(i=0; i < responseHTML.length; i++) {
-            console.log("responseHTML= " + responseHTML[i]);
-            editedResponse.push(responseHTML[i].innerHTML);
+            console.log("responseHTML= " + responseHTML[i].innerHTML + "\n");
+            editedResponses.push(responseHTML[i].innerHTML);
         }
+        console.log("length: " + editedResponses.length);
         $.ajax({
-                url: 'http://localhost:3000/recommender-dashboard/update',
+                url: 'http://localhost:3000/response/update',
                 data: { 
                     editedResponses: editedResponses,
                     id: id
                 },
-                type: 'POST',
+                type: 'GET',
                 complete: function() {
                     console.log('worked for saveEditedAnswers')
-                    window.location.href = getDestinationRoute('http://localhost:3000/recommender-dashboard');
+                    window.location.href = 'http://localhost:3000/recommender-dashboard';
                 },
                 error: function () {
                     console.log('error in saveEditedAnswers')
                 }
             })
-        closeSaveModal();
     }
 
     function getDestinationRoute(address, params) {

@@ -11,7 +11,6 @@ router.get('/', function (req, res, next) {
             console.log(err)
         } else {
             questions = form.getFormattedQuestions();
-            console.log("what is questions?: " + questions);
             res.render('pages/response', {
                 title: 'Received Responses for ' + form.email,
                 id: req.query.id,
@@ -23,10 +22,10 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.post('/update', function (req, res, next) {
+router.get('/update', function (req, res, next) {
     var questions =  [];
     var formId = req.query.id;
-    var editedResponses = req.query.editedResponses
+    var editedResponses = req.query.editedResponses;
     console.log("update id: " + formId);
     console.log("updated response: " +  editedResponses);
     req.user.getForm(formId, function (err, form) {
@@ -34,6 +33,10 @@ router.post('/update', function (req, res, next) {
             console.log(err)
         } else {
             form.updateResponse(editedResponses);
+            res.json({
+                success: "Created Successfully",
+                status: 200
+            });
         }
     });
 
