@@ -7,21 +7,33 @@
     <link rel="stylesheet" type="text/css" href="/css/history.css"/>  <!-- for modal -->
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
     <link rel="stylesheet" type="text/css" href="/css/table.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/modal.css"/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <div id="myModal" class="modal">
-        <div class="modal-content">
-            <div class="close-container">
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <p class="modal-title">Subject: </p>
-            <input class="modal-input" id='modal-subject' readonly="readonly"></input>
-            <p class="modal-title">Body: </p>
-            <input class="modal-input" id='modal-body' readonly="readonly"></input>
-        
+    <div class="modal-content archive-modal">
+        <div class="close-container">
+            <span class="close" onclick="closeModal()">&times;</span>
         </div>
+
+        <p id="email-template-name" class="modal-title"></p>
+
+        <div class="archive-modal-div">
+            <label class="input-label"> Subject Line: </label>
+            <input class="modal-input input-text" id="modal-subject" readonly="readonly">
+        </div>
+
+        <div class="archive-modal-div">
+            <label class="input-label"> Email Body: </label>
+            <textarea class="modal-input input-textarea archive-email-modal-textarea" id='modal-body' readonly="readonly"> </textarea>
+            <!--<input class="modal-input input-text" id='modal-body' readonly="readonly"> -->
+        </div>
+
+        <!--<p class="modal-title">Body: </p>-->
+        <!--<input class="modal-input" id='modal-body' readonly="readonly"></input>-->
+    </div>
 </div>
 
 <body>
@@ -110,7 +122,7 @@
         <td>
             <div class="template-name"><%= template.name %></div>
             <div class="image-container">
-                    <img class="icon" src="/images/preview.png" onclick="editTemplate('<%= template._id %>')"/>
+                <img class="icon" src="/images/preview.png" onclick="editTemplate('<%= template._id %>')"/>
                 <img class="icon" src="/images/restore.png" onclick="restoreTemplate('<%= template._id %>')"/>
             </div>
         </td>
@@ -159,6 +171,9 @@
 
     // When the user clicks on the button, open the modal
     function openModal(email) {
+        var emailNameEle = document.getElementById("email-template-name");
+        emailNameEle.innerHTML = email.title; 
+
         $('#modal-subject',$('#myModal')).val(email.subject);
         $('#modal-body',$('#myModal')).val(email.body_text);
         modal.style.display = "block";

@@ -154,6 +154,7 @@
                 var textArea = $(errorContainer.children('textarea')[0]);
 
                 // check if question is optional
+                console.log(textArea.attr('id')); 
                 if (isOptional(textArea.attr('id'))) {
                     return;
                 }
@@ -205,6 +206,7 @@
     }
 
     function isOptional(number) {
+        console.log(questions); 
         return questions[number - 1].optional;
     }
 

@@ -27,7 +27,7 @@
 </div>
 
 <div id="myModal" class="modal">
-    <div class="modal-content">
+    <div id="recommendations-modal" class="modal-content">
         <div class="close-container">
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
@@ -97,7 +97,7 @@
             <% } %>
         </td>
         <td class="center">
-            <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
+            <img class="icon clickable" title="View History" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
                 id: form._id, email: form.email
             }) %>)"/>
             <% if (form.email_sent == false) { %>
@@ -109,13 +109,13 @@
                 id: form._id, email: form.email
             }) %>, '<%= form.status %>')"/>
             <% } %>
-            <img class="icon clickable" src="/images/response.png" onclick="openResponses(<%= JSON.stringify({
+            <img class="icon clickable" title="View Responses" src="/images/response.png" onclick="openResponses(<%= JSON.stringify({
                 id: form._id
             }) %>, '<%= form.status %>')"/>
-            <img class="icon clickable" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
+            <img class="icon clickable" title="Preview Letter" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
                 id: form._id
             }) %>, '<%= form.status %>')"/>
-            <img class="icon clickable" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
+            <img class="icon clickable" title="Delete Letter" src="/images/delete.png" onclick="deleteRow('<%= form._id %>')"/>
         </td>
     </tr>
     <% }} %>

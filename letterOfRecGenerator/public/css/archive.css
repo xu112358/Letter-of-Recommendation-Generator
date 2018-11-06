@@ -12,12 +12,12 @@
     line-height: 20px;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
 .close-container {
     height: 20px;
@@ -51,7 +51,21 @@ img.clickable {
     transform: translate(-50%, -50%);
 }
 
-#button-show-hide{
+#button-show-hide {
     float: right;
     background-color: #FFCC00;
+}
+
+.archive-modal-div {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+}
+
+.archive-email-modal-textarea {
+    height: 300px;
+}
+
+.archive-modal {   
+    margin-top: 5%; 
 }
