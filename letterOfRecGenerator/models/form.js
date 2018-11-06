@@ -130,15 +130,17 @@ FormSchema.methods.setOrganization = function (organization) {
 FormSchema.statics.submitForm = function (id, responseData, cb) {
     var organizationArr = [];
     var savedFormIdArr = [];
-
     var totalForms = 1;
     let fieldsByForm = [];
+    var customQuestionFound = false;
+
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
             cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
         } else {
             var responses = [];
-            form['template']['questions'].forEach(function (question) {      
+            form['template']['questions'].forEach(function (question) {  
+    
                 var response = responseData[question.number - 1];
                 /* If the question has a organizationFlag that is true, 
                 attempt to extract the organizations (seperated with , )
@@ -156,6 +158,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         response: response[0]
                     });
                 } else if (question.type === "Custom") { // custom
+                        customQuestionFound = true;
                         let questionOptions = question.options;
 
                         let allFields = [];
@@ -176,7 +179,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         for (let k = 0; k < numOrganizations; k++) {
                             fieldsByForm[k] = {
                                 num: k,
-                                fields: []
+                                fields: [] // 
                             };
                         }
 
@@ -219,9 +222,9 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                 }
             });
             // set responses form 0th
-            
-
-            form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
+            if(customQuestionFound){
+                form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
+            }
             form.duplicated = true;
             form.status = 'Submitted';
 
