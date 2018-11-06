@@ -290,8 +290,8 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                             for(let i=0; i < savedFormIdArr.length; i++) {
                                 user.forms.push(savedFormIdArr[i]);
                                 console.log("saving Form to user: " + user.displayName + " " + savedFormIdArr[i]);
-                                user.save();
                             }
+                            user.save();
                         }
                     }
                 });
