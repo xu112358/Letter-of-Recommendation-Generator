@@ -212,53 +212,22 @@ function getQuestionHTML(q) {
             break;
     }
 
-    var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\">" + question_type_label + "</h2>" + "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
+    var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\"> <b>Question Type: </b>" + question_type_label + "</h2>" + "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
      // "required" checkbox
-    html += "<div class=\"required-checkbox-container\">" + "<p>Required?</p>" + "<input type=\"checkbox\" ";
+    html += "<div class=\"required-checkbox-container\">" + "<p>Required?" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
-    html += ">" + "</div>";
+    html += ">" + "</p></div>";
 
-    // question box
-    // CUSTOM_QUESTION_TYPE
-    if(q.type === "asdsad") { // what is this
-        let add_multiple_choice_attribute = "onclick=\"addMultipleChoiceField(" + q.id + ")\"";
+    // question box  
+    html += [ "<div class=\"question-container\"> <b>Question:</b>" +
+    getTextAreaHTML(placeholder, q.value) +
+    multiple_choice_fields_html ];
 
-        let container_html = [
-            "<div class='question-container'> " +
-                "<p> Custom your question <button " + add_multiple_choice_attribute + "> Add Field </button> </p> " +
-                "<table>" +
-                    "<tr>" +
-                        "<td>University</td>" +
-                        "<td> !ORG </td>" +
-                    "</tr> " +
-                    "<tr>" +
-                        "<td>Program</td>" +
-                        "<td> !PROGRAM </td>" +
-                    "</tr> " +
-                    "<tr>" +
-                        "<td>" + getTextAreaHTML("Enter field name", q.value) + "</td>" +
-                        "<td>" + getTextAreaHTML("Enter tag name", q.value) + "</td>" +
-                        // "<td> <input type='text' placeholder='Enter field Name'/> </td>" +
-                        // "<td> <input type='text' placeholder='Enter tag name'/> </td>" +
-                    "</tr> " +
-                "</table>" +
-            "</div>"
-        ];
-
-        html += container_html;
-
-    } else {
-
-        html += [ "<div class=\"question-container\">" +
-        getTextAreaHTML(placeholder, q.value) +
-        multiple_choice_fields_html ];
-
-        if (q.type !== "Checkbox" && q.type !== "Custom") {
-            html += "<span class=\"line\"></span>" + getTagTextInputHTML(q.tag);
-        }
-        html += "</div>";
-        html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
+    if (q.type !== "Checkbox" && q.type !== "Custom") {
+        html += "<span class=\"line\"></span> <b>Tag:</b>" + getTagTextInputHTML(q.tag);
     }
+    html += "</div>";
+    html += "<button class=\"question-button small-circle-button\" " + delete_onclick_attribute + ">X</button>";
     html += "</div></div></div>";
 
     return html;
