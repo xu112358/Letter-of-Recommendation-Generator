@@ -92,7 +92,7 @@
         </td>
         <td class="center">
             <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
-                id: forms._id, email: forms.email }) %>)"/>
+                id: form._id, email: form.email }) %>)"/>
             <img class="icon clickable" src="/images/preview.png"/>
         </td>
     </tr>
@@ -266,10 +266,6 @@
         }
     }
 
-    function openHistory(params) {
-        // Check to see if the status is green, if not then show error dialog
-        window.location.href = getDestinationRoute('http://localhost:3000/history', params);
-    }
 
 </script>
 </body>
