@@ -239,7 +239,6 @@
      */
     function submitForm(id) {
 
-        
         // takes all responses and serializes into an object
         var responseData = $("#RecommendeeForm").serializeArray().reduce(function (obj, item) {
             if (obj[item.name]) {

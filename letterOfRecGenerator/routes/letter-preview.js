@@ -39,6 +39,12 @@ router.get('/form', function (req, res, next) {
 router.post('/', function (req, res, next) {
     console.log("/post is called");
     console.log("id? " + req.body.id);
+
+    req.user.addEmailHistory(req.body.Email, function (err, form){
+        if (err) {
+            console.log("get form in /addEmailHistory " + err);
+        } 
+    }),
     req.user.getForm(req.body.id, function (err, form) {
         if (err) {
             console.log("get form in /addEmailHistory " + err);
