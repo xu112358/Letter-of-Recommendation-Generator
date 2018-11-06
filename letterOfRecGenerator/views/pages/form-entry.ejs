@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/form-entry.css"/>
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
     <script>
-        var questions = <%= JSON.stringify(questions) %>
+        var questions = <%- JSON.stringify(questions) %>
     </script>
 </head>
 <body>
@@ -146,6 +146,8 @@
             var question = $(this);
 
             var id = question.attr('id');
+
+            console.log("id is" + id);
 
             if (id === 'Text') {
                 var errorContainer = $(question.children('.error-container')[0]);

@@ -57,26 +57,19 @@
 
     $("#email-templates").change(function () {
         document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');
-        document.getElementById("email-body-text-area").value = $(this).find(':selected').data('body');
+        var body =  $(this).find(':selected').data('body');
+        parseLetter(body);
 
-        // var val = $(this).find(':selected').data('body');
-        // var theDiv = document.getElementById("email-body-text-area");
-        // var content = document.createTextNode(" " + val);
-        // theDiv.appendChild(content);
     });
 
     function sendEmail() {
-        console.log("that boy was clicked")
         var id = document.getElementById("formId").innerHTML;
-        console.log("id? " + id);
+        
         var Email = {
             title: document.getElementById("email-templates").value,
             subject: document.getElementById("email-subject-text-area").value,
             body_text: document.getElementById("email-body-text-area").value
         };
-        console.log(Email.title);
-        console.log(Email.subject);
-        console.log(Email.body_text);
 
         $.ajax({
             url: 'http://localhost:3000/letter-preview',

@@ -18,6 +18,7 @@ class Question {
     constructor(type, value, tag, optional = false, orgQuestion = false) {
         // Text, Radio Button, Checkbox
         this.type = type;
+        console.log(type);
         this.value = value;
         this.tag = tag;
         this.optional = optional;
@@ -402,20 +403,20 @@ function getQuestions() {
     var updatedQuestions = [];
     var newQuestionIndex = 0;
 
-    for(var i=0; i<sortableQuestionsHTML.length; i++){
-        console.log("i= "+ i);
-        console.log("sortableQuestionsHTML= " + sortableQuestionsHTML[i]);
+    for(var i=0; i<sortableQuestionsHTML.length; i++){      
+        // console.log("i= "+ i);
+        // console.log("sortableQuestionsHTML= " + sortableQuestionsHTML[i]);
         var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName("error-container");
-        console.log("errorContainerHTML= " + errorContainerHTML[0]);
+        // console.log("errorContainerHTML= " + errorContainerHTML[0]);
         var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
-        var dataID = questionsOuterContainer[0].getAttribute("data-id");
-        console.log("dataID= " + dataID);
-        var newQuestion = new Question(questions[dataID].type, questions[dataID].value, questions[dataID].tag, questions[dataID].optional, questions[dataID].isOrganizationQuestion);
-        newQuestion.setOptions(questions[dataID].options);
+        // var dataID = questionsOuterContainer[0].getAttribute("data-id");
+        // console.log("dataID= " + dataID);
+        var newQuestion = new Question(questions[i].type, questions[i].value, questions[i].tag, questions[i].optional, questions[i].isOrganizationQuestion);
+        newQuestion.setOptions(questions[i].options);
         newQuestion.setId(i);
         updatedQuestions.push(newQuestion);
-        console.log("value: "+ newQuestion.value);
-        console.log("flag: "+ newQuestion.isOrganizationQuestion);
+        // console.log("value: "+ newQuestion.value);
+        // console.log("flag: "+ newQuestion.isOrganizationQuestion);
     }
 
     updatedQuestions.forEach(question => dbQuestions.push({
@@ -540,6 +541,7 @@ function deleteQuestion(id) {
     for (var i = 0; i < questions.length; i++) {
         if (questions[i].id == id) {
             questions.splice(i, 1);
+            // 
             break;
         }
     }
