@@ -1,51 +1,58 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/email.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/template-editor.css"/>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
-    <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
-</head>
+    <head>
+        <title><%= title %></title>
+        <link rel="stylesheet" href="/stylesheets/style.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/email.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/template-editor.css"/>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
+        <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
+    </head>
+    <body>
 
-<div class="background">
- <header>
-<% include ../partials/header %>
-</header> 
-<p class="title">Send an email to <%= title %></p>
-<div style="display: none;" id="formId" value="<%= id %>"><%= id %></div>
-<div style="display: none;" id="form" value="<%= form %>"><%= form %></div>
-</body>
-<!-- <form class="input-form" method="POST" action="/letter-preview"> -->
-    <h2 class="section-header"> Choose a template: </h2>
-    <div id="name-container">
-        <select id="email-templates" name="templates">
-            <% var options = []; %>
-            <% for (var template of templates) { %>
-            <option data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
-            <% } %>
-        </select>
+
+    <div class="background">
+        <header>
+            <% include ../partials/header %>
+        </header> 
+        <p class="title">Send an email to <%= title %></p>
+        <div style="display: none;" id="formId" value="<%= id %>"><%= id %></div>
+        <div style="display: none;" id="form" value="<%= form %>"><%= form %></div>
+        <!-- <form class="input-form" method="POST" action="/letter-preview"> -->
+        
+        <div id="email-preview-container">
+            <div class="flex-display">
+                <h2 class="section-header">Choose a template: </h2>
+                <select id="email-templates" class="flex1" name="templates">
+                    <% var options = []; %>
+                    <% for (var template of templates) { %>
+                    <option data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
+                    <% } %>
+                </select>
+            </div>
     
-        <div id="email-subject-container">
-            <input id="email-subject-text-area" contentEditable="true" name="subject" style='width:100%'>
-        </div>
+            <div id="email-subject-container" class="flex-display">
+                <h2 class="section-header"> Subject Line: </h2>
+                <input id="email-subject-text-area" class="flex1" contentEditable="true" name="subject" style='width:100%'>
+            </div>
 
-        <div id="email-body-container">
-            <textarea id="email-body-text-area" contentEditable="true" name="body"></textarea>
+            <div id="email-body-container" class="flex-display">
+                <h2 class="section-header"> Email Body: </h2>
+                <textarea id="email-body-text-area" contentEditable="true" name="body"></textarea>
+            </div>
+
+            <button class="email-button" id = "sendEmail" onClick="sendEmail()"> Send </button>
+            <!-- <input class="input-submit" type="submit" value="Send"> -->
         </div>
-        <button class="email-button" id = "sendEmail" onClick="sendEmail()"> Send </button>
-        <!-- <input class="input-submit" type="submit" value="Send"> -->
+        <!-- </form> -->
     </div>
-<!-- </form> -->
-</div>
-</body>
+    </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>

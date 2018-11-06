@@ -87,10 +87,11 @@
 }
 
 #email-subject-container{
-    background-color: #e8e8e8;
+    margin-top: 20px; 
+    /*background-color: #e8e8e8;
     border:black;
     margin: 15px auto;
-    width: 50%;
+    width: 50%;*/
 }
 
 #email-subject-text-area{
@@ -117,9 +118,55 @@
 }
 
 #email-body-container {
-    background-color: #e8e8e8;
+    margin-top: 20px; 
+    /*background-color: #e8e8e8;
     border: black;
     margin: 15px auto;
     height: 300px;
-    width: 800px;
+    width: 800px;*/
+}
+
+#email-preview-container {
+    margin: 10px 30px; 
+}
+
+.flex-display {
+    display: flex; 
+}
+
+.flex1 {
+    flex: 1; 
+}
+
+#sendEmail {
+    /*flex-basis: auto;*/
+    width: 200px;
+    height: 40px;
+    background-color: #FF473A;
+    /*text-align: center;*/
+    font-size: 12px;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    letter-spacing: 2px;
+    float: right;
+    opacity: 1.0;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-transform: uppercase;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: 70px;
+    transition: 0.6s; 
+}
+
+#sendEmail:hover {
+    cursor: pointer; 
+    opacity: 0.6; 
+}
+
+
+
+
+.background {
+    padding-bottom: 150px; 
 }
