@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/form-entry.css"/>
     <link rel="stylesheet" type="text/css" href="/css/all.css"/>
     <script>
-        var questions = <%= JSON.stringify(questions) %>
+        var questions = <%- JSON.stringify(questions) %>
     </script>
 </head>
 <body>
@@ -152,6 +152,7 @@
                 var textArea = $(errorContainer.children('textarea')[0]);
 
                 // check if question is optional
+                console.log(textArea.attr('id')); 
                 if (isOptional(textArea.attr('id'))) {
                     return;
                 }
@@ -203,6 +204,7 @@
     }
 
     function isOptional(number) {
+        console.log(questions); 
         return questions[number - 1].optional;
     }
 

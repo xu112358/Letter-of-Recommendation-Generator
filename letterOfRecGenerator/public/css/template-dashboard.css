@@ -106,3 +106,8 @@ img.icon:hover {
 .subtitle_cont {
     padding-bottom: 10px; 
 }
+
+.template-modal {
+    margin-top: 15%;
+    height: 230px;
+}

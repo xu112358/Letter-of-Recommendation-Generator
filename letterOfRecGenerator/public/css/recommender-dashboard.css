@@ -2,6 +2,13 @@
     background-color: #FFFFFF;
 }
 
+#recommendations-modal {
+    height: 600px;
+    margin-top: 2%; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
 .add-btn {
     background-color: #FFFFFF;
     cursor: pointer;
@@ -91,9 +98,18 @@
 img.icon {
     height: 25px;
     width: 25px;
+    opacity: 1.0; 
+    
+    margin-left: 5px; 
 }
 
 img.clickable {
+    cursor: pointer;
+    transition: 0.8s;
+}
+
+img.clickable:hover {
+    opacity: 0.6;
     cursor: pointer;
 }
 
