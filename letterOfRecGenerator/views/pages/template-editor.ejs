@@ -176,6 +176,7 @@
     $('#italic_btn').on('click', function() {
         document.execCommand('italic');
         document.getElementById('letter-text-area').innerHTML;
+    });
 
     var letterContent = document.getElementById("letter-text-area");
     console.log(letterContent.innerHTML);
@@ -203,7 +204,7 @@
     }
 
     // so you can click tags directly after typing
-    $("#letter-text-area").focusout(function () {
+   $("#letter-text-area").focusout(function () {
         console.log("focused out");
         var letterContentInnerHTML = letterContent.innerHTML; 
         firstHalf = letterContentInnerHTML.substring(0, letterContentCursorPos); 
@@ -211,7 +212,7 @@
         secondHalf = letterContentInnerHTML.substring(letterContentCursorPos);
         console.log(secondHalf);
 
-    });
+    }); 
 
     $(window).click(function (e) {
         renderAllTagButtons(); 
