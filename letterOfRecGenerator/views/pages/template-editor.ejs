@@ -172,6 +172,7 @@
     var firstHalf = ""; 
     var secondHalf = ""; 
     var letterContentCursorPos = -1; 
+    
 
     letterContent.onclick = function () {
         // creates dummy node to find cursor position
@@ -182,11 +183,24 @@
 
         //console.log(position);
         letterContentCursorPos = position; 
-
         var letterContentInnerHTML = letterContent.innerHTML; 
         firstHalf = letterContentInnerHTML.substring(0, letterContentCursorPos); 
         secondHalf = letterContentInnerHTML.substring(letterContentCursorPos); 
     };
+
+    letterContent.onkeyup = function () {
+        letterContentCursorPos = letterContent.innerHTML.length; 
+    }
+
+    // so you can click tags directly after typing
+    $("#letter-text-area").focusout(function () {
+        console.log("focused out");
+        var letterContentInnerHTML = letterContent.innerHTML; 
+        firstHalf = letterContentInnerHTML.substring(0, letterContentCursorPos); 
+        console.log(firstHalf); 
+        secondHalf = letterContentInnerHTML.substring(letterContentCursorPos);
+        console.log(secondHalf);
+    });
 
     $(window).click(function (e) {
         renderAllTagButtons(); 
@@ -217,6 +231,7 @@
     }
 
     function createTagButton(tagValue, questionText) {
+        // create button
         let newButton = document.createElement("BUTTON");
         newButton.type = "button";
         newButton.value = "<!" + tagValue + ">";
@@ -224,8 +239,11 @@
         newButton.innerHTML = "&lt!" + tagValue + "&gt";
         newButton.name = "tag_buttons";
         newButton.onclick = function () {
-            
+
+            // if clicked and focused, add append to back
+
             if (letterContentCursorPos === -1) {
+                
                 var val = $(this).val();
                 var theDiv = document.getElementById("letter-text-area");
                 var content = document.createTextNode(" " + val);
@@ -241,7 +259,20 @@
             return false;
         };
 
-        // span child
+        // create span child
+        let newSpan = createSpanChild(questionText); 
+        newButton.appendChild(newSpan); 
+        newButton.onmouseover = function() {
+            newSpan.style.visibility = "visible";
+        }
+        newButton.onmouseout = function() {
+            newSpan.style.visibility = "hidden";
+        }
+        
+        return newButton; 
+    }
+
+    function createSpanChild(questionText) {
         let newSpan = document.createElement("span"); 
         newSpan.className = "popup-text";
         newSpan.style.visibility = "hidden";
@@ -256,16 +287,7 @@
         newSpan.style.marginLeft = "-100px";
         newSpan.style.marginTop = "20px"; 
         newSpan.innerHTML = questionText;
-
-        newButton.appendChild(newSpan); 
-        newButton.onmouseover = function() {
-            newSpan.style.visibility = "visible";
-        }
-        newButton.onmouseout = function() {
-            newSpan.style.visibility = "hidden";
-        }
-        
-        return newButton; 
+        return newSpan; 
     }
 </script>
 
