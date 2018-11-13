@@ -54,8 +54,8 @@
         // var responseHTML = document.querySelectorAll("#responses-container]");
         var editedResponses = [];
         for(i=0; i < responseHTML.length; i++) {
-            console.log("responseHTML= " + responseHTML[i].innerHTML + "\n");
-            editedResponses.push(responseHTML[i].innerHTML);
+            console.log("responseHTML= " + responseHTML[i].innerHTML.trim() + "\n");
+            editedResponses.push(responseHTML[i].innerHTML.trim());
         }
         console.log("length: " + editedResponses.length);
         $.ajax({
