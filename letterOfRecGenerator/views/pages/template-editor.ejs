@@ -92,20 +92,17 @@
                         <% } %>
                         <br/>   
                     </div> 
-                    <div id="letter-text-area" contentEditable="true" id="text" onfocus="deemphasizeTags()"
-                     onblur="emphasizeTags()">
-
-                    </div>
+                    <br>
+                    <button id='bold_btn'> <b>B</b></button>
+                    <button id='italic_btn'> <i>I</i></button>
+                    <button onclick="emphasizeTags()">Emphasize Tags</button>
+                    <button onclick="deemphasizeTags()">Deemphasize Tags</button>
+                    <div class ="letter" id="letter-text-area" contentEditable="true"> </div>
                 </div>
                 
             </div>
         </div>
-
-
-
-
-
-
+        
         <br/><br/>
         <%  if (typeof saveSwitch == "boolean") { 
             if(saveSwitch){%>
@@ -156,6 +153,7 @@
 </html>
 
 <script>
+
     $("button[name='tag_buttons']").on("click", function (e) {
         console.log("in tag button click function");
         var val = $(this).val();
@@ -169,6 +167,15 @@
 <script>
 
 
+
+    $('#bold_btn').on('click', function() {
+        document.execCommand('bold');
+        document.getElementById('letter-text-area').innerHTML;
+    });
+
+    $('#italic_btn').on('click', function() {
+        document.execCommand('italic');
+        document.getElementById('letter-text-area').innerHTML;
 
     var letterContent = document.getElementById("letter-text-area");
     console.log(letterContent.innerHTML);
@@ -203,6 +210,7 @@
         console.log(firstHalf); 
         secondHalf = letterContentInnerHTML.substring(letterContentCursorPos);
         console.log(secondHalf);
+
     });
 
     $(window).click(function (e) {
