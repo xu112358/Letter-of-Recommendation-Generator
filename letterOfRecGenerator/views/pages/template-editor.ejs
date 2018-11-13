@@ -168,6 +168,26 @@
 
 <script>
 
+    var letterContent = document.getElementById("letter-text-area");
+    var firstHalf = ""; 
+    var secondHalf = ""; 
+    var letterContentCursorPos = -1; 
+
+    letterContent.onclick = function () {
+        // creates dummy node to find cursor position
+        var target = document.createTextNode("\u0001");
+        document.getSelection().getRangeAt(0).insertNode(target);
+        var position = letterContent.innerHTML.indexOf("\u0001");
+        target.parentNode.removeChild(target);
+
+        //console.log(position);
+        letterContentCursorPos = position; 
+
+        var letterContentInnerHTML = letterContent.innerHTML; 
+        firstHalf = letterContentInnerHTML.substring(0, letterContentCursorPos); 
+        secondHalf = letterContentInnerHTML.substring(letterContentCursorPos); 
+    };
+
     $(window).click(function (e) {
         renderAllTagButtons(); 
     });
@@ -204,10 +224,20 @@
         newButton.innerHTML = "&lt!" + tagValue + "&gt";
         newButton.name = "tag_buttons";
         newButton.onclick = function () {
-            var val = $(this).val();
-            var theDiv = document.getElementById("letter-text-area");
-            var content = document.createTextNode(" " + val);
-            theDiv.appendChild(content);
+            
+            if (letterContentCursorPos === -1) {
+                var val = $(this).val();
+                var theDiv = document.getElementById("letter-text-area");
+                var content = document.createTextNode(" " + val);
+                theDiv.appendChild(content);
+            } else {
+                var entire = firstHalf + " " + "&lt!" + tagValue + "&gt" + secondHalf; 
+                letterContent.innerHTML = entire; 
+
+                letterContentCursorPos = -1; 
+                firstHalf = ""; 
+                secondHalf = ""; 
+            }
             return false;
         };
 
