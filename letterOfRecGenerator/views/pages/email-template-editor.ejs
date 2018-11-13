@@ -10,6 +10,16 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap.js"></script>
         <script type="text/javascript" src="/javascripts/email-template-editor.js" id="<%= id %>"></script>
+   
+        <script type="text/javascript">
+            function formatText(el,tag){
+            var selectedText = document.selection?document.selection.createRange().text:el.value.substring(el.selectionStart,el.selectionEnd);
+                if(selectedText!=''){
+                var newText='<'+tag+'>'+selectedText+'</'+tag+'>';
+                el.value=el.value.replace(selectedText,newText)
+                }
+            } 
+        </script>
     </head>
 
     <body>
@@ -77,8 +87,13 @@
                                 <% } %>
                             <% } %>
                         </div>
-
-                        <textarea id="email-body-text-area" contentEditable="true" name="body" value="<%= body %>"><%= body %></textarea> 
+                        <br>
+                        <!-- <button id='bold_btn'> <b>B</b></button>
+                        <button id='italic_btn'> <i>I</i></button> -->
+                        <textarea id="email-body-text-area" contentEditable="true" name = "email_content" value="<%= body %>"><%= body %></textarea> 
+                        <input type="button" value="Bold" onclick="formatText(email_content.value,'b')"/>
+                        <input type="button" value="Italic" onclick="formatText(email_content.value,'i')"/>
+                        <input type="button" value="Underline" onclick="formatText(email_content,'u')"/>
                     </div>
                 </div>
             </div>
@@ -108,6 +123,7 @@
 <!-- </div> -->
     
 <script>
+
     $("#email-templates").change(function () {
         document.getElementById("name-container-text-field").value = $(this).find(':selected').data('title');
         document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');

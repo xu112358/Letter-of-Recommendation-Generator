@@ -64,11 +64,9 @@ window.onload = function () {
 
         if (e.clipboardData) {
             content = (e.originalEvent || e).clipboardData.getData('text/plain');
-
             document.execCommand('insertText', false, content);
         } else if (window.clipboardData) {
             content = window.clipboardData.getData('Text');
-
             document.selection.createRange().pasteHTML(content);
         }
     });
@@ -79,7 +77,10 @@ window.onload = function () {
             data: {id, saveSwitchData},
             type: 'GET',
             success: function (data) {
+                // $("#letter-text-area").html(data.letter);
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
+                console.log(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
+                // console.log(encodeLetterHTML(data.letter));
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag, question.optional, question.isOrganizationQuestion);
                     savedQuestion.options = question.options;
@@ -98,6 +99,8 @@ window.onload = function () {
         loadDefaultQuestions();
         displayQuestions();
     }
+
+    console.log("Test"+document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
 };
 
 // creates default questions
@@ -904,7 +907,7 @@ function isTagsExist(letter, questions) {
 }
 
 function encodeLetterHTML(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
+    return text.replace(/&/g, "&amp;").replace(/<b>/g, "<b>").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
 }
 
 function decodeLetterHTML(text) {
