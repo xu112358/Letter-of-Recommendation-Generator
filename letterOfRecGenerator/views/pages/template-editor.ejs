@@ -168,7 +168,10 @@
 
 <script>
 
+
+
     var letterContent = document.getElementById("letter-text-area");
+    console.log(letterContent.innerHTML);
     var firstHalf = ""; 
     var secondHalf = ""; 
     var letterContentCursorPos = -1; 
@@ -236,7 +239,7 @@
         newButton.type = "button";
         newButton.value = "<!" + tagValue + ">";
         newButton.value.trim();
-        newButton.innerHTML = "&lt!" + tagValue + "&gt";
+        newButton.innerHTML = "&lt;!" + tagValue + "&gt;";
         newButton.name = "tag_buttons";
         newButton.onclick = function () {
 
@@ -249,7 +252,7 @@
                 var content = document.createTextNode(" " + val);
                 theDiv.appendChild(content);
             } else {
-                var entire = firstHalf + " " + "&lt!" + tagValue + "&gt" + secondHalf; 
+                var entire = firstHalf + "&lt;!" + tagValue + "&gt;" + secondHalf; 
                 letterContent.innerHTML = entire; 
 
                 letterContentCursorPos = -1; 
