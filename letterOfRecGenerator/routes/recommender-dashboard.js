@@ -49,6 +49,7 @@ router.post('/', function (req, res, next) {
     var toEmail = req.body.email;
     var subject = req.body.subject_text;
     var body = req.body.body_text;
+    body = body.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
    
     if (!toEmail.length) {
         res.render('pages/recommender-dashboard', {
