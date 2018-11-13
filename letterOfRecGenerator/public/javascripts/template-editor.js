@@ -868,21 +868,6 @@ function emphasizeTags() {
     document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis.replace(/\<div\>\<br\>\<\/div\>/gi, '<br>').replace(/\<div\>/gi, '<br>').replace(/\<\/div\>/gi, '');
 }
 
-/*function getLetterHTMLWithTagEmphasis() {
-    var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-    var letterHTMLWithTagEmphasis = letterHTML.replace(/&lt;\![a-z0-9_]+&gt;/gi, function (match) {
-        if (unknownTags.find(function (tag) {
-            return tag === match;
-        })) {
-            return '<span class="tag-unknown">' + match + '</span>';
-        }
-
-        return '<span class="tag">' + match + '</span>';
-    });
-    //console.log(letterHTMLWithTagEmphasis);
-    letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
-    return letterHTMLWithTagEmphasis.replace(/\<div\>\<br\>\<\/div\>/gi, '<br>').replace(/\<div\>/gi, '<br>').replace(/\<\/div\>/gi, '');
-}*/
 
 function isTagsExist(letter, questions) {
     var tags = letter.match(/\<\![a-z0-9_]+\>/gi);
@@ -924,7 +909,7 @@ function isTagsExist(letter, questions) {
 }
 
 function encodeLetterHTML(text) {
-    return text.replace(/&/g, "&amp;").replace(/<b>/g, "<b>").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
+    return text.replace(/&/g, "&amp;").replace(/<b>/g, "<b>").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>').replace(/ /g, '&nbsp');
 }
 
 function decodeLetterHTML(text) {
