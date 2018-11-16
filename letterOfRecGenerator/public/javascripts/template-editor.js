@@ -760,7 +760,7 @@ function addErrorToContainer(container, index, message) {
 function addErrorListToErrorContainer(container) {
     var errorList = document.createElement("div");
     errorList.classList.add('error-column-container');
-    errorList.style.width = '15vw';
+    //errorList.style.width = '15vw';
 
     var innerContainer = getInnerContainer(container);
 
@@ -795,7 +795,7 @@ function addErrorListToErrorContainer(container) {
 
     var fill = document.createElement("div");
     fill.classList.add('fill');
-    fill.style.width = '15vw';
+    //fill.style.width = '15vw';
     container.insertBefore(fill, container.firstChild);
 }
 
