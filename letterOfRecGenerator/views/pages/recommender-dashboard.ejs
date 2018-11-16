@@ -186,21 +186,20 @@
         if(status === 'Sent'){
             window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
         } else {
-            console.log("that boy was clicked")
             console.log(params)
-            // window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
-            $.ajax({
-                url: 'http://localhost:3000/recommender-dashboard/drive',
-                data: {params},
-                type: 'POST',
-                complete: function() {
-                    console.log('worked');
-                    window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
-                },
-                error: function () {
-                    console.log('error')
-                }
-            })
+            window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+            // $.ajax({
+            //     url: 'http://localhost:3000/recommender-dashboard/drive',
+            //     data: {params},
+            //     type: 'POST',
+            //     complete: function() {
+            //         console.log('worked');
+            //         window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+            //     },
+            //     error: function () {
+            //         console.log('error')
+            //     }
+            // })
             
         }  
     }

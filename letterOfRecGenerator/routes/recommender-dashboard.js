@@ -104,98 +104,103 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/drive', function(req,res,next) {
-    var user = req.user;
-    user.getForm(req.body.params.id, function(err, form) {
-        if(err){
-            console.log(err)
-        } else {
-            var template = form.getTemplate();
-            // var text = template.text;
-            var templateName = template.name;
-            // console.log(template.name)
-            var text = dt.htmlstuff(form)
-            console.log(" text" + text)
-            console.log("form" + form)
-            var fname = form.responses[0].response;
-            var lname = form.responses[1].response;
 
-            var footerImg = template.footerImg;
-            var headerImg = template.letterheadImg;
-            // var base64 = footerImg.substring(0, footerImg.indexOf("base64,"));
-            var base64footer = footerImg.split("base64,")[1];
-            var base64header = headerImg.split("base64,")[1];
-            
-            // sconsole.log("BASE: " + base64);
-            const bufFooter = Buffer.from(base64footer, 'base64');
-            const bufHeader = Buffer.from(base64header, 'base64');
-
-            var footStream = new Readable();
-            footStream.push(bufFooter);
-            footStream.push(null);
-            var footerPath = __dirname + '/uploads/' + 'footer.docx';
-            footStream.pipe(fs.createWriteStream(footerPath));
-
-            var headStream = new Readable();
-            headStream.push(bufHeader);
-            headStream.push(null);
-            var headerPath = __dirname + '/uploads/' + 'header.docx';
-            headStream.pipe(fs.createWriteStream(headerPath));
-
-            var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
-            var output = __dirname + '/uploads/' + outputName;
-            docx.leftAlign();
-            docx.insertText(text);
-            docx.insertDocx(headerPath, function(err){
-                docx.insertDocx(footerPath, function(err){
-
-                  docx.save(output, function(){
-                    if(err) console.log(err);
-                      if(err) {
-                        return res.status(500).send(err)
-                      } else { 
-                          var auth = new googleAuth();
-                          var oauth2Client = new OAuth2(credentials.clientId, credentials.clientSecret, credentials.clientCallback);
-                          oauth2Client.setCredentials(req.user.accessToken);
-                          oauth2Client.credentials = {
-                              refresh_token: req.user.accessToken,
-                          }
-                          const drive = google.drive({version: 'v3', oauth2Client});
-                          var fileMetadata = {
-                              'name': outputName
-                          }
-
-                          var media = {
-                              mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                              body: fs.createReadStream(output)
-                          };
-                          drive.files.create({
-                              auth:oauth2Client,
-                              resource: fileMetadata,
-                              media: media,
-                              fields: 'id'
-                          }, function (err, file) {
-                              if (err) {
-                            // Handle error
-                               console.error(err);
-                              } else {
-                                console.log('File Id: ', file.data.id);
-                                res.render('pages/letter-preview', {
-                                  title: 'Letter Preview for',
-                                  id:req.body.params.id
-
-                                })
-                         
-                              }
-                          });
-                      }
-                    });
-
-                })
-            })     
-        }
-
-    })
+    console.log("Heloo sir")
 })
+
+// router.post('/drive', function(req,res,next) {
+//     var user = req.user;
+//     user.getForm(req.body.params.id, function(err, form) {
+//         if(err){
+//             console.log(err)
+//         } else {
+//             var template = form.getTemplate();
+//             // var text = template.text;
+//             var templateName = template.name;
+//             // console.log(template.name)
+//             var text = dt.htmlstuff(form)
+//             console.log(" text" + text)
+//             console.log("form" + form)
+//             var fname = form.responses[0].response;
+//             var lname = form.responses[1].response;
+
+//             var footerImg = template.footerImg;
+//             var headerImg = template.letterheadImg;
+//             // var base64 = footerImg.substring(0, footerImg.indexOf("base64,"));
+//             var base64footer = footerImg.split("base64,")[1];
+//             var base64header = headerImg.split("base64,")[1];
+            
+//             // sconsole.log("BASE: " + base64);
+//             const bufFooter = Buffer.from(base64footer, 'base64');
+//             const bufHeader = Buffer.from(base64header, 'base64');
+
+//             var footStream = new Readable();
+//             footStream.push(bufFooter);
+//             footStream.push(null);
+//             var footerPath = __dirname + '/uploads/' + 'footer.docx';
+//             footStream.pipe(fs.createWriteStream(footerPath));
+
+//             var headStream = new Readable();
+//             headStream.push(bufHeader);
+//             headStream.push(null);
+//             var headerPath = __dirname + '/uploads/' + 'header.docx';
+//             headStream.pipe(fs.createWriteStream(headerPath));
+
+//             var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
+//             var output = __dirname + '/uploads/' + outputName;
+//             docx.leftAlign();
+//             docx.insertText(text);
+//             docx.insertDocx(headerPath, function(err){
+//                 docx.insertDocx(footerPath, function(err){
+
+//                   docx.save(output, function(){
+//                     if(err) console.log(err);
+//                       if(err) {
+//                         return res.status(500).send(err)
+//                       } else { 
+//                           var auth = new googleAuth();
+//                           var oauth2Client = new OAuth2(credentials.clientId, credentials.clientSecret, credentials.clientCallback);
+//                           oauth2Client.setCredentials(req.user.accessToken);
+//                           oauth2Client.credentials = {
+//                               refresh_token: req.user.accessToken,
+//                           }
+//                           const drive = google.drive({version: 'v3', oauth2Client});
+//                           var fileMetadata = {
+//                               'name': outputName
+//                           }
+
+//                           var media = {
+//                               mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+//                               body: fs.createReadStream(output)
+//                           };
+//                           drive.files.create({
+//                               auth:oauth2Client,
+//                               resource: fileMetadata,
+//                               media: media,
+//                               fields: 'id'
+//                           }, function (err, file) {
+//                               if (err) {
+//                             // Handle error
+//                                console.error(err);
+//                               } else {
+//                                 console.log('File Id: ', file.data.id);
+//                                 res.render('pages/letter-preview', {
+//                                   title: 'Letter Preview for',
+//                                   id:req.body.params.id
+
+//                                 })
+                         
+//                               }
+//                           });
+//                       }
+//                     });
+
+//                 })
+//             })     
+//         }
+
+//     })
+// })
 
 router.post('/delete', function (req, res, next) {
     var user = req.user;
