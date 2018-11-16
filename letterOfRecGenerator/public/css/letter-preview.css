@@ -159,6 +159,25 @@
     transition: 0.6s; 
 }
 
+#downloadButton {
+    width: 200px;
+    height: 40px;
+    background-color: #FF473A;
+    font-size: 12px;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    letter-spacing: 2px;
+    opacity: 1.0;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: 60px;
+    transition: 0.6s; 
+}
+
 #sendEmail:hover {
     cursor: pointer; 
     opacity: 0.6; 
