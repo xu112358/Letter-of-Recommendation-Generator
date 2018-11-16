@@ -178,6 +178,10 @@
     transition: 0.6s; 
 }
 
+#date-picker {
+    margin-left: 30px;
+}
+
 #sendEmail:hover {
     cursor: pointer; 
     opacity: 0.6; 

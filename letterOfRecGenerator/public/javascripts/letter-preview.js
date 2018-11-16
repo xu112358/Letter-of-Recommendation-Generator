@@ -107,11 +107,15 @@ function cancelEditModal() {
 }
 
 function downloadLetter() {
+    var datepicker = document.querySelectorAll("input[type=date]")[0]
+    var date = datepicker.value
+    console.log("Date:" + date)
     $.ajax({
         url: 'http://localhost:3000/letter-preview/drive',
         data: {
             id:id,
-            letter: letterHTML
+            letter: letterHTML,
+            date: date
         },
         type: 'POST',
         success: function(d){

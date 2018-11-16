@@ -1,7 +1,8 @@
 var express = require('express');
 var User = require('../models/user');
 // var router = express.Router();
-
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+                "November", "December"];
 
 
 exports.htmlstuff = function(form) {
@@ -16,6 +17,22 @@ exports.htmlstuff = function(form) {
     console.log("IN HTML")
     return text;
     // return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
+}
+
+exports.getDate = function(rawDate) {
+    var arr = [];
+    arr = rawDate.split('-');
+    year = arr[0];
+    month = parseInt(arr[1]);
+    day = arr[2];
+    var date = months[month-1] + " " + day + ", " + year;
+    // console.log("Date: " + date)
+    // console.log("0:" + arr[0])
+    // console.log("1:" + arr[1])
+    // console.log("2:" + arr[2])
+
+    return date;
+
 }
 
 function parseLetter(form) {

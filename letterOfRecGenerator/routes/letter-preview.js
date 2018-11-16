@@ -140,15 +140,21 @@ router.post('/drive', function(req,res,next) {
     var user = req.user;
     // console.log("BODY ID:" + req.body.id)
     // console.log("LETTER FROM REQ:" + req.body.letter)
+    console.log("DATE:" + req.body.date)
     user.getForm(req.body.id, function(err, form) {
         if(err){
             console.log(err)
         } else {
+            var break_lines = "<br><br><br><br><br>";
+            var date_raw = req.body.date;
+            var actual_date = letterParser.getDate(date_raw);
+            var formatted_date = break_lines + actual_date + break_lines;
+            var letter = req.body.letter;
+            var formatted_letter = formatted_date + letter;
             var template = form.getTemplate();
-            // var text = template.text;
             var templateName = template.name;
             console.log("WHAT:" + req.body.letter)
-            var text = letterParser.htmlstuff(req.body.letter)
+            var text = letterParser.htmlstuff(formatted_letter)
             console.log("TEXT REMAINING" + text)
             // console.log("form" + form)
             var fname = form.responses[0].response;
