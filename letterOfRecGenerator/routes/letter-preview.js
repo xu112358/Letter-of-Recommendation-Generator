@@ -146,9 +146,10 @@ router.post('/drive', function(req,res,next) {
             console.log(err)
         } else {
             var break_lines = "<br><br><br><br><br>";
+            var smaller_break_lines = "<br><br><br><br>";
             var date_raw = req.body.date;
             var actual_date = letterParser.getDate(date_raw);
-            var formatted_date = break_lines + actual_date + break_lines;
+            var formatted_date = break_lines + actual_date + smaller_break_lines;
             var letter = req.body.letter;
             var formatted_letter = formatted_date + letter;
             var template = form.getTemplate();
@@ -173,7 +174,7 @@ router.post('/drive', function(req,res,next) {
             var stringlen = stringWords.length;
 
             var firstPage = "";
-            for(var i = 0; i < 430;i++){
+            for(var i = 0; i < 470;i++){
                 // console.log(stringWords[i])
                 firstPage += stringWords[i];
                 firstPage += " ";
@@ -184,7 +185,7 @@ router.post('/drive', function(req,res,next) {
             var remain = stringlen - 430;
             // console.log("Remian:" + remain)
             var secondPage = "";
-            for(var i = 431; i < stringlen;i++){
+            for(var i = 471; i < stringlen;i++){
                 // console.log(stringWords[i])
                 secondPage += stringWords[i];
                 secondPage += " ";
@@ -211,10 +212,10 @@ router.post('/drive', function(req,res,next) {
                 pdfDoc
                     // edit 1st page
                     .editPage(1)
-                    .text(firstPage, 85, 120, {
+                    .text(firstPage, 80, 85, {
                         color: '000000',
                         font: 'Times New Roman',
-                        fontSize: 9,
+                        fontSize: 10,
                         align: 'left',
                         textBox: {
                             width: 480,
@@ -226,10 +227,10 @@ router.post('/drive', function(req,res,next) {
                     })
                     .endPage()
                     .editPage(2)
-                    .text(secondPage, 85, 75, {
+                    .text(secondPage, 80, 75, {
                         color: '000000',
                         font: 'Times New Roman',
-                        fontSize: 9,
+                        fontSize: 10,
                         align: 'left',
                         textBox: {
                             width: 480,
