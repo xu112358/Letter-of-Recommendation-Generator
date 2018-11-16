@@ -11,6 +11,7 @@ var letterParser = require('./letter-parser');
 const HummusRecipe = require('hummus-recipe');
 const fs = require('fs');
 const Readable = require('stream').Readable;
+const fileUpload = require('express-fileupload');
 
 router.get('/', function (req, res, next) {
     req.user.getForm(req.query.id, function (err, form) {
@@ -50,6 +51,8 @@ router.get('/emailForm', function (req, res, next) {
         }
     });
 });
+
+
 
 router.post('/save', function (req, res, next) {
     Form.completeForm(req.body.id, req.body.letter, function (err, form) {
@@ -199,7 +202,7 @@ router.post('/drive', function(req,res,next) {
             headStream.push(bufHeader);
             headStream.push(null);
             var headerPathP = __dirname + '/uploads/' + 'header.pdf';
-            var headerPath = __dirname + '/uploads/' + 'template.pdf';
+            var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
 
             headStream.pipe(fs.createWriteStream(headerPathP));
             // headsteam.on('er')
