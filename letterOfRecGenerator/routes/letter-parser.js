@@ -5,9 +5,14 @@ var User = require('../models/user');
 
 
 exports.htmlstuff = function(form) {
-    var text = parseLetter(form);
+    var text = form;
     // text = text.replace('br', ' ');
-    text = text.replace(/<br\s*\/?>/gi,' ');
+    
+    text = text.replace(/<br\s*\/?>/gi, ' \n');
+    text = text.replace(/\u00a0/g, " ");
+    text = text.replace(/\//g, '');
+    text = text.replace(/<div\s*\/?>/gi,' ');
+    text = text.replace("&nbsp;", " ");
     console.log("IN HTML")
     return text;
     // return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
@@ -15,7 +20,7 @@ exports.htmlstuff = function(form) {
 
 function parseLetter(form) {
     var tagRegex = /\<\![a-z0-9_]+\>/ig;
-    var letter = form.template.text;
+    var letter = form;
     var responses = form.responses;
 
     var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {

@@ -6,6 +6,11 @@ var credentials = require('../config/auth');
 var googleAuth = require('google-auth-library');
 var { google } = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
+var letterParser = require('./letter-parser');
+// var PDF = require('pdfkit');
+const HummusRecipe = require('hummus-recipe');
+const fs = require('fs');
+const Readable = require('stream').Readable;
 
 router.get('/', function (req, res, next) {
     req.user.getForm(req.query.id, function (err, form) {
@@ -130,6 +135,75 @@ router.post('/', function (req, res, next) {
         }
     });
 });
+
+router.post('/drive', function(req,res,next) {
+    var user = req.user;
+    // console.log("BODY ID:" + req.body.id)
+    // console.log("LETTER FROM REQ:" + req.body.letter)
+    user.getForm(req.body.id, function(err, form) {
+        if(err){
+            console.log(err)
+        } else {
+            var template = form.getTemplate();
+            // var text = template.text;
+            var templateName = template.name;
+            console.log("WHAT:" + req.body.letter)
+            var text = letterParser.htmlstuff(req.body.letter)
+            console.log("TEXT REMAINING" + text)
+            // console.log("form" + form)
+            var fname = form.responses[0].response;
+            var lname = form.responses[1].response;
+
+            var headerImg = template.letterheadImg;
+
+            var base64header = headerImg.split("base64,")[1];
+
+            const bufHeader = Buffer.from(base64header, 'base64');
+
+
+            var headStream = new Readable();
+            headStream.push(bufHeader);
+            headStream.push(null);
+            var headerPathP = __dirname + '/uploads/' + 'header.pdf';
+            var headerPath = __dirname + '/uploads/' + 'template.pdf';
+
+            headStream.pipe(fs.createWriteStream(headerPathP));
+            // headsteam.on('er')
+            headStream.on('data', function () {
+                // var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
+                var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
+                var output = __dirname + '/uploads/' + outputName;
+
+                console.log('IM DONE')
+                const HummusRecipe = require('hummus-recipe');
+                const pdfDoc = new HummusRecipe(headerPath, output);
+                pdfDoc
+                    // edit 1st page
+                    .editPage(1)
+                    .text(text, 85, 120, {
+                        color: '000000',
+                        font: 'Times New Roman',
+                        fontSize: 9,
+                        align: 'left',
+                        textBox: {
+                            width: 480,
+                            lineHeight: 12,
+                            style: {
+                                lineWidth: 1
+                            }
+                        }
+                    })
+                    
+                    .endPage()
+                    .endPDF();
+                res.redirect('/recommender-dashboard');
+
+            })
+        }
+
+    })
+})
+
 
 
 module.exports = router;

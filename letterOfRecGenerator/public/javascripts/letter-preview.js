@@ -106,6 +106,23 @@ function cancelEditModal() {
     modal.style.display = "none";
 }
 
+function downloadLetter() {
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/drive',
+        data: {
+            id:id,
+            letter: letterHTML
+        },
+        type: 'POST',
+        success: function(d){
+            console.log("success in drive")
+        },
+        error: function() {
+            console.log("error in drive")
+        }
+    })
+}
+
 function getDestinationRoute(address, params) {
     return address + '?, params=' + params
 }
