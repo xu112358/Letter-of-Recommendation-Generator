@@ -142,14 +142,14 @@
 #letter-container {
     display: flex;
     width: 100%;
-    margin: 60px 30px 20px 30px;
+    margin: 30px 30px 20px 30px;
     /*justify-content: center;
     flex-direction: column;
     align-items: center;*/
 }
 
 #letter-container #letter-text-area {
-    margin-top: 50px;    
+    /*margin-top: 50px;    */
     height: 300px;
     /*width: 800px;*/
     flex-basis: auto;
@@ -530,8 +530,8 @@
     display: flex; 
 }
 
-.upload-cont {
-    margin: 10px 30px; 
+.upload-cont, .all-tags-cont {
+    margin: 10px 30px;
 }
 
 #letter-boilerplate-cont {
@@ -544,4 +544,8 @@
 
 #tmp-editor-cont {
     padding-bottom: 30px; 
+}
+
+#tags-heading-main {
+
 }
