@@ -172,26 +172,28 @@ router.post('/drive', function(req,res,next) {
             var stringWords = text.split(' ');
             console.log("WORDS:" + stringWords.length);
             var stringlen = stringWords.length;
-
             var firstPage = "";
-            for(var i = 0; i < 470;i++){
-                // console.log(stringWords[i])
-                firstPage += stringWords[i];
-                firstPage += " ";
-            }
-            console.log("First: " + firstPage);
-
-            // console.log("Remian:" + remain)
-            var remain = stringlen - 430;
-            // console.log("Remian:" + remain)
             var secondPage = "";
-            for(var i = 471; i < stringlen;i++){
-                // console.log(stringWords[i])
-                secondPage += stringWords[i];
-                secondPage += " ";
-            }
-            // console.log("Second:" + secondPage)
+            // If it is larger than one page break it into two
+            if (stringlen > 470){
+                 
+                for(var i = 0; i < 470;i++){
+                    // console.log(stringWords[i])
+                    firstPage += stringWords[i];
+                    firstPage += " ";
+                }
+                console.log("First: " + firstPage);
 
+                // console.log("Remian:" + remain)
+                var remain = stringlen - 430;
+                // console.log("Remian:" + remain)
+                
+                for(var i = 471; i < stringlen;i++){
+                    // console.log(stringWords[i])
+                    secondPage += stringWords[i];
+                    secondPage += " ";
+                }
+            }
 
             var headStream = new Readable();
             headStream.push(bufHeader);
@@ -209,7 +211,8 @@ router.post('/drive', function(req,res,next) {
                 console.log('IM DONE')
                 const HummusRecipe = require('hummus-recipe');
                 const pdfDoc = new HummusRecipe(headerPath, output);
-                pdfDoc
+                if(stringlen > 470){
+                    pdfDoc
                     // edit 1st page
                     .editPage(1)
                     .text(firstPage, 80, 85, {
@@ -242,6 +245,28 @@ router.post('/drive', function(req,res,next) {
                     })
                     .endPage()
                     .endPDF();
+                }
+                else {
+                    pdfDoc
+                    // edit 1st page
+                    .editPage(1)
+                    .text(text, 80, 85, {
+                        color: '000000',
+                        font: 'Times New Roman',
+                        fontSize: 10,
+                        align: 'left',
+                        textBox: {
+                            width: 480,
+                            lineHeight: 12,
+                            style: {
+                                lineWidth: 1
+                            }
+                        }
+                    })
+                    .endPage()
+                    .endPDF();
+                }
+                
                 res.redirect('/recommender-dashboard');
 
             })
