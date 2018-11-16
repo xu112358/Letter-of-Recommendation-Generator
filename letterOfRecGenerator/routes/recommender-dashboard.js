@@ -103,10 +103,7 @@ router.post('/', function (req, res, next) {
     });
 });
 
-router.post('/drive', function(req,res,next) {
 
-    console.log("Heloo sir")
-})
 
 // router.post('/drive', function(req,res,next) {
 //     var user = req.user;

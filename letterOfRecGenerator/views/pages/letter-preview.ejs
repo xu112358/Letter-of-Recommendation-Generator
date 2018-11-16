@@ -4,7 +4,7 @@
         <title><%= title %></title>
         <link rel="stylesheet" href="/stylesheets/style.css"/>
         <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
-        <link rel="stylesheet" type="text/css" href="/css/email.css"/>
+        <!-- <link rel="stylesheet" type="text/css" href="/css/email.css"/> -->
         <link rel="stylesheet" type="text/css" href="/css/all.css"/>
         <link rel="stylesheet" type="text/css" href="/css/template-editor.css"/>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -14,7 +14,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
     </head>
-    <body>
+    <body onload="onLoad()">
 
 
     <div class="background">
@@ -24,6 +24,31 @@
         <p class="title">Send an email to <%= title %></p>
         <div style="display: none;" id="formId" value="<%= id %>"><%= id %></div>
         <div style="display: none;" id="form" value="<%= form %>"><%= form %></div>
+
+        <!-- Letter Preview Container -->
+        <div id="outer-container">
+            
+        </div>
+
+        <!-- Save and Cancel Letter Preview Edit -->
+        <div id="add-question-modal">
+            <div class="inside">
+
+                <form class="ui form example">
+                    <div class="ui message error"></div>
+
+                    <input id="content" value="" type="hidden" name="content">
+                    <trix-editor input="content"></trix-editor>
+
+                </form>
+
+                <div class="flex-row">
+                    <button class="convert-pdf" onclick="saveEditModal()">Save</button>
+                    <button class="convert-pdf" onclick="cancelEditModal()">Cancel</button>
+                </div>
+
+            </div>
+        </div>
         
         <div id="email-preview-container">
             <div class="flex-display">
@@ -54,15 +79,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     window.onload = function() {
+        onLoad();
         document.getElementById("email-subject-text-area").value = $("#email-templates").find(':selected').data('subject');
         var body = $("#email-templates").find(':selected').data('body');
-        parseLetter(body);
+        parseEmailLetter(body);
     };
 
     $("#email-templates").change(function () {
         document.getElementById("email-subject-text-area").value = $(this).find(':selected').data('subject');
         var body =  $(this).find(':selected').data('body');
-        parseLetter(body);
+        parseEmailLetter(body);
 
     });
 

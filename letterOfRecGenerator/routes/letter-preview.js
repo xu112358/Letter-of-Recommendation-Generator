@@ -26,11 +26,40 @@ router.get('/', function (req, res, next) {
 router.get('/form', function (req, res, next) {
     req.user.getForm(req.query.id, function (err, form) {
         if (err) {
+            console.log(err);
+        } else {
+            res.json(form);
+        }
+    });
+});
+
+router.get('/emailForm', function (req, res, next) {
+    req.user.getForm(req.query.id, function (err, form) {
+        if (err) {
             console.log("/form error:  "  + err);
         } else {
             res.json({
                 form: form,
                 id: req.query.id
+            });
+        }
+    });
+});
+
+router.post('/save', function (req, res, next) {
+    Form.completeForm(req.body.id, req.body.letter, function (err, form) {
+        if (err) {
+            console.log(err);
+        } else {
+            // res.render({
+            //     success: "Updated Successfully",
+            //     status: 200
+            // });
+            res.render('pages/letter-preview', {
+                title: form.email,
+                templates: req.user.getEmailTemplates(),
+                id: req.query.id,
+                form: form,
             });
         }
     });

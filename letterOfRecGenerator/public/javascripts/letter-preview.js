@@ -11,13 +11,71 @@ const EMAIL_SUBECT_TEXT_AREA_ID = "email-subject-text-area";
 const EMAIL_BODY_TEXT_AREA_ID = "email-body-text-area";
 const EMAIL_TEMPLATES = "email-templates";
 
+// Letter Preview Editing
+const ADD_QUESTION_MODAL_ID = "add-question-modal";
+const LETTER_CONTAINER_ID = "letter-container";
+const TRIX_EDITOR = "trix-editor";
+const OUTER_CONTAINER = "outer-container";
+var edited = false;
+var formatted;
+
+function onLoad() {
+    console.log("HELLO from on load")
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/form',
+        data: {id},
+        type: 'GET',
+        success: function (data) {
+            form = data;
+            console.log("FORM: " + form)
+            // console.log("form id" + form.template.id)
+            console.log("form id_" + form.template._id)
+            console.log("DATA_: " + data.template._id)
+            // console.log("DATA:" + data.template.id)
+            $.ajax({
+                url: 'http://localhost:3000/template-editor/template',
+                data: {id: data.template._id,
+                        saveSwitchData: true},
+                type: 'GET',
+                success: function (dat) {
+                    console.log("ON LOAD" + data.template._id);
+                    templateData = dat;
+                    console.log(templateData);
+                    templateData.letterheadImg = templateData.letterheadImg || form.template.letterheadImg;
+                    templateData.footerImg = templateData.footerImg || form.template.footerImg;
+                    console.log('success');
+                    letterHTML = createLetterPreview(form, form.letter);
+                    $.ajax({
+                        url: 'http://localhost:3000/letter-preview/save',
+                        data: {
+                            id: id,
+                            letter: letterHTML
+                        },
+                        type: 'POST',
+                        success: function (da) {
+                            console.log('letter saved');
+                            console.log("New letter: " + da)
+                        },
+                        error: function () {
+                            console.log('error in template');
+                        }
+                    });
+                }
+            });
+        },
+        error: function () {
+            console.log('error');
+        }
+    });
+}
+
 function showEditModal(clicked) {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     var element = document.querySelector(TRIX_EDITOR);
     element.value = "";
     element.editor.setSelectedRange([0, 0]);
     element.editor.insertHTML(innerContainer.innerHTML);
-
+    var textt = document.getElementsByClassName("attachment__caption");
     modal.style.display = "block";
 }
 
@@ -53,6 +111,10 @@ function cancelEditModal() {
     modal.style.display = "none";
 }
 
+function getDestinationRoute(address, params) {
+    return address + '?, params=' + params
+}
+
 // Creates the divs for each item in array
 function createLetterPreview(form, letter) {
     $(function() {
@@ -70,38 +132,15 @@ function createLetterPreview(form, letter) {
         letterContainer.style.cursor = 'pointer';
         var outerContainer = document.getElementById(OUTER_CONTAINER);
 
-        if (templateData.letterheadImg != null && !$('.letterhead-img').length) {
-            var imgcontainer = document.createElement('div');
-            imgcontainer.className = 'resizable';
-            var letterhead = document.createElement('img');
-            letterhead.src = templateData.letterheadImg;
-            letterhead.className = "letterhead-img ui-widget-content";
-            letterhead.id = "letterhead-img"
-            letterhead.alt = "";
-            imgcontainer.appendChild(letterhead);
-            innerContainer.appendChild(imgcontainer);
-        }
-
         if (letter) {
             letterHTML = letter;
+            // console.log("BRUV" + letterHTML)
         } else {
             letterHTML = encodeLetterHTML(parseLetter(form));
+            // console.log("INSIDEEE " + letterHTML)
         }
 
         innerContainer.innerHTML += '<div id = "letter-text">' + letterHTML + '</div>';
-
-        if (templateData.footerImg != null && !$('.footer-img').length) {
-            var imgcontainer = document.createElement('div');
-            imgcontainer.className = 'resizable';
-            var footer = document.createElement('img');
-            footer.src = templateData.footerImg;
-            footer.alt = "";
-            footer.id = "footer-img";
-            footer.className = "footer-img ui-widget-content";
-            imgcontainer.appendChild(footer);
-            innerContainer.appendChild(imgcontainer);
-        }
-
 
         letterContainer.appendChild(innerContainer);
         outerContainer.appendChild(letterContainer);
@@ -109,11 +148,52 @@ function createLetterPreview(form, letter) {
         return innerContainer.innerHTML;
     });
 }
+function parseLetter(form) {
+    var letter = form.template.text;
+    var responses = form.responses;
 
-function parseLetter(body) {
+    var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
+        var response = responses.find(function (item) {
+            return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
+        });
+        return response ? response.response : '';
+    }).replace(tagRegex, function (match) {
+        var response = responses.find(function (item) {
+            return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
+        });
+        return response ? response.response : '';
+    }));
+
+    for (var i = 0; i < noCapitalization.length; i++) {
+
+        // Found ending punctuation that isn't the last letter in the text
+        if ((noCapitalization[i] == '.' || noCapitalization[i] == '?' || noCapitalization[i] == '!') && i != noCapitalization.length - 1) {
+
+            // Make sure exclamation point is not from a tag
+            if (noCapitalization[i] == '!' && i > 0 && noCapitalization[i - 1] == '<') {
+                continue;
+            }
+
+            // Look for the next alphabetical character to capitalize
+            var j = i + 1;
+            while (!((noCapitalization[j] >= 'a' && noCapitalization[j] <= 'z') || (noCapitalization[j] >= 'A' && noCapitalization[j] <= 'Z')) && j < noCapitalization.length) {
+                j++;
+            }
+
+            // Found character to capitalize
+            if (j < noCapitalization.length) {
+                noCapitalization[j] = noCapitalization[j].toUpperCase();
+            }
+        }
+    }
+
+    return noCapitalization.join("");
+}
+
+function parseEmailLetter(body) {
 
     $.ajax({
-        url: 'http://localhost:3000/letter-preview/form',
+        url: 'http://localhost:3000/letter-preview/emailForm',
         data: {id},
         type: 'GET',
         success: function (data) {
