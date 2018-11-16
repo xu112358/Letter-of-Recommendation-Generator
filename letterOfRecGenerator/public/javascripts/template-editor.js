@@ -77,9 +77,9 @@ window.onload = function () {
             data: {id, saveSwitchData},
             type: 'GET',
             success: function (data) {
-                // $("#letter-text-area").html(data.letter);
-                document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
-                console.log(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
+                $("#letter-text-area").html(data.letter);
+                // document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
+                //console.log(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
                 // console.log(encodeLetterHTML(data.letter));
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag, question.optional, question.isOrganizationQuestion);
@@ -100,7 +100,6 @@ window.onload = function () {
         displayQuestions();
     }
 
-    console.log("Test"+document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
 };
 
 // creates default questions
@@ -134,13 +133,10 @@ function setUpEventHandlers() {
     $('#letterhead-upload').submit(function (evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
-        console.log("files" + files)
         if (files && files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
-                var filename = files[0].name;
                 $('#letterhead-preview').attr('src', e.target.result);
-                document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
                 letterheadImgData = e.target.result;
             };
 
@@ -481,7 +477,9 @@ function addCustomQuestion() {
 
 function updateQuestions() {
     // update the letter
-    letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
+    // letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
+    letter = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
+    console.log("letter is "  + letter);
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
@@ -866,11 +864,9 @@ function emphasizeTags() {
 
         return '<span class="tag">' + match + '</span>';
     });
-    //console.log(letterHTMLWithTagEmphasis);
     letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
     document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis.replace(/\<div\>\<br\>\<\/div\>/gi, '<br>').replace(/\<div\>/gi, '<br>').replace(/\<\/div\>/gi, '');
 }
-
 
 function isTagsExist(letter, questions) {
     var tags = letter.match(/\<\![a-z0-9_]+\>/gi);
@@ -912,7 +908,7 @@ function isTagsExist(letter, questions) {
 }
 
 function encodeLetterHTML(text) {
-    return text.replace(/&/g, "&amp;").replace(/<b>/g, "<b>").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>').replace(/ /g, '&nbsp');
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
 }
 
 function decodeLetterHTML(text) {
