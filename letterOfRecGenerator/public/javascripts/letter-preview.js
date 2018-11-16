@@ -27,39 +27,19 @@ function onLoad() {
         type: 'GET',
         success: function (data) {
             form = data;
-            console.log("FORM: " + form)
-            // console.log("form id" + form.template.id)
-            console.log("form id_" + form.template._id)
-            console.log("DATA_: " + data.template._id)
-            // console.log("DATA:" + data.template.id)
             $.ajax({
                 url: 'http://localhost:3000/template-editor/template',
                 data: {id: data.template._id,
                         saveSwitchData: true},
                 type: 'GET',
                 success: function (dat) {
-                    console.log("ON LOAD" + data.template._id);
-                    templateData = dat;
-                    console.log(templateData);
-                    templateData.letterheadImg = templateData.letterheadImg || form.template.letterheadImg;
-                    templateData.footerImg = templateData.footerImg || form.template.footerImg;
+                    // // console.log("ON LOAD" + data.template._id);
+                    // templateData = dat;
+                    // // console.log(templateData);
+                    // templateData.letterheadImg = templateData.letterheadImg || form.template.letterheadImg;
+                    // templateData.footerImg = templateData.footerImg || form.template.footerImg;
                     console.log('success');
                     letterHTML = createLetterPreview(form, form.letter);
-                    $.ajax({
-                        url: 'http://localhost:3000/letter-preview/save',
-                        data: {
-                            id: id,
-                            letter: letterHTML
-                        },
-                        type: 'POST',
-                        success: function (da) {
-                            console.log('letter saved');
-                            console.log("New letter: " + da)
-                        },
-                        error: function () {
-                            console.log('error in template');
-                        }
-                    });
                 }
             });
         },
@@ -83,9 +63,24 @@ function showEditModal(clicked) {
 function saveEditModal() {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     var element = document.querySelector(TRIX_EDITOR);
-
+    var editor = document.querySelector(TRIX_EDITOR).editor;
+    
+    var child = $('#trix-editor').children().first().innerHTML;
+    console.log("CHILD:" + letterHTML)
+    console.log("Letters: " + letterHTML.length)
+    var length = letterHTML.length
     letterHTML = element.value;
+    // element.value = "LITERally wtf"
+    console.log("LetterHTML:" + letterHTML)
+    // element.value = " ";
+    var inside = document.getElementsByClassName("inside");
+    // console.log("INSIDE: " + document.getElementById(LETTER_CONTAINER_ID).innerHTML)
     document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
+    editor.setSelectedRange([0, editor.getDocument().getLength()])
+    editor.deleteInDirection("forward");
+    console.log("VALUE before:" + element.value)
+    // element.value = "";
+    console.log("VALUE after:" + element.value)
 
     $.ajax({
         url: 'http://localhost:3000/letter-preview/save',
@@ -123,10 +118,10 @@ function createLetterPreview(form, letter) {
         innerContainer = document.createElement('div');
         innerContainer.id = 'print';
         letterContainer.onclick = function (e) {
-            console.log(e.target);
-            if (e.target.className.indexOf('resizable') != -1) {
-                return;
-            }
+            // console.log(e.target);
+            // if (e.target.className.indexOf('resizable') != -1) {
+            //     return;
+            // }
             showEditModal(this.id);
         };
         letterContainer.style.cursor = 'pointer';
@@ -144,7 +139,7 @@ function createLetterPreview(form, letter) {
 
         letterContainer.appendChild(innerContainer);
         outerContainer.appendChild(letterContainer);
-        $('.resizable').resizable();
+        // $('.resizable').resizable();
         return innerContainer.innerHTML;
     });
 }
