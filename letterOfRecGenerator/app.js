@@ -26,6 +26,7 @@ var users = require('./routes/users');
 var history = require('./routes/history');
 var archive = require('./routes/archive');
 var response = require('./routes/response');
+var emailLetterPreview = require('./routes/email-letter-preview');
 
 var app = express();
 
@@ -74,6 +75,7 @@ app.use('/email-template-editor',isAuthenticated, createEmailTemplate);
 app.use('/form-completed', formCompleted);
 app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
+app.use('/email-letter-preview', emailLetterPreview);
 app.use('/login', login);
 app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
 app.use('/template-dashboard', isAuthenticated, templateDashboard);
@@ -81,6 +83,7 @@ app.use('/users', isAuthenticated, users);
 app.use('/history', history);
 app.use('/archive', archive);
 app.use('/response', response);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -25,39 +25,29 @@
         <div style="display: none;" id="formId" value="<%= id %>"><%= id %></div>
         <div style="display: none;" id="form" value="<%= form %>"><%= form %></div>
 
-        <!-- Letter Preview Container -->
-        <div id="outer-container">
-            
-        </div>
-
-        <!-- Save and Cancel Letter Preview Edit -->
-        <div id="add-question-modal">
-            <div class="inside">
-
-                <form class="ui form example">
-                    <div class="ui message error"></div>
-
-                    <input id="content" value="" type="hidden" name="content">
-                    <trix-editor input="content"></trix-editor>
-
-                </form>
-
-                <div class="flex-row">
-                    <button class="convert-pdf" onclick="saveEditModal()">Save</button>
-                    <button class="convert-pdf" onclick="cancelEditModal()">Cancel</button>
-                </div>
-
+        <div id="email-preview-container">
+            <div class="flex-display">
+                <h2 class="section-header">Choose a template: </h2>
+                <select id="email-templates" class="flex1" name="templates">
+                    <% var options = []; %>
+                    <% for (var template of templates) { %>
+                    <option data-subject= "<%= template.subject %>" data-body= "<%= template.body_text %>"} ><%= template.title %></option>
+                    <% } %>
+                </select>
             </div>
-        </div>
-
-        <!-- Add date to letter -->
-            <div id="date-picker">
-                <h2 class="section-header">Add Date: </h2>
-                <input type="date" name="date" id="date">
+    
+            <div id="email-subject-container" class="flex-display">
+                <h2 class="section-header"> Subject Line: </h2>
+                <input id="email-subject-text-area" class="flex1" contentEditable="true" name="subject" style='width:100%'>
             </div>
-            
-        <!-- Adding the save to pdf file -->
-        <button class="download-button" id="downloadButton" onClick="downloadLetter()"> Download Letter</button>
+
+            <div id="email-body-container" class="flex-display">
+                <h2 class="section-header"> Email Body: </h2>
+                <textarea id="email-body-text-area" contentEditable="true" name="body"></textarea>
+            </div>
+
+            <button class="email-button" id = "sendEmail" onClick="sendEmail()"> Send </button>
+        </div>
     </div>
     </body>
 
@@ -87,7 +77,7 @@
         };
 
         $.ajax({
-            url: 'http://localhost:3000/letter-preview',
+            url: 'http://localhost:3000/email-letter-preview',
             data: {
                 id: id,
                 Email: Email
