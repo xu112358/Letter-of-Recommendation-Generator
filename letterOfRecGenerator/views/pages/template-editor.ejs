@@ -27,13 +27,15 @@
         </div>
 
         <div class="flex-display upload-cont">
-            <h2 id="upload-letterhead" class="section-header">Upload Letterhead</h2>
+            <h2 id="upload-letterhead" class="section-header">Upload Template</h2>
             <div class="upload-preview-container flex1">
+
                 <% if(locals.letterheadImage){ %>
                 <img id="letterhead-preview" src="<%= letterheadImage %>" alt=""/>
                 <% } else{ %>
                 <img id="letterhead-preview" src="#" alt=""/>
                 <% } %>
+                <div id="letterhead-preview-div"></div>
                 <form id="letterhead-upload">
                     <input type="file" name="file" id="letterhead-upload-file"/>
                     <input type="submit" name="Submit"/>
@@ -41,7 +43,7 @@
             </div>
         </div>
 
-        <div class="flex-display upload-cont">
+<!--         <div class="flex-display upload-cont">
             <h2 id="upload-footer" class="section-header">Upload Footer</h2>
             <div class="upload-preview-container flex1">
                 <% if(locals.footerImage){ %>
@@ -54,7 +56,7 @@
                     <input type="submit" name="Submit"/>
                 </form>
             </div>
-        </div>
+        </div> -->
 
         <h2 id="custom-questions" class="section-header">Custom Questions</h2>
         <button class="large-circle-button" onclick="addQuestion()">+ Add question</button>

@@ -134,10 +134,13 @@ function setUpEventHandlers() {
     $('#letterhead-upload').submit(function (evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
+        console.log("files" + files)
         if (files && files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
+                var filename = files[0].name;
                 $('#letterhead-preview').attr('src', e.target.result);
+                document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
                 letterheadImgData = e.target.result;
             };
 
