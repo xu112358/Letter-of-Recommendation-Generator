@@ -479,6 +479,7 @@ function updateQuestions() {
     // update the letter
     // letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
     letter = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
+    console.log(letter);
     console.log("letter is "  + letter);
 
     // update individual questions
