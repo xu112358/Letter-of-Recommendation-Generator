@@ -153,9 +153,9 @@ router.post('/drive', function(req,res,next) {
             var formatted_letter = formatted_date + letter;
             var template = form.getTemplate();
             var templateName = template.name;
-            console.log("WHAT:" + req.body.letter)
+            // console.log("WHAT:" + req.body.letter)
             var text = letterParser.htmlstuff(formatted_letter)
-            console.log("TEXT REMAINING" + text)
+            // console.log("TEXT REMAINING" + text)
             // console.log("form" + form)
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
@@ -165,6 +165,31 @@ router.post('/drive', function(req,res,next) {
             var base64header = headerImg.split("base64,")[1];
 
             const bufHeader = Buffer.from(base64header, 'base64');
+
+            var length = text.length;
+            console.log("Length:" + length)
+            var stringWords = text.split(' ');
+            console.log("WORDS:" + stringWords.length);
+            var stringlen = stringWords.length;
+
+            var firstPage = "";
+            for(var i = 0; i < 430;i++){
+                // console.log(stringWords[i])
+                firstPage += stringWords[i];
+                firstPage += " ";
+            }
+            console.log("First: " + firstPage);
+
+            // console.log("Remian:" + remain)
+            var remain = stringlen - 430;
+            // console.log("Remian:" + remain)
+            var secondPage = "";
+            for(var i = 431; i < stringlen;i++){
+                // console.log(stringWords[i])
+                secondPage += stringWords[i];
+                secondPage += " ";
+            }
+            // console.log("Second:" + secondPage)
 
 
             var headStream = new Readable();
@@ -186,7 +211,7 @@ router.post('/drive', function(req,res,next) {
                 pdfDoc
                     // edit 1st page
                     .editPage(1)
-                    .text(text, 85, 120, {
+                    .text(firstPage, 85, 120, {
                         color: '000000',
                         font: 'Times New Roman',
                         fontSize: 9,
@@ -199,7 +224,21 @@ router.post('/drive', function(req,res,next) {
                             }
                         }
                     })
-                    
+                    .endPage()
+                    .editPage(2)
+                    .text(secondPage, 85, 75, {
+                        color: '000000',
+                        font: 'Times New Roman',
+                        fontSize: 9,
+                        align: 'left',
+                        textBox: {
+                            width: 480,
+                            lineHeight: 12,
+                            style: {
+                                lineWidth: 1
+                            }
+                        }
+                    })
                     .endPage()
                     .endPDF();
                 res.redirect('/recommender-dashboard');
