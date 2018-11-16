@@ -152,7 +152,9 @@ function createLetterPreview(form, letter) {
             letterHTML = letter;
             // console.log("BRUV" + letterHTML)
         } else {
-            letterHTML = encodeLetterHTML(parseLetter(form));
+            // letterHTML = encodeLetterHTML(parseLetter(form));
+
+            letterHTML = parseLetter(form);
             // console.log("INSIDEEE " + letterHTML)
         }
 
@@ -166,9 +168,13 @@ function createLetterPreview(form, letter) {
 }
 function parseLetter(form) {
     var letter = form.template.text;
+    var letter_html = decodeLetterHTML(letter);
+    console.log("letter is " + letter);
+    // var letter_html = $.html(letter);
+    console.log("letter html" + letter_html);
     var responses = form.responses;
 
-    var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
+    var noCapitalization = Array.from(letter_html.replace(tagRegex, function (match) {
         var response = responses.find(function (item) {
             return item.tag.localeCompare(match, {sensitivity: 'base'}) == 0;
         });
@@ -267,6 +273,10 @@ function parseAttribute(attr) {
 
 function encodeLetterHTML(text) {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
+}
+
+function decodeLetterHTML(text) {
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/&nbsp/g, ' ');
 }
 
 function addEmailHistory() {
