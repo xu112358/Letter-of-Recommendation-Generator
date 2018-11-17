@@ -138,6 +138,8 @@ function setUpEventHandlers() {
             reader.onload = function (e) {
                 $('#letterhead-preview').attr('src', e.target.result);
                 letterheadImgData = e.target.result;
+                var filename = files[0].name;
+                document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
             };
 
             reader.readAsDataURL(files[0]);
@@ -153,6 +155,8 @@ function setUpEventHandlers() {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#footer-preview').attr('src', e.target.result);
+                    var filename = files[0].name;
+                    var uploaded = files[0];
                 footerImgData = e.target.result;
             };
 
