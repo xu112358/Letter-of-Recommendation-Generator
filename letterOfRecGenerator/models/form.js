@@ -146,7 +146,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                 attempt to extract the organizations (seperated with , )
                 and make additional Forms with the different organization names */
                 //If response is empty
-                if (!response.length) {
+                if (!response || !response.length) {
                     responses.push({
                         tag: question.tag,
                         response: ''
