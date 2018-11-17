@@ -156,6 +156,7 @@
     border: solid black;
     font-size: 13px;
     overflow-y: scroll;
+    max-width: 750px; 
 }
 
 #questions-container {
