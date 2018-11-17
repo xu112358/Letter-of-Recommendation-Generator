@@ -164,11 +164,11 @@ router.post('/drive', function(req,res,next) {
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
 
-            var headerImg = template.letterheadImg;
+            // var headerImg = template.letterheadImg;
 
-            var base64header = headerImg.split("base64,")[1];
+            // var base64header = headerImg.split("base64,")[1];
 
-            const bufHeader = Buffer.from(base64header, 'base64');
+            // const bufHeader = Buffer.from(base64header, 'base64');
 
             var length = text.length;
             console.log("Length:" + length)
@@ -198,81 +198,82 @@ router.post('/drive', function(req,res,next) {
                 }
             }
 
-            var headStream = new Readable();
-            headStream.push(bufHeader);
-            headStream.push(null);
-            var headerPathP = __dirname + '/uploads/' + 'header.pdf';
+            // var headStream = new Readable();
+            // headStream.push(bufHeader);
+            // headStream.push(null);
+            // var headerPathP = __dirname + '/uploads/' + 'header.pdf';
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
 
-            headStream.pipe(fs.createWriteStream(headerPathP));
+            // headStream.pipe(fs.createWriteStream(headerPathP));
             // headsteam.on('er')
-            headStream.on('data', function () {
-                // var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
-                var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
-                var output = __dirname + '/uploads/' + outputName;
+                            // var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
+            var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
+            var output = __dirname + '/uploads/' + outputName;
 
-                console.log('IM DONE')
-                const HummusRecipe = require('hummus-recipe');
-                const pdfDoc = new HummusRecipe(headerPath, output);
-                if(stringlen > 470){
-                    pdfDoc
-                    // edit 1st page
-                    .editPage(1)
-                    .text(firstPage, 80, 85, {
-                        color: '000000',
-                        font: 'Times New Roman',
-                        fontSize: 10,
-                        align: 'left',
-                        textBox: {
-                            width: 480,
-                            lineHeight: 12,
-                            style: {
-                                lineWidth: 1
-                            }
+            console.log('IM DONE')
+            const HummusRecipe = require('hummus-recipe');
+            const pdfDoc = new HummusRecipe(headerPath, output);
+            if(stringlen > 470){
+                pdfDoc
+                // edit 1st page
+                .editPage(1)
+                .text(firstPage, 80, 85, {
+                    color: '000000',
+                    font: 'Times New Roman',
+                    fontSize: 10,
+                    align: 'left',
+                    textBox: {
+                        width: 480,
+                        lineHeight: 12,
+                        style: {
+                            lineWidth: 1
                         }
-                    })
-                    .endPage()
-                    .editPage(2)
-                    .text(secondPage, 80, 75, {
-                        color: '000000',
-                        font: 'Times New Roman',
-                        fontSize: 10,
-                        align: 'left',
-                        textBox: {
-                            width: 480,
-                            lineHeight: 12,
-                            style: {
-                                lineWidth: 1
-                            }
+                    }
+                })
+                .endPage()
+                .editPage(2)
+                .text(secondPage, 80, 75, {
+                    color: '000000',
+                    font: 'Times New Roman',
+                    fontSize: 10,
+                    align: 'left',
+                    textBox: {
+                        width: 480,
+                        lineHeight: 12,
+                        style: {
+                            lineWidth: 1
                         }
-                    })
-                    .endPage()
-                    .endPDF();
-                }
-                else {
-                    pdfDoc
-                    // edit 1st page
-                    .editPage(1)
-                    .text(text, 80, 85, {
-                        color: '000000',
-                        font: 'Times New Roman',
-                        fontSize: 10,
-                        align: 'left',
-                        textBox: {
-                            width: 480,
-                            lineHeight: 12,
-                            style: {
-                                lineWidth: 1
-                            }
+                    }
+                })
+                .endPage()
+                .endPDF();
+            }
+            else {
+                pdfDoc
+                // edit 1st page
+                .editPage(1)
+                .text(text, 80, 85, {
+                    color: '000000',
+                    font: 'Times New Roman',
+                    fontSize: 10,
+                    align: 'left',
+                    textBox: {
+                        width: 480,
+                        lineHeight: 12,
+                        style: {
+                            lineWidth: 1
                         }
-                    })
-                    .endPage()
-                    .endPDF();
-                }
-                
-                res.redirect('/recommender-dashboard');
+                    }
+                })
+                .endPage()
+                .endPDF();
+            }
+            
+            res.redirect('/recommender-dashboard');
+            // headStream.on('data', function () {
 
-            })
+
+            // })
         }
 
     })
