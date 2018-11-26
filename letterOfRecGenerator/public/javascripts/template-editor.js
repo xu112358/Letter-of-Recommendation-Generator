@@ -130,7 +130,7 @@ function loadDefaultQuestions() {
 
 function setUpEventHandlers() {
     // upload letterhead
-    $('#letterhead-upload').submit(function (evt) {
+    $('#letterhead-upload').on('change', function (evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
         if (files && files[0]) {
@@ -147,24 +147,24 @@ function setUpEventHandlers() {
         return false;
     });
 
-    // upload footer
-    $('#footer-upload').submit(function (evt) {
-        evt.preventDefault();
-        var files = $('#footer-upload-file')[0].files;
-        if (files && files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#footer-preview').attr('src', e.target.result);
-                    var filename = files[0].name;
-                    var uploaded = files[0];
-                footerImgData = e.target.result;
-            };
+    // // upload footer
+    // $('#footer-upload').submit(function (evt) {
+    //     evt.preventDefault();
+    //     var files = $('#footer-upload-file')[0].files;
+    //     if (files && files[0]) {
+    //         var reader = new FileReader();
+    //         reader.onload = function (e) {
+    //             $('#footer-preview').attr('src', e.target.result);
+    //                 var filename = files[0].name;
+    //                 var uploaded = files[0];
+    //             footerImgData = e.target.result;
+    //         };
 
-            reader.readAsDataURL(files[0]);
-        }
+    //         reader.readAsDataURL(files[0]);
+    //     }
 
-        return false;
-    });
+    //     return false;
+    // });
 }
 
 window.onclick = function (event) {
