@@ -72,6 +72,8 @@ router.post('/drive', function(req,res,next) {
             var formatted_letter = formatted_date + letter;
             var template = form.getTemplate();
             var templateName = template.name;
+            console.log(formatted_letter);
+
             var text = letterParser.htmlstuff(formatted_letter)
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
@@ -106,6 +108,12 @@ router.post('/drive', function(req,res,next) {
             const HummusRecipe = require('hummus-recipe');
             const pdfDoc = new HummusRecipe(headerPath, output);
             pdfDoc.registerFont('Times', fontDirectory);
+            /**  
+             * The current problem is that bolded text that use <strong>txt</strong> can't be
+             * converted and kept bold. So we need to find where the location of the text
+             * and bold it through hummus-reciper (can be found on npm website for hummus-recipe)
+             * but this cannot be done right now.
+            */
             if(stringlen > 470){
                 pdfDoc
                 // edit 1st page
