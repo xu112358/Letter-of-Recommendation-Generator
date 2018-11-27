@@ -122,7 +122,7 @@ function loadDefaultQuestions() {
 
 function setUpEventHandlers() {
     // upload letterhead
-    $('#letterhead-upload').submit(function (evt) {
+    $('#letterhead-upload').on('change', function (evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
         if (files && files[0]) {
@@ -130,23 +130,9 @@ function setUpEventHandlers() {
             reader.onload = function (e) {
                 $('#letterhead-preview').attr('src', e.target.result);
                 letterheadImgData = e.target.result;
-            };
 
-            reader.readAsDataURL(files[0]);
-        }
-
-        return false;
-    });
-
-    // upload footer
-    $('#footer-upload').submit(function (evt) {
-        evt.preventDefault();
-        var files = $('#footer-upload-file')[0].files;
-        if (files && files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#footer-preview').attr('src', e.target.result);
-                footerImgData = e.target.result;
+                var filename = files[0].name;
+                document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
             };
 
             reader.readAsDataURL(files[0]);

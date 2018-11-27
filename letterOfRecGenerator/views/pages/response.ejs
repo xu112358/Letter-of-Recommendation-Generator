@@ -23,6 +23,8 @@
         </tr>
         </thead>
         <tbody>
+         <% console.log(responses) %>
+        <% console.log(questions) %>
         <% for (var q=0; q < questions.length; q++) { %>
         <tr>
             <td width="60%">
@@ -31,7 +33,10 @@
                </div> 
             </td>
             <td width="40%">
+               <% console.log(q) %>
+               <% console.log(responses[q].response) %>
                 <div id="responses-container" contenteditable="true">
+                        <% if(!responses[q]) %>
                         <%= responses[q].response %>
                 </div>
             </td>
