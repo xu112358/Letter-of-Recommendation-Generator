@@ -8,7 +8,7 @@
     margin-top: 20px;
     width: 200px;
     height: 50px;
-    margin:auto;
+    /*margin:auto;*/
     display:block;
     cursor: pointer;
 }
@@ -40,8 +40,9 @@
 #letter-container {
     background-color: #e8e8e8;
     border: thick solid black;
-    margin: 15px auto;
-    width: 80%;
+    margin: 15px 35px;
+    /*width: 80%;*/
+    overflow:auto;
 }
 
 
@@ -55,7 +56,18 @@
 #letter-text {
     font-size: 12px;
     font-family: "Times New Roman", Times, serif;
+    max-width: 800px;
+    overflow: auto;
+    opacity: 1.0;
+    padding: 30px 10px; 
 }
+
+#letter-text:hover {
+    opacity: 0.5; 
+    transition:0.4s; 
+}
+
+
 
 .footer-img {
     margin-top: 10px;
@@ -74,10 +86,9 @@
 }
 
 #add-question-modal .inside{
-    margin: 15% auto; /* 15% from the top and centered */
-    background-color: #E0E0E0;
-    padding: 15px;
-    width: 50%; /* Could be more or less, depending on screen size */
+    margin: 100px auto; /* 15% from the top and centered */
+    background-color: white;
+    /*width: 50%;*/ /* Could be more or less, depending on screen size */
     border: 1px solid black;
 }
 
@@ -176,15 +187,23 @@
     margin-left: auto;
     margin-right: 60px;
     transition: 0.6s; 
+    float: right;
 }
 
 #date-picker {
-    margin-left: 30px;
+    margin-top: 40px; 
+    margin-left: 35px;
+    margin-bottom: 40px; 
+}
+
+#add-date-heading {
+    font-size: 20px; 
+    margin-bottom: 5px; 
 }
 
 #sendEmail:hover {
-    cursor: pointer; 
-    opacity: 0.6; 
+    cursor: pointer;
+    opacity: 0.6;
 }
 
 
@@ -193,3 +212,70 @@
 .background {
     padding-bottom: 150px; 
 }
+
+
+trix-toolbar {
+    white-space: initial;
+    margin-bottom: 20px; 
+}
+
+trix-editor {
+    border: 2px solid black;
+    padding: 20px; 
+}
+
+
+#letter-preview-heading {
+    margin-top: 40px;
+    padding-bottom: 5px; 
+}
+
+.letter-preview-subheading {
+    padding-left: 35px;
+}
+
+#edit-heading {
+    margin-top: 50px; 
+    font-size: 20px; 
+}
+
+#letter-preview-modal {
+    background-color: #FFFFFF;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 40px 50px;
+    width: 60%; /* Could be more or less, depending on screen size */
+    border-radius: 10px;
+}
+
+.modal-btns {
+    width: 200px;
+    height: 40px;
+    background-color: #FF473A;
+    font-size: 12px;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    letter-spacing: 2px;
+    opacity: 1.0;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-transform: uppercase;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    /*margin-left: auto;*/
+    margin-right: 30px;
+    transition: 0.6s;
+}
+
+.modal-btns:hover {
+    opacity: 0.6;
+}
+
+.flex-row {
+    display: flex; 
+}
+
+#save-btn {
+    margin-left: auto;
+}
+
