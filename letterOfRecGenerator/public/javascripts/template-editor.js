@@ -9,7 +9,7 @@ var id = parseAttribute('id');
 var letterheadImgData = parseAttribute('letterheadImgData');
 var footerImgData = parseAttribute('footerImgData');
 var saveSwitchData = parseAttribute('saveSwitchData');
-
+const TRIX_EDITOR = "trix-editor";
 
 /**
  * Prototype class for Questions
@@ -77,7 +77,8 @@ window.onload = function () {
             data: {id, saveSwitchData},
             type: 'GET',
             success: function (data) {
-                $("#letter-text-area").html(data.letter);
+                // $("#letter-text-area").html(data.letter);
+                document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = data.letter;
                 // document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
                 //console.log(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
                 // console.log(encodeLetterHTML(data.letter));
@@ -130,7 +131,7 @@ function loadDefaultQuestions() {
 
 function setUpEventHandlers() {
     // upload letterhead
-    $('#letterhead-upload').on('change', function (evt) {
+    $('#letterhead-upload').submit(function (evt) {
         evt.preventDefault();
         var files = $('#letterhead-upload-file')[0].files;
         if (files && files[0]) {
@@ -138,33 +139,30 @@ function setUpEventHandlers() {
             reader.onload = function (e) {
                 $('#letterhead-preview').attr('src', e.target.result);
                 letterheadImgData = e.target.result;
-                var filename = files[0].name;
-                document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
             };
 
             reader.readAsDataURL(files[0]);
         }
+
         return false;
     });
 
-    // // upload footer
-    // $('#footer-upload').submit(function (evt) {
-    //     evt.preventDefault();
-    //     var files = $('#footer-upload-file')[0].files;
-    //     if (files && files[0]) {
-    //         var reader = new FileReader();
-    //         reader.onload = function (e) {
-    //             $('#footer-preview').attr('src', e.target.result);
-    //                 var filename = files[0].name;
-    //                 var uploaded = files[0];
-    //             footerImgData = e.target.result;
-    //         };
+    // upload footer
+    $('#footer-upload').submit(function (evt) {
+        evt.preventDefault();
+        var files = $('#footer-upload-file')[0].files;
+        if (files && files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#footer-preview').attr('src', e.target.result);
+                footerImgData = e.target.result;
+            };
 
-    //         reader.readAsDataURL(files[0]);
-    //     }
+            reader.readAsDataURL(files[0]);
+        }
 
-    //     return false;
-    // });
+        return false;
+    });
 }
 
 window.onclick = function (event) {
@@ -481,9 +479,10 @@ function addCustomQuestion() {
 function updateQuestions() {
     // update the letter
     // letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
-    letter = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-    console.log(letter);
-    console.log("letter is "  + letter);
+    // letter = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
+    // console.log("letter is "  + letter);
+    var element = document.querySelector(TRIX_EDITOR);
+    letter = element.value;
 
     // update individual questions
     for (var i = 0; i < questions.length; i++) {
@@ -762,7 +761,7 @@ function addErrorToContainer(container, index, message) {
 function addErrorListToErrorContainer(container) {
     var errorList = document.createElement("div");
     errorList.classList.add('error-column-container');
-    //errorList.style.width = '15vw';
+    errorList.style.width = '15vw';
 
     var innerContainer = getInnerContainer(container);
 
@@ -797,7 +796,7 @@ function addErrorListToErrorContainer(container) {
 
     var fill = document.createElement("div");
     fill.classList.add('fill');
-    //fill.style.width = '15vw';
+    fill.style.width = '15vw';
     container.insertBefore(fill, container.firstChild);
 }
 
@@ -859,6 +858,7 @@ function deemphasizeTags() {
 
 function emphasizeTags() {
     var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
+    console.log(letterHTML);
     var letterHTMLWithTagEmphasis = letterHTML.replace(/&lt;\![a-z0-9_]+&gt;/gi, function (match) {
         if (unknownTags.find(function (tag) {
                 return tag === match;
@@ -869,6 +869,7 @@ function emphasizeTags() {
         return '<span class="tag">' + match + '</span>';
     });
     letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
+    console.log("======="+letterHTMLWithTagEmphasis);
     document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis.replace(/\<div\>\<br\>\<\/div\>/gi, '<br>').replace(/\<div\>/gi, '<br>').replace(/\<\/div\>/gi, '');
 }
 

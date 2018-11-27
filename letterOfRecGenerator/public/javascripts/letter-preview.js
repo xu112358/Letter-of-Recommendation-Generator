@@ -150,12 +150,11 @@ function createLetterPreview(form, letter) {
 
         if (letter) {
             letterHTML = letter;
-            // console.log("BRUV" + letterHTML)
+            console.log("if letter exist" + letterHTML)
         } else {
             // letterHTML = encodeLetterHTML(parseLetter(form));
-
+            console.log(letterHTML);
             letterHTML = parseLetter(form);
-            // console.log("INSIDEEE " + letterHTML)
         }
 
         innerContainer.innerHTML += '<div id = "letter-text">' + letterHTML + '</div>';
@@ -209,7 +208,6 @@ function parseLetter(form) {
             }
         }
     }
-
     return noCapitalization.join("");
 }
 
@@ -277,7 +275,7 @@ function encodeLetterHTML(text) {
 }
 
 function decodeLetterHTML(text) {
-    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/&nbsp/g, ' ');
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/&nbsp/g, ' ');
 }
 
 function addEmailHistory() {
