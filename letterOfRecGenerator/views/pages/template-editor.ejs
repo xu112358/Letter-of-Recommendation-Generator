@@ -9,6 +9,8 @@
     <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
             letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>" saveSwitchData="<%= saveSwitch %>"></script>
     <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
 
 </head>
 <body>
@@ -79,8 +81,6 @@
                     <br/>   
                 </div> 
                 <br>
-                <button id='bold_btn'> <b>B</b></button>
-                <button id='italic_btn'> <i>I</i></button>
                 <button onclick="emphasizeTags()">Emphasize Tags</button>
                 <button onclick="deemphasizeTags()">Deemphasize Tags</button>
             </div> 
@@ -90,7 +90,8 @@
             <div id="letter-container">
                 <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
                 <div class="flex1">
-                    <div class ="letter" id="letter-text-area" contentEditable="true"> </div>
+                    <!-- <div class ="letter" id="letter-text-area" contentEditable="true"> </div> -->
+                    <trix-editor id="letter-text-area" id="text"></trix-editor>
                 </div>
             </div>
         </div>
@@ -158,25 +159,12 @@
 
 <script>
 
-
-
-    $('#bold_btn').on('click', function() {
-        document.execCommand('bold');
-        document.getElementById('letter-text-area').innerHTML;
-    });
-
-    $('#italic_btn').on('click', function() {
-        document.execCommand('italic');
-        document.getElementById('letter-text-area').innerHTML;
-    });
-
     var letterContent = document.getElementById("letter-text-area");
     console.log(letterContent.innerHTML);
     var firstHalf = ""; 
     var secondHalf = ""; 
     var letterContentCursorPos = -1; 
     
-
     letterContent.onclick = function () {
         // creates dummy node to find cursor position
         var target = document.createTextNode("\u0001");
