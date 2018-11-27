@@ -348,13 +348,13 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
     var formattedQuestions = [];
     this.template.questions.forEach(function (question) {
         if (question.type === "Radio Button" || question.type === "Text") {  
-            formattedQuestions.push(question.question);
+            formattedQuestions.push({tag: question.tag, question: question.question});
         } else if (question.type === "Custom") { // custom
                 var customQuestion = question.question;
                 for(let i = 0; i < question.options.length; i++) {
                     customQuestion += " | ";
                     customQuestion += question.options[i].option;
-                    formattedQuestions.push(customQuestion)
+                    formattedQuestions.push({tag: question.options[i].tag, question: customQuestion})
                     customQuestion = question.question; //Reupdate to original question
                 }  
         } else { // checkbox
@@ -362,7 +362,7 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
             for(let i = 0; i < question.options.length; i++) {
                 checkboxQuestion += " | ";
                 checkboxQuestion += question.options[i].option;
-                formattedQuestions.push(checkboxQuestion);
+                formattedQuestions.push({tag: question.options[i].tag, question: checkboxQuestion});
                 checkboxQuestion = question.question; //Reupdate to original question
             }
         }
