@@ -57,7 +57,7 @@ var tags = [];
 var warningModalFunction;
 
 window.onload = function () {
-    setUpEventHandlers();
+    //setUpEventHandlers();
     document.getElementById(LETTER_TEXT_AREA_ID).addEventListener('paste', function (e) {
         e.preventDefault();
 
@@ -84,7 +84,7 @@ window.onload = function () {
                 });
                 console.log('success');
                 displayQuestions();
-                emphasizeTags();
+                //emphasizeTags();
             },
             error: function () {
                 console.log('error');
@@ -119,26 +119,20 @@ function loadDefaultQuestions() {
 
 }
 
-function setUpEventHandlers() {
-    // upload letterhead
-    $('#file-submit').on('click', function (evt) {
-        evt.preventDefault();
-        var files = $('#letterhead-upload-file')[0].files;
-        if (files && files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#letterhead-preview').attr('src', e.target.result);
-                letterheadImgData = e.target.result;
+function changeText() {
+    var files = $('#letterhead-upload-file')[0].files;
+    if (files && files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#letterhead-preview').attr('src', e.target.result);
+            letterheadImgData = e.target.result;
+            var filename = files[0].name;
+            document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
+        };
 
-                var filename = files[0].name;
-                document.getElementById("letterhead-preview-div").innerHTML = "Uploaded File: " + filename;
-            };
-
-            reader.readAsDataURL(files[0]);
-        }
-
-        return false;
-    });
+        reader.readAsDataURL(files[0]);
+    }
+    
 }
 
 window.onclick = function (event) {
@@ -875,5 +869,5 @@ function encodeLetterHTML(text) {
 }
 
 function decodeLetterHTML(text) {
-    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/\&nbsp;/g, ' ');
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/\&nbsp;/g, '');
 }

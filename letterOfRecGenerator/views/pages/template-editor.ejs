@@ -38,7 +38,7 @@
                 <img id="letterhead-preview" src="#" alt=""/>
                 <% } %>
                 <div id="letterhead-preview-div"></div>
-                <form id="letterhead-upload" action="/template-editor/fileUpload" method="POST" encType="multipart/form-data">
+                <form id="letterhead-upload" action="/template-editor/fileUpload" method="POST" encType="multipart/form-data" onsubmit="changeText()">
                     <input type="file" name="file" id="letterhead-upload-file"/>
                     <input id="file-submit" type="submit" name="Submit"/>
                 </form>

@@ -198,10 +198,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                             i++;
                         });
 
-                        console.log("fieldsByformlength: " + fieldsByForm.length); 
-                        // why doesnt org match
-
-                        console.log(fieldsByForm); 
                         if(fieldsByForm.length){
                             let allFieldsInForm = fieldsByForm[0].fields;
                             // For the 0th form, push in parsed fields from custom question
@@ -261,7 +257,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         // for each orgIndex, push remaining here
                         promise.then(function (savedForm) {
                             savedFormIdArr.push(savedForm._id);
-                            console.log("savedFormIdArr length?: " + savedFormIdArr.length);
                             /* We update the response for organization to the right ones here */
                             FormSchema.statics.findForm(savedForm._id, function (err, foundForm) {
                                 if (err) {
@@ -277,15 +272,12 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                                 if (duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
                                                     duplicateResponse[j].response = allFieldsInForm[k].response;
                                                 }
-                                                console.log(duplicateResponse[j]); 
                                             }  
                                         }
                                     }
 
                                     foundForm.responses = duplicateResponse;
                                     foundForm.save();
-
-
                                 }
                             });
                         }, function (rejected) {
@@ -300,13 +292,9 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                     if(err) {
                         console.log("error in form User.findOne");
                     } else {
-                        console.log("saving with right user");
-                        console.log(savedFormIdArr); 
-
                         if(savedFormIdArr.length > 0){
                             for(let i=0; i < savedFormIdArr.length; i++) {
-                                user.forms.push(savedFormIdArr[i]);
-                                console.log("saving Form to user: " + user.displayName + " " + savedFormIdArr[i]);
+                                user.forms.push(savedFormIdArr[i]);                            
                             }
                             user.save();
                         }
@@ -321,7 +309,6 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
 };
 
 FormSchema.statics.setEmailSent = function (id, cb) {
-    console.log("in form setemail sent");
     FormSchema.statics.findForm(id, function (err, form) {
         if (err) {
             cb(err, null);

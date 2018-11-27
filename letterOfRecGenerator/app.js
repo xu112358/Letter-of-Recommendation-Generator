@@ -13,6 +13,7 @@ var passport = require('./config/passport');
 var fileUpload = require('express-fileupload');
 var mammoth = require('mammoth');
 var opn = require('opn');
+var downloadsFolder = require('downloads-folder');
 
 var createTemplate = require('./routes/template-editor');
 var createEmailTemplate = require('./routes/email-template-editor');

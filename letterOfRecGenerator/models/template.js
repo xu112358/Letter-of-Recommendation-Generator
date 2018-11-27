@@ -55,7 +55,6 @@ TemplateSchema.methods.getTags = function () {
     for(let q = 0; q < this.questions.length; q++) {
         allTags.push(this.questions[q].tag);
     }
-    console.log("inside getTags: " + allTags);
     return allTags;
 };
 

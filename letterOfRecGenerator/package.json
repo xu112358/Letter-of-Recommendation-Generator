@@ -21,6 +21,7 @@
     "docx-builder": "^1.0.7",
     "docx-merger": "^1.0.0",
     "docxtemplater": "^3.9.1",
+    "downloads-folder": "^1.0.1",
     "ejs": "~2.5.7",
     "express": "^4.15.5",
     "express-fileupload": "^1.0.0",

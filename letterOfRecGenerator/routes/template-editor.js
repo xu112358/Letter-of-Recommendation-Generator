@@ -147,6 +147,7 @@ router.get('/template', function (req, res, next) {
 });
 
 router.post('/fileUpload', function (req,res, next) {
+    console.log(req.files.file);
     var file = req.files.file;
     var headerPathP = __dirname + '/uploads/' + 'uploaded.pdf';
     file.mv(headerPathP, function(err) {

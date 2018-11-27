@@ -12,6 +12,8 @@ const fs = require('fs');
 const Readable = require('stream').Readable;
 const fileUpload = require('express-fileupload');
 const opn = require('opn')
+const downloadsFolder = require('downloads-folder');
+
 
 router.get('/', function (req, res, next) {
     req.user.getForm(req.query.id, function (err, form) {
@@ -97,9 +99,10 @@ router.post('/drive', function(req,res,next) {
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
 
             var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
-            var output = __dirname + '/uploads/' + outputName;
+            var downloadFolder = downloadsFolder() + '/';
+            var output = downloadFolder + outputName;
             var fontDirectory = __dirname + '/fonts/TIMES.ttf';
-
+            
             const HummusRecipe = require('hummus-recipe');
             const pdfDoc = new HummusRecipe(headerPath, output);
             pdfDoc.registerFont('Times', fontDirectory);
