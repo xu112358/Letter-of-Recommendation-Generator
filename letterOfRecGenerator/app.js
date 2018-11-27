@@ -12,6 +12,7 @@ var OAuth2 = google.auth.OAuth2;
 var passport = require('./config/passport');
 var fileUpload = require('express-fileupload');
 var mammoth = require('mammoth');
+var opn = require('opn');
 
 var createTemplate = require('./routes/template-editor');
 var createEmailTemplate = require('./routes/email-template-editor');

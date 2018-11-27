@@ -151,9 +151,7 @@ function createLetterPreview(form, letter) {
 }
 function parseLetter(form) {
     var letter = form.template.text;
-    console.log(letter);
     var letter_html = decodeLetterHTML(letter);
-    console.log("html????????" + letter_html);
     var responses = form.responses;
 
     var noCapitalization = Array.from(letter_html.replace(tagRegex, function (match) {

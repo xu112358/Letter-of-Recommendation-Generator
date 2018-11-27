@@ -11,6 +11,7 @@ const HummusRecipe = require('hummus-recipe');
 const fs = require('fs');
 const Readable = require('stream').Readable;
 const fileUpload = require('express-fileupload');
+const opn = require('opn')
 
 router.get('/', function (req, res, next) {
     req.user.getForm(req.query.id, function (err, form) {
@@ -74,8 +75,8 @@ router.post('/drive', function(req,res,next) {
         if(err){
             console.log(err)
         } else {
-            var break_lines = "<br><br><br><br><br>";
-            var smaller_break_lines = "<br><br><br><br>";
+            var break_lines = "<br><br>";
+            var smaller_break_lines = "<br><br>";
             var date_raw = req.body.date;
             var actual_date = letterParser.getDate(date_raw);
             var formatted_date = break_lines + actual_date + smaller_break_lines;
@@ -124,7 +125,7 @@ router.post('/drive', function(req,res,next) {
                 .text(firstPage, 80, 85, {
                     color: '000000',
                     font: 'Times New Roman',
-                    fontSize: 10,
+                    fontSize: 11,
                     align: 'left',
                     textBox: {
                         width: 480,
@@ -139,7 +140,7 @@ router.post('/drive', function(req,res,next) {
                 .text(secondPage, 80, 75, {
                     color: '000000',
                     font: 'Times New Roman',
-                    fontSize: 10,
+                    fontSize: 11,
                     align: 'left',
                     textBox: {
                         width: 480,
@@ -159,11 +160,11 @@ router.post('/drive', function(req,res,next) {
                 .text(text, 80, 85, {
                     color: '000000',
                     font: 'Times New Roman',
-                    fontSize: 10,
+                    fontSize: 11,
                     align: 'left',
                     textBox: {
                         width: 480,
-                        lineHeight: 12,
+                        lineHeight: 14,
                         style: {
                             lineWidth: 1
                         }
@@ -172,7 +173,7 @@ router.post('/drive', function(req,res,next) {
                 .endPage()
                 .endPDF();
             }
-            
+            opn(output);
             res.redirect('/recommender-dashboard');
             // headStream.on('data', function () {
 

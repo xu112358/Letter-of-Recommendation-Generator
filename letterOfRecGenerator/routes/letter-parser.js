@@ -5,7 +5,6 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 
 exports.htmlstuff = function(form) {
-    console.log("When is this called?");
     var text = form;
     
     text = text.replace(/<br\s*\/?>/gi, ' \n');
@@ -15,7 +14,6 @@ exports.htmlstuff = function(form) {
     text = text.replace("&nbsp;", " ");
     console.log("IN HTML")
     return text;
-    // return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
 }
 
 exports.getDate = function(rawDate) {
