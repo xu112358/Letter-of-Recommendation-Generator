@@ -139,6 +139,7 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
             cb("error in FormSchema.statics.submitForm / .findForm " + err, null);
         } else {
             var responses = [];
+
             form['template']['questions'].forEach(function (question) {  
     
                 var response = responseData[question.number - 1];
@@ -198,6 +199,9 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         });
 
                         console.log("fieldsByformlength: " + fieldsByForm.length); 
+                        // why doesnt org match
+
+                        console.log(fieldsByForm); 
                         if(fieldsByForm.length){
                             let allFieldsInForm = fieldsByForm[0].fields;
                             // For the 0th form, push in parsed fields from custom question
@@ -220,7 +224,10 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         });
                     });
                 }
-            });
+            }); // for each question
+
+            // Finished going through each question
+
             // set responses form 0th
             if(customQuestionFound){
                 form.organization = fieldsByForm[0].fields[0].response; // fields[0] shoudl always correspond to <!ORG>
@@ -270,9 +277,15 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                                                 if (duplicateResponse[j].tag === allFieldsInForm[k].fieldTag) {
                                                     duplicateResponse[j].response = allFieldsInForm[k].response;
                                                 }
+                                                console.log(duplicateResponse[j]); 
                                             }  
                                         }
                                     }
+
+                                    foundForm.responses = duplicateResponse;
+                                    foundForm.save();
+
+
                                 }
                             });
                         }, function (rejected) {
@@ -280,12 +293,16 @@ FormSchema.statics.submitForm = function (id, responseData, cb) {
                         });
                     } // for each form
 
+
+
                 //Adding form._id to user (who is the owner of the original form)
                 db.model('User').findOne({_id: form.owner}).populate('forms').exec( function(err, user) {
                     if(err) {
                         console.log("error in form User.findOne");
                     } else {
                         console.log("saving with right user");
+                        console.log(savedFormIdArr); 
+
                         if(savedFormIdArr.length > 0){
                             for(let i=0; i < savedFormIdArr.length; i++) {
                                 user.forms.push(savedFormIdArr[i]);
@@ -345,6 +362,8 @@ FormSchema.methods.addEmailHistory_Form = function (email, cb) {
 };
 
 FormSchema.methods.getFormattedQuestions = function (id, cb) {
+
+
     var formattedQuestions = [];
     this.template.questions.forEach(function (question) {
         if (question.type === "Radio Button" || question.type === "Text") {  
@@ -354,6 +373,7 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
                 for(let i = 0; i < question.options.length; i++) {
                     customQuestion += " | ";
                     customQuestion += question.options[i].option;
+
                     formattedQuestions.push(customQuestion)
                     customQuestion = question.question; //Reupdate to original question
                 }  
@@ -362,6 +382,7 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
             for(let i = 0; i < question.options.length; i++) {
                 checkboxQuestion += " | ";
                 checkboxQuestion += question.options[i].option;
+
                 formattedQuestions.push(checkboxQuestion);
                 checkboxQuestion = question.question; //Reupdate to original question
             }
