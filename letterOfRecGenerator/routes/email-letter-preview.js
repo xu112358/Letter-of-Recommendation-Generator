@@ -109,8 +109,6 @@ router.post('/', function (req, res, next) {
                                     raw: base64EncodedEmail
                                 }
                             });
-
-                            res.redirect('/recommender-dashboard');
                         }
                     }
                 ); 

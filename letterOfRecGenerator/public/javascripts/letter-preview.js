@@ -103,6 +103,7 @@ function downloadLetter() {
         type: 'POST',
         success: function(d){
             console.log("success in drive")
+            window.location.href = 'http://localhost:3000/recommender-dashboard';
         },
         error: function() {
             console.log("error in drive")

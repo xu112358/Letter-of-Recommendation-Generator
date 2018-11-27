@@ -162,7 +162,6 @@ router.post('/drive', function(req,res,next) {
                 .endPDF();
             }
             opn(output);
-            res.redirect('/recommender-dashboard');
         }
 
     })
