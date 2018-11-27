@@ -31,10 +31,10 @@
         <div class="close-container">
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
-        <p class="modal-title">Enter Email</p>
+        <p class="modal-title">Send Email</p>
         <form class="input-form" method="POST" action="/recommender-dashboard">
             <div class="input-container">
-                <input class="input-text" type="text" name="email">
+                <input class="input-text" type="text" name="email" placeholder="Enter email address">
                 <select class="input-dropdown" name="templateId">
                     <% for (var template of templates) { %>
                     <option value=<%= template._id %>><%= template.name %></option>
