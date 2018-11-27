@@ -70,9 +70,6 @@ router.post('/save', function (req, res, next) {
 
 router.post('/drive', function(req,res,next) {
     var user = req.user;
-    // console.log("BODY ID:" + req.body.id)
-    // console.log("LETTER FROM REQ:" + req.body.letter)
-    console.log("DATE:" + req.body.date)
     user.getForm(req.body.id, function(err, form) {
         if(err){
             console.log(err)
@@ -86,19 +83,9 @@ router.post('/drive', function(req,res,next) {
             var formatted_letter = formatted_date + letter;
             var template = form.getTemplate();
             var templateName = template.name;
-            // console.log("WHAT:" + req.body.letter)
             var text = letterParser.htmlstuff(formatted_letter)
-            // console.log("TEXT REMAINING" + text)
-            // console.log("form" + form)
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
-
-            // var headerImg = template.letterheadImg;
-
-            // var base64header = headerImg.split("base64,")[1];
-
-            // const bufHeader = Buffer.from(base64header, 'base64');
-
             var length = text.length;
             console.log("Length:" + length)
             var stringWords = text.split(' ');
@@ -110,36 +97,24 @@ router.post('/drive', function(req,res,next) {
             if (stringlen > 470){
                  
                 for(var i = 0; i < 470;i++){
-                    // console.log(stringWords[i])
                     firstPage += stringWords[i];
                     firstPage += " ";
                 }
                 console.log("First: " + firstPage);
 
-                // console.log("Remian:" + remain)
                 var remain = stringlen - 430;
-                // console.log("Remian:" + remain)
                 
                 for(var i = 471; i < stringlen;i++){
-                    // console.log(stringWords[i])
                     secondPage += stringWords[i];
                     secondPage += " ";
                 }
             }
 
-            // var headStream = new Readable();
-            // headStream.push(bufHeader);
-            // headStream.push(null);
-            // var headerPathP = __dirname + '/uploads/' + 'header.pdf';
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
 
-            // headStream.pipe(fs.createWriteStream(headerPathP));
-            // headsteam.on('er')
-                            // var outputName = templateName + "Template_" + fname + "_" + lname + ".docx";
             var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
             var output = __dirname + '/uploads/' + outputName;
 
-            console.log('IM DONE')
             const HummusRecipe = require('hummus-recipe');
             const pdfDoc = new HummusRecipe(headerPath, output);
             if(stringlen > 470){

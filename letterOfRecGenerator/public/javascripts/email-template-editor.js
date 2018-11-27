@@ -30,14 +30,6 @@ function saveEmailTemplate() {
         body_text: document.getElementById(EMAIL_BODY_TEXT_AREA_ID).value
     };
 
-    console.log(Email.body_text);
-
-    // if (!validate(Email)) {
-    //     window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
-    //     emphasizeTags();
-    //     return;
-    // }
-
     if (id) {
 
         $.ajax({

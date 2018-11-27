@@ -77,11 +77,7 @@ window.onload = function () {
             data: {id, saveSwitchData},
             type: 'GET',
             success: function (data) {
-                // $("#letter-text-area").html(data.letter);
                 document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = data.letter;
-                // document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = encodeLetterHTML(data.letter);
-                //console.log(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
-                // console.log(encodeLetterHTML(data.letter));
                 data.questions.forEach(question => {
                     var savedQuestion = new Question(question.type, question.question, question.tag, question.optional, question.isOrganizationQuestion);
                     savedQuestion.options = question.options;
@@ -118,15 +114,10 @@ function loadDefaultQuestions() {
     var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
     default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default4);
-    // todo: change <!Hi>
     var orgQuestion = new Question("Custom", "What organizations are you applying to?", "<!ORGANIZATION>");
     orgQuestion.options = [constructOptionObject("Organization", "", "<!ORG>")];  
-    //orgQuestion.options.push(constructOptionObject("Organization", "", "<!ORG>"));
-    //orgQuestion.setOrganizationQuestion(true);
     questions.push(orgQuestion);
 
-
-    console.log("pushed default");
 }
 
 function setUpEventHandlers() {
@@ -288,12 +279,10 @@ function auto_grow(element) {
 }
 
 function addQuestion() {
-    console.log("addQuestion called");
     showAddQuestionModal();
 }
 
 function saveTemplate() {
-    console.log("saveTemplate called");
     updateQuestions();
 
     var template = {
@@ -376,19 +365,12 @@ function getQuestions() {
     var newQuestionIndex = 0;
 
     for(var i=0; i<sortableQuestionsHTML.length; i++){      
-        // console.log("i= "+ i);
-        // console.log("sortableQuestionsHTML= " + sortableQuestionsHTML[i]);
         var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName("error-container");
-        // console.log("errorContainerHTML= " + errorContainerHTML[0]);
         var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
-        // var dataID = questionsOuterContainer[0].getAttribute("data-id");
-        // console.log("dataID= " + dataID);
         var newQuestion = new Question(questions[i].type, questions[i].value, questions[i].tag, questions[i].optional, questions[i].isOrganizationQuestion);
         newQuestion.setOptions(questions[i].options);
         newQuestion.setId(i);
         updatedQuestions.push(newQuestion);
-        // console.log("value: "+ newQuestion.value);
-        // console.log("flag: "+ newQuestion.isOrganizationQuestion);
     }
 
     updatedQuestions.forEach(question => dbQuestions.push({
@@ -478,9 +460,6 @@ function addCustomQuestion() {
 
 function updateQuestions() {
     // update the letter
-    // letter = decodeLetterHTML(document.getElementById(LETTER_TEXT_AREA_ID).innerHTML);
-    // letter = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-    // console.log("letter is "  + letter);
     var element = document.querySelector(TRIX_EDITOR);
     letter = element.value;
 
@@ -858,7 +837,6 @@ function deemphasizeTags() {
 
 function emphasizeTags() {
     var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-    console.log(letterHTML);
     var letterHTMLWithTagEmphasis = letterHTML.replace(/&lt;\![a-z0-9_]+&gt;/gi, function (match) {
         if (unknownTags.find(function (tag) {
                 return tag === match;
@@ -869,7 +847,6 @@ function emphasizeTags() {
         return '<span class="tag">' + match + '</span>';
     });
     letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis) ? letterHTML : letterHTMLWithTagEmphasis;
-    console.log("======="+letterHTMLWithTagEmphasis);
     document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTMLWithTagEmphasis.replace(/\<div\>\<br\>\<\/div\>/gi, '<br>').replace(/\<div\>/gi, '<br>').replace(/\<\/div\>/gi, '');
 }
 

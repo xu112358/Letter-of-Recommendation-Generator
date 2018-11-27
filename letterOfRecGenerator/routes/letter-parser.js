@@ -1,13 +1,11 @@
 var express = require('express');
 var User = require('../models/user');
-// var router = express.Router();
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
                 "November", "December"];
 
 
 exports.htmlstuff = function(form) {
     var text = form;
-    // text = text.replace('br', ' ');
     
     text = text.replace(/<br\s*\/?>/gi, ' \n');
     text = text.replace(/\u00a0/g, " ");
@@ -26,11 +24,6 @@ exports.getDate = function(rawDate) {
     month = parseInt(arr[1]);
     day = arr[2];
     var date = months[month-1] + " " + day + ", " + year;
-    // console.log("Date: " + date)
-    // console.log("0:" + arr[0])
-    // console.log("1:" + arr[1])
-    // console.log("2:" + arr[2])
-
     return date;
 
 }

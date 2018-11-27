@@ -52,10 +52,6 @@ router.post('/save', function (req, res, next) {
         if (err) {
             console.log(err);
         } else {
-            // res.render({
-            //     success: "Updated Successfully",
-            //     status: 200
-            // });
             res.render('pages/letter-preview', {
                 title: form.email,
                 templates: req.user.getEmailTemplates(),

@@ -147,19 +147,12 @@ router.get('/template', function (req, res, next) {
 });
 
 router.post('/fileUpload', function (req,res, next) {
-    // console.log("Hello bruh")
-    // console.log("SDF: " + req.files)
-    // console.log("WH: " + req.files.wtf)
     var file = req.files.file;
-    console.log("File name: " + file.name)
-    // console.log("Req: " + req.files.letterhead-upload-file)
     var headerPathP = __dirname + '/uploads/' + 'uploaded.pdf';
     file.mv(headerPathP, function(err) {
         if (err)
           return res.status(500).send(err);
 
-        // res.send('File uploaded!');
-        console.log("uploaded!!");
     });
 
 })

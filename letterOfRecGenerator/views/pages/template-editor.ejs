@@ -81,8 +81,7 @@
                     <br/>   
                 </div> 
                 <br>
-                <button onclick="emphasizeTags()">Emphasize Tags</button>
-                <button onclick="deemphasizeTags()">Deemphasize Tags</button>
+
             </div> 
         </div>
 
@@ -90,8 +89,7 @@
             <div id="letter-container">
                 <h2 id="letter-boilerplate" class="section-header">Letter Boilerplate</h2>
                 <div class="flex1">
-                    <!-- <div class ="letter" id="letter-text-area" contentEditable="true"> </div> -->
-                    <trix-editor id="letter-text-area" id="text"></trix-editor>
+                    <trix-editor class="trix-content" id="letter-text-area"></trix-editor>
                 </div>
             </div>
         </div>
@@ -160,7 +158,6 @@
 <script>
 
     var letterContent = document.getElementById("letter-text-area");
-    console.log(letterContent.innerHTML);
     var firstHalf = ""; 
     var secondHalf = ""; 
     var letterContentCursorPos = -1; 
@@ -172,7 +169,6 @@
         var position = letterContent.innerHTML.indexOf("\u0001");
         target.parentNode.removeChild(target);
 
-        //console.log(position);
         letterContentCursorPos = position; 
         var letterContentInnerHTML = letterContent.innerHTML; 
         firstHalf = letterContentInnerHTML.substring(0, letterContentCursorPos); 
@@ -185,13 +181,9 @@
 
     // so you can click tags directly after typing
    $("#letter-text-area").focusout(function () {
-        console.log("focused out");
         var letterContentInnerHTML = letterContent.innerHTML; 
         firstHalf = letterContentInnerHTML.substring(0, letterContentCursorPos); 
-        console.log(firstHalf); 
         secondHalf = letterContentInnerHTML.substring(letterContentCursorPos);
-        console.log(secondHalf);
-
     }); 
 
     $(window).click(function (e) {
