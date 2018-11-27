@@ -44,15 +44,15 @@
 <br>
 <br>
 
-<table>
+<table class="archive-table">
     <thead>
-        <td class="center"><b>Archived Recommendations</b></td>
+        <td class="center"><p class="archive-title">Archived Recommendations</p></td>
         <button id ="button-show-hide" onclick="showTable('table1')">+</button>
     </thead>
 </table>
 
 <div id = "table1" style="display: none;">
-<table>
+<table  class="archive-table">
     <thead>
     <tr>
         <td>Timestamp</td>
@@ -97,14 +97,14 @@
 </table>
 </div>
 <br>
-<table>
+<table class="archive-table">
     <thead>
-        <td class="center"><b>Archived Recommendation Templates</b></td>
+        <td class="center"><p class="archive-title">Archived Recommendation Templates</p></td>
         <button id ="button-show-hide" onclick="showTable('table2')">+</button>
     </thead>
 </table>
 <div id = "table2" style="display: none;">
-<table>
+<table class="archive-table">
     <tbody>
     <% if (!templates.length)  { %>
         <tr>
@@ -128,14 +128,14 @@
 </table>
 </div>
 <br>
-<table>
+<table class="archive-table">
         <thead>
-        <td class="center"><b>Archived Email Templates</b></td>
+        <td class="center"><p class="archive-title">Archived Email Templates</p></td>
         <button id ="button-show-hide" onclick="showTable('table3')">+</button>
         </thead>
 </table>
 <div id="table3" style="display: none;">
-<table>
+<table class="archive-table">
     <tbody>
     <% if (!emailtemplates.length)  { %>
         <tr>
