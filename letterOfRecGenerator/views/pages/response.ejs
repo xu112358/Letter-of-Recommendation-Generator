@@ -29,15 +29,17 @@
         <tr>
             <td width="60%">
                <div>
-                    <%= questions[q] %>
+                    <%= questions[q].question %>
                </div> 
             </td>
             <td width="40%">
                <% console.log(q) %>
-               <% console.log(responses[q].response) %>
                 <div id="responses-container" contenteditable="true">
-                        <% if(!responses[q]) %>
-                        <%= responses[q].response %>
+                        <%  for(var k=0; k < responses.length; k++) {
+                                if(questions[q].tag == responses[k].tag) { %>
+                                    <%= responses[k].response %>
+                                <%}
+                            }%> 
                 </div>
             </td>
         </tr>
