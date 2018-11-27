@@ -46,7 +46,7 @@ function onLoad() {
         error: function () {
             console.log('error');
         }
-    });
+    }); 
 }
 
 function showEditModal(clicked) {
@@ -163,6 +163,7 @@ function createLetterPreview(form, letter) {
         letterContainer.appendChild(innerContainer);
         outerContainer.appendChild(letterContainer);
         // $('.resizable').resizable();
+        console.log(innerContainer.innerHTML); 
         return innerContainer.innerHTML;
     });
 }
