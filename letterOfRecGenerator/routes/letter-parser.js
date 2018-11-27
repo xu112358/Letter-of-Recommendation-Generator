@@ -5,6 +5,7 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 
 exports.htmlstuff = function(form) {
+    console.log("When is this called?");
     var text = form;
     
     text = text.replace(/<br\s*\/?>/gi, ' \n');

@@ -151,7 +151,9 @@ function createLetterPreview(form, letter) {
 }
 function parseLetter(form) {
     var letter = form.template.text;
+    console.log(letter);
     var letter_html = decodeLetterHTML(letter);
+    console.log("html????????" + letter_html);
     var responses = form.responses;
 
     var noCapitalization = Array.from(letter_html.replace(tagRegex, function (match) {
@@ -255,7 +257,7 @@ function encodeLetterHTML(text) {
 }
 
 function decodeLetterHTML(text) {
-    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/&nbsp/g, ' ');
+    return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&#039;/g, "'").replace(/\<span class\="tag"\>/gi, '').replace(/\<\/span\>/gi, '').replace(/\<div\>/gi, '\n').replace(/\<\/div\>/gi, '').replace(/\<br\>/gi, '\n').replace(/\&nbsp;/g, ' ');
 }
 
 function addEmailHistory() {

@@ -23,8 +23,6 @@
         </tr>
         </thead>
         <tbody>
-         <% console.log(responses) %>
-        <% console.log(questions) %>
         <% for (var q=0; q < questions.length; q++) { %>
         <tr>
             <td width="60%">
@@ -33,7 +31,6 @@
                </div> 
             </td>
             <td width="40%">
-               <% console.log(q) %>
                 <div id="responses-container" contenteditable="true">
                         <%  for(var k=0; k < responses.length; k++) {
                                 if(questions[q].tag == responses[k].tag) { %>
