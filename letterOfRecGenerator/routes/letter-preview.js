@@ -18,7 +18,6 @@ router.get('/', function (req, res, next) {
         if (err) {
             console.log("get /  error in letter-preivew: " + err );
         } else {
-            console.log("id when loading page? " + req.query.id);
             res.render('pages/letter-preview', {
                 title: form.email,
                 templates: req.user.getEmailTemplates(),
@@ -39,18 +38,6 @@ router.get('/form', function (req, res, next) {
     });
 });
 
-router.get('/emailForm', function (req, res, next) {
-    req.user.getForm(req.query.id, function (err, form) {
-        if (err) {
-            console.log("/form error:  "  + err);
-        } else {
-            res.json({
-                form: form,
-                id: req.query.id
-            });
-        }
-    });
-});
 
 
 
@@ -61,7 +48,6 @@ router.post('/save', function (req, res, next) {
         } else {
             res.render('pages/letter-preview', {
                 title: form.email,
-                // templates: req.user.getEmailTemplates(),
                 id: req.query.id,
                 form: form,
             });
@@ -88,9 +74,7 @@ router.post('/drive', function(req,res,next) {
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
             var length = text.length;
-            console.log("Length:" + length)
             var stringWords = text.split(' ');
-            console.log("WORDS:" + stringWords.length);
             var stringlen = stringWords.length;
             var firstPage = "";
             var secondPage = "";
@@ -101,7 +85,6 @@ router.post('/drive', function(req,res,next) {
                     firstPage += stringWords[i];
                     firstPage += " ";
                 }
-                console.log("First: " + firstPage);
 
                 var remain = stringlen - 430;
                 

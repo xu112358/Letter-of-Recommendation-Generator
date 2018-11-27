@@ -164,10 +164,9 @@
                 type: 'POST',
                 complete: function() {
                     console.log('worked for saveDefaultTemplate');
-                    // window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
                 },
                 error: function () {
-                    console.log('error in saveDefaultTemplate')
+                    console.log('error in saveDefaultTemplate');
                 }
             })
         closeSaveModal();
@@ -181,25 +180,11 @@
     }
 
     function openLetterPreview(params, status) {
-        console.log(status);
         // Check to see if the status is green, if not then show error dialog
         if(status === 'Sent'){
             window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
         } else {
-            console.log(params)
             window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
-            // $.ajax({
-            //     url: 'http://localhost:3000/recommender-dashboard/drive',
-            //     data: {params},
-            //     type: 'POST',
-            //     complete: function() {
-            //         console.log('worked');
-            //         window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
-            //     },
-            //     error: function () {
-            //         console.log('error')
-            //     }
-            // })
             
         }  
     }
@@ -226,7 +211,6 @@
     }
 
     function openResponses(params) {
-        console.log(status);
         // Check to see if the status is green, if not then show error dialog
         if(status === 'Sent'){
             window.alert("Responses cannot be seen because the recommendee has not filled out the form!");
@@ -237,7 +221,6 @@
 
     // When the user clicks the preview icon, take them to the letter preview page.
     function openEmailPreview(params, status) {
-        console.log(status);
         // Check to see if the status is green, if not then show error dialog
         if(status === 'Sent'){
             window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
@@ -252,7 +235,6 @@
 
     $("#Edit").click(function(e) {
         e.preventDefault();
-        console.log("Edit clicked");
         document.getElementById('body-text').disabled= false;
         document.getElementById('subject').disabled= false;
         document.getElementById('Edit').disabled= true;

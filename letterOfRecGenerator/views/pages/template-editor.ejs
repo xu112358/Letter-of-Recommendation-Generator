@@ -144,9 +144,7 @@
 </html>
 
 <script>
-
     $("button[name='tag_buttons']").on("click", function (e) {
-        console.log("in tag button click function");
         var val = $(this).val();
         var theDiv = document.getElementById("letter-text-area");
         var content = document.createTextNode(val);

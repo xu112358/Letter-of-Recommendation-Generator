@@ -13,7 +13,6 @@ router.get('/', function (req, res, next) {
         if (err) {
             console.log("get /  error in letter-preivew: " + err );
         } else {
-            console.log("id when loading page? " + req.query.id);
             res.render('pages/email-letter-preview', {
                 title: form.email,
                 templates: req.user.getEmailTemplates(),
@@ -63,9 +62,6 @@ router.post('/save', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-    console.log("/post is called");
-    console.log("id? " + req.body.id);
-
     req.user.addEmailHistory(req.body.Email, function (err, form){
         if (err) {
             console.log("get form in /addEmailHistory " + err);
@@ -75,17 +71,14 @@ router.post('/', function (req, res, next) {
         if (err) {
             console.log("get form in / " + err);
         } else {
-            //console.log("got Form, not setEmailSent");
             Form.setEmailSent(req.body.id, function (err, form) {
                 if (err) {
                     console.log("setEmailSent in / " + err);
                 } else {
-                    //console.log("setEmailSent, nowaddEHF");
                     form.addEmailHistory_Form(req.body.Email, function (err, id) {
                         if (err) {
                             console.log("add email history " +err);
                         } else {
-                            console.log("got into _Form");
                             var email = form.email; // temp
                             var gmailClass = google.gmail('v1');
                             var email_lines = [];
@@ -94,7 +87,6 @@ router.post('/', function (req, res, next) {
                             var email_body = req.body.Email.body_text;                           
                             email_body = email_body.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/gi, '<br>');
                        
-                            //email_lines.push('From: "test"');
                             email_lines.push('To: ' + toEmail);
                             email_lines.push('Content-type: text/html;charset=iso-8859-1');
                             email_lines.push('MIME-Version: 1.0');

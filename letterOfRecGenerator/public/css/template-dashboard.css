@@ -7,7 +7,6 @@
 .addBtn{
     background-color: transparent;
     border: none;
-    /*padding: 15px 20px;*/
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -41,12 +40,6 @@
     text-align: center;
 }
 
-/*.input-text {
-    font-size: 20px;
-    line-height: 20px;
-    flex: 1;
-}*/
-
 .input-submit {
     background-color: #FF473A;
     font-size: 12px;
@@ -78,13 +71,6 @@
     right: 5%;
     top: 50%;
     transform: translateY(-50%);
-}
-
-.template-name {
-    /*left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);*/
 }
 
 img.icon {

@@ -26,8 +26,6 @@ router.get('/update', function (req, res, next) {
     var questions =  [];
     var formId = req.query.id;
     var editedResponses = req.query.editedResponses;
-    console.log("update id: " + formId);
-    console.log("updated response: " +  editedResponses);
     req.user.getForm(formId, function (err, form) {
         if(err) {
             console.log(err)

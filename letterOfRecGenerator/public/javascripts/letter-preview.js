@@ -1,5 +1,4 @@
 var id = parseAttribute('id');
-console.log("what is id here is js?" + id);
 
 var innerContainer;
 var form;
@@ -20,7 +19,6 @@ var edited = false;
 var formatted;
 
 function onLoad() {
-    console.log("HELLO from on load")
     $.ajax({
         url: 'http://localhost:3000/letter-preview/form',
         data: {id},
@@ -61,17 +59,12 @@ function saveEditModal() {
     var editor = document.querySelector(TRIX_EDITOR).editor;
     
     var child = $('#trix-editor').children().first().innerHTML;
-    console.log("CHILD:" + letterHTML)
-    console.log("Letters: " + letterHTML.length)
     var length = letterHTML.length
     letterHTML = element.value;
-    console.log("LetterHTML:" + letterHTML)
     var inside = document.getElementsByClassName("inside");
     document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
     editor.setSelectedRange([0, editor.getDocument().getLength()])
     editor.deleteInDirection("forward");
-    console.log("VALUE before:" + element.value)
-    console.log("VALUE after:" + element.value)
 
     $.ajax({
         url: 'http://localhost:3000/letter-preview/save',
@@ -100,7 +93,6 @@ function cancelEditModal() {
 function downloadLetter() {
     var datepicker = document.querySelectorAll("input[type=date]")[0]
     var date = datepicker.value
-    console.log("Date:" + date)
     $.ajax({
         url: 'http://localhost:3000/letter-preview/drive',
         data: {
@@ -137,12 +129,11 @@ function createLetterPreview(form, letter) {
 
         if (letter) {
             letterHTML = letter;
-            console.log("if letter exist" + letterHTML)
         } else {
             letterHTML = parseLetter(form);
         }
 
-        innerContainer.innerHTML += '<div id = "letter-text">' + letterHTML + '</div>';
+        innerContainer.innerHTML += '<div id = "letter-text" style="white-space: pre-line">' + letterHTML + '</div>';
 
         letterContainer.appendChild(innerContainer);
         outerContainer.appendChild(letterContainer);
@@ -212,7 +203,7 @@ function parseEmailLetter(body) {
                 });
                 return response ? response.response : '';
             }));
-            console.log(noCapitalization);
+            
             for (var i = 0; i < noCapitalization.length; i++) {
         
                 // Found ending punctuation that isn't the last letter in the text
@@ -259,8 +250,6 @@ function decodeLetterHTML(text) {
 }
 
 function addEmailHistory() {
-    console.log("saveEmailTemplate called");
-
     var Email = {
         title: document.getElementById(EMAIL_TEMPLATES).value,
         subject: document.getElementById(EMAIL_SUBECT_TEXT_AREA_ID).value,

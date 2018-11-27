@@ -8,7 +8,6 @@
     margin-top: 20px;
     width: 200px;
     height: 50px;
-    /*margin:auto;*/
     display:block;
     cursor: pointer;
 }
@@ -41,8 +40,8 @@
     background-color: #e8e8e8;
     border: thick solid black;
     margin: 15px 35px;
-    /*width: 80%;*/
-    overflow:auto;
+    overflow: auto;
+    font-family: "Times New Roman";
 }
 
 
@@ -99,14 +98,9 @@
 
 #email-subject-container{
     margin-top: 20px; 
-    /*background-color: #e8e8e8;
-    border:black;
-    margin: 15px auto;
-    width: 50%;*/
 }
 
 #email-subject-text-area{
-    /* height: 300px; */
     width: 1000px;
     font-size: 13px;
     padding-bottom: 5px;
@@ -130,11 +124,6 @@
 
 #email-body-container {
     margin-top: 20px; 
-    /*background-color: #e8e8e8;
-    border: black;
-    margin: 15px auto;
-    height: 300px;
-    width: 800px;*/
 }
 
 #email-preview-container {
@@ -150,11 +139,9 @@
 }
 
 #sendEmail {
-    /*flex-basis: auto;*/
     width: 200px;
     height: 40px;
     background-color: #FF473A;
-    /*text-align: center;*/
     font-size: 12px;
     border-radius: 20px;
     border: none;
@@ -222,6 +209,7 @@ trix-toolbar {
 trix-editor {
     border: 2px solid black;
     padding: 20px; 
+    font-family: "Times New Roman";
 }
 
 
@@ -262,7 +250,6 @@ trix-editor {
     text-transform: uppercase;
     margin-top: 60px;
     margin-bottom: 30px;
-    /*margin-left: auto;*/
     margin-right: 30px;
     transition: 0.6s;
 }

@@ -18,7 +18,6 @@ class Question {
     constructor(type, value, tag, optional = false, orgQuestion = false) {
         // Text, Radio Button, Checkbox
         this.type = type;
-        console.log(type);
         this.value = value;
         this.tag = tag;
         this.optional = optional;
@@ -402,7 +401,6 @@ function executeWarningModalFunction() {
 // NOTE: need to push new question AFTER updateQuestions(), since display questions relies on a question being displayed once
 // to assign it a data_id
 function addTextAnswerQuestion() {
-    console.log("addTestAnswerQuestion called");
     updateQuestions();
     questions.push(new Question("Text", "", ""));
     displayQuestions();
@@ -410,7 +408,6 @@ function addTextAnswerQuestion() {
 }
 
 function addRadioButtonQuestion() {
-    console.log("addRadioButtonQuestion called");
     updateQuestions();
     var question = new Question("Radio Button", "", "");
     question.options.push(constructOptionObject("", ""));
@@ -420,7 +417,6 @@ function addRadioButtonQuestion() {
 }
 
 function addCheckboxQuestion() {
-    console.log("addCheckboxQuestion called");
     updateQuestions();
     var question = new Question("Checkbox", "", "");
     question.options.push(constructOptionObject("", ""));
@@ -433,7 +429,6 @@ function addCheckboxQuestion() {
  * Creates a custom question
  */
 function addCustomQuestion() {
-    console.log("addTestAnswerQuestion called");
     updateQuestions();
     let question = new Question("Custom", "", "");
     question.options.push(constructOptionObject("", ""));

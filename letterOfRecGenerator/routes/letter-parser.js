@@ -12,7 +12,6 @@ exports.htmlstuff = function(form) {
     text = text.replace(/\//g, '');
     text = text.replace(/<div\s*\/?>/gi,' ');
     text = text.replace("&nbsp;", " ");
-    console.log("IN HTML")
     return text;
 }
 

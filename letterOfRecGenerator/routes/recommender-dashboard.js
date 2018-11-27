@@ -61,7 +61,6 @@ router.post('/', function (req, res, next) {
 
     var currentUser = req.user;
     var userId = currentUser._id;
-    //console.log("what is user id?: " + objectId);
     Form.createForm(toEmail, req.user.getTemplate(req.body.templateId), userId, function (err, form) {
         if (err) {
             console.log(`error: ${err}`);
@@ -73,7 +72,6 @@ router.post('/', function (req, res, next) {
                 }
             });
 
-            //email_lines.push('From: "test" <pcarion@gmail.com>');
             email_lines.push('To: ' + toEmail);
             email_lines.push('Content-type: text/html;charset=iso-8859-1');
             email_lines.push('MIME-Version: 1.0');
