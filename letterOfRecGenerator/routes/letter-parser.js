@@ -7,11 +7,11 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 exports.htmlstuff = function(form) {
     var text = form;
     
-    text = text.replace(/<br\s*\/?>/gi, ' \n');
+    text = text.replace(/<br\s*\/?>/gi, '\n');
     text = text.replace(/\u00a0/g, " ");
     text = text.replace(/\//g, '');
     text = text.replace(/<div\s*\/?>/gi,' ');
-    text = text.replace("&nbsp;", " ");
+    text = text.replace(/\&nbsp;/g, ' ');
     return text;
 }
 
