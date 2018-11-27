@@ -33,11 +33,6 @@ function onLoad() {
                         saveSwitchData: true},
                 type: 'GET',
                 success: function (dat) {
-                    // // console.log("ON LOAD" + data.template._id);
-                    // templateData = dat;
-                    // // console.log(templateData);
-                    // templateData.letterheadImg = templateData.letterheadImg || form.template.letterheadImg;
-                    // templateData.footerImg = templateData.footerImg || form.template.footerImg;
                     console.log('success');
                     letterHTML = createLetterPreview(form, form.letter);
                 }
@@ -70,16 +65,12 @@ function saveEditModal() {
     console.log("Letters: " + letterHTML.length)
     var length = letterHTML.length
     letterHTML = element.value;
-    // element.value = "LITERally wtf"
     console.log("LetterHTML:" + letterHTML)
-    // element.value = " ";
     var inside = document.getElementsByClassName("inside");
-    // console.log("INSIDE: " + document.getElementById(LETTER_CONTAINER_ID).innerHTML)
     document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
     editor.setSelectedRange([0, editor.getDocument().getLength()])
     editor.deleteInDirection("forward");
     console.log("VALUE before:" + element.value)
-    // element.value = "";
     console.log("VALUE after:" + element.value)
 
     $.ajax({
@@ -139,10 +130,6 @@ function createLetterPreview(form, letter) {
         innerContainer = document.createElement('div');
         innerContainer.id = 'print';
         letterContainer.onclick = function (e) {
-            // console.log(e.target);
-            // if (e.target.className.indexOf('resizable') != -1) {
-            //     return;
-            // }
             showEditModal(this.id);
         };
         letterContainer.style.cursor = 'pointer';
@@ -152,8 +139,6 @@ function createLetterPreview(form, letter) {
             letterHTML = letter;
             console.log("if letter exist" + letterHTML)
         } else {
-            // letterHTML = encodeLetterHTML(parseLetter(form));
-            console.log(letterHTML);
             letterHTML = parseLetter(form);
         }
 
@@ -161,17 +146,12 @@ function createLetterPreview(form, letter) {
 
         letterContainer.appendChild(innerContainer);
         outerContainer.appendChild(letterContainer);
-        // $('.resizable').resizable();
-        console.log(innerContainer.innerHTML); 
         return innerContainer.innerHTML;
     });
 }
 function parseLetter(form) {
     var letter = form.template.text;
     var letter_html = decodeLetterHTML(letter);
-    console.log("letter is " + letter);
-    // var letter_html = $.html(letter);
-    console.log("letter html" + letter_html);
     var responses = form.responses;
 
     var noCapitalization = Array.from(letter_html.replace(tagRegex, function (match) {

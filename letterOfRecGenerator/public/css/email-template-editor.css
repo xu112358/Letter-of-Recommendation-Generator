@@ -3,9 +3,6 @@
 }
 
 #email-subject-container {
-    /*background-color: #e8e8e8;*/
-    /*border: black;*/
-    /*margin: 15px auto; */
     display: flex;
     margin: 10px 30px; 
     width: 100%;
@@ -60,9 +57,6 @@
 
 #tag-heading {
     font-weight: bold; 
-}
-
-#email-body-text-area {
 }
 
 #tag-explaination {
