@@ -54,7 +54,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 app.get('/auth/google', passport.authenticate('google', {
     scope: ['profile', 'https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/drive'],

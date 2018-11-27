@@ -115,16 +115,18 @@ router.post('/drive', function(req,res,next) {
 
             var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
             var output = __dirname + '/uploads/' + outputName;
+            var fontDirectory = __dirname + '/fonts/TIMES.ttf';
 
             const HummusRecipe = require('hummus-recipe');
             const pdfDoc = new HummusRecipe(headerPath, output);
+            pdfDoc.registerFont('Times', fontDirectory);
             if(stringlen > 470){
                 pdfDoc
                 // edit 1st page
                 .editPage(1)
                 .text(firstPage, 80, 85, {
                     color: '000000',
-                    font: 'Times New Roman',
+                    font: 'Times',
                     fontSize: 11,
                     align: 'left',
                     textBox: {
@@ -139,7 +141,7 @@ router.post('/drive', function(req,res,next) {
                 .editPage(2)
                 .text(secondPage, 80, 75, {
                     color: '000000',
-                    font: 'Times New Roman',
+                    font: 'Times',
                     fontSize: 11,
                     align: 'left',
                     textBox: {
@@ -159,7 +161,7 @@ router.post('/drive', function(req,res,next) {
                 .editPage(1)
                 .text(text, 80, 85, {
                     color: '000000',
-                    font: 'Times New Roman',
+                    font: 'Times',
                     fontSize: 11,
                     align: 'left',
                     textBox: {
@@ -175,10 +177,6 @@ router.post('/drive', function(req,res,next) {
             }
             opn(output);
             res.redirect('/recommender-dashboard');
-            // headStream.on('data', function () {
-
-
-            // })
         }
 
     })
