@@ -72,30 +72,62 @@ router.post('/drive', function(req,res,next) {
             var formatted_letter = formatted_date + letter;
             var template = form.getTemplate();
             var templateName = template.name;
-            console.log(formatted_letter);
+            console.log("THIS IS FORMATTED:" + formatted_letter);
 
             var text = letterParser.htmlstuff(formatted_letter)
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
             var length = text.length;
+            console.log("TEXT:" + text)
             var stringWords = text.split(' ');
+            console.log("words: " + stringWords)
+            var para = text.split('\n');
+            console.log("PAR:" + para)
             var stringlen = stringWords.length;
+            console.log("LEN: " + stringlen)
+            console.log("PARAG:" + para.length)
             var firstPage = "";
             var secondPage = "";
             // If it is larger than one page break it into two
-            if (stringlen > 470){
+            for(var i = 0; i < stringlen;i++){
+                console.log(stringWords[i])
+                if(stringWords[i] === ''){
+                    console.log("END")
+                }
+            }
+            if (stringlen > 520){
                  
-                for(var i = 0; i < 470;i++){
+                for(var i = 0; i < 520;i++){
                     firstPage += stringWords[i];
                     firstPage += " ";
                 }
+                // Write on first page up until last paragraph
+                var counter = 520;
+                while(true){
+                    console.log(stringWords[counter])
+                    if(stringWords[counter] === ''){
+                        console.log("BRUH")
+                        counter = counter + 1;
+                        break;
+                    }
+                    else {
+                        firstPage += stringWords[counter];
+                        firstPage += " ";
+                    } 
+                    counter = counter + 1;
+                }
+
+                console.log("LOOP")
+                   
 
                 var remain = stringlen - 430;
                 
-                for(var i = 471; i < stringlen;i++){
+                for(var i = counter; i < stringlen;i++){
                     secondPage += stringWords[i];
+                    console.log(stringWords[i])
                     secondPage += " ";
                 }
+
             }
 
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
@@ -114,7 +146,7 @@ router.post('/drive', function(req,res,next) {
              * and bold it through hummus-reciper (can be found on npm website for hummus-recipe)
              * but this cannot be done right now.
             */
-            if(stringlen > 470){
+            if(stringlen > 500){
                 pdfDoc
                 // edit 1st page
                 .editPage(1)
