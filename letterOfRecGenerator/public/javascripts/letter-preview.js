@@ -20,13 +20,13 @@ var formatted;
 
 function onLoad() {
     $.ajax({
-        url: `http://68.181.97.191:3000/letter-preview/form`,
+        url: 'http://localhost:3000/letter-preview/form',
         data: {id},
         type: 'GET',
         success: function (data) {
             form = data;
             $.ajax({
-                url: 'http://68.181.97.191:3000/template-editor/template',
+                url: 'http://localhost:3000/template-editor/template',
                 data: {id: data.template._id,
                         saveSwitchData: true},
                 type: 'GET',
@@ -67,7 +67,7 @@ function saveEditModal() {
     editor.deleteInDirection("forward");
 
     $.ajax({
-        url: `http://68.181.97.191:3000/letter-preview/save`,
+        url: 'http://localhost:3000/letter-preview/save',
         data: {
             id: id,
             letter: letterHTML

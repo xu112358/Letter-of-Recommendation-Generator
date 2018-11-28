@@ -192,7 +192,7 @@
     // On click for trash icon
     function deleteRow(id) {
         $.ajax({
-            url: `http://68.181.97.191:3000/recommender-dashboard/delete`,
+            url: 'http://localhost:3000/recommender-dashboard/delete',
             data: {id},
             type: 'POST',
             complete: function () {
@@ -225,7 +225,7 @@
         if(status === 'Sent'){
             window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
         } else {
-            window.location.href = getDestinationRoute('http://68.181.97.191:3000//email-letter-preview', params);
+            window.location.href = getDestinationRoute('http://localhost:3000/email-letter-preview', params);
         }  
     }
 
