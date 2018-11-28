@@ -89,7 +89,8 @@
         <td class="center">
             <img class="icon" src="/images/history.png" onclick="openHistory(<%= JSON.stringify({
                 id: form._id, email: form.email }) %>)"/>
-            <img class="icon clickable" src="/images/preview.png"/>
+            <img class="icon clickable" title="Preview Letter" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
+                id: form._id }) %>, '<%= form.status %>')"/>
         </td>
     </tr>
     <% }} %>
@@ -261,6 +262,15 @@
         }
     }
 
+    function openLetterPreview(params, status) {
+        // Check to see if the status is green, if not then show error dialog
+        if(status === 'Sent'){
+            window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
+        } else {
+            window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
+            
+        }  
+    }
 
 </script>
 </body>
