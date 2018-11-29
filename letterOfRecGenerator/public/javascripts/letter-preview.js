@@ -186,7 +186,7 @@ function parseLetter(form) {
 function parseEmailLetter(body) {
 
     $.ajax({
-        url: 'http://localhost:3000/letter-preview/emailForm',
+        url: 'http://localhost:3000/email-letter-preview/emailForm',
         data: {id},
         type: 'GET',
         success: function (data) {
