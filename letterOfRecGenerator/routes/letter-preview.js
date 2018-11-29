@@ -251,6 +251,8 @@ router.post('/drive', function(req,res,next) {
                 
             }
             opn(output);
+
+            res.redirect('/recommender-dashboard');
         }
 
     })
