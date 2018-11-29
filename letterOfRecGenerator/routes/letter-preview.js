@@ -88,12 +88,6 @@ router.post('/drive', function(req,res,next) {
             var firstPage = "";
             var secondPage = "";
             // If it is larger than one page break it into two
-            // for(var i = 0; i < stringlen;i++){
-            //     console.log("WORD: " + stringWords[i])
-            //     if(stringWords[i] === ''){
-            //         console.log("END")
-            //     }
-            // }
             if (stringlen > 520){
                  
                 for(var i = 0; i < 520; i++){
@@ -136,7 +130,7 @@ router.post('/drive', function(req,res,next) {
                 console.log("LOOP")
                 console.log("Counter: " + counter)
 
-                var remain = stringlen - 430;
+                var remain = stringlen - counter;
                 
                 for(var i = counter; i < stringlen;i++){
                     if(stringWords[i].includes("<br>")){
@@ -151,6 +145,7 @@ router.post('/drive', function(req,res,next) {
 
             }
 
+            console.log("REMAIN: " + remain)
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
             var signaturePath = __dirname + '/uploads/' + 'signature.pdf';
 
@@ -162,6 +157,9 @@ router.post('/drive', function(req,res,next) {
             const HummusRecipe = require('hummus-recipe');
             const pdfDoc = new HummusRecipe(headerPath, output);
             pdfDoc.registerFont('Times', fontDirectory);
+
+            console.log("COUNTER: " + counter)
+            var signature_pos = remain;
             /**  
              * The current problem is that bolded text that use <strong>txt</strong> can't be
              * converted and kept bold. So we need to find where the location of the text
@@ -200,7 +198,7 @@ router.post('/drive', function(req,res,next) {
                         }
                     }
                 })
-                .image(signaturePath, 20, 400, {width: 500, keepAspectRatio: true})
+                .image(signaturePath, 20, signature_pos , {width: 500, keepAspectRatio: true})
                 .endPage()
                 .endPDF();
             }
@@ -251,7 +249,6 @@ router.post('/drive', function(req,res,next) {
                 
             }
             opn(output);
-
             res.redirect('/recommender-dashboard');
         }
 
