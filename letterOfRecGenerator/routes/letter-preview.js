@@ -88,9 +88,9 @@ router.post('/drive', function(req,res,next) {
             var firstPage = "";
             var secondPage = "";
             // If it is larger than one page break it into two
-            if (stringlen > 520){
+            if (stringlen > 510){
                  
-                for(var i = 0; i < 520; i++){
+                for(var i = 0; i < 510; i++){
                    
                     if(stringWords[i].includes("<br>")){
                         console.log("Hello")
@@ -104,18 +104,29 @@ router.post('/drive', function(req,res,next) {
                 }
                 // Write on first page up until last paragraph
                 console.log("WTF")
-                var counter = 520;
+                var counter = 510;
 
-                while(true){
-                    
+                while(counter < stringlen){
+                    console.log("POOP: " + stringWords[counter])
                     if(stringWords[counter].includes("<br>")){
                         console.log("BRUH")
-                        stringWords[counter] = stringWords[counter].replace("<br><br>", "\n\n")
-                        stringWords[counter] = stringWords[counter].replace("<br>", "\n")
-                        stringWords[counter] = stringWords[counter].replace("<br> <br>", "\n \n")
+                        var index = stringWords[counter].indexOf("<br>");
+                        var first = stringWords[counter].substr(0, index);
+                        var second = stringWords[counter].substr(index);
+                        // stringWords[counter] = stringWords[counter].replace("<br><br>", "\n\n")
+                        // stringWords[counter] = stringWords[counter].replace("<br>", "\n")
+                        // stringWords[counter] = stringWords[counter].replace("<br> <br>", "\n \n")
+
                         console.log("INSIDE: " + stringWords[counter])
-                        firstPage += stringWords[counter];
+                        console.log("first:" + first);
+                        console.log("second:" + second)
+                        // firstPage += stringWords[counter];
+                        // firstPage += " ";
+                        firstPage += first;
                         firstPage += " ";
+                        // Attach second part to next word inside array
+                        var next = stringWords[counter + 1];
+                        stringWords[counter + 1] = second + " " + next;
                         counter = counter + 1;
                         break;
                     }
@@ -145,7 +156,7 @@ router.post('/drive', function(req,res,next) {
 
             }
 
-            console.log("REMAIN: " + remain)
+            // console.log("REMAIN: " + remain)
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
             var signaturePath = __dirname + '/uploads/' + 'signature.pdf';
 
@@ -158,7 +169,7 @@ router.post('/drive', function(req,res,next) {
             const pdfDoc = new HummusRecipe(headerPath, output);
             pdfDoc.registerFont('Times', fontDirectory);
 
-            console.log("COUNTER: " + counter)
+            // console.log("COUNTER: " + counter)
             var signature_pos = remain;
             /**  
              * The current problem is that bolded text that use <strong>txt</strong> can't be
@@ -166,7 +177,7 @@ router.post('/drive', function(req,res,next) {
              * and bold it through hummus-reciper (can be found on npm website for hummus-recipe)
              * but this cannot be done right now.
             */
-            if(stringlen > 500){
+            if(stringlen > 520){
                 pdfDoc
                 // edit 1st page
                 .editPage(1)
