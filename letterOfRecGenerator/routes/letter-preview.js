@@ -22,7 +22,6 @@ router.get('/', function (req, res, next) {
         } else {
             res.render('pages/letter-preview', {
                 title: form.email,
-                templates: req.user.getEmailTemplates(),
                 id: req.query.id,
                 form: form,
             });
@@ -39,8 +38,6 @@ router.get('/form', function (req, res, next) {
         }
     });
 });
-
-
 
 
 router.post('/save', function (req, res, next) {
