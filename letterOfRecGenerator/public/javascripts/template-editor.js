@@ -135,6 +135,22 @@ function changeText() {
     
 }
 
+function changeFooterText() {
+    var files = $('#footer-upload-file')[0].files;
+    if (files && files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#footer-preview').attr('src', e.target.result);
+            footerImgData = e.target.result;
+            var filename = files[0].name;
+            document.getElementById("footer-preview-div").innerHTML = "Uploaded File: " + filename;
+        };
+
+        reader.readAsDataURL(files[0]);
+    }
+    
+}
+
 window.onclick = function (event) {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
     if (event.target == modal) {

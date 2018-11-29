@@ -72,13 +72,15 @@ router.post('/drive', function(req,res,next) {
             console.log("THIS IS FORMATTED:" + formatted_letter);
 
             var text = letterParser.htmlstuff(formatted_letter)
+            var longText = text.replace(/(\r\n|\n|\r)/gm, "<br>");
+            // text = text.replace(/(\n)/gm, '')
             var fname = form.responses[0].response;
             var lname = form.responses[1].response;
-            var length = text.length;
+            var length = longText.length;
             console.log("TEXT:" + text)
-            var stringWords = text.split(' ');
+            var stringWords = longText.split(' ');
             console.log("words: " + stringWords)
-            var para = text.split('\n');
+            var para = longText.split('<br>');
             console.log("PAR:" + para)
             var stringlen = stringWords.length;
             console.log("LEN: " + stringlen)
@@ -86,40 +88,62 @@ router.post('/drive', function(req,res,next) {
             var firstPage = "";
             var secondPage = "";
             // If it is larger than one page break it into two
-            for(var i = 0; i < stringlen;i++){
-                console.log(stringWords[i])
-                if(stringWords[i] === ''){
-                    console.log("END")
-                }
-            }
+            // for(var i = 0; i < stringlen;i++){
+            //     console.log("WORD: " + stringWords[i])
+            //     if(stringWords[i] === ''){
+            //         console.log("END")
+            //     }
+            // }
             if (stringlen > 520){
                  
-                for(var i = 0; i < 520;i++){
+                for(var i = 0; i < 520; i++){
+                   
+                    if(stringWords[i].includes("<br>")){
+                        console.log("Hello")
+                        stringWords[i] = stringWords[i].replace("<br><br>", "\n\n")
+                        stringWords[i] = stringWords[i].replace("<br>", "\n")
+                        stringWords[i] = stringWords[i].replace("<br> <br>", "\n \n")
+                        console.log("WORD: " + stringWords[i])
+                    }
                     firstPage += stringWords[i];
                     firstPage += " ";
                 }
                 // Write on first page up until last paragraph
+                console.log("WTF")
                 var counter = 520;
+
                 while(true){
-                    console.log(stringWords[counter])
-                    if(stringWords[counter] === ''){
+                    
+                    if(stringWords[counter].includes("<br>")){
                         console.log("BRUH")
+                        stringWords[counter] = stringWords[counter].replace("<br><br>", "\n\n")
+                        stringWords[counter] = stringWords[counter].replace("<br>", "\n")
+                        stringWords[counter] = stringWords[counter].replace("<br> <br>", "\n \n")
+                        console.log("INSIDE: " + stringWords[counter])
+                        firstPage += stringWords[counter];
+                        firstPage += " ";
                         counter = counter + 1;
                         break;
                     }
                     else {
                         firstPage += stringWords[counter];
                         firstPage += " ";
+                        counter = counter + 1;
                     } 
-                    counter = counter + 1;
+                    
                 }
 
                 console.log("LOOP")
-                   
+                console.log("Counter: " + counter)
 
                 var remain = stringlen - 430;
                 
                 for(var i = counter; i < stringlen;i++){
+                    if(stringWords[i].includes("<br>")){
+                        stringWords[i] = stringWords[i].replace("<br><br>", "\n\n")
+                        stringWords[i] = stringWords[i].replace("<br>", "\n")
+                        stringWords[i] = stringWords[i].replace("<br> <br>", "\n \n")
+                    }
                     secondPage += stringWords[i];
                     console.log(stringWords[i])
                     secondPage += " ";
@@ -128,6 +152,7 @@ router.post('/drive', function(req,res,next) {
             }
 
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
+            var signaturePath = __dirname + '/uploads/' + 'signature.pdf';
 
             var outputName = templateName + "_Template_" + fname + "_" + lname + ".pdf";
             var downloadFolder = downloadsFolder() + '/';
@@ -175,28 +200,55 @@ router.post('/drive', function(req,res,next) {
                         }
                     }
                 })
+                .image(signaturePath, 20, 400, {width: 500, keepAspectRatio: true})
                 .endPage()
                 .endPDF();
             }
             else {
-                pdfDoc
+                // One page but find out where signature needs to go
+                if(stringlen > 300){ 
+                    pdfDoc
                 // edit 1st page
-                .editPage(1)
-                .text(text, 80, 85, {
-                    color: '000000',
-                    font: 'Times',
-                    fontSize: 11,
-                    align: 'left',
-                    textBox: {
-                        width: 480,
-                        lineHeight: 14,
-                        style: {
-                            lineWidth: 1
+                    .editPage(1)
+                    .text(text, 80, 85, {
+                        color: '000000',
+                        font: 'Times',
+                        fontSize: 11,
+                        align: 'left',
+                        textBox: {
+                            width: 480,
+                            lineHeight: 14,
+                            style: {
+                                lineWidth: 1
+                            }
                         }
-                    }
-                })
-                .endPage()
-                .endPDF();
+                    })
+                    .endPage()
+                    .insertPage(1, signaturePath, 1)
+                    .endPDF();
+                } else {
+                    // Keep it on the first page
+                     pdfDoc
+                    // edit 1st page
+                    .editPage(1)
+                    .text(text, 80, 85, {
+                        color: '000000',
+                        font: 'Times',
+                        fontSize: 11,
+                        align: 'left',
+                        textBox: {
+                            width: 480,
+                            lineHeight: 14,
+                            style: {
+                                lineWidth: 1
+                            }
+                        }
+                    })
+                    .image(signaturePath, 20, 400, {width: 600, keepAspectRatio: true})
+                    .endPage()
+                    .endPDF();
+                }
+                
             }
             opn(output);
         }
