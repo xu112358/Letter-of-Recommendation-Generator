@@ -170,7 +170,7 @@ router.post('/drive', function(req,res,next) {
             pdfDoc.registerFont('Times', fontDirectory);
 
             // console.log("COUNTER: " + counter)
-            var signature_pos = remain;
+            var signature_pos = remain + 50;
             /**  
              * The current problem is that bolded text that use <strong>txt</strong> can't be
              * converted and kept bold. So we need to find where the location of the text
