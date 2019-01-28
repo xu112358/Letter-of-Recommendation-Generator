@@ -177,6 +177,11 @@
     float: right;
 }
 
+#downloadButton:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
 #date-picker {
     margin-top: 40px; 
     margin-left: 35px;

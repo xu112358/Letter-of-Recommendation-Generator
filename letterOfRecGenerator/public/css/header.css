@@ -25,6 +25,10 @@ a{
     float:left;
 }
 
+a:hover {
+    color: #FFE16B;
+}
+
 #logout{
     float: right;
     margin-right: 30px;
