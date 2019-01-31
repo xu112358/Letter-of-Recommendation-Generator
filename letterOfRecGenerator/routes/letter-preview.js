@@ -181,13 +181,13 @@ router.post('/drive', function(req,res,next) {
                 pdfDoc
                 // edit 1st page
                 .editPage(1)
-                .text(firstPage, 80, 85, {
+                .text(firstPage, 75, 85, {
                     color: '000000',
                     font: 'Times',
                     fontSize: 11,
                     align: 'left',
                     textBox: {
-                        width: 480,
+                        width: 460,
                         lineHeight: 12,
                         style: {
                             lineWidth: 1
@@ -196,13 +196,13 @@ router.post('/drive', function(req,res,next) {
                 })
                 .endPage()
                 .editPage(2)
-                .text(secondPage, 80, 75, {
+                .text(secondPage, 75, 75, {
                     color: '000000',
                     font: 'Times',
                     fontSize: 11,
                     align: 'left',
                     textBox: {
-                        width: 480,
+                        width: 460,
                         lineHeight: 12,
                         style: {
                             lineWidth: 1
@@ -219,13 +219,13 @@ router.post('/drive', function(req,res,next) {
                     pdfDoc
                 // edit 1st page
                     .editPage(1)
-                    .text(text, 80, 85, {
+                    .text(text, 75, 85, {
                         color: '000000',
                         font: 'Times',
                         fontSize: 11,
                         align: 'left',
                         textBox: {
-                            width: 480,
+                            width: 460,
                             lineHeight: 14,
                             style: {
                                 lineWidth: 1
@@ -240,13 +240,13 @@ router.post('/drive', function(req,res,next) {
                      pdfDoc
                     // edit 1st page
                     .editPage(1)
-                    .text(text, 80, 85, {
+                    .text(text, 75, 85, {
                         color: '000000',
                         font: 'Times',
                         fontSize: 11,
                         align: 'left',
                         textBox: {
-                            width: 480,
+                            width: 460,
                             lineHeight: 14,
                             style: {
                                 lineWidth: 1
