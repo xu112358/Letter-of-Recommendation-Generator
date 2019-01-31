@@ -271,10 +271,7 @@ router.post('/drive', function(req,res,next) {
                             }
                         }
                     })
-<<<<<<< HEAD
                     .image(signaturePath, 20, stringlen + breaks*20, {width: 600, keepAspectRatio: true}) //uses stringlen and breaks to place signature
-=======
->>>>>>> e9cc1e19662065d0ad38c8d1704e6f6e5644785b
                     .endPage()
                     .endPDF();
                 }
