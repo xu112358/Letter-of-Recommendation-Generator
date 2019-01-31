@@ -404,8 +404,8 @@ function hideWarningModal() {
 }
 
 function executeWarningModalFunction() {
-    warningModalFunction();
     hideWarningModal();
+    warningModalFunction();
 }
 
 // NOTE: need to push new question AFTER updateQuestions(), since display questions relies on a question being displayed once
