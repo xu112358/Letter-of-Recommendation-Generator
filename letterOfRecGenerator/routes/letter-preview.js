@@ -156,6 +156,21 @@ router.post('/drive', function(req,res,next) {
 
             }
 
+            //WONKY ASS CODE THAT COUNTS THE CORRECT # OF BREAKS (NEEDS TO BE REFACTORED)
+            //------------------------------
+            var breaks = 0;
+
+            for(var i=0;i<stringWords.length;i++){
+                 if(stringWords[i].includes("<br>")){
+                        console.log("Hello")
+                        breaks++;
+
+                    }
+            }
+            console.log("breaks");
+            console.log(breaks);
+            //---------------------------------
+
             // console.log("REMAIN: " + remain)
             var headerPath = __dirname + '/uploads/' + 'uploaded.pdf';
             var signaturePath = __dirname + '/uploads/' + 'signature.pdf';
@@ -253,10 +268,11 @@ router.post('/drive', function(req,res,next) {
                             }
                         }
                     })
-                    .image(signaturePath, 20, 400, {width: 600, keepAspectRatio: true})
+                    .image(signaturePath, 20, stringlen + breaks*20, {width: 600, keepAspectRatio: true}) //uses stringlen and breaks to place signature
                     .endPage()
                     .endPDF();
                 }
+
                 
             }
             opn(output);
