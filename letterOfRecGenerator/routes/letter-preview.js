@@ -80,7 +80,7 @@ router.post('/drive', function(req,res,next) {
             console.log("TEXT:" + text)
             var stringWords = longText.split(' ');
             console.log("words: " + stringWords)
-            var para = longText.split('<br>');
+            var para = longText.split('\n');
             console.log("PAR:" + para)
             var stringlen = stringWords.length;
             console.log("LEN: " + stringlen)
@@ -170,13 +170,16 @@ router.post('/drive', function(req,res,next) {
             pdfDoc.registerFont('Times', fontDirectory);
 
             // console.log("COUNTER: " + counter)
-            var signature_pos = remain + 50;
+            var signature_pos = remain + 20;
             /**  
              * The current problem is that bolded text that use <strong>txt</strong> can't be
              * converted and kept bold. So we need to find where the location of the text
              * and bold it through hummus-reciper (can be found on npm website for hummus-recipe)
              * but this cannot be done right now.
             */
+
+            var single_page_sig_pos = ((stringlen/11)*14)+100;
+            console.log("HERE Y COORD: " + single_page_sig_pos);
             if(stringlen > 520){
                 pdfDoc
                 // edit 1st page
@@ -253,7 +256,7 @@ router.post('/drive', function(req,res,next) {
                             }
                         }
                     })
-                    .image(signaturePath, 20, 400, {width: 600, keepAspectRatio: true})
+                    .image(signaturePath, 20, single_page_sig_pos, {width: 600, keepAspectRatio: true})
                     .endPage()
                     .endPDF();
                 }
