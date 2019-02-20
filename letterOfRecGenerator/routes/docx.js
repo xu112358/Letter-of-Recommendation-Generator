@@ -11,6 +11,12 @@
 // });
 
 // module.exports = router;
+var Form = require('../models/form');
+var credentials = require('../config/auth');
+var googleAuth = require('google-auth-library');
+var { google } = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
+var letterParser = require('./letter-parser');
 
 const docx = require('docx');
 const fs = require('fs');
@@ -38,7 +44,10 @@ router.get('/', async(req, res) => {
     const paragraph4 = new Paragraph("\n" + "I am writing this letter as a recommendation for Tommy Trojan’s application to the MBA program at Harvard Business School. Tommy was a student of mine in CSCI 201 (Principles of SoftwareDevelopment) during the spring 2017 semester and earned a solid A in the class. She also took CSCI 401(Capstone: Design and Construction of Large Software Systems) with me in fall 2017 and earned a solid A in that class as well.");
     const paragraph5 = new Paragraph("\n" + "I am writing this letter as a recommendation for Tommy Trojan’s application to the MBA program at Harvard Business School. Tommy was a student of mine in CSCI 201 (Principles of SoftwareDevelopment) during the spring 2017 semester and earned a solid A in the class. She also took CSCI 401(Capstone: Design and Construction of Large Software Systems) with me in fall 2017 and earned a solid A in that class as well.");
     const paragraph6 = new Paragraph("\n" + "I am writing this letter as a recommendation for Tommy Trojan’s application to the MBA program at Harvard Business School. Tommy was a student of mine in CSCI 201 (Principles of SoftwareDevelopment) during the spring 2017 semester and earned a solid A in the class. She also took CSCI 401(Capstone: Design and Construction of Large Software Systems) with me in fall 2017 and earned a solid A in that class as well.");
-
+    
+    var letter = req.body.letter;
+    doc.addParagraph(letter);
+    
     doc.addParagraph(paragraph1);
     doc.addParagraph(paragraph2);
     doc.addParagraph(paragraph3);
