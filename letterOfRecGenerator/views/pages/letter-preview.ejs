@@ -23,6 +23,8 @@
         </header> 
         <p id="letter-preview-heading" class="title">Preview Letter </p>
         <p id="" class="letter-preview-subheading">Send an email to <%= title %></p>
+
+
         <p id="edit-heading" class="letter-preview-subheading">Click to edit </p>
 
 
@@ -34,6 +36,18 @@
         <div id="outer-container">
             
         </div>
+
+        <!-- upload template button -->
+        <div class="flex-display upload-cont">
+            <h2 id="upload-template" class="section-header">Upload Template</h2>
+            <div class="upload-preview-container flex1">
+
+                <form id="template-upload" action="/letter-preview/templateUpload" method="POST" encType="multipart/form-data" onsubmit="changeFooterText()">
+                    <input type="file" name="file" id="footer-upload-file"/>
+                    <input id="submit" type="submit" name="Submit"/>
+                </form>
+            </div>
+        </div>  
 
         <!-- Save and Cancel Letter Preview Edit -->
         <div id="add-question-modal">

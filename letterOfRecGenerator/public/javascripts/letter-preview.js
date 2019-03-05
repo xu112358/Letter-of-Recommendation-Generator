@@ -103,7 +103,27 @@ function downloadLetter() {
         type: 'POST',
         success: function(d){
             console.log("success in drive")
-            //window.location.href = 'http://localhost:3000/recommender-dashboard';
+            window.location.href = 'http://localhost:3000/recommender-dashboard';
+        },
+        error: function() {
+            console.log("error in drive")
+        }
+    })
+}
+function downloadLetter2() {
+    var datepicker = document.querySelectorAll("input[type=date]")[0]
+    var date = datepicker.value
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/templateUpload',
+        data: {
+            id:id,
+            letter: letterHTML,
+            date: date
+        },
+        type: 'POST',
+        success: function(d){
+            console.log("success in drive")
+            window.location.href = 'http://localhost:3000/recommender-dashboard';
         },
         error: function() {
             console.log("error in drive")
