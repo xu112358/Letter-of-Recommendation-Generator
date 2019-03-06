@@ -41,6 +41,18 @@ function onLoad() {
         }
     }); 
 }
+function getQueryVariable(){
+    /*var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for(var i=0;i<vars.length;i++){
+        var pair = vars[i].split("=");
+        if(pair[0] == variable){
+            return pair[1];
+        }
+    }*/
+    document.getElementById("id1").value = "cok";
+    
+}
 
 function showEditModal(clicked) {
     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
@@ -111,7 +123,7 @@ function downloadLetter() {
     })
 }
 function downloadLetter2() {
-    
+
     var datepicker = document.querySelectorAll("input[type=date]")[0]
     var date = datepicker.value
     $.ajax({

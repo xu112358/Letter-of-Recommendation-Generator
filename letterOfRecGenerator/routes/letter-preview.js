@@ -73,19 +73,24 @@ router.post('/templateUpload', function (req,res, next) {
     if(file){
     	//template is uploaded
     	console.log("Template uploaded!");
+    	
 
     	var user = req.user;
     	console.log("user:**********************");
     	console.log(user._id);
 
     	var pulled_text; //text that were getting and moving to docxtemplater
+    	//console.log(req.query.id);
+    	console.log(req);
+    	console.log("^^^^^^^");
+    	console.log(req.user.forms);
 
-    	user.getForm(req.query.id, function (err, form) {
+    	user.getForm(req.body.ingroup1, function (err, form) {
         if (err) {
             console.log(err);
         } else {
 
-        	//console.log(form.letter);
+        	//console.log(form);
         	pulled_text = form.letter;
             res.json(form);
 
@@ -132,13 +137,15 @@ router.post('/templateUpload', function (req,res, next) {
 
 			// buf is a nodejs buffer, you can either write it to a file or do anything else with it.
 			fs.writeFileSync(path.resolve('./routes/uploads', 'output.docx'), buf);
+			//res.setHeader('Content-disposition', 'attachment; filename=rec.docx');
+			//res.send(Buffer.from(b64string, 'base64'));
 			console.log("4");  
         }
     	});
    		
 
 
-    }else{
+    }else{ //if theres no template uploaded
     	console.log("Template not uploaded");
 
     	var user = req.user;
