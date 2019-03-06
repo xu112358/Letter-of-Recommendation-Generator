@@ -157,7 +157,7 @@
     transition: 0.6s; 
 }
 
-#downloadButton {
+#downloadButton, #templateButton {
     width: 200px;
     height: 40px;
     background-color: #FF473A;
@@ -177,9 +177,29 @@
     float: right;
 }
 
-#downloadButton:hover {
+#templateButton {
+	margin-right: auto;
+    margin-left: 60px;
+	float: left; 
+}
+
+#example-template {
+	border: 3px outset #c1c1c1;
+	margin: 0 auto;
+}
+
+#downloadButton:hover, #templateButton:hover {
     cursor: pointer;
     opacity: 0.6;
+}
+
+#template-picker {
+	margin-top: 40px;
+	margin-left: 35px;
+}
+
+#example-template {
+	display: none;
 }
 
 #date-picker {
@@ -188,7 +208,7 @@
     margin-bottom: 40px; 
 }
 
-#add-date-heading {
+#add-heading {
     font-size: 20px; 
     margin-bottom: 5px; 
 }

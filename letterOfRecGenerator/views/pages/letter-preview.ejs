@@ -38,6 +38,7 @@
         </div>
 
         <!-- upload template button -->
+
         <div class="flex-display upload-cont">
             <h2 id="upload-template" class="section-header">Upload Template</h2>
             <div class="upload-preview-container flex1">
@@ -62,6 +63,15 @@
                 </form>
             </div>
         </div>  
+
+
+        <div class="upload-preview-container flex1" id ="template-picker">
+            <p id="add-heading" class="section-header">Upload Template: </p>
+            <form id="template-upload" action="/letter-preview/templateUpload" method="POST" encType="multipart/form-data" onsubmit="changeFooterText()">            
+                <input type="file" name="file" id="footer-upload-file"/>
+            </form>
+        </div>
+     
 
         <!-- Save and Cancel Letter Preview Edit -->
         <div id="add-question-modal">
@@ -88,14 +98,22 @@
 
         <!-- Add date to letter -->
         <div id="date-picker">
-            <p id="add-date-heading" class="section-header">Add Date: </p>
+            <p id="add-heading" class="section-header">Add Date: </p>
             <input type="date" name="date" id="date">
         </div>
-            
+
         <!-- Adding the save to pdf file -->
         <button class="download-button" id="downloadButton" onClick="downloadLetter()"> Download Letter</button>
+
+        <!--template example button-->
+        <div class ="template-example">
+          <button class = "template-button" id ="templateButton" onclick ="displayTemplate()">show example template</button>
+          <img id = "example-template" src = "template-example.png" alt="{body}"/>
+        </div>
+            
     </div>
     </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
