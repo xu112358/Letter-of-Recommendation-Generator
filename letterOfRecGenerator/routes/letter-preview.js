@@ -68,44 +68,33 @@ router.post('/save', function (req, res, next) {
 router.post('/templateUpload', function (req,res, next) {
     console.log(req.files.file);
     var file = req.files.file;
+    console.log("*************");
+    console.log(file.name);
     if(file){
     	//template is uploaded
     	console.log("Template uploaded!");
-    }else{
-    	console.log("Template not uploaded");
 
     	var user = req.user;
-   		user.getForm(req.body.id, function(err, form) {
+    	console.log("user:**********************");
+    	console.log(user._id);
 
-	        //var break_lines = "<br><br>";
-            //var smaller_break_lines = "<br><br>";
-            //var date_raw = req.body.date;
-            //var actual_date = letterParser.getDate(date_raw);
-            //var formatted_date = break_lines + actual_date + smaller_break_lines;
-            var letter = req.body.letter;
-            console.log(letter);
-            
-            var formatted_letter = letter;
-            var template = form.getTemplate();
-            var templateName = template.name;
-           // console.log("THIS IS FORMATTED:" + formatted_letter);
+    	var pulled_text; //text that were getting and moving to docxtemplater
 
-            var text = formatted_letter;
-            console.log(text);
-            console.log("1");
-            //var longText = text.replace(/(\r\n|\n|\r)/gm, "<br>");
-            //text = text.replace(/(\n)/gm, '')
-            //var fname = form.responses[0].response;
-            //var lname = form.responses[1].response;
-            //var length = longText.length;
-            //console.log("TEXT:" + text)
-            //var stringWords = longText.split(' ');
-           // console.log("words: " + stringWords)
-            //var para = longText.split("<br>"); //split para into an array of paragraphs
+    	user.getForm(req.query.id, function (err, form) {
+        if (err) {
+            console.log(err);
+        } else {
 
-	        //var text = letterParser.htmlstuff(formatted_letter);
-	        var content = fs
-				    .readFileSync(path.resolve('./routes/uploads', 'input.docx'), 'binary');
+        	//console.log(form.letter);
+        	pulled_text = form.letter;
+            res.json(form);
+
+            console.log("gotdamnit");
+    		console.log(pulled_text);
+    		var formatted_text = letterParser.htmlstuff(pulled_text);
+
+    		var content = fs
+				    .readFileSync(file.name, 'binary');
 
 			var zip = new JSZip(content);
 
@@ -119,7 +108,7 @@ router.post('/templateUpload', function (req,res, next) {
 			doc.setData({
 			    
 			    //text with the line breaks included
-			    description: text
+			    description: formatted_text
 			});
 
 			try {
@@ -143,8 +132,78 @@ router.post('/templateUpload', function (req,res, next) {
 
 			// buf is a nodejs buffer, you can either write it to a file or do anything else with it.
 			fs.writeFileSync(path.resolve('./routes/uploads', 'output.docx'), buf);
-			console.log("4");
-		});
+			console.log("4");  
+        }
+    	});
+   		
+
+
+    }else{
+    	console.log("Template not uploaded");
+
+    	var user = req.user;
+    	console.log("user:**********************");
+    	console.log(user._id);
+
+    	var pulled_text; //text that were getting and moving to docxtemplater
+
+    	user.getForm(req.query.id, function (err, form) {
+        if (err) {
+            console.log(err);
+        } else {
+
+        	//console.log(form.letter);
+        	pulled_text = form.letter;
+            res.json(form);
+
+            console.log("gotdamnit");
+    		console.log(pulled_text);
+    		var formatted_text = letterParser.htmlstuff(pulled_text);
+
+    		var content = fs
+				    .readFileSync(path.resolve('./routes/uploads', 'input.docx'), 'binary');
+
+			var zip = new JSZip(content);
+
+			var doc = new Docxtemplater();
+			doc.loadZip(zip);
+			//enable linebreaks
+			doc.setOptions({linebreaks:true});
+
+			console.log("2");
+			//set the templateVariables
+			doc.setData({
+			    
+			    //text with the line breaks included
+			    description: formatted_text
+			});
+
+			try {
+			    // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
+			    doc.render()
+			}
+			catch (error) {
+			    var e = {
+			        message: error.message,
+			        name: error.name,
+			        stack: error.stack,
+			        properties: error.properties,
+			    }
+			    console.log(JSON.stringify({error: e}));
+			    // The error thrown here contains additional information when logged with JSON.stringify (it contains a property object).
+			    throw error;
+			}
+			console.log("3");
+			var buf = doc.getZip()
+	         .generate({type: 'nodebuffer'});
+
+			// buf is a nodejs buffer, you can either write it to a file or do anything else with it.
+			fs.writeFileSync(path.resolve('./routes/uploads', 'output.docx'), buf);
+			console.log("4");  
+        }
+    	});
+   		
+		
     }
 
 })

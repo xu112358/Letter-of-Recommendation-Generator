@@ -111,6 +111,7 @@ function downloadLetter() {
     })
 }
 function downloadLetter2() {
+    
     var datepicker = document.querySelectorAll("input[type=date]")[0]
     var date = datepicker.value
     $.ajax({
