@@ -301,3 +301,12 @@ function addEmailHistory() {
         }
     });
 }
+
+function displayTemplate() {
+    if(document.getElementById('example-template').style.display == "none") {
+        document.getElementById('example-template').style.display = "block";
+    }
+    else {
+        document.getElementById('example-template').style.display = "none";
+    }
+}
