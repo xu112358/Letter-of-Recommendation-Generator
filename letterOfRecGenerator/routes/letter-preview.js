@@ -74,6 +74,14 @@ router.post('/save', function (req, res, next) {
 }) */
 
 router.post('/templateUpload', function (req,res, next) {
+    const filePath = __dirname + '/uploads/' + 'letterTemplate';
+    try{
+        if(fs.existsSync(filePath)){
+            console.log("IT EXISTS MOTHA FKA");
+        } 
+    } catch(err){
+        console.log(err);
+    }
     console.log(req.files.file);
     var file = req.files.file;
     console.log("*************");
@@ -102,7 +110,6 @@ router.post('/templateUpload', function (req,res, next) {
         	pulled_text = form.letter;
             res.json(form);
 
-            console.log("gotdamnit");
     		console.log(pulled_text);
     		var formatted_text = letterParser.htmlstuff(pulled_text);
 
