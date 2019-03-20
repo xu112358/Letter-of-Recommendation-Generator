@@ -65,6 +65,14 @@ router.post('/save', function (req, res, next) {
     });
 });
 
+/*router.post('/test', function(req,res,next){
+    //console.log(req.files.file);
+    var file = req.files.file;
+    console.log("about to print file;::");
+    console.log(file);
+
+}) */
+
 router.post('/templateUpload', function (req,res, next) {
     console.log(req.files.file);
     var file = req.files.file;

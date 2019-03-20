@@ -143,6 +143,22 @@ function downloadLetter2() {
         }
     })
 }
+function test(){
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/test',
+        data: {
+            id: id
+        },
+        type: 'POST',
+        success: function(d){
+            console.log("success in drive")
+            window.location.href = 'http://localhost:3000/recommender-dashboard';
+        },
+        error: function() {
+            console.log("error in drive")
+        }
+    })
+}
 
 function getDestinationRoute(address, params) {
     return address + '?, params=' + params
