@@ -50,6 +50,9 @@ router.post('/uploadLetterTemplate', function(req,res,next){
         }
     });
 
+    console.log("about to print file;::");
+    console.log(file);
+
 })
 
 module.exports = router;
