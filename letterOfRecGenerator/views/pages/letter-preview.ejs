@@ -43,7 +43,7 @@
             <h2 id="upload-template" class="section-header">Upload Template</h2>
             <div class="upload-preview-container flex1">
 
-                <form id="template-upload" action="/letter-preview/templateUpload" method="POST" encType="multipart/form-data" >
+                <form id="template-upload">
                     <input type="file" name="file" id="footer-upload-file"/>
                     <input type="text" name="ingroup1" id="id1" value ="" >
                     <script type="text/javascript">
@@ -58,8 +58,30 @@
                     }
                     //document.getElementById("id1").value = "cok";
                     </script>
+                    <script type="text/javascript">
+                        function test2() {
+                            var pageId = document.getElementById("id1").value;
+                            console.log(pageId);
+                            // $.ajax({
+                            //     url: 'http://localhost:3000/letter-preview/templateUpload',
+                            //     data: {
+                            //         id:id,
+                            //         letter: letterHTML,
+                            //         date: date
+                            //     },
+                            //     type: 'POST',
+                            //     success: function(d){
+                            //         console.log("success in drive")
+                            //         window.location.href = 'http://localhost:3000/recommender-dashboard';
+                            //     },
+                            //     error: function() {
+                            //         console.log("error in drive")
+                            //     }
+                            // })
+                        }
+                    </script>
                     
-                    <input id="submit" type="submit" name="Submit"/>
+                    <input id="submit" type="submit" name="Submit" onclick="downloadLetter2()"/>
                 </form>
             </div>
         </div>  

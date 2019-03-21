@@ -74,6 +74,7 @@ router.post('/save', function (req, res, next) {
 }) */
 
 router.post('/templateUpload', function (req,res, next) {
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     const filePath = __dirname + '/uploads/' + 'letterTemplate';
     try{
         if(fs.existsSync(filePath)){

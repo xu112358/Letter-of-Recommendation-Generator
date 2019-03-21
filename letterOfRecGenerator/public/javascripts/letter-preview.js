@@ -122,16 +122,14 @@ function downloadLetter() {
         }
     })
 }
-function downloadLetter2() {
 
-    var datepicker = document.querySelectorAll("input[type=date]")[0]
-    var date = datepicker.value
+function downloadLetter2() {
+    console.log("@@@@@@@@@@@@@@@@ HERE @@@@@@@@@@@@@@@@@@@@@@");
     $.ajax({
-        url: 'http://localhost:3000/letter-preview/templateUpload',
+        url: 'http://localhost:3000/templateUpload/',
         data: {
             id:id,
             letter: letterHTML,
-            date: date
         },
         type: 'POST',
         success: function(d){
@@ -143,6 +141,7 @@ function downloadLetter2() {
         }
     })
 }
+
 function test(){
     $.ajax({
         url: 'http://localhost:3000/letter-preview/test',
