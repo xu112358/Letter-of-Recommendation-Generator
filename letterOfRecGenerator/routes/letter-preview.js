@@ -82,7 +82,7 @@ router.post('/templateUpload', function (req,res, next) {
                     //template is uploaded
             console.log("Template uploaded!");
             
-
+            console.log(req.body.formID);
             var user = req.user;
             console.log("user:**********************");
             console.log(user._id);
@@ -93,7 +93,7 @@ router.post('/templateUpload', function (req,res, next) {
             console.log("^^^^^^^");
            // console.log(req.user.forms);
 
-            user.getForm(req.body.ingroup1, function (err, form) {
+            user.getForm(req.body.formID, function (err, form) {
             if (err) {
                 console.log(err);
             } else {

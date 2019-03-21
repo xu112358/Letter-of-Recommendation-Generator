@@ -125,11 +125,13 @@ function downloadLetter() {
 
 function downloadLetter2() {
     console.log("@@@@@@@@@@@@@@@@ HERE @@@@@@@@@@@@@@@@@@@@@@");
+    var idt = document.getElementById("id1").value;
     $.ajax({
         url: 'http://localhost:3000/letter-preview/templateUpload',
         data: {
             id:id,
             letter: letterHTML,
+            formID: idt
         },
         type: 'POST',
         success: function(d){
