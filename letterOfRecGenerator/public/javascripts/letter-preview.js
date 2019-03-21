@@ -126,7 +126,7 @@ function downloadLetter() {
 function downloadLetter2() {
     console.log("@@@@@@@@@@@@@@@@ HERE @@@@@@@@@@@@@@@@@@@@@@");
     $.ajax({
-        url: 'http://localhost:3000/templateUpload/',
+        url: 'http://localhost:3000/letter-preview/templateUpload',
         data: {
             id:id,
             letter: letterHTML,

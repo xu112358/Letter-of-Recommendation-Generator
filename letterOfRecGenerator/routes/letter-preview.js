@@ -372,6 +372,7 @@ router.post('/templateUpload', function (req,res, next) {
 })
 
 router.post('/drive', function(req,res,next) {
+    console.log("DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE")
     var user = req.user;
     user.getForm(req.body.id, function(err, form) {
         if(err){
