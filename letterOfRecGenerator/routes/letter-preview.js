@@ -153,15 +153,16 @@ router.post('/templateUpload', function (req,res, next) {
         else{
             //it doesnt exist
             //create file using blank page
-            console.log("Template not uploaded");
-
+        console.log("Template not uploaded");
+        console.log(req.body.formID);
         var user = req.user;
         console.log("user:**********************");
         console.log(user._id);
 
         var pulled_text; //text that were getting and moving to docxtemplater
 
-        user.getForm(req.query.id, function (err, form) {
+        //console.log(req.body.formID);
+        user.getForm(req.body.formID, function (err, form) {
         if (err) {
             console.log(err);
         } else {
@@ -170,7 +171,6 @@ router.post('/templateUpload', function (req,res, next) {
             pulled_text = form.letter;
             res.json(form);
 
-            console.log("gotdamnit");
             console.log(pulled_text);
             var formatted_text = letterParser.htmlstuff(pulled_text);
 
