@@ -40,12 +40,12 @@
         <!-- upload template button -->
 
         <div class="flex-display upload-cont">
-            <h2 id="upload-template" class="section-header">Upload Template</h2>
+           
             <div class="upload-preview-container flex1">
 
                 <form id="template-upload">
-                    <input type="file" name="file" id="footer-upload-file"/>
-                    <input type="text" name="ingroup1" id="id1" value ="" >
+                   
+                    <input type="hidden" name="ingroup1" id="id1" value ="" >
                     <script type="text/javascript">
                     var query = window.location.search.substring(1);
                     var vars = query.split("&");
@@ -81,19 +81,10 @@
                         }
                     </script>
                     
-                    <input id="submit" type="submit" name="Submit" onclick="downloadLetter2()"/>
+                    <input id="downloadButton" type="submit" name="Submit" onclick="downloadLetter2()"/>
                 </form>
             </div>
         </div>  
-
-
-        <div class="upload-preview-container flex1" id ="template-picker">
-            <p id="add-heading" class="section-header">Upload Template: </p>
-            <form id="template-upload" action="/letter-preview/templateUpload" method="POST" encType="multipart/form-data" onsubmit="changeFooterText()">            
-                <input type="file" name="file" id="footer-upload-file"/>
-            </form>
-        </div>
-     
 
         <!-- Save and Cancel Letter Preview Edit -->
         <div id="add-question-modal">
@@ -116,18 +107,7 @@
             </div>
         </div>
 
-
-
-        <!-- Add date to letter -->
-        <div id="date-picker">
-            <p id="add-heading" class="section-header">Add Date: </p>
-            <input type="date" name="date" id="date">
-        </div>
-
-        <!-- Adding the save to pdf file -->
-        <button class="download-button" id="downloadButton" onClick="downloadLetter()"> Download Letter</button>
-
-        
+     
             
     </div>
     </body>
