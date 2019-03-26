@@ -65,14 +65,6 @@ router.post('/save', function (req, res, next) {
     });
 });
 
-/*router.post('/test', function(req,res,next){
-    //console.log(req.files.file);
-    var file = req.files.file;
-    console.log("about to print file;::");
-    console.log(file);
-
-}) */
-
 router.post('/templateUpload', function (req,res, next) {
     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     const filePath = __dirname + '/uploads/' + 'letterTemplate';
@@ -144,8 +136,12 @@ router.post('/templateUpload', function (req,res, next) {
 
                 // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
                 fs.writeFileSync(path.resolve('./routes/uploads', 'output.docx'), buf);
-                //res.setHeader('Content-disposition', 'attachment; filename=rec.docx');
-                //res.send(Buffer.from(b64string, 'base64'));
+                // res.setHeader('Content-disposition', 'attachment; filename=rec.docx');
+                // res.write(file, 'binary');
+                // res.send(Buffer.from(b64string, 'base64'));
+
+                // res.download(path.resolve('./routes/uploads', 'output.docx'), 'output.docx');
+                
                 console.log("4");  
             }
             });

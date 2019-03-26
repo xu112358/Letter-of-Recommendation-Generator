@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var db = require('../db')
+var fs = require('fs')
 
 /* GET Templates page. */
 router.get('/', function (req, res, next) {
@@ -41,8 +43,10 @@ router.post('/delete-email', function (req, res, next) {
 });
 
 router.post('/uploadLetterTemplate', function(req,res,next){
-    //console.log(req.files.file);
+    console.log(req.files.file);
+    // console.log(req)
     var file = req.files.file;
+
     var filePath = __dirname + '/uploads/' + 'letterTemplate';
     file.mv(filePath, function(err){
         if(err){
