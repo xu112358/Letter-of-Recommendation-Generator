@@ -125,7 +125,7 @@ router.post('/delete', function (req, res, next) {
 
 router.post('/update', function (req, res, next) {
     var user = req.user;
-
+    
     user.update_linkTemplate_subject(req.body.subject, function (err) {
         if (err) {
             console.log("error in update_linkTemplate_subject: " + err);

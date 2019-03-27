@@ -33,6 +33,8 @@ function onLoad() {
                 success: function (dat) {
                     console.log('success');
                     letterHTML = createLetterPreview(form, form.letter);
+                    showEditModal(clicked);
+                    saveEditModal();
                 }
             });
         },
@@ -94,6 +96,8 @@ function saveEditModal() {
     });
 
     modal.style.display = "none";
+    document.getElementById("downloadButton").style.display = "none";
+    document.getElementById("saveButton").style.display = "block";
 }
 
 // Closes without changing
@@ -102,7 +106,7 @@ function cancelEditModal() {
     modal.style.display = "none";
 }
 
-function downloadLetter() {
+function downloadLetterOLD() {
     var datepicker = document.querySelectorAll("input[type=date]")[0]
     var date = datepicker.value
     $.ajax({
@@ -123,8 +127,9 @@ function downloadLetter() {
     })
 }
 
-function downloadLetter2() {
+function saveLetter() {
     console.log("@@@@@@@@@@@@@@@@ HERE @@@@@@@@@@@@@@@@@@@@@@");
+    event.preventDefault();
     var idt = document.getElementById("id1").value;
     $.ajax({
         url: 'http://localhost:3000/letter-preview/templateUpload',
@@ -136,13 +141,32 @@ function downloadLetter2() {
         type: 'POST',
         success: function(d){
             console.log("success in drive")
-            window.location.href = 'http://localhost:3000/recommender-dashboard';
+            document.getElementById("downloadButton").style.display = "block";
+            document.getElementById("saveButton").style.display = "none";
+            alert('Document saved');
+            //window.location.href = 'http://localhost:3000/recommender-dashboard';
         },
         error: function() {
             console.log("error in drive")
         }
     })
 }
+
+function downloadLetter() {
+    event.preventDefault();
+    $.ajax({
+        url: 'http://localhost:3000/letter-preview/downloads',
+        type: 'GET',
+        success: function(d) {
+            console.log("letter download success");
+            window.open('http://localhost:3000/letter-preview/downloads?foo=bar&xxx=yyy');
+        },
+        error: function() {
+            console.log("letter download error");
+        }
+    })
+}
+
 
 function test(){
     $.ajax({
