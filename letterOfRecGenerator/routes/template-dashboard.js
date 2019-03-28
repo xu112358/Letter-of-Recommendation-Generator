@@ -5,10 +5,16 @@ var fs = require('fs')
 
 /* GET Templates page. */
 router.get('/', function (req, res, next) {
+    var currLetterTemplate = __dirname + '/uploads/' + 'letterTemplate';
+    if(!fs.existsSync(currLetterTemplate)){
+        currLetterTemplate = '';
+    }
+    
     res.render('pages/template-dashboard', {
         title: 'TEMPLATE DASHBOARD',
         templates: req.user.getTemplates(),
         emailtemplates: req.user.getEmailTemplates(),
+        letterTemplate: currLetterTemplate
     });
 });
 

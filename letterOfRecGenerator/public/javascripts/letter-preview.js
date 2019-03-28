@@ -33,8 +33,6 @@ function onLoad() {
                 success: function (dat) {
                     console.log('success');
                     letterHTML = createLetterPreview(form, form.letter);
-                    showEditModal(clicked);
-                    saveEditModal();
                 }
             });
         },
@@ -43,6 +41,7 @@ function onLoad() {
         }
     }); 
 }
+
 function getQueryVariable(){
     /*var query = window.location.search.substring(1);
     var vars = query.split("&");
@@ -363,3 +362,16 @@ function displayTemplate() {
         document.getElementById('example-template').style.display = "none";
     }
 }
+
+$(document).ready(function(){
+    setTimeout(function(){
+        var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
+        var element = document.querySelector(TRIX_EDITOR);
+        element.value = "";
+        element.editor.setSelectedRange([0, 0]);
+        element.editor.insertHTML(innerContainer.innerHTML);
+        var textt = document.getElementsByClassName("attachment__caption");
+        modal.style.display = "block";
+        saveEditModal();
+    },500);
+});

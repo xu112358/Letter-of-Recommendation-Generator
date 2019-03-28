@@ -148,36 +148,41 @@
 
 				    var fileSelect = document.getElementById("footer-upload-file");
 				    if(fileSelect.files && fileSelect.files.length == 1){
-				     var file = fileSelect.files[0]
-				     formData.set("file", file , file.name);
-				    }
+                  var file = fileSelect.files[0]
+                  formData.set("file", file , file.name);
+                  }
 
-				    // Http Request  
-				    var request = new XMLHttpRequest();
-				    request.open('POST', "http://localhost:3000/template-dashboard/uploadLetterTemplate");
-				    request.send(formData);
-            
-            //Submit success
-            alert('template uploaded');
-				  }
-				</script>
+                  // Http Request
+                  var request = new XMLHttpRequest();
+                  request.open('POST', "http://localhost:3000/template-dashboard/uploadLetterTemplate");
+                  request.send(formData);
+
+                  //Submit success
+                  alert('template uploaded');
+                  location.reload();
+                  }
+                </script>
                 <form encType="multipart/form-data">
                     <input type="file" id="footer-upload-file" />
                     <button type="button" onclick="sendFile()">Submit</button>
                 </form>
             </td>
         </tr>
-    <tr >
+        <% if (letterTemplate == '') { %>
         <td>
-            <div class="template-name"></div>
-            <div class="image-container">
-                
-                
-                
-            </div>
+            <div class="template-name">No Existing Letter Template</div>
         </td>
-    </tr>
-  
+        <% } else { %>
+        <td>
+            <div class="template-name">Letter Template Uploaded</div>
+        </td>
+        <% } %>
+        <tr>
+            <td>
+                <div class="template-name"></div>
+                <div class="image-container"></div>
+            </td>
+        </tr>
     </tbody>
 </table>
 
