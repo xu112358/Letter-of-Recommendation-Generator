@@ -156,6 +156,9 @@
     margin-right: 70px;
     transition: 0.6s; 
 }
+.date-comment, #theDate {
+    margin-left: 60px; 
+}
 
 #downloadButton, #saveButton {
     width: 200px;

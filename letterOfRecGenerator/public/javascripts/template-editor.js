@@ -169,7 +169,7 @@ function displayQuestions() {
     }
 
     let list = document.getElementById(QUESTIONS_CONTAINER_ID);
-    Sortable.create(list);
+    //Sortable.create(list);
 }
 
 /**
@@ -415,6 +415,8 @@ function addTextAnswerQuestion() {
     questions.push(new Question("Text", "", ""));
     displayQuestions();
     hideAddQuestionModal();
+    var question = document.querySelectorAll(".sortable-questions");
+    question[question.length - 1].scrollIntoView();
 }
 
 function addRadioButtonQuestion() {
@@ -424,6 +426,8 @@ function addRadioButtonQuestion() {
     questions.push(question);
     displayQuestions();
     hideAddQuestionModal();
+    var question = document.querySelectorAll(".sortable-questions");
+    question[question.length - 1].scrollIntoView();
 }
 
 function addCheckboxQuestion() {
@@ -433,6 +437,8 @@ function addCheckboxQuestion() {
     questions.push(question);
     displayQuestions();
     hideAddQuestionModal();
+    var question = document.querySelectorAll(".sortable-questions");
+    question[question.length - 1].scrollIntoView();
 }
 
 /**

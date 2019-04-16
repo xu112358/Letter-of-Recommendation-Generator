@@ -130,12 +130,14 @@ function saveLetter() {
     console.log("@@@@@@@@@@@@@@@@ HERE @@@@@@@@@@@@@@@@@@@@@@");
     event.preventDefault();
     var idt = document.getElementById("id1").value;
+    var date = document.getElementById("theDate").value;
     $.ajax({
         url: 'http://localhost:3000/letter-preview/templateUpload',
         data: {
             id:id,
             letter: letterHTML,
-            formID: idt
+            formID: idt,
+            date: date
         },
         type: 'POST',
         success: function(d){
