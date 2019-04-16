@@ -109,9 +109,12 @@ router.post('/templateUpload', function (req,res, next) {
 
                 console.log("2");
                 //set the templateVariables
+                var date_raw = req.body.date;
+                var actual_date = letterParser.getDate(date_raw);
                 doc.setData({
                     
                     //text with the line breaks included
+                    date: actual_date,
                     description: formatted_text
                 });
 
