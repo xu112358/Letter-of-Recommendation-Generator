@@ -1,5 +1,10 @@
 # csci-401-capstone
-Repo for hosting Letter of Recommendation Generator Capstone Project as of Spring 2019
+Repo for hosting Letter of Recommendation Generator Capstone Project as of Fall 2019.
+
+Team members:
++ Alex Volcy – volcy@usc.edu
++ Jerry Tejada – jmtejada@usc.edu 
++ Matt van Niekerk – vannieke@usc.edu
 
 ## Deployment (as of Spring 2019)
 Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3000, with the MongoDB instance on the same IP address but at port 12345.
