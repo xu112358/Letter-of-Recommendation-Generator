@@ -6,16 +6,24 @@ Team members:
 + Jerry Tejada – jmtejada@usc.edu 
 + Matt van Niekerk – vannieke@usc.edu
 
-## Deployment (as of Spring 2019)
-Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3000, with the MongoDB instance on the same IP address but at port 12345.
-
 ## How to Run Locally
 + Enter letterOfRecGenerator folder
 + Run `DEBUG=letterOfRecGenerator:* npm run devstart` (for debug on console) or `npm run devstart`
 + Open up a browser tab to `127.0.0.1:3000` (make sure port 3000 was not already occupied)
 + Run `npm install` from `\letterOfRecGenerator` and also specifically run `npm install docxtemplater` and `npm install jszip2`
 
-Restarting/Starting sessions
+## How to Restart Session (added Fall 2019)
++ Run `npm update` from `\letterOfRecGenerator`
+
+## How to Restart mongoDB in Terminal (added Fall 2019)
+Run `npx kill-port 27017`to reset mongoDB
+then run `mongod`
+
+
+____________________________________________________________________________________________________________________________
+
+
+Restarting/Starting Sessions (old)
 + To restart/start mongod, attach to mongod session using the above command and run `mongod --port 12345`
 + To restart/start the project session, attach to the session using the above command and run `npm run devstart`
 
@@ -24,11 +32,12 @@ For the last step, you may need to kill the previous process on port 3000 using 
 + Using the second number (the pid) in the result, run `kill ${PID}`
 
 Afterwards, test to see if the app is properly running by accessing `68.181.97.191/login` on your browser.
- 
 
-## How to Restart mongoDB in Terminal (added by Jerry, Fall 2019)
-Run `npx kill-port 27017`to reset mongoDB
-then run `mongod`
+
+## Deployment (as of Spring 2019) (old)
+Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3000, with the MongoDB instance on the same IP address but at port 12345.
+
+____________________________________________________________________________________________________________________________
 
 
 ## How to Install MongoDB
