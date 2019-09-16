@@ -15,23 +15,6 @@ Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3
 + Open up a browser tab to `127.0.0.1:3000` (make sure port 3000 was not already occupied)
 + Run `npm install` from `\letterOfRecGenerator` and also specifically run `npm install docxtemplater` and `npm install jszip2`
 
-
-## Making Changes to Deployment (as of Spring 2019)
-+ Ensure that any changes to be put on deployment are pushed into server2019 branch of this repo.
-+ Run `ssh jeff@68.181.97.191`
-+ Ask for ssh password from Prof. Miller 
-+ Run `cd csci-401-capstone-2019/csci-401-capstone/letterOfRecGenerator` from root directrory
-+ Run `git pull` (Run `git branch` to ensure that the branch is server-setup. If not, run `git checkout server2019`). Make sure the process on tmux session 15 is not running before pulling. 
-
-Note, session management uses tmux.
-+ To list active sessions run `tmux ls`
-+ To view mongod session run `tmux attach-session -t 0`
-+ To view project session run `tmux attach-session -t 15`
-+ After attaching to a session, to exit push `ctrl+b` then `d`
-+ To kill a session run `tmux kill-session -t {session number}`
-+ If project session is accidentally killed, simply run the below command from the `/letterOfRecGenerator` and then exit by pushing `ctrl+b` then `d`
-+ If mongod session is accidentally killed, simply run the below command from the `/letterOfRecGenerator` and then exit by pushing `ctrl+b` then `d`
-
 Restarting/Starting sessions
 + To restart/start mongod, attach to mongod session using the above command and run `mongod --port 12345`
 + To restart/start the project session, attach to the session using the above command and run `npm run devstart`
@@ -41,6 +24,12 @@ For the last step, you may need to kill the previous process on port 3000 using 
 + Using the second number (the pid) in the result, run `kill ${PID}`
 
 Afterwards, test to see if the app is properly running by accessing `68.181.97.191/login` on your browser.
+ 
+
+## How to Restart mongoDB in Terminal (added by Jerry, Fall 2019)
+Run `npx kill-port 27017`to reset mongoDB
+then run `mongod`
+
 
 ## How to Install MongoDB
 1. Go to [this link](https://www.mongodb.com/download-center?_ga=2.34334885.546969976.1519083876-785985683.1517259025#enterprise) and download the compressed files for your respective platform.
