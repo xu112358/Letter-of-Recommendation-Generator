@@ -232,25 +232,25 @@
     // Change to the page number specified by the page parameter
     function changePage(page)
     {
+        // Validate page
+        if (page < 1) page = 1;
+        if (page > numPages()) page = numPages();
+
+        current_page = page;
+
+        // Enable/disable buttons
+        setPageButtons();
+
         if (!forms.length) {
             // Exit function if there are no recommendations to show
             return;
         }
-
-        current_page = page;
-
-        // Validate page
-        if (page < 1) page = 1;
-        if (page > numPages()) page = numPages();
 
         // Clear old table
         clearTable();
 
         // Generate new table
         generateTable();
-
-        // Enable/disable buttons
-        setPageButtons();
     }
 
     function clearTable(table) {
@@ -330,13 +330,13 @@
         var btn_prev = document.getElementById("button-prev");
         var btn_next = document.getElementById("button-next");
 
-        if (current_page == 1) {
+        if (current_page == 1 || !forms.length) {
             btn_prev.disabled = true;
         } else {
             btn_prev.disabled = false;
         }
 
-        if (current_page == numPages()) {
+        if (current_page == numPages() || !forms.length) {
             btn_next.disabled = true;
         } else {
             btn_next.disabled = false;
