@@ -1,8 +1,11 @@
 #page {
     padding: 20px;
     display: flex;
+}
+
+#buttons {
+    display: flex;
     margin: auto;
-    width: 20%;
 }
 
 .recommendations{
