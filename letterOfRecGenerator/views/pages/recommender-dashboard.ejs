@@ -274,6 +274,7 @@
     }
 
     function generateRow(row_count, i) {
+        var table = document.getElementById("table");
         var row = table.insertRow(row_count);
         var cells = [row.insertCell(0)];
 
@@ -297,31 +298,31 @@
         cells[2].innerHTML = forms[i].organization;
         cells[3].innerHTML = forms[i].template.name;
         if (forms[i].status == 'Sent') {
-            cells[4].innerHTML = '<img class="icon" src="/images/red_x.png"/>';
+            cells[4].innerHTML = '<img class="icon" src="/images/red_x.png">';
         } else {
-            cells[4].innerHTML = '<img class="icon" src="/images/green_checkmark.png"/>';
+            cells[4].innerHTML = '<img class="icon" src="/images/green_checkmark.png">';
         }
         cells[4].classList.add("center");
-        cells[5].innerHTML = '<img class="icon clickable" title="View History" src="/images/history.png" onclick="openHistory('
+        cells[5].innerHTML = "<img class='icon clickable' title='View History' src='/images/history.png' onclick='openHistory("
             + JSON.stringify({id: forms[i]._id, email: forms[i].email})
-            + ')"/>';
+            + ")'>";
         if (forms[i].email_sent == false) {
-            cells[5].innerHTML += '<img class="icon clickable" title="Preview Email" src="/images/email_incomplete.png" onclick="openEmailPreview('
+            cells[5].innerHTML += "<img class='icon clickable' title='Preview Email' src='/images/email_incomplete.png' onclick='openEmailPreview("
                 + JSON.stringify({id: forms[i]._id, email: forms[i].email})
-                + ', "' + forms[i].status + '")"/>';
+                + ", \"" + forms[i].status + "\")'>";
         } else {
-            cells[5].innerHTML += '<img class="icon clickable" title="Preview Email" src="/images/email_complete.png" onclick="openEmailPreview('
+            cells[5].innerHTML += "<img class='icon clickable' title='Preview Email' src='/images/email_complete.png' onclick='openEmailPreview("
                 + JSON.stringify({id: forms[i]._id, email: forms[i].email})
-                + ', "' + forms[i].status + '")"/>';
+                + ", '" + forms[i].status + "\")'>";
         }
-        cells[5].innerHTML += '<img class="icon clickable" title="View Responses" src="/images/response.png" onclick="openResponses('
+        cells[5].innerHTML += "<img class='icon clickable' title='View Responses' src='/images/response.png' onclick='openResponses("
             + JSON.stringify({id: forms[i]._id})
-            + ', "' + forms[i].status + '")"/>';
-        cells[5].innerHTML += '<img class="icon clickable" title="Preview Letter" src="/images/preview.png" onclick="openLetterPreview('
+            + ", \"" + forms[i].status + "\")'>";
+        cells[5].innerHTML += "<img class='icon clickable' title='Preview Letter' src='/images/preview.png' onclick='openLetterPreview("
             + JSON.stringify({id: forms[i]._id})
-            + ', "' + forms[i].status + '")"/>';
-        cells[5].innerHTML += '<img class="icon clickable" title="Delete Letter" src="/images/delete.png" onclick="deleteRow("'
-            + forms[i]._id + '")"/>';
+            + ", \"" + forms[i].status + "\")'>";
+        cells[5].innerHTML += "<img class='icon clickable' title='Delete Letter' src='/images/delete.png' onclick='deleteRow(\""
+            + forms[i]._id + "\")'>";
 
         cells[5].classList.add("center");
     }
