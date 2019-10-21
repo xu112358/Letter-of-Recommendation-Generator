@@ -64,7 +64,7 @@
     </tr>
     </thead>
     <tbody>
-    <% if (!forms.length) { %> 
+    <% if (!forms.length) { %>
         <tr>
             <td colspan="6" style="text-align: center;">No Archived Recommendations</td>
         </tr>
@@ -91,7 +91,7 @@
                 id: form._id
             }) %>, '<%= form.status %>')"/>
             <img class="icon clickable" title="Preview Letter" src="/images/preview.png" onclick="openLetterPreview(<%= JSON.stringify({
-                id: form._id 
+                id: form._id
             }) %>, '<%= form.status %>')"/>
         </td>
     </tr>
@@ -170,7 +170,7 @@
     // When the user clicks on the button, open the modal
     function openModal(email) {
         var emailNameEle = document.getElementById("email-template-name");
-        emailNameEle.innerHTML = email.title; 
+        emailNameEle.innerHTML = email.title;
 
         $('#modal-subject',$('#myModal')).val(email.subject);
         $('#modal-body',$('#myModal')).val(email.body_text);
@@ -201,7 +201,7 @@
             window.alert("This letter cannot be previewed because the recommendee has not filled out the form!");
         } else {
             window.location.href = getDestinationRoute('http://localhost:3000/letter-preview', params);
-        }  
+        }
     }
 
     function editTemplate(id) {
