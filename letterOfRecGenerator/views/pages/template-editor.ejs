@@ -81,7 +81,7 @@
         // Form Data
         var formData = new FormData();
 
-        var fileSelect = document.getElementById("footer-upload-file");
+        var fileSelect = document.getElementById("template-upload-file");
         if(fileSelect.files && fileSelect.files.length == 1){
         var file = fileSelect.files[0]
         formData.set("file", file , file.name);
@@ -98,10 +98,10 @@
         }
         </script>
         <div class="flex-display upload-cont">
-          <h2 id="upload-footer" class="section-header">Apply Body Text to Custom Template </h2>
+          <h2 id="upload-template" class="section-header">Apply Body Text to Custom Template </h2>
           <div class="upload-preview-container flex1">
             <form encType="multipart/form-data">
-              <input type="file" id="footer-upload-file" />
+              <input type="file" id="template-upload-file" />
               <button type="button" onclick="sendFile()">Upload</button>
             </form>
           </div>
