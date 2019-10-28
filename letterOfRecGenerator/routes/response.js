@@ -33,7 +33,6 @@ router.get('/update', function (req, res, next) {
             form.updateResponse(editedResponses);
             form.letter = parseLetter(form);
             for (i = 0; i < form.responses.length; i++) {
-                console.log(form.responses[i].tag);
                 if (form.responses[i].tag == "<!ORG>") {
                     form.organization = form.responses[i].response;
                 }
