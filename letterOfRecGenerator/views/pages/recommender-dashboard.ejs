@@ -386,20 +386,23 @@
         var row_count = 1;
 
         for (var i = (current_page[tableNumber] - 1) * records_per_page;
-                i < (current_page[tableNumber] * records_per_page)
-                && i < data[tableNumber].length; i++) {
+                i < (current_page[tableNumber] * records_per_page); i++) {
             generateRow(row_count, i, tableNumber);
             row_count++;
         }
     }
 
     function generateRow(row_count, i, tableNumber) {
-        if (tableNumber == 0) {
-            generateRecRow(row_count, i);
-        } else if (tableNumber == 1) {
-            generateRecTemplateRow(row_count, i);
-        } else if (tableNumber == 2) {
-            generateEmailTemplateRow(row_count, i);
+        if (i < data[tableNumber].length) {
+            if (tableNumber == 0) {
+                generateRecRow(row_count, i);
+            } else if (tableNumber == 1) {
+                generateRecTemplateRow(row_count, i);
+            } else if (tableNumber == 2) {
+                generateEmailTemplateRow(row_count, i);
+            }
+        } else {
+            generateBlankRow(row_count);
         }
     }
 
@@ -455,6 +458,17 @@
             + data[0][i]._id + "\")'>";
 
         cells[5].classList.add("center");
+    }
+
+    function generateBlankRow(row_count) {
+        var table = document.getElementById("table0");
+        var row = table.insertRow(row_count);
+        var cells = [];
+
+        for (var j = 0; j < 6; j++) {
+            cells.push(row.insertCell(j));
+            cells[j].innerHTML = "";
+        }
     }
 
     function setPageButtons(tableNumber) {
