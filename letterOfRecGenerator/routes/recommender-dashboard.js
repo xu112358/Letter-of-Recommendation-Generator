@@ -53,7 +53,7 @@ router.post('/', function (req, res, next) {
 
     if (!toEmail.length) {
         res.render('pages/recommender-dashboard', {
-            title: 'RECOMMENDER DASHBOARD',
+            title: 'Recommendations',
             statusMessage: 'Please provide a valid email'
         });
         return;
