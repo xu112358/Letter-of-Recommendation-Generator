@@ -47,7 +47,7 @@
         <table class="archive-table">
             <thead>
                 <td class="center"><p class="archive-title">Archived Recommendations</p></td>
-                <button id ="button-show-hide" onclick="showTable('table0-div')">+</button>
+                <button id ="button-show-hide0" onclick="showTable(0)">+</button>
             </thead>
         </table>
         <div id="table0-div" style="display: none;">
@@ -84,7 +84,7 @@
         <table class="archive-table">
             <thead>
                 <td class="center"><p class="archive-title">Archived Recommendation Templates</p></td>
-                <button id ="button-show-hide" onclick="showTable('table1-div')">+</button>
+                <button id ="button-show-hide1" onclick="showTable(1)">+</button>
             </thead>
         </table>
         <div id = "table1-div" style="display: none;">
@@ -117,7 +117,7 @@
         <table class="archive-table">
             <thead>
                 <td class="center"><p class="archive-title">Archived Email Templates</p></td>
-                <button id ="button-show-hide" onclick="showTable('table2-div')">+</button>
+                <button id ="button-show-hide2" onclick="showTable(2)">+</button>
             </thead>
         </table>
         <div id="table2-div" style="display: none;">
@@ -400,12 +400,15 @@
             return address + '?' + $.param(params);
         }
 
-        function showTable(id){
-            var x = document.getElementById(id);
-            if (x.style.display === "none") {
-                x.style.display = "block";
+        function showTable(tableNumber){
+            var tableDiv = document.getElementById('table' + tableNumber + '-div');
+            var button = document.getElementById('button-show-hide' + tableNumber);
+            if (tableDiv.style.display === "none") {
+                tableDiv.style.display = "block";
+                button.innerHTML = '–';
             } else {
-                x.style.display = "none";
+                tableDiv.style.display = "none";
+                button.innerHTML = '+';
             }
         }
 
@@ -493,9 +496,16 @@
             var row = table.insertRow(row_count);
             var cells = [];
 
-            for (var j = 0; j < 6; j++) {
-                cells.push(row.insertCell(j));
-                cells[j].innerHTML = "";
+            if (tableNumber == 0) {
+                for (var j = 0; j < 6; j++) {
+                    cells.push(row.insertCell(j));
+                    cells[j].innerHTML = "";
+                }
+            } else {
+                for (var j = 0; j < 2; j++) {
+                    cells.push(row.insertCell(j));
+                    cells[j].innerHTML = "";
+                }
             }
         }
 

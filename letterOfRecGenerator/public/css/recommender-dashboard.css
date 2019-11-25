@@ -48,6 +48,10 @@
     margin-top: 20px;
 }
 
+.add-btn:hover {
+    color: #FFCC00;
+}
+
 /* The Close Button */
 .close {
     color: #aaa;

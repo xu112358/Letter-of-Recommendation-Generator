@@ -1,4 +1,16 @@
+#templates-page0, #templates-page1 {
+    padding: 20px;
+    display: flex;
+}
 
+#templates-buttons0, #templates-buttons1 {
+    display: flex;
+    margin: auto;
+}
+
+#templates-table0 td, #templates-table1 td {
+    height: 60px;
+}
 
 .templates{
     background-color: #FFFFFF;
@@ -41,27 +53,23 @@
 }
 
 .input-submit {
-    background-color: #FF473A;
-    font-size: 12px;
+    background-color: #990000;
+    font-size: 18px;
     margin-top: 50px;
-    width: 180px;
+    width: 100px;
     height: 40px;
     transition: 0.6s;
-    border-radius: 20px;
+    border-radius: 0;
     border: none;
     color: white;
-    letter-spacing: 2px;
     float: right;
     opacity: 1.0;
-    -webkit-box-shadow: 6px 4px 21px 1px rgba(0,0,0,0.21);
-    -moz-box-shadow: 6px 4px 21px 1px rgba(0,0,0,0.21);
-    box-shadow: 6px 4px 21px 1px rgba(0,0,0,0.21);
-    text-transform: uppercase;
 }
 
 .input-submit:hover {
     cursor: pointer;
-    opacity: 0.6;
+    color: #FFCC00;
+    /* opacity: 0.6; */
 }
 
 
@@ -86,11 +94,11 @@ img.icon:hover {
 }
 
 .subtitle {
-    font-size: 18px; 
+    font-size: 20px;
 }
 
 .subtitle_cont {
-    padding-bottom: 10px; 
+    padding-bottom: 10px;
 }
 
 .template-modal {

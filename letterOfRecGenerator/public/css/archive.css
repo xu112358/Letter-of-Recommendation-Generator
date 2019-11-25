@@ -81,7 +81,7 @@ img.clickable:hover {
     transform: translate(-50%, -50%);
 }
 
-#button-show-hide {
+#button-show-hide0, #button-show-hide1, #button-show-hide2 {
     float: right;
     background-color: #FFCC00;
     border: none;
@@ -93,7 +93,7 @@ img.clickable:hover {
     height: 25px;
 }
 
-#button-show-hide:hover {
+#button-show-hide0:hover, #button-show-hide1:hover, #button-show-hide2:hover {
     opacity: 0.6;
     cursor: pointer;
 }

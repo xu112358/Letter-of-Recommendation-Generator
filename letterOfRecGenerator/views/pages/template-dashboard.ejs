@@ -23,11 +23,11 @@
             <div class="close-container">
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
-            <p class="modal-title">Create A New Recommendation Template</p>
+            <p class="modal-title">Create a New Recommendation Template</p>
             <form class="input-form" method="GET" action="/template-editor">
                 <div class="template-name-cont">
                     <label class="input-label"> Template Name: </label>
-                    <input class="input-text" type="text" name="title">
+                    <input class="input-text" type="text" name="title" autofocus>
                 </div>
                 <input class="input-submit" type="submit" value="Create">
             </form>
@@ -39,11 +39,11 @@
             <div class="close-container">
                 <span class="close" onclick="closeEmailModal()">&times;</span>
             </div>
-            <p class="modal-title">Create A New Email Template</p>
+            <p class="modal-title">Create a New Email Template</p>
             <form class="input-form" method="GET" action="/email-template-editor">
                 <div class="template-name-cont">
                     <label class="input-label"> Template Name: </label>
-                    <input class="input-text" type="text" name="title">
+                    <input class="input-text" type="text" name="title" autofocus>
                 </div>
                 <input class="input-submit" type="submit" value="Create">
             </form>
@@ -53,11 +53,13 @@
     <br>
     <br>
 
-    <table id="table0">
+    <table id="templates-table0">
         <thead>
             <tr>
                 <td class="subtitle_cont">
                     <b class="subtitle">Recommendation Templates</b>
+                </td>
+                <td>
                     <button class="addBtn" onclick="openModal()">
                         <img id="recommendation-button" class="icon" src="/images/add_template.png" width="30" height="10">
                     </button>
@@ -74,20 +76,22 @@
         <% } %>
         </tbody>
     </table>
-    <div id="page0">
-        <div id="buttons0">
-            <button onclick="javascript:prevPage(0)" id="button-prev0">Prev</button>
-            <div id="page-numbers0"></div>
-            <button onclick="javascript:nextPage(0)" id="button-next0">Next</button>
+    <div id="templates-page0">
+        <div id="templates-buttons0">
+            <button onclick="javascript:prevPage(0)" id="templates-button-prev0">Prev</button>
+            <div id="templates-page-numbers0"></div>
+            <button onclick="javascript:nextPage(0)" id="templates-button-next0">Next</button>
         </div>
     </div>
     <br>
 
-    <table id="table1" class="table-cont">
+    <table id="templates-table1" class="table-cont">
         <thead>
             <tr>
                 <td class="subtitle_cont">
                     <b class="subtitle">Email Templates</b>
+                </td>
+                <td>
                     <button class="addBtn" onclick="openEmailModal()">
                         <img id= "email-button" class="icon" src="/images/add_email_template.png" width="50" height="70">
                     </button>
@@ -107,11 +111,11 @@
 
         </tbody>
     </table>
-    <div id="page1">
-        <div id="buttons1">
-            <button onclick="javascript:prevPage(1)" id="button-prev1">Prev</button>
-            <div id="page-numbers1"></div>
-            <button onclick="javascript:nextPage(1)" id="button-next1">Next</button>
+    <div id="templates-page1">
+        <div id="templates-buttons1">
+            <button onclick="javascript:prevPage(1)" id="templates-button-prev1">Prev</button>
+            <div id="templates-page-numbers1"></div>
+            <button onclick="javascript:nextPage(1)" id="templates-button-next1">Next</button>
         </div>
     </div>
 
@@ -192,7 +196,7 @@
 
 <script>
     var current_page = [1,1];
-    var records_per_page = 10;
+    var records_per_page = 5;
     var data = [
         JSON.parse('<%- JSON.stringify(templates) %>'),
         JSON.parse('<%- JSON.stringify(emailtemplates) %>')
@@ -340,7 +344,7 @@
     }
 
     function clearTable(tableNumber) {
-        var table = document.getElementById("table" + tableNumber);
+        var table = document.getElementById("templates-table" + tableNumber);
 
         for (var i = table.rows.length - 1; i > 0; i--)
         {
@@ -366,23 +370,23 @@
                 generateEmailTemplateRow(row_count, i);
             }
         } else {
-            generateBlankRow(row_count);
+            generateBlankRow(row_count, tableNumber);
         }
     }
 
     function generateBlankRow(row_count, tableNumber) {
-        var table = document.getElementById("table" + tableNumber);
+        var table = document.getElementById("templates-table" + tableNumber);
         var row = table.insertRow(row_count);
         var cells = [];
 
-        for (var j = 0; j < 6; j++) {
+        for (var j = 0; j < 2; j++) {
             cells.push(row.insertCell(j));
             cells[j].innerHTML = "";
         }
     }
 
     function generateRecTemplateRow(row_count, i) {
-        var table = document.getElementById("table1");
+        var table = document.getElementById("templates-table0");
         var row = table.insertRow(row_count);
         var cells = [row.insertCell(0), row.insertCell(1)];
 
@@ -392,7 +396,7 @@
     }
 
     function generateEmailTemplateRow(row_count, i) {
-        var table = document.getElementById("table2");
+        var table = document.getElementById("templates-table1");
         var row = table.insertRow(row_count);
         var cells = [row.insertCell(0), row.insertCell(1)];
 
@@ -402,8 +406,8 @@
     }
 
     function setPageButtons(tableNumber) {
-        var btn_prev = document.getElementById("button-prev" + tableNumber);
-        var btn_next = document.getElementById("button-next" + tableNumber);
+        var btn_prev = document.getElementById("templates-button-prev" + tableNumber);
+        var btn_next = document.getElementById("templates-button-next" + tableNumber);
 
         if (current_page[tableNumber] == 1 || !data[tableNumber].length) {
             btn_prev.disabled = true;
@@ -419,22 +423,22 @@
 
         for (var i = 1; i <= numPages(tableNumber); i++) {
             if (i == current_page[tableNumber]) {
-                document.getElementById("page-" + tableNumber + '-' + i).disabled = true;
+                document.getElementById("templates-page-" + tableNumber + '-' + i).disabled = true;
             } else {
-                document.getElementById("page-" + tableNumber + '-' + i).disabled = false;
+                document.getElementById("templates-page-" + tableNumber + '-' + i).disabled = false;
             }
         }
 
     }
 
     function createPageButtons(tableNumber) {
-        var page_numbers = document.getElementById("page-numbers" + tableNumber);
+        var page_numbers = document.getElementById("templates-page-numbers" + tableNumber);
 
         page_numbers.innerHTML = '';
 
         for (var i = 1; i <= numPages(tableNumber); i++) {
             page_numbers.innerHTML +=
-                '<button id="page-' + tableNumber + '-' + i + '" onclick="javascript:changePage('
+                '<button id="templates-page-' + tableNumber + '-' + i + '" onclick="javascript:changePage('
                     + tableNumber + ', ' + i + ')">' + i + '</button>';
         }
     }

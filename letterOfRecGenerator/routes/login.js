@@ -4,7 +4,7 @@ var router = express.Router();
 /* GET login page. */
 router.get('/', function (req, res, next) {
     res.render('pages/login', {
-        title: 'LETTER OF RECOMMENDATION GENERATOR',
+        title: 'Letter of Recommendation Generator',
         subtitle: '',
         url: '/auth/google'
     });
