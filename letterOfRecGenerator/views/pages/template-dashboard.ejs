@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div id="myModal_email" class="modal">
+    <!-- <div id="myModal_email" class="modal">
         <div class="modal-content template-modal">
             <div class="close-container">
                 <span class="close" onclick="closeEmailModal()">&times;</span>
@@ -48,7 +48,7 @@
                 <input class="input-submit" type="submit" value="Create">
             </form>
         </div>
-    </div>
+    </div> -->
 
     <br>
     <br>
@@ -85,7 +85,7 @@
     </div>
     <br>
 
-    <table id="templates-table1" class="table-cont">
+    <!-- <table id="templates-table1" class="table-cont">
         <thead>
             <tr>
                 <td class="subtitle_cont">
@@ -110,17 +110,17 @@
 
 
         </tbody>
-    </table>
-    <div id="templates-page1">
+    </table> -->
+    <!-- <div id="templates-page1">
         <div id="templates-buttons1">
             <button onclick="javascript:prevPage(1)" id="templates-button-prev1">Prev</button>
             <div id="templates-page-numbers1"></div>
             <button onclick="javascript:nextPage(1)" id="templates-button-next1">Next</button>
         </div>
-    </div>
+    </div> -->
 
     <br>
-    <table class="table-cont">
+    <!-- <table class="table-cont">
         <thead>
             <tr>
                 <td class="subtitle_cont">
@@ -133,13 +133,13 @@
             <tr>
                 <td>
                     <div class="template-name">Previous template will be replaced. Template can then be selected when previewing letter</div>
-                    <br>
+                    <br> -->
 
                     <!-- <form id="template-upload"  action="/template-dashboard/uploadLetterTemplate" method="POST" encType="multipart/form-data">
                         <input type="file" name="file" id="template-upload-file"/>
                         <input id="submit" type="submit" name="Submit"/>
                     </form> -->
-                    <script>
+                    <!-- <script>
     				  function sendFile(){
     				    // Form Data
     				    var formData = new FormData();
@@ -182,7 +182,7 @@
                 </td>
             </tr>
         </tbody>
-    </table>
+    </table> -->
 
 </div>
 </body>
@@ -190,8 +190,8 @@
 <script type="text/javascript">
     var recommendation_button = document.getElementById("recommendation-button");
     recommendation_button.innerHTML = '<img src="/images/add_template.png" />';
-    var email_button = document.getElementById("email-button");
-    email_button.innerHTML = '<img src="/images/add_email_template.png" />';
+    // var email_button = document.getElementById("email-button");
+    // email_button.innerHTML = '<img src="/images/add_email_template.png" />';
 </script>
 
 <script>
@@ -444,10 +444,10 @@
     }
 
     createPageButtons(0);
-    createPageButtons(1);
+    // createPageButtons(1);
 
     // Show page 1 initially
     changePage(0, 1);
-    changePage(1, 1);
+    // changePage(1, 1);
 </script>
 </html>
