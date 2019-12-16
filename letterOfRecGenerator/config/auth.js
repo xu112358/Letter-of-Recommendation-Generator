@@ -31,6 +31,6 @@ module.exports = {
     if (!req.isAuthenticated()) {
       return next();
     }
-    res.redirect('../pages/views/recommender-dashboard');
+    res.redirect('../views/pages/recommender-dashboard');
   }
 };

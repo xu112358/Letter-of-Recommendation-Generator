@@ -8,12 +8,16 @@ var session = require('express-session');
 var {google} = require('googleapis');
 var querystring = require('querystring');
 var url = require('url');
-//var OAuth2 = google.auth.OAuth2;
+var OAuth2 = google.auth.OAuth2;
 
 const passport = require('passport');
 
 // Passport Config
 require('./config/passport')(passport);
+
+//Email stuff
+const exphbs = require('express-handlebars');
+const nodemailer = require('nodemailer');
 
 var fileUpload = require('express-fileupload');
 var mammoth = require('mammoth');
@@ -22,7 +26,7 @@ var downloadsFolder = require('downloads-folder');
 var docx = require('docx');
 var fs = require('fs');
 var request = require('request');
-const expressLayouts = require('express-ejs-layouts');
+//const expressLayouts = require('express-ejs-layouts');
 
 var createTemplate = require('./routes/template-editor');
 var createEmailTemplate = require('./routes/email-template-editor');
@@ -75,12 +79,15 @@ app.use(passport.session());
 app.use(fileUpload());
 
 // view engine setup
+
 //app.use(expressLayouts);
+app.engine('handlebars', exphbs());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
+
 
 
 // go to google auth login
@@ -110,7 +117,6 @@ app.use('/form-entry', formEntry);
 app.use('/letter-preview', letterPreview);
 app.use('/email-letter-preview', emailLetterPreview);
 app.use('/login', login);
-//app.use('/register', register);
 app.use('/recommender-dashboard', isAuthenticated, recommenderDashboard);
 app.use('/template-dashboard', isAuthenticated, templateDashboard);
 app.use('/history', history);

@@ -62,6 +62,9 @@ router.post('/', function (req, res, next) {
     var currentUser = req.user;
     var userId = currentUser._id;
 
+    console.log(currentUser)
+    console.log(userId)
+
     Form.createForm(toEmail, req.user.getTemplate(req.body.templateId), userId, function (err, form) {
         if (err) {
             console.log(`error: ${err}`);
@@ -89,6 +92,7 @@ router.post('/', function (req, res, next) {
             var oauth2Client = new OAuth2(credentials.clientId, credentials.clientSecret, credentials.clientCallback);
             oauth2Client.setCredentials(req.user.accessToken);
 
+            // sending email
             gmailClass.users.messages.send({
                 access_token: req.user.accessToken,
                 userId: 'me',
