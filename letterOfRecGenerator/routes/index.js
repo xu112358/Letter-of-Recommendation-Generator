@@ -7,7 +7,10 @@ router.use(function (req, res, next) {
     next();
 });
 
-/* GET home page. */
+//router.get('/', (req, res) => res.render('welcome'));
+router.get('/dashboard', (req, res) => res.render('dashboard'));
+
+// Get Home Page
 router.get('/', function (req, res, next) {
     res.render('pages/index', {
         title: 'Express',
