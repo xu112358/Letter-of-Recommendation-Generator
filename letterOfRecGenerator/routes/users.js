@@ -25,6 +25,9 @@ router.get('/loginlocal', (req, res) => res.render('loginlocal'));
 //Register handle
 router.post('/register', (req, res) => {
   const { name, email, password, password2 } = req.body;
+  const linkTemplate_body = 'Please click the following questionnaire ';
+  const linkTemplate_subject = 'Invitation to Fill Recommendation Letter Questionnaire';
+
   let errors = [];
 
   if (!name || !email || !password || !password2) {
@@ -63,7 +66,9 @@ router.post('/register', (req, res) => {
         const newUser = new User({
           name,
           email,
-          password
+          password,
+          linkTemplate_subject,
+          linkTemplate_body
         });
 
         console.log(newUser)
