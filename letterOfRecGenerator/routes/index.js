@@ -1,6 +1,7 @@
 var express = require('express');
 var User = require('../models/user');
 var router = express.Router();
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 
 router.use(function (req, res, next) {
     res.locals.userValue = null;
@@ -8,7 +9,13 @@ router.use(function (req, res, next) {
 });
 
 //router.get('/', (req, res) => res.render('welcome'));
-router.get('/dashboard', (req, res) => res.render('dashboard'));
+
+//Get Rec Dashboard page
+router.get('/recommender-dashboard', ensureAuthenticated, (req, res) =>
+  res.render('pages/recommender-dashboard' {
+    user: req.user
+  })
+);
 
 // Get Home Page
 router.get('/', function (req, res, next) {

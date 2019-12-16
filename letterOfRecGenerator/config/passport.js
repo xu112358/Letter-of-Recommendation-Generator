@@ -1,4 +1,4 @@
-var passport = require('passport');
+//var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 //var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -38,15 +38,16 @@ module.exports = function(passport) {
 //         displayName: profile.displayName,
 //     };
 // }
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
+  passport.serializeUser(function(user, done) {
+    done(null, user);
   });
-});
+
+  passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+      done(err, user);
+    });
+  });
+};
 
 // Similar, but OLD code
 // passport.deserializeUser(function (id, done) {
@@ -78,6 +79,5 @@ passport.deserializeUser(function(id, done) {
 //         });
 //     });
 //
-};
 
-module.exports = passport;
+//module.exports = passport;

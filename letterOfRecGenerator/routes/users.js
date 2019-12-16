@@ -92,7 +92,7 @@ router.post('/register', (req, res) => {
 // Login handle
 router.post('/loginlocal', (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/pages/recommender-dashboard',
+    successRedirect: '/recommender-dashboard',
     failureRedirect: '/users/loginlocal',
     failureFlash: true
   })(req, res, next);
