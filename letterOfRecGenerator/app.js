@@ -104,7 +104,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 app.use('/logout', (req, res) => {
     req.logOut();
-    res.redirect('/loginlocal');
+    res.redirect('/login');
 });
 
 // Routes
@@ -150,7 +150,7 @@ function isAuthenticated(req, res, next) {
         return next();
     }
 
-    res.redirect('/loginlocal');
+    res.redirect('/login');
 }
 
 

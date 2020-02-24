@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <link rel="stylesheet" href="https://use.typekit.net/ebq4wgm.css">
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" type="text/css" href="/css/login.css" />
+  <head>
+      <a href="https://www.usc.edu" target="_blank">
+          <img id ="usc-logo" src="/images/usc_logo_big.png" alt="University of Southern California" style="height:100px;"/>
+      </a>
+      <h1 align="center" class="title">Letter of Recommendation Generator</h1>
+  </head>
+    <div class="login-page">
+      <div class="form">
+        <form class="register-form">
+
+          <input type="text" placeholder="name"/>
+          <input type="password" placeholder="password"/>
+          <input type="text" placeholder="email address"/>
+          <button>create</button>
+          <p class="message">Already registered? <a href="/users/loginlocal">Sign In</a></p>
+        </form>
+        <form class="login-form" action="/users/loginlocal" method="POST">
+          <input type="text" placeholder="username"/>
+          <input type="password" placeholder="password"/>
+          <button type="submit">Sign in</button>
+          <p class="message">Not registered? <a href="/users/register">Create an account</a></p>
+        </form>
+      </div>
+    </div>
+</html>
