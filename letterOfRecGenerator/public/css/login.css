@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  background-image: linear-gradient(#CC0000, #990000);
+  background-image: radial-gradient(#CC0000, #990000);
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
