@@ -1,11 +1,13 @@
+<html style="height: 100%; background-image: linear-gradient(#CC0000, #990000);">
 <div class="row mt-5">
   <div class="col-md-6 m-auto">
     <div class="card card-body">
-      <h1 class="text-center mb-3"><i class="fas fa-sign-in-alt"></i>  Login</h1>
+      <h1 style="text-align:center; color:white;" class="text-center mb-3"><i class="fas fa-sign-in-alt"></i>  Login</h1>
       <% include ./partials/messages %>
-      <form action="/users/loginlocal" method="POST">
+      <form style="text-align: center; font-size: 24; color:white;" action="/users/loginlocal" method="POST">
         <div class="form-group">
           <label for="email">Email</label>
+          <br>
           <input
             type="email"
             id="email"
@@ -14,8 +16,10 @@
             placeholder="Enter Email"
           />
         </div>
+        <br>
         <div class="form-group">
           <label for="password">Password</label>
+          <br>
           <input
             type="password"
             id="password"
@@ -24,11 +28,13 @@
             placeholder="Enter Password"
           />
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <br>
+        <button style="font-size:24;" type="submit" class="btn btn-primary btn-block">Login</button>
       </form>
-      <p class="lead mt-4">
-        No Account? <a href="/users/register">Register</a>
+      <p style="text-align:center; color:white;" class="lead mt-4">
+        No Account? <a a style="color: blue; font-size:20;" href="/users/register">Register</a>
       </p>
     </div>
   </div>
 </div>
+</html>

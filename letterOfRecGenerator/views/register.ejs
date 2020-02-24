@@ -1,13 +1,15 @@
+<body style="height: 100%; background-image: linear-gradient(#CC0000, #990000);">
 <div class="row mt-5">
   <div class="col-md-6 m-auto">
-    <div class="card card-body">
-      <h1 class="text-center mb-3">
+    <div style="text-align:center; color:white;" class="card card-body">
+      <h1  class="text-center mb-3">
         <i class="fas fa-user-plus"></i> Register
       </h1>
       <% include ./partials/messages %>
-      <form action="/users/register" method="POST">
+      <form  style="text-align: center; font-size: 24;" action="/users/register" method="POST">
         <div class="form-group">
           <label for="name">Name</label>
+          <br>
           <input
             type="name"
             id="name"
@@ -17,8 +19,10 @@
             value="<%= typeof name != 'undefined' ? name : '' %>"
           />
         </div>
+        <br>
         <div class="form-group">
           <label for="email">Email</label>
+          <br>
           <input
             type="email"
             id="email"
@@ -28,8 +32,10 @@
             value="<%= typeof email != 'undefined' ? email : '' %>"
           />
         </div>
+        <br>
         <div class="form-group">
           <label for="password">Password</label>
+          <br>
           <input
             type="password"
             id="password"
@@ -39,8 +45,10 @@
             value="<%= typeof password != 'undefined' ? password : '' %>"
           />
         </div>
+        <br>
         <div class="form-group">
           <label for="password2">Confirm Password</label>
+          <br>
           <input
             type="password"
             id="password2"
@@ -50,11 +58,13 @@
             value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
           />
         </div>
-        <button type="submit" class="btn btn-primary btn-block">
+        <br>
+        <button style="font-size:24;" type="submit" class="btn btn-primary btn-block">
           Register
         </button>
       </form>
-      <p class="lead mt-4">Have An Account? <a href="/users/loginlocal">Login</a></p>
+      <p class="lead mt-4">Have An Account? <a style="color: blue; font-size:20;" href="/users/loginlocal">Login</a></p>
     </div>
   </div>
 </div>
+<body>
