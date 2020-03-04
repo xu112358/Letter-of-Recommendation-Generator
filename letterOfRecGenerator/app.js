@@ -26,7 +26,7 @@ var downloadsFolder = require('downloads-folder');
 var docx = require('docx');
 var fs = require('fs');
 var request = require('request');
-//const expressLayouts = require('express-ejs-layouts');
+const flash = require('connect-flash');
 
 var createTemplate = require('./routes/template-editor');
 var createEmailTemplate = require('./routes/email-template-editor');
@@ -43,7 +43,8 @@ var archive = require('./routes/archive');
 var response = require('./routes/response');
 var emailLetterPreview = require('./routes/email-letter-preview');
 var docxVar = require('./routes/docx');
-const flash = require('connect-flash');
+var about = require('./routes/about');
+
 
 var app = express();
 
@@ -123,6 +124,7 @@ app.use('/history', history);
 app.use('/archive', archive);
 app.use('/response', response);
 app.use('/docx', docxVar);
+app.use('/about', isAuthenticated, about);
 
 
 
