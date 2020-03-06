@@ -1,3 +1,14 @@
 #about-table td {
     height: 60px;
 }
+
+p {
+  padding-right: 50px;
+  padding-left: 50px;
+  padding-bottom: 50px;
+  font-size: 20px;
+}
+
+.title {
+  padding-top: 60px;
+}
