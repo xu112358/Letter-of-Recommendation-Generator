@@ -32,12 +32,13 @@ module.exports = function(passport) {
   );
 
 // OLD code
-// function extractProfile(profile) {
-//     return {
-//         id: profile.id,
-//         displayName: profile.displayName,
-//     };
-// }
+function extractProfile(profile) {
+    return {
+        id: profile.id,
+        displayName: profile.displayName,
+    };
+}
+
   passport.serializeUser(function(user, done) {
     done(null, user);
   });

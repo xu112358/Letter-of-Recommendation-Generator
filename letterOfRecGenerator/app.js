@@ -92,10 +92,10 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 
 // go to google auth login
-// app.get('/auth/google', passport.authenticate('google', {
-//     scope: ['profile', 'https://www.googleapis.com/auth/gmail.send'],
-//     prompt: 'select_account'
-// }));
+app.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile', 'https://www.googleapis.com/auth/gmail.send'],
+    prompt: 'select_account'
+}));
 
 // send to rec dashboard if login succeeds
 // app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/login'}), function (req, res) {
