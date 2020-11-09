@@ -43,7 +43,8 @@ const response = require('./routes/response');
 const emailLetterPreview = require('./routes/email-letter-preview');
 const docxVar = require('./routes/docx');
 const about = require('./routes/about');
-
+const forms = require('./routes/forms');
+const index = recommenderDashboard;
 
 const app = express();
 
@@ -117,6 +118,7 @@ app.all('/', (req, res) => {
     }
 });
 app.use('/users', users);
+app.use('/forms', isAuthenticated, forms); 
 app.use('/template-editor', isAuthenticated, createTemplate);
 app.use('/email-template-editor',isAuthenticated, createEmailTemplate);
 app.use('/form-completed', isAuthenticated, formCompleted);

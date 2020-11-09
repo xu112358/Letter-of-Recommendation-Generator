@@ -28,18 +28,16 @@ router.use(function(req, res, next) {
  * data needed to render recommender-dashboard
  */
 router.get('/', function(req, res, next) {
-    req.user.getForms(function(err, forms) {
-        if (err) {
-            console.log(`error: ${err}`);
-        } else {
-            res.render('pages/recommender-dashboard', {
-                title: req.user.displayName,
-                templates: req.user.getTemplates(),
-                forms: forms,
-                subject: req.user.getLinkTemplateSubject(),
-                body: req.user.getLinkTemplateBody()
-            });
-        }
+    if (!req.user) {
+        res.render('login', {});
+    }
+    console.log({recdash: req.query.email})
+    res.render('pages/recommender-dashboard', {
+        title: req.user.displayName,
+        templates: req.user.getTemplates(),
+        email: req.query.email,
+        subject: req.user.getLinkTemplateSubject(),
+        body: req.user.getLinkTemplateBody()
     });
 });
 
