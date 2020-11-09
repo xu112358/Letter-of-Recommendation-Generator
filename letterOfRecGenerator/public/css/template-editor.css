@@ -1,9 +1,39 @@
-.section-header {
+.section{
+    border-radius: 15px;
+    background-color: #990000;
+}
+
+.big-checkbox {width: 30px; height: 30px;}
+
+::-webkit-input-placeholder {
+    font-style: italic;
+ }
+
+ .add-question{
+     width: 32px;
+ }
+
+ .remove-option-btn{
+    width: 26px;
+    height: 26px;
+ }
+
+ .remove-question-btn{
+    width: 36px;
+    height: 36px;
+ }
+
+/* .section-header {
     color: #FF473A;
-    /*text-align: center;*/
+    text-align: center;
     font-size: 15px;
     width: 200px;
+} */
 
+#tags{
+    border: solid black;
+    /* margin-left: 15px; */
+    width: 100%;
 }
 
 .templates{
@@ -17,15 +47,6 @@
     align-items: center;
     margin: 10px 30px;
     width: 100%;
-}
-
-#name-container-text-field {
-    flex: 1;
-
-    font-size: 15px;
-    line-height: 20px;
-    padding: 3px 15px;
-    height: 30px;
 }
 
 #name-container .text-field {
@@ -140,9 +161,9 @@
 }
 
 #letter-container {
-    display: flex;
+    /* display: flex; */
     width: 100%;
-    margin: 30px 30px 20px 30px;
+    /* margin: 30px 30px 20px 30px; */
     /*justify-content: center;
     flex-direction: column;
     align-items: center;*/
@@ -151,18 +172,12 @@
 #letter-container #letter-text-area {
     /*margin-top: 50px;    */
     height: 300px;
-    /*width: 800px;*/
-    flex-basis: auto;
+    width: 100%;
+    /* flex-basis: auto; */
     border: solid black;
-    font-size: 13px;
+    font-size: 18px;
     overflow-y: scroll;
-    max-width: 750px;
-}
-
-#questions-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    /* max-width: 750px; */
 }
 
 .question-outer-container {
@@ -185,21 +200,6 @@
 }
 .question-header{
     font-size: 12px;
-}
-
-.question-container {
-    font-size: 12px;
-    flex: 1;
-    width: 700px;
-    max-width: 700px;
-    height: 100%;
-    background-color: white;
-    border: 1px solid rgb(80, 80, 80);
-    margin: 5px 0px;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    flex-direction: column;
 }
 
 .text-area{

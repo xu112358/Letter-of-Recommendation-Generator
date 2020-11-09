@@ -10,6 +10,7 @@ var letterheadImgData = parseAttribute('letterheadImgData');
 var footerImgData = parseAttribute('footerImgData');
 var saveSwitchData = parseAttribute('saveSwitchData');
 const TRIX_EDITOR = "trix-editor";
+const questionTypes = ["Text Answer", "Radio Button", "Checkbox", "Custom"];
 
 /**
  * Prototype class for Questions
@@ -38,7 +39,7 @@ class Question {
         this.options = options;
     }
 
-    setOrganizationQuestion (booleanValue) {
+    setOrganizationQuestion(booleanValue) {
         this.isOrganizationQuestion = booleanValue;
     }
 }
@@ -57,7 +58,8 @@ var tags = [];
 var warningModalFunction;
 
 window.onload = function () {
-    //setUpEventHandlers();
+    // return;
+    // setUpEventHandlers();
     document.getElementById(LETTER_TEXT_AREA_ID).addEventListener('paste', function (e) {
         e.preventDefault();
 
@@ -83,8 +85,10 @@ window.onload = function () {
                     questions.push(savedQuestion);
                 });
                 console.log('success loading page');
+                console.log({ questions })
                 displayQuestions();
                 //emphasizeTags();
+                renderAllTagButtons();
             },
             error: function () {
                 console.log('error');
@@ -94,6 +98,7 @@ window.onload = function () {
     } else {
         loadDefaultQuestions();
         displayQuestions();
+        renderAllTagButtons();
     }
 
 };
@@ -147,13 +152,17 @@ function displayQuestions() {
     var container = document.getElementById(QUESTIONS_CONTAINER_ID);
 
     // fill in with questions
-    container.innerHTML = "";
+    let questionsText = '';
     for (var i = 0; i < questions.length; i++) {
-        container.innerHTML += getQuestionHTML(questions[i]);
+        questionsText += getQuestionHTML(questions[i]);
     }
-
-    let list = document.getElementById(QUESTIONS_CONTAINER_ID);
+    container.innerHTML = questionsText;
+    // let list = document.getElementById(QUESTIONS_CONTAINER_ID);
     // Sortable.create(list);
+}
+
+function convertLtGt(s) {
+    return s.replace('<', '&lt;').replace('>', '&gt;');
 }
 
 /**
@@ -162,6 +171,111 @@ function displayQuestions() {
  * @returns {string}
  */
 function getQuestionHTML(q) {
+    return `<div class="sortable-questions">
+        <div class="row error-container">
+            <div class="question-outer-container">
+                <div class="question-container d-flex align-items-center my-4 error-container question-outer-container"
+                    data-id="${q.id}">
+                    <div class="ml-4"><img class="icon-effects" src="/images/hamburger_white.svg"></div>
+                    <div class="row col d-flex align-items-end ${q.type === questionTypes[1] || q.type === questionTypes[2] ? "multiple-choice-container" : ""}">
+                        <div class="col col-5"><input type="text" class="form-control"
+                                placeholder="Enter new question here..." data-type="value" value="${q.value}"></div>
+                        <div class="col col-2">
+                            <select class="form-control" onchange="changeQuestionType(${q.id}, this)">
+                                ${questionTypes[3] !== q.type ? `
+                                <option ${questionTypes[0] === q.type ? " selected='true'" : ""}>Text Answer</option>
+                                <option ${questionTypes[1] === q.type ? " selected" : ""}>Radio Button</option>
+                                <option ${questionTypes[2] === q.type ? " selected" : ""}>Checkbox</option>` 
+                                
+                                :`<option selected>Custom</option>`}
+                            </select></div>
+                        <div class="d-flex align-items-center"><span
+                            class="text-white mr-2">Required?</span><input type="checkbox" ${q.optional ? '' : 'checked'}
+                            class="big-checkbox">
+                        </div>
+                        
+                        ${q.type === "Checkbox" ? `<div class="col-3"></div>` : 
+                        `<div class="col-3"><input type="text" class="form-control"
+                            placeholder="tag (e.g. #fname)" value="${convertLtGt(q.tag)}" data-type="tag">
+                        </div>`}
+
+                        ${getMultipleChoiceFieldsHTML(q)}
+                    </div>
+                </div>
+                <div class="mr-4 mt-4">
+                    <img class="remove-question-btn" src="/images/remove_white.png" alt="Remove" onclick="deleteQuestionWithWarning(${q.id})">
+                </div>
+            </div>
+        </div>`;
+}
+
+function getMultipleChoiceFieldsHTML(q) {
+    // if (q.type === "Text Answer") return "";
+    let html = "";
+    let option;
+    if (q.type === "Radio Button"){
+        for(let i = 0; i < q.options.length; i++){
+            option = q.options[i];
+            html += `<div class="col col-3 mt-3"> <input type="text" class="form-control form-control-sm"
+                placeholder="Radio Button Option" data-type="mc-option" value="${option.option}"></div>
+                <div class="col col-3 mt-3"><input type="text" class="form-control form-control-sm"
+                    placeholder="Text to Replace Tag" data-type="mc-fill" value="${option.fill}"></div>
+                <div class="col col-1 pb-1">
+                    <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,${i})" alt="Remove">
+                </div>
+                <div class="col col-5"></div>`;
+        }
+        if(q.options.length === 0){
+            html = `<div class="col col-3 mt-3"><input type="text" class="form-control"
+            placeholder="Radio Button Option" data-type="mc-option"></div>
+            <div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Text to Replace Tag" data-type="mc-fill"></div>
+            <div class="col col-1 pb-1">
+                <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,0)" alt="Remove">
+            </div>
+            <div class="col col-5"></div>`;
+        }
+        
+        html += `<div class="col mt-3"><button class="btn btn-light btn-sm" onclick="addMultipleChoiceField(${q.id})">
+            Add Option</button></div>`
+    }
+    else if (q.type === "Checkbox"){
+        for(let i = 0; i < q.options.length; i++){
+            option = q.options[i];
+            html += `<div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Checkbox Option." data-type="mc-option" value="${option.option}"></div>
+            <div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Text to Replace Tag" data-type="mc-fill" value="${option.fill}"></div>
+            <div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Tag (e.g. <!check-value>" data-type="tag" value="${option.tag}"></div>
+            <div class="col col-1 pb-1">
+                <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,${i})" alt="Remove">
+            </div>
+            <div class="col col-2"></div>`;
+        }
+        if(q.options.length === 0){
+            html = `<div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Checkbox Option." data-type="mc-option"></div>
+            <div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Text to Replace Tag" data-type="mc-fill"></div>
+            <div class="col col-3 mt-3"><input type="text" class="form-control"
+                placeholder="Tag (e.g. <!check-value>" data-type="tag"></div>
+            <div class="col col-1 pb-1">
+                <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,0)" alt="Remove">
+            </div>
+            <div class="col col-2"></div>`;
+        }
+        html += `<div class="col mt-3"><button class="btn btn-light btn-sm" onclick="addMultipleChoiceField(${q.id})">Add Option</button></div>`
+    }
+    return html;
+}
+
+/**
+ * Creates HTML for the different question types
+ * @param q
+ * @returns {string}
+ */
+function getQuestionHTML_old(q) {
     var data_id_attribute = "data-id=\"" + q.id + "\"";
     var delete_onclick_attribute = "onclick=\"deleteQuestionWithWarning(" + q.id + ")\"";
     var multiple_choice_fields_html = getMultipleChoiceFieldsHTML(q);
@@ -186,15 +300,15 @@ function getQuestionHTML(q) {
     }
 
     var html = "<div class=\"sortable-questions\"> <h2 class=\"question-header\"> <b>Question Type: </b>" + question_type_label + "</h2>" + "<img class=\"icon-effects\" src=\"/images/outline-reorder-24px.svg\">" + "<div class=\"error-container\"><div class=\"question-outer-container\"" + data_id_attribute + ">";
-     // "required" checkbox
+    // "required" checkbox
     html += "<div class=\"required-checkbox-container\">" + "<p>Required?" + "<input type=\"checkbox\" ";
     html += (q.optional ? "" : "checked");
     html += ">" + "</p></div>";
 
     // question box
-    html += [ "<div class=\"question-container\"> <b>Question:</b>" +
-    getTextAreaHTML(placeholder, q.value) +
-    multiple_choice_fields_html ];
+    html += ["<div class=\"question-container\"> <b>Question:</b>" +
+        getTextAreaHTML(placeholder, q.value) +
+        multiple_choice_fields_html];
 
     if (q.type !== "Checkbox" && q.type !== "Custom") {
         html += "<span class=\"line\"></span> <b>Tag:</b>" + getTagTextInputHTML(q.tag);
@@ -207,7 +321,7 @@ function getQuestionHTML(q) {
 }
 
 // Note: the html needs to be nested within a question-container element in order to properly work
-function getMultipleChoiceFieldsHTML(q) {
+function getMultipleChoiceFieldsHTML_old(q) {
     if (q.type !== "Radio Button" && q.type !== "Checkbox" && q.type !== "Custom") return "";
 
     var option_placeholder = "Enter option here...";
@@ -289,7 +403,7 @@ function saveTemplate() {
             url: '/template-editor/update',
             data: {
                 id: id,
-                template: template
+                template
             },
             type: 'POST',
             cache: false,
@@ -300,7 +414,7 @@ function saveTemplate() {
                 console.log('success in SaveTemplate');
                 window.location.href = '/template-dashboard'
             },
-            error: function (err){
+            error: function (err) {
                 console.log('error in saveTemplate:' + err);
                 var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
                 addError(textField, 0, 'template name already exists');
@@ -342,8 +456,9 @@ function getQuestions() {
     var sortableQuestionsHTML = document.getElementById(QUESTIONS_CONTAINER_ID).getElementsByClassName("sortable-questions");
     var updatedQuestions = [];
     var newQuestionIndex = 0;
+    console.log({ questions })
 
-    for(var i=0; i<sortableQuestionsHTML.length; i++){
+    for (var i = 0; i < sortableQuestionsHTML.length; i++) {
         var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName("error-container");
         var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName("question-outer-container");
         var newQuestion = new Question(questions[i].type, questions[i].value, questions[i].tag, questions[i].optional, questions[i].isOrganizationQuestion);
@@ -351,6 +466,7 @@ function getQuestions() {
         newQuestion.setId(i);
         updatedQuestions.push(newQuestion);
     }
+    console.log({ updatedQuestions });
 
     updatedQuestions.forEach(question => dbQuestions.push({
         number: questionNumber++,
@@ -362,7 +478,8 @@ function getQuestions() {
         organizationFlag: question.isOrganizationQuestion
 
     }));
-
+    console.log({ dbQuestions })
+    // throw Error('two pretty best friends not found');
     return dbQuestions;
 }
 
@@ -396,7 +513,7 @@ function executeWarningModalFunction() {
 // to assign it a data_id
 function addTextAnswerQuestion() {
     updateQuestions();
-    questions.push(new Question("Text", "", ""));
+    questions.push(new Question("Text Answer", "", ""));
     displayQuestions();
     hideAddQuestionModal();
     var question = document.querySelectorAll(".sortable-questions");
@@ -439,36 +556,56 @@ function addCustomQuestion() {
     // add a field
 }
 
+function changeQuestionType(id, selectEl){
+    for (let option of selectEl.children){
+        if(option.selected){
+            questions[id].type = option.value;
+        }
+    }
+    displayQuestions();
+}
+
 function updateQuestions() {
     // update the letter
     var element = document.querySelector(TRIX_EDITOR);
     letter = element.value;
 
     // update individual questions
-    for (var i = 0; i < questions.length; i++) {
-        var question = questions[i];
+    for (const question of questions) {
         // grab the question element
-        var query = "div[data-id='" + question.id + "'][class='question-outer-container']";
+        var query = "div[data-id='" + question.id + "']";
         var questionEl = document.querySelector(query);
 
         question.value = questionEl.querySelector("[data-type='value']").value;
         // Checkbox questions do not have a general tag (as there are tags associated with each option instead)
-        if (question.type !== "Checkbox" || question.type !== CUSTOM_QUESTION_TYPE) {
+        if (question.type !== "Checkbox" && question.type !== CUSTOM_QUESTION_TYPE) {
             question.tag = questionEl.querySelector("[data-type='tag']").value;
         }
 
         question.optional = !questionEl.querySelector("[type='checkbox']").checked;
 
-        var multipleChoices = questionEl.querySelectorAll("[class='multiple-choice-container']");
-        for (var j = 0; j < multipleChoices.length; j++) {
-            var mc = multipleChoices[j];
+        const options = questionEl.querySelectorAll("[data-type='mc-option']");
+        const fills = questionEl.querySelectorAll("[data-type='mc-fill']");
+        const tags = questionEl.querySelectorAll("[data-type='tag']");
 
-            question.options[j].option = mc.querySelectorAll("[data-type='value']")[0].value;
-            question.options[j].fill = mc.querySelectorAll("[data-type='value']")[1].value;
+        for (let j = 0; j < options.length; j++){
+            question.options[j].option = options[j].value;
+            question.options[j].fill = fills[j].value;
             if (question.type === "Checkbox" || question.type === CUSTOM_QUESTION_TYPE) {
-                question.options[j].tag = mc.querySelector("[data-type='tag']").value;
+                question.options[j].tag = tags[j].value;
             }
         }
+
+        // var multipleChoices = questionEl.querySelector(".multiple-choice-container");
+        // for (var j = 0; j < multipleChoices.length; j++) {
+        //     var mc = multipleChoices[j];
+
+        //     question.options[j].option = mc.querySelectorAll("[data-type='mc-option-" + j + "']").value;
+        //     question.options[j].fill = mc.querySelectorAll("[data-type='mc-fill-" + j + "']").value;
+        //     if (question.type === "Checkbox" || question.type === CUSTOM_QUESTION_TYPE) {
+        //         question.options[j].tag = mc.querySelector("[data-type='mc-tag-" + j + "']").value;
+        //     }
+        // }
     }
 }
 
@@ -533,7 +670,7 @@ function deleteMultipleChoiceField(el, data_id) {
 }
 
 function findAncestor(el, cls) {
-    while ((el = el.parentElement) && !el.classList.contains(cls)) ;
+    while ((el = el.parentElement) && !el.classList.contains(cls));
     return el;
 }
 
@@ -563,7 +700,7 @@ function validate(template) {
 
     for (var i = 0; i < template.questions.length; i++) {
         var question = template.questions[i];
-        var query = "div[data-id='" + questions[i].id + "'][class='question-outer-container']";
+        var query = "div[data-id='" + questions[i].id + "'].question-outer-container";
         var questionHTML = document.querySelector(query);
 
         var totalFields = 3;
@@ -592,7 +729,7 @@ function validate(template) {
         if (question.type === 'Radio Button') {
             for (var j = 0; j < question.options.length; j++) {
                 var option = question.options[j];
-                var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
+                var query = "div[data-id='" + j + "'] .multiple-choice-container";
                 var optionHTML = questionHTML.querySelector(query);
 
                 if (isNotValid(option.option)) {
@@ -610,7 +747,7 @@ function validate(template) {
         if (question.type === 'Checkbox' || question.type === CUSTOM_QUESTION_TYPE) {
             for (var j = 0; j < question.options.length; j++) {
                 var option = question.options[j];
-                var query = "div[data-id='" + j + "'][class='multiple-choice-container']";
+                var query = "div[data-id='" + j + "'] .multiple-choice-container";
                 var optionHTML = questionHTML.querySelector(query);
 
                 if (isNotValid(option.option)) {
@@ -761,8 +898,7 @@ function addErrorListToErrorContainer(container) {
 }
 
 function getInnerContainer(container) {
-    for (var i = 0; i < container.children.length; i++) {
-        var child = container.children[i];
+    for (const child of container.children) {
 
         if (!child.classList) {
             continue;
@@ -820,8 +956,8 @@ function emphasizeTags() {
     var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
     var letterHTMLWithTagEmphasis = letterHTML.replace(/&lt;\![a-z0-9_]+&gt;/gi, function (match) {
         if (unknownTags.find(function (tag) {
-                return tag === match;
-            })) {
+            return tag === match;
+        })) {
             return '<span class="tag-unknown">' + match + '</span>';
         }
 

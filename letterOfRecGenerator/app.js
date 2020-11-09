@@ -44,7 +44,6 @@ const emailLetterPreview = require('./routes/email-letter-preview');
 const docxVar = require('./routes/docx');
 const about = require('./routes/about');
 const forms = require('./routes/forms');
-const index = recommenderDashboard;
 
 const app = express();
 
