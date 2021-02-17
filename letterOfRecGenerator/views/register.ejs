@@ -36,6 +36,7 @@
           class="form-control"
           placeholder="Create Password"
           value="<%= typeof password != 'undefined' ? password : '' %>"
+          autocomplete="off"
         />
         <input
           type="password"
@@ -44,6 +45,7 @@
           class="form-control"
           placeholder="Confirm Password"
           value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+          autocomplete="off"
         />
         <button type="submit">Register</button>
       </form>
