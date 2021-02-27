@@ -168,13 +168,11 @@ function isAuthenticated(req, res, next) {
 }
 
 //https
-var key = fs.readFileSync('encryption/private.key');
-var cert = fs.readFileSync( 'encryption/primary.crt' );
-var ca = fs.readFileSync( 'encryption/intermediate.crt' );
+var key = fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'));
+var cert = fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'));
 var options = {
     key: key,
-    cert: cert,
-    ca: ca
+    cert: cert
 };
 
 var https = require('https');
