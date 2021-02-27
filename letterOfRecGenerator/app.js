@@ -167,5 +167,25 @@ function isAuthenticated(req, res, next) {
     }
 }
 
+//https
+var key = fs.readFileSync('encryption/private.key');
+var cert = fs.readFileSync( 'encryption/primary.crt' );
+var ca = fs.readFileSync( 'encryption/intermediate.crt' );
+var options = {
+    key: key,
+    cert: cert,
+    ca: ca
+};
+
+var https = require('https');
+https.createServer(options, app).listen(443);
+
+var http = require('http');
+http.createServer(app).listen(80);
+
+var forceSsl = require('express-force-ssl');
+app.use(forceSsl);
+
+
 
 module.exports = app;
