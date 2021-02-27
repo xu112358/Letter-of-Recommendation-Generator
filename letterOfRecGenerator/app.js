@@ -167,23 +167,6 @@ function isAuthenticated(req, res, next) {
     }
 }
 
-//https
-var key = fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'));
-var cert = fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'));
-var options = {
-    key: key,
-    cert: cert
-};
-
-var https = require('https');
-https.createServer(options, app).listen(443);
-
-var http = require('http');
-http.createServer(app).listen(80);
-
-var forceSsl = require('express-force-ssl');
-app.use(forceSsl);
-
 
 
 module.exports = app;
