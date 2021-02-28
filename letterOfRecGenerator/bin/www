@@ -17,7 +17,7 @@ const fs = require('fs')
  * Get port from environment and store in Express.
  */
 console.log("testing");
-var port = normalizePort(process.env.PORT || '3000');
+var port = '443';//normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log("Listening on port ", port);
@@ -26,13 +26,13 @@ console.log("Listening on port ", port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer('80');//app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen('80');//port);
 server.on('error', onError);
 server.on('listening', onListening);
 
