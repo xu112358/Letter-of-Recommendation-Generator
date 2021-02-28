@@ -16,7 +16,6 @@ const fs = require('fs')
 /**
  * Get port from environment and store in Express.
  */
-console.log("testing");
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -30,7 +29,6 @@ var options = {
     cert: cert
 };
 
-console.log("break2");
 https.createServer(options, app).listen(443);
 
 /**
@@ -47,10 +45,8 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-console.log("break3");
 var forceSsl = require('express-force-ssl');
 app.use(forceSsl);
-console.log("break4");
 /**
  * Normalize a port into a number, string, or false.
  */
