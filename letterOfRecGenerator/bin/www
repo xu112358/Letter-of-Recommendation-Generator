@@ -18,7 +18,7 @@ const fs = require('fs')
  */
 console.log("testing");
 var port = '443';//normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+//app.set('port', port);
 
 console.log("Listening on port ", port);
 
