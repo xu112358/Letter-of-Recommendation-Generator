@@ -46,10 +46,11 @@ var options = {
 
 console.log("break2");
 https.createServer(options, app).listen(443);
+/*
 console.log("break3");
 var forceSsl = require('express-force-ssl');
 app.use(forceSsl);
-console.log("break4");
+console.log("break4");*/
 /**
  * Normalize a port into a number, string, or false.
  */
