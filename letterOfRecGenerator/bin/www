@@ -44,8 +44,8 @@ var options = {
     cert: cert
 };
 
-var https = require('https');
-https.createServer(options, app).listen(443);
+var httpsServer = require('https');
+httpsServer.createServer(options, app).listen(443);
 
 var forceSsl = require('express-force-ssl');
 app.use(forceSsl);
