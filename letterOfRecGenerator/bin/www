@@ -8,6 +8,11 @@ var app = require('../app');
 var debug = require('debug')('letterofrecgenerator:server');
 var http = require('http');
 
+const express = require('express')
+const https = require('https')
+const path = require('path')
+const fs = require('fs')
+
 /**
  * Get port from environment and store in Express.
  */
@@ -30,6 +35,20 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+//https
+var key = fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'));
+var cert = fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'));
+var options = {
+    key: key,
+    cert: cert
+};
+
+var https = require('https');
+https.createServer(options, app).listen(443);
+
+var forceSsl = require('express-force-ssl');
+app.use(forceSsl);
 
 /**
  * Normalize a port into a number, string, or false.
