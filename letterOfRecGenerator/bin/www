@@ -16,12 +16,12 @@ const fs = require('fs')
 /**
  * Get port from environment and store in Express.
  */
-console.log("process env port is ", process.env.port);
+console.log("process env port is " + process.env.port);
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log("Listening on port ", port);
-
+/*
 //https
 var key = fs.readFileSync(path.join(__dirname, '../cert', 'key.pem'));
 var cert = fs.readFileSync(path.join(__dirname, '../cert', 'cert.pem'));
@@ -30,7 +30,7 @@ var options = {
     cert: cert
 };
 
-https.createServer(options, app).listen(443);
+https.createServer(options, app).listen(443);*/
 
 /**
  * Create HTTP server.
