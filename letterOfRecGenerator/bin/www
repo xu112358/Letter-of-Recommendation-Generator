@@ -9,7 +9,7 @@ var debug = require('debug')('letterofrecgenerator:server');
 var http = require('http');
 
 const express = require('express')
-const https = require('https')
+//const https = require('https')
 const path = require('path')
 const fs = require('fs')
 
@@ -22,14 +22,14 @@ app.set('port', port);
 console.log("Listening on port ", port);
 
 //https
-var key = fs.readFileSync(path.join(__dirname, '../cert', 'key.pem'));
+/*var key = fs.readFileSync(path.join(__dirname, '../cert', 'key.pem'));
 var cert = fs.readFileSync(path.join(__dirname, '../cert', 'cert.pem'));
 var options = {
     key: key,
     cert: cert
 };
 
-https.createServer(options, app).listen(443);
+https.createServer(options, app).listen(443);*/
 
 /**
  * Create HTTP server.
