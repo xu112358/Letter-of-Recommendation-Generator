@@ -17,7 +17,7 @@ const fs = require('fs')
  * Get port from environment and store in Express.
  */
 console.log("process env port is " + process.env.port);
-var port = normalizePort(process.env.PORT || '3000');
+var port = 3000;//normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log("Listening on port ", port);
