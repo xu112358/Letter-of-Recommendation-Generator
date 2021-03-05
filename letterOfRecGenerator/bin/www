@@ -16,31 +16,15 @@ const fs = require('fs')
 /**
  * Get port from environment and store in Express.
  */
-console.log("process env port is " + process.env.port);
+
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log("Listening on port ", port);
 
-//Enable reverse proxy support in Express
-app.enable('trust proxy');
-
-//https redirect
-app.use(function(req, res, next) {
-    /*if (req.secure) {
-        // request was via https, so do no special handling
-        next();
-    } else {
-        // request was via http, so redirect to https
-        res.redirect('https://' + req.headers.host + req.url);
-    }*/
-    if (req.headers["x-forwarded-proto"] === "https"){
-       return next();
-    }
-    res.redirect("https://" + req.headers.host + req.url); 
-});
-
-//https
+/**
+ * Create HTTPS server.
+ */
 var key = fs.readFileSync(path.join(__dirname, '../cert', 'key.pem'));
 var cert = fs.readFileSync(path.join(__dirname, '../cert', 'cert.pem'));
 var options = {
@@ -63,6 +47,10 @@ https.createServer(options, app).listen(443);
 //server.listen(port);
 //server.on('error', onError);
 //server.on('listening', onListening);
+
+/**
+ * Create HTTP server listening on provided port, while redirecting requests to https
+ */
 http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
