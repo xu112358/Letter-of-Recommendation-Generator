@@ -17,11 +17,11 @@ const fs = require('fs')
  * Get port from environment and store in Express.
  */
 console.log("process env port is " + process.env.port);
-var port = 3000;//normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log("Listening on port ", port);
-
+/*
 //Enable reverse proxy support in Express
 app.enable('trust proxy');
 
@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
         // request was via http, so redirect to https
         res.redirect('https://' + req.headers.host + req.url);
     }
-});
+});*/
 
 //https
 var key = fs.readFileSync(path.join(__dirname, '../cert', 'key.pem'));
