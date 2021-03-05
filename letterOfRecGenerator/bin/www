@@ -21,7 +21,7 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log("Listening on port ", port);
-/*
+
 //Enable reverse proxy support in Express
 app.enable('trust proxy');
 
@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
         // request was via http, so redirect to https
         res.redirect('https://' + req.headers.host + req.url);
     }
-});*/
+});
 
 //https
 var key = fs.readFileSync(path.join(__dirname, '../cert', 'key.pem'));
