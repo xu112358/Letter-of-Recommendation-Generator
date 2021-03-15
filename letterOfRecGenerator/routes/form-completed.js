@@ -9,6 +9,8 @@ router.get('/', function(req, res, next) {
     });
 
     // EMAIL STUFF
+    const email_username = process.env.EMAILUSER;
+    const email_password = process.env.EMAILPASS;
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -16,8 +18,10 @@ router.get('/', function(req, res, next) {
       port: 465,
       secure: true, // true for 465, false for other ports
       auth: {
-          user: 'letterofrecgenerator@gmail.com', // generated ethereal user
-          pass: 'siqtam-3dabqa-pepxaV'  // generated ethereal password
+          //user: 'letterofrecgenerator@gmail.com', // generated ethereal user
+          //pass: 'siqtam-3dabqa-pepxaV'  // generated ethereal password
+          user: email_username, 
+          pass: email_password
       },
       tls:{
         rejectUnauthorized:false
