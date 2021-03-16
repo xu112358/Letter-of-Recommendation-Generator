@@ -96,10 +96,11 @@
                 listItem.append(input_elem.val());
                 
                 let removeButton = document.createElement("button");
-                removeButton.style.position='absolute';
+                removeButton.style.position='relative';
                 removeButton.type = "button";
                 removeButton.style.width = '10px'; 
                 removeButton.style.marginLeft= '10px';
+                removeButton.style.marginBottom= '2px';
                 removeButton.style.background = "red";
                 removeButton.style.height='3px';
                 removeButton.onclick = removeCustom;
