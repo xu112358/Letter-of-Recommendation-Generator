@@ -218,8 +218,6 @@ function createLetterPreview(form, letter) {
 function parseLetter(form) {
     var letter = form.template.text;
     var letter_html = decodeLetterHTML(letter);
-    console.log("letter_html");
-    console.log(letter_html);
     var responses = form.responses;
     var noCapitalization = Array.from(letter_html.replace(tagRegex, function (match) {
         var response = responses.find(function (item) {
