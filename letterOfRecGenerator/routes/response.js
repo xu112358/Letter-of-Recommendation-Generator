@@ -31,7 +31,11 @@ router.get('/update', function (req, res, next) {
             console.log(err)
         } else {
             form.updateResponse(editedResponses);
+            console.log(form);
             form.letter = parseLetter(form);
+            console.log("after!!!);
+            console.log(form);
+            console.log(form.letter);
             for (i = 0; i < form.responses.length; i++) {
                 if (form.responses[i].tag == "<!ORG>") {
                     form.organization = form.responses[i].response;
