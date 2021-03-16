@@ -94,8 +94,10 @@ router.post('/templateUpload', function (req,res, next) {
                 pulled_text = form.letter;
                 temp000 = res.json(form);
 		    
-		console.log("\n\nrec:");
-		    console.log(req);
+		console.log("\n\nrec.body:");
+		    console.log(req.body);
+		    console.log("\n\nrec.body.letter:");
+		    console.log(req.body.letter);
 		
 		console.log("\n\ntemp000:");
 		console.log(temp000);
@@ -103,7 +105,7 @@ router.post('/templateUpload', function (req,res, next) {
 		console.log("\n\npulled_text:");
                 console.log(pulled_text);
 		    
-                var formatted_text = letterParser.htmlstuff(temp000);
+                var formatted_text = letterParser.htmlstuff(rec.body.letter);
 
                 var content = fs
                         .readFileSync(filePath, 'binary');
