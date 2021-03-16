@@ -207,10 +207,6 @@ function createLetterPreview(form, letter) {
         } else {
             letterHTML = parseLetter(form);
         }
-        console.log("item");
-        console.log(item);
-        console.log(item.tag);
-        console.log(match);
         innerContainer.innerHTML += '<div id = "letter-text" style="white-space: pre-line">' + letterHTML + '</div>';
 
         letterContainer.appendChild(innerContainer);
