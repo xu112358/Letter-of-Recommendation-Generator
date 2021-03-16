@@ -92,7 +92,10 @@ router.post('/templateUpload', function (req,res, next) {
 		console.log("\n\nForm:");
                 console.log(form);
                 pulled_text = form.letter;
-                temp000 = res.json(form).letter;
+                temp000 = res.json(form);
+		    
+		console.log("\n\nrec:");
+		    console.log(req);
 		
 		console.log("\n\ntemp000:");
 		console.log(temp000);
