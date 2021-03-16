@@ -94,8 +94,8 @@ router.post('/templateUpload', function (req,res, next) {
                 pulled_text = form.letter;
                 res.json(form);
 
-                console.log(pulled_text);
-                var formatted_text = letterParser.htmlstuff(pulled_text);
+                //console.log(pulled_text);
+                var formatted_text = letterParser.htmlstuff(form);
 
                 var content = fs
                         .readFileSync(filePath, 'binary');
