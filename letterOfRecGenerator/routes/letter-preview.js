@@ -94,7 +94,7 @@ router.post('/templateUpload', function (req,res, next) {
             } else {
 		//console.log("\n\nForm:");
                 //console.log(form);
-                pulled_text = form.template.text;
+                pulled_text = letterParser.parseLetter(form);
 		    
 		console.log("\n\npulled_text:");
                 console.log(pulled_text);
