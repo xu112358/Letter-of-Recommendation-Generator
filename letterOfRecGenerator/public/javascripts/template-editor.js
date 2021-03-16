@@ -118,7 +118,7 @@ function loadDefaultQuestions() {
     var default4 = new Question("Radio Button", "What is your preferred possessive pronoun?", "<!POS_PRONOUN>");
     default4.options = [constructOptionObject("His", "his"), constructOptionObject("Her", "her"), constructOptionObject("Their", "their")];
     questions.push(default4);
-    var orgQuestion = new Question("Custom", "What organizations are you applying to?", "<!ORGANIZATION>");
+    var orgQuestion = new Question("Custom", "What organizations are you applying to?", "<!ORG>");
     orgQuestion.options = [constructOptionObject("Organization", "", "<!ORG>")];
     questions.push(orgQuestion);
 
