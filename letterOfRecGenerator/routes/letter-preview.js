@@ -95,6 +95,9 @@ router.post('/templateUpload', function (req,res, next) {
 		    
 		console.log("\n\npulled_text:");
                 console.log(pulled_text);
+		    
+		console.log("\n\nreq.body:");
+                console.log(req.body);
 		res.json(form);
 		    
                 var formatted_text = letterParser.htmlstuff(pulled_text);
