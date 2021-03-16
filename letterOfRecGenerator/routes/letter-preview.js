@@ -89,8 +89,8 @@ router.post('/templateUpload', function (req,res, next) {
             if (err) {
                 console.log(err);
             } else {
-
-                //console.log(form);
+		console.log("Form:");
+                console.log(form);
                 pulled_text = form.letter;
                 res.json(form);
 
