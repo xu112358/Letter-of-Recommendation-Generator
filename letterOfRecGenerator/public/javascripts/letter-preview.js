@@ -219,7 +219,7 @@ function parseLetter(form) {
     var letter = form.template.text;
     var letter_html = decodeLetterHTML(letter);
     var responses = form.responses;
-    console.log(letter_html);
+    alert(letter_html);
     var noCapitalization = Array.from(letter_html.replace(tagRegex, function (match) {
         var response = responses.find(function (item) {
             console.log("response");
