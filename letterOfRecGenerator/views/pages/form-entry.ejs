@@ -95,7 +95,8 @@
                 listItem.className = 'item_' + id;
                 listItem.append(input_elem.val());
                 
-                let removeButton = document.createElement("div");
+                let removeButton = document.createElement("button");
+                removeButton.type = "button";
                 removeButton.style.width = '10px'; 
                 removeButton.style.marginLeft= '10px';
                 removeButton.style.marginBottom= '3px';
