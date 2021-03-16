@@ -95,6 +95,9 @@ router.post('/templateUpload', function (req,res, next) {
 		    
 		console.log("\n\npulled_text:");
                 console.log(pulled_text);
+		
+		console.log("req.query:");
+		    console.log(req.query);
 		    
 		console.log("\n\nreq.body:");
                 console.log(req.body);
