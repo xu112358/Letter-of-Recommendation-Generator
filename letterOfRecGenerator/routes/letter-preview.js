@@ -31,8 +31,6 @@ router.get('/', function (req, res, next) {
         if (err) {
             console.log("get /  error in letter-preivew: " + err );
         } else {
-		console.log("Herer1!");
-		console.log(req.query);
             res.render('pages/letter-preview', {
                 title: form.email,
                 id: req.query.id,
@@ -48,7 +46,6 @@ router.get('/form', function (req, res, next) {
             console.log(err);
         } else {
             res.json(form);
-		console.log("Herer2!");
         }
     });
 });
@@ -94,6 +91,7 @@ router.post('/templateUpload', function (req,res, next) {
             } else {
 		console.log("\n\nForm:");
                 console.log(form);
+		form.letter = letterParser.parseLetter(form);
                 pulled_text = form.letter;
 		    
 		console.log("\n\npulled_text:");
