@@ -332,7 +332,7 @@ router.get('/downloads', function(req, res) {
 
 function parseLetter(form) {
     var tagRegex = /\<\![a-z0-9_]+\>/ig;
-    var letter = form;
+    var letter = form.template.text;
     var responses = form.responses;
 
     var noCapitalization = Array.from(letter.replace(tagRegex, function (match) {
