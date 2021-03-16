@@ -32,6 +32,7 @@ router.get('/', function (req, res, next) {
             console.log("get /  error in letter-preivew: " + err );
         } else {
 		console.log("Herer1!");
+		console.log(req.query);
             res.render('pages/letter-preview', {
                 title: form.email,
                 id: req.query.id,
@@ -63,7 +64,6 @@ router.post('/save', function (req, res, next) {
                 id: req.query.id,
                 form: form,
             });
-		console.log("Herer3!");
         }
     });
 });
