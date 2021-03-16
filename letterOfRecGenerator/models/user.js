@@ -276,6 +276,8 @@ UserSchema.methods.getForm = function(id, cb) {
         } else if (user.deactivatedForms && user.deactivatedForms.length == 1) {
             cb(err, user.deactivatedForms[0]);
         } else {
+            console.log("\n\nuser.forms[0]");
+            console.log(user.forms[0]);
             cb(err, user.forms[0]);
         }    
     });
