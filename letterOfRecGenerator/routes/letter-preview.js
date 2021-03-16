@@ -89,23 +89,14 @@ router.post('/templateUpload', function (req,res, next) {
             if (err) {
                 console.log(err);
             } else {
-		console.log("\n\nForm:");
-                console.log(form);
-                pulled_text = form.letter;
-                temp000 = res.json(form);
-		    
-		console.log("\n\nrec.body:");
-		    console.log(req.body);
-		    console.log("\n\nrec.body.letter:");
-		    console.log(req.body.letter);
-		
-		console.log("\n\ntemp000:");
-		console.log(temp000);
+		//console.log("\n\nForm:");
+                //console.log(form);
+                pulled_text = req.body.letter;
 		    
 		console.log("\n\npulled_text:");
                 console.log(pulled_text);
 		    
-                var formatted_text = letterParser.htmlstuff(req.body.letter);
+                var formatted_text = letterParser.htmlstuff(pulled_text);
 
                 var content = fs
                         .readFileSync(filePath, 'binary');
