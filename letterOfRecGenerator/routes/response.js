@@ -33,7 +33,7 @@ router.get('/update', function (req, res, next) {
             form.updateResponse(editedResponses);
             console.log(form);
             form.letter = parseLetter(form);
-            console.log("after!!!);
+            console.log("after!!!");
             console.log(form);
             console.log(form.letter);
             for (i = 0; i < form.responses.length; i++) {
