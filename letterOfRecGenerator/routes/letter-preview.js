@@ -146,6 +146,53 @@ router.post('/templateUpload', function (req,res, next) {
                 fs.writeFileSync(path.resolve('./routes/uploads', 'output.docx'), buf);
 
                 console.log("4");
+		    
+		    
+		    
+		    const email_username = process.env.EMAILUSER;
+    const email_password = process.env.EMAILPASS;
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+          user: email_username,
+          pass: email_password
+      },
+      tls:{
+        rejectUnauthorized:false
+      }
+    });
+
+    var email = form.email;
+    console.log("Email is: ", email);
+    console.log("Form data: ", req.body.responseData);
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"Letter of Rec Generator" <letterrecommender@gmail.com>', // sender address
+        to: email, // list of receivers
+        subject: 'Letter of Recommendation - Form Downloaded', // Subject line
+        text: 'A recommender has previewed your recommendation letter.', // plain text body
+        html: '<p>' + req.body.body_text + ' ' + url + '</p>'// html body
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+		res.render('contact', { msg: 'Email has been sent' });
+    });
+		    
+		    
+		    
+		    
+		    
             }
             });
         }
