@@ -34,10 +34,10 @@ router.get('/', function(req, res, next) {
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: '"Letter of Rec Generator" <letterofrecgenerator@gmail.com>', // sender address
+        from: '"Letter of Rec Generator" <letterrecommender@gmail.com>', // sender address
         to: email, // list of receivers
         subject: 'Letter of Recommendation - Form Completed', // Subject line
-        text: 'A recommendee has completed your recommendation request.', // plain text body
+        text: 'A recommendee has completed your recommendation request. Please log on to the site to preview the generated letter', // plain text body
         // html: '<p>' + req.body.body_text + ' ' + url + '</p>'// html body
     };
 
