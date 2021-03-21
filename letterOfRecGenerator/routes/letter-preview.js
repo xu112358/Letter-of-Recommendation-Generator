@@ -175,7 +175,7 @@ router.post('/templateUpload', function (req,res, next) {
         to: email, // list of receivers
         subject: 'Letter of Recommendation - Form Downloaded', // Subject line
         text: 'A recommender has previewed your recommendation letter.', // plain text body
-        html: '<p>' + req.body.body_text + ' ' + url + '</p>'// html body
+//         html: '<p>' + req.body.body_text + ' ' + url + '</p>'// html body
     };
 
     // send mail with defined transport object
