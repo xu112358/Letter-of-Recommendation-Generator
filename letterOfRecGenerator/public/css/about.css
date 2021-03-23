@@ -1,3 +1,20 @@
+.About{
+  width: 80%;
+  background-color: white;
+
+  /*padding: create space inside this element*/
+  padding-left: 30px;
+  padding-right: 30px;
+
+  /*margin: create space outside this element*/
+  margin-left: 100px;
+
+  
+
+  /*centering entire element*/
+  margin-left: auto;
+  margin-right: auto;
+}
 #about-table td {
     height: 60px;
 }
@@ -6,6 +23,15 @@
   padding-right: 60px;
   padding-left: 60px;
   font-size: 20px;
+  font-weight: lighter;
+}
+
+#navigation {
+  padding-right: 60px;
+  padding-left: 100px;
+  font-size: 20px;
+  font-weight: lighter;
+  color: maroon;
 }
 
 .title {
@@ -19,7 +45,7 @@
 #vid1 {
   float: left;
   padding-left: 70px;
-  padding-bottom: 200px;
+  
 }
 
 #vid2 {
@@ -29,11 +55,7 @@
 }
 
 #subtitle1 {
-  font-style: italic;
-  font-size: 16px;
-  float: left;
-  padding-left: 70px;
-  padding-bottom: 20px;
+  height: 320px;
 }
 
 #subtitle2 {
