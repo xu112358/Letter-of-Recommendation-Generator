@@ -24,10 +24,6 @@ var UserSchema = new Schema({
         ref: 'Form'
     }],
     emailhistory: [Email.schema],
-    name: {
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         required: true
