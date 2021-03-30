@@ -6,7 +6,7 @@
   padding-left: 30px;
   padding-right: 30px;
 
-  /*margin: create space outside this element*/
+  /*margin: create space outside this elsement*/
   margin-left: 100px;
 
   
@@ -14,6 +14,11 @@
   /*centering entire element*/
   margin-left: auto;
   margin-right: auto;
+}
+
+.video-intro{
+  width: 100%;
+  height: 320px;
 }
 #about-table td {
     height: 60px;
@@ -36,6 +41,13 @@
 
 .title {
   padding-top: 60px;
+}
+
+.instructions{
+  padding-right: 50px;
+  padding-left: 60px;
+  font-size: 20px;
+  font-weight: lighter;
 }
 
 #vid-box {
@@ -64,4 +76,31 @@
   float: right;
   padding-right: 230px;
   padding-bottom: 20px;
+}
+
+
+.icons{
+  float: left;
+  height: 32px;
+  width: 5%;
+  margin: 1%;
+  
+}
+.detail{
+  float: left;
+  width: 93%;
+}
+.icon{
+  height: 100%;
+}
+
+.symbols{
+  padding-right: 50px;
+  padding-left: 60px;
+  font-size: 20px;
+  font-weight: lighter;
+  margin-bottom: 300px;
+}
+.row{
+  width: 100%;
 }
