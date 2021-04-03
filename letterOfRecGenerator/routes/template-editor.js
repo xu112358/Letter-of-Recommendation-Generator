@@ -90,8 +90,8 @@ router.get('/edit', function (req, res, next) {
                             tag: "<!POS_PRONOUN>"},
                         { question: "What organizations are you applying to?",
                             tag: "<!ORG>"},
-                       { question: "What program are you applying to?",
-                          tag: "<!PROG>"}]
+                        { question: "What program are you applying to?",
+                            tag: "<!PROG>"}]
         });
     }
 });
@@ -123,8 +123,8 @@ router.get('/deactivated-edit', function (req, res, next) {
                             tag: "<!POS_PRONOUN>"},
                         { question: "What organizations are you applying to?",
                             tag: "<!ORG>"},
-                       { question: "What program are you applying to?",
-                          tag: "<!PROG>"}]
+                        { question: "What program are you applying to?",
+                            tag: "<!PROG>"}]
         });
     }
 });
