@@ -121,6 +121,8 @@ function loadDefaultQuestions() {
     var orgQuestion = new Question("Custom", "What organizations are you applying to?", "<!ORG>");
     orgQuestion.options = [constructOptionObject("Organization", "", "<!ORG>")];
     questions.push(orgQuestion);
+    var default5 = new Question("Text", "What program are you applying to?", "<!PROG>");
+    questions.push(default5);
 }
 
 function changeText() {
