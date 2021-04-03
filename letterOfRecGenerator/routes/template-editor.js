@@ -56,7 +56,9 @@ router.get('/', function (req, res, next) {
                         { question: "What is your preferred possessive pronoun?",
                           tag: "<!POS_PRONOUN>"},
                         { question: "What organizations are you applying to?",
-                          tag: "<!ORG>"}]
+                          tag: "<!ORG>"},
+                        { question: "What program are you applying to?",
+                          tag: "<!PROG>"}]
         });
     }
 });
@@ -87,7 +89,9 @@ router.get('/edit', function (req, res, next) {
                         { question: "What is your preferred possessive pronoun?",
                             tag: "<!POS_PRONOUN>"},
                         { question: "What organizations are you applying to?",
-                            tag: "<!ORG>"}]
+                            tag: "<!ORG>"},
+                       { question: "What program are you applying to?",
+                          tag: "<!PROG>"}]
         });
     }
 });
@@ -118,7 +122,9 @@ router.get('/deactivated-edit', function (req, res, next) {
                         { question: "What is your preferred possessive pronoun?",
                             tag: "<!POS_PRONOUN>"},
                         { question: "What organizations are you applying to?",
-                            tag: "<!ORG>"}]
+                            tag: "<!ORG>"},
+                       { question: "What program are you applying to?",
+                          tag: "<!PROG>"}]
         });
     }
 });
