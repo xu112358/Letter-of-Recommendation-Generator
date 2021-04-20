@@ -130,13 +130,15 @@ function saveLetter() {
     event.preventDefault();
     var idt = document.getElementById("id1").value;
     var date = document.getElementById("theDate").value;
+    var notifyRecommendee = document.getElementById("notify").checked;
     $.ajax({
         url: '/letter-preview/templateUpload',
         data: {
             id:id,
             letter: letterHTML,
             formID: idt,
-            date: date
+            date: date,
+            notify: notifyRecommendee
         },
         type: 'POST',
         success: function(d){

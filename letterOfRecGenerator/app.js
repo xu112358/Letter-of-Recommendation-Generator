@@ -1,5 +1,5 @@
 const express = require('express');
-const helmet = require('helmet');
+//const helmet = require('helmet');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -156,7 +156,7 @@ app.use(function (err, req, res, next) {
 });
 
 // Sets "X-Frame-Options: DENY"
-app.use(helmet.frameguard({ action: 'deny' }));
+//app.use(helmet.frameguard({ action: 'deny' }));
 
 
 function isAuthenticated(req, res, next) {
