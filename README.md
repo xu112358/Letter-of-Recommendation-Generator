@@ -1,5 +1,5 @@
 # csci-401-capstone
-Repo for hosting Letter of Recommendation Generator Capstone Project as of Fall 2019.
+Repo for hosting Letter of Recommendation Generator Capstone Project as of Fall 2021.
 
 Team members:
 + Yuxi(Andy) Zhou – yuxizhou@usc.edu
