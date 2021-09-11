@@ -53,7 +53,8 @@ RUN \
 ENTRYPOINT \
   /bin/sh -c cd home/cs401/csci-401-capstone-master/letterOfRecGenerator \
   && ls \
-  && mongod --fork --logpath /mongodb.log \
+  && mongod --fork --logpath /mongodb.log \ 
+  && ls \
   && pm2 start home/cs401/csci-401-capstone-master/letterOfRecGenerator/bin/www --name "letterOfRecGeneratorServer" \
   && tail -f /dev/null
 
