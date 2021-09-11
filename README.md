@@ -1,14 +1,16 @@
 # csci-401-capstone
-Repo for hosting Letter of Recommendation Generator Capstone Project as of Fall 2019.
+Repo for hosting Letter of Recommendation Generator Capstone Project as of Fall 2021.
 
 Team members:
-+ Nolan Jimenez – najimene@usc.edu
-+ Roopal Kondepudi – kondepud@usc.edu 
-+ Scott Mai – scottmai@usc.edu
-+ Dhivya Senthil Murugan – senthilm@usc.edu
++ Yuxi(Andy) Zhou – yuxizhou@usc.edu
++ Frost(Tianjian) Xu – frostxu@usc.edu 
++ Xiaochen(Bob) Yang – xiaocheny@usc.edu
++ Andrew Han – dongilha@usc.edu
++ Jared Kuo - jaredkuo@usc.edu
++ Jiefan(Jeffery) Yang - jiefanya@usc.edu
 
 
-## How to Run Locally
+## How to Run Locally 
 + Enter letterOfRecGenerator folder
 + Run `DEBUG=letterOfRecGenerator:* npm run devstart` (for debug on console) or `npm run devstart`
 + Open up a browser tab to `127.0.0.1:3000` (make sure port 3000 was not already occupied)
@@ -20,6 +22,14 @@ Team members:
 ## How to Restart mongoDB in Terminal (added Fall 2019)
 Run `npx kill-port 27017`to reset mongoDB
 then run `mongod`
+
+## How to Run via Docker Locally (added Fall 2021)
+Windows, Mac and Linux: 
+ + install Docker from https://www.docker.com/get-started (or you can use package manager to install docker)
+ + in terminal navigate to your git repo for this project
+ + run `docker build -t "your_name_for_this_image" .`
+ + then, run `docker -p 443:443 -p 27017:27017 -i -t your_name_for_this_image`
+ + in your browser, navigate to https://localhost 
 
 
 ____________________________________________________________________________________________________________________________
@@ -38,6 +48,9 @@ Afterwards, test to see if the app is properly running by accessing `68.181.97.1
 
 ## Deployment (as of Spring 2019) (old)
 Currently, our app is hosted on a server with IP address 68.181.97.191 on port 3000, with the MongoDB instance on the same IP address but at port 12345.
+
+## Deployment (as of Fall 2021)
+Currently, the app will be run under docker container.
 
 ____________________________________________________________________________________________________________________________
 
