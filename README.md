@@ -3,8 +3,8 @@ Repo for hosting Letter of Recommendation Generator Capstone Project as of Fall 
 
 Team members:
 + Yuxi(Andy) Zhou – yuxizhou@usc.edu
-+ Frost(Tianjian) Xu – kondepud@usc.edu 
-+ Xiaochen(Bob) Yang – scottmai@usc.edu
++ Frost(Tianjian) Xu – frostxu@usc.edu 
++ Xiaochen(Bob) Yang – xiaocheny@usc.edu
 + Andrew Han – dongilha@usc.edu
 + Jared Kuo - jaredkuo@usc.edu
 + Jiefan(Jeffery) Yang - jiefanya@usc.edu
