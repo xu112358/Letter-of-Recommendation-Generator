@@ -23,7 +23,7 @@ Team members:
 Run `npx kill-port 27017`to reset mongoDB
 then run `mongod`
 
-## How to Run via Docker locally
+## How to Run via Docker Locally (added Fall 2021)
 Windows, Mac and Linux: 
  + install Docker from https://www.docker.com/get-started (or you can use package manager to install docker)
  + in terminal navigate to your git repo for this project
