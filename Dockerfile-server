@@ -29,11 +29,7 @@ EXPOSE 3000
 
 #Creating proper directory and installing MongoDB
 RUN \
-  cd home && mkdir cs401 && cd cs401 \ 
-  && wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-5.0.2.tgz \
-  && tar -xzvf mongodb-linux-x86_64-ubuntu1804-5.0.2.tgz \
-  && mv mongodb-linux-x86_64-ubuntu1804-5.0.2 /usr/local/mongodb \
-  && mkdir -p /data/db
+  cd home && mkdir cs401 && cd cs401
 
 #Setting environment variables
 ENV MONGO_PATH=/usr/local/mongodb
@@ -53,7 +49,6 @@ RUN \
 ENTRYPOINT \
   /bin/sh -c cd home/cs401/csci-401-capstone-master/letterOfRecGenerator \
   && ls \
-  && mongod --fork --logpath /mongodb.log \ 
   && ls \
   && pm2 start home/cs401/csci-401-capstone-master/letterOfRecGenerator/bin/www --name "letterOfRecGeneratorServer" \
   && ls \
