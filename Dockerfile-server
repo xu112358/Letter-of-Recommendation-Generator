@@ -48,11 +48,8 @@ RUN \
 #Start the program and let it run forever
 ENTRYPOINT \
   /bin/sh -c cd home/cs401/csci-401-capstone-master/letterOfRecGenerator \
-  && ls \
-  && ls \
   && pm2 start home/cs401/csci-401-capstone-master/letterOfRecGenerator/bin/www --name "letterOfRecGeneratorServer" \
-  && /bin/sh
-  
+  && tail -f /dev/null
 
 
  
