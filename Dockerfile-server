@@ -29,7 +29,11 @@ EXPOSE 3000
 
 #Creating proper directory and installing MongoDB
 RUN \
-  cd home && mkdir cs401 && cd cs401
+  cd home && mkdir cs401 && cd cs401 \
+  && wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-4.2.2.tgz \
+  && tar -xzvf mongodb-linux-x86_64-ubuntu1804-4.2.2.tgz \
+  && mv mongodb-linux-x86_64-ubuntu1804-4.2.2 /usr/local/mongodb \
+  && mkdir -p /data/db
 
 #Setting environment variables
 ENV MONGO_PATH=/usr/local/mongodb
@@ -46,10 +50,10 @@ RUN \
   && npm update && npm install helmet && npm install pm2 -g && npm install
 
 #Start the program and let it run forever
-ENTRYPOINT \
-  /bin/sh -c cd home/cs401/csci-401-capstone-master/letterOfRecGenerator \
-  && pm2 start home/cs401/csci-401-capstone-master/letterOfRecGenerator/bin/www --name "letterOfRecGeneratorServer" \
-  && tail -f /dev/null
+#ENTRYPOINT \
+#  /bin/sh -c cd home/cs401/csci-401-capstone-master/letterOfRecGenerator \
+#  && pm2 start home/cs401/csci-401-capstone-master/letterOfRecGenerator/bin/www --name "letterOfRecGeneratorServer" \
+#  && tail -f /dev/null
 
 
  
