@@ -28,7 +28,7 @@ Windows, Mac and Linux:
  + install Docker from https://www.docker.com/get-started (or you can use package manager to install docker)
  + in terminal navigate to your git repo for this project
  + run `docker build -t "your_name_for_this_image" .`
- + then, run `docker -p 443:443 -p 27017:27017 -i -t your_name_for_this_image`
+ + then, run `docker run -p 443:443 -p 27017:27017 -i -t your_name_for_this_image`
  + in your browser, navigate to https://localhost 
 
 
