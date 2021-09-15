@@ -1,50 +1,51 @@
 //var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcryptjs');
-//var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
+var GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 //var auth = require('./auth');
 
 // Load User model
-var User = require('../models/user');
+var User = require("../models/user");
 
-module.exports = function(passport) {
+module.exports = function (passport) {
   passport.use(
-    new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-      // Match user
-      User.findOne({
-        email: email
-      }).then(user => {
-        if (!user) {
-          return done(null, false, { message: 'That email is not registered' });
-        }
-
-        // Match password
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-          if (err) throw err;
-          if (isMatch) {
-            return done(null, user);
-          } else {
-            return done(null, false, { message: 'Password incorrect' });
+    new GoogleStrategy(
+      {
+        clientID:
+          "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+        clientSecret: "xL4Oa8jms2i_jnwzLhFzO1XR",
+        callbackURL: "/user/login/callback",
+      },
+      function (accessToken, refreshToken, profile, done) {
+        coonsole.log(profile);
+        User.findOrCreate({ email: profile.email }, function (err, user) {
+          if (err) {
+            done(err, user);
           }
+
+          user.displayName = profile.name;
+          user.accessToken = accessToken;
+          user.save();
+          done(null, user);
         });
-      });
-    })
+      }
+    )
   );
 
-// OLD code
-function extractProfile(profile) {
+  // OLD code
+  function extractProfile(profile) {
     return {
-        id: profile.id,
-        displayName: profile.displayName,
+      id: profile.id,
+      displayName: profile.displayName,
     };
-}
+  }
 
-  passport.serializeUser(function(user, done) {
+  passport.serializeUser(function (user, done) {
     done(null, user);
   });
 
-  passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+  passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
       done(err, user);
     });
   });
@@ -56,7 +57,6 @@ function extractProfile(profile) {
 //         done(err, user);
 //     });
 // });
-
 
 // OLD - Google Auth Strategy
 // passport.use(new GoogleStrategy({
