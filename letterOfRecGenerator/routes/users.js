@@ -94,8 +94,8 @@ router.post("/register", (req, res) => {
 
 // Login handle
 router.post("/login", (req, res, next) => {
-  const linkTemplate_body = "Please click the following questionnaire ";
-  const linkTemplate_subject =
+  const linkTemplate_body1 = "Please click the following questionnaire ";
+  const linkTemplate_subject1 =
     "Invitation to Fill Recommendation Letter Questionnaire";
 
   var userProfile = jwt_decode(req.body.credential);
@@ -118,10 +118,10 @@ router.post("/login", (req, res, next) => {
       console.log("user not in system");
       //use user's name to hash to password
       const newUser = new User({
-        userEmail,
-        name,
-        linkTemplate_subject,
-        linkTemplate_body,
+        email: userEmail,
+        password: name,
+        linkTemplate_subject: linkTemplate_subject1,
+        linkTemplate_body: linkTemplate_body1,
       });
 
       bcrypt.genSalt(10, (err, salt) => {
