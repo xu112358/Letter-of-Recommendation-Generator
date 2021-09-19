@@ -47,15 +47,7 @@ router.post('/', function(req, res, next) {
     var subject = req.body.subject_text;
     var toEmail = req.body.email;
     var body = req.body.body_text;
-
-    if (!toEmail.length) {
-        res.render('pages/recommender-dashboard', {
-            title: 'Recommendations',
-            statusMessage: 'Please provide a valid email'
-        });
-        return;
-    }
-
+    
     Form.createForm(toEmail, req.user.getTemplate(req.body.templateId), userId, function(err, form) {
         if (err) {
             console.log(`error: ${err}`);

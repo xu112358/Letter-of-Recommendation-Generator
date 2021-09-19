@@ -498,6 +498,18 @@ document.getElementById('advanced-search-form').onsubmit = (e) => {
     readFilterInputs();
 }
 
+document.getElementById('send-button').onclick = (e) => {
+    if (!document.getElementById('email-input-text').value.length) {
+        alert("Please enter an email address.");
+        e.preventDefault();
+    } 
+    else if (document.getElementById('template-select').value == "") {
+        alert("Please select a template.");
+        e.preventDefault();
+    }
+}
+
+
 
 
 // document.getElementById('clear-selection').onclick = () => {
