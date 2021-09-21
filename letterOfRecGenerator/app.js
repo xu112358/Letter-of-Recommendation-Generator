@@ -131,7 +131,7 @@ app.use("/users", users);
 app.use("/forms", isAuthenticated, forms);
 app.use("/template-editor", isAuthenticated, createTemplate);
 app.use("/email-template-editor", isAuthenticated, createEmailTemplate);
-app.use("/form-completed", isAuthenticated, formCompleted);
+app.use("/form-completed", formCompleted);
 app.use("/form-entry", formEntry);
 app.use("/letter-preview", isAuthenticated, letterPreview);
 app.use("/email-letter-preview", isAuthenticated, emailLetterPreview);
