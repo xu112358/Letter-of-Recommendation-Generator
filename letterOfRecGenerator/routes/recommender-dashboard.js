@@ -68,9 +68,10 @@ router.post("/", function (req, res, next) {
         // otherwise provide localhost address
         const port = process.env.PORT;
 
-        const domain = port === "80" ? "recommendation.usc.edu" : "localhost";
+        const domain =
+          port === "80" ? "recommendation.usc.edu" : "localhost:443";
         const url = encodeURI(
-          "http://" + domain + "/form-entry/" + form.getLink()
+          "https://" + domain + "/form-entry/" + form.getLink()
         );
 
         const email_username = process.env.EMAILUSER;

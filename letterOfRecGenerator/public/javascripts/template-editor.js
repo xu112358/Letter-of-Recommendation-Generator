@@ -496,6 +496,10 @@ function addQuestion() {
 function saveTemplate() {
   updateQuestions();
 
+  if (questions.length == 0) {
+    alert("Please provide at least one question");
+    return false;
+  }
   var template = {
     name: document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID).value,
     text: letter,
