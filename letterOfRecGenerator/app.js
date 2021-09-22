@@ -116,7 +116,8 @@ app.get(
 
 app.use("/logout", (req, res) => {
   req.logOut();
-  res.redirect("/login");
+  res.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout");
+  // res.redirect("/login");
 });
 
 // Routes
