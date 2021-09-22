@@ -496,6 +496,11 @@ function addQuestion() {
 function saveTemplate() {
   updateQuestions();
 
+  if (document.getElementById('name-container-text-field').value == "") {
+    alert("Please enter a template name.");
+    return;
+  }
+
   if (questions.length == 0) {
     alert("Please provide at least one question");
     return false;
@@ -560,6 +565,7 @@ function saveTemplate() {
         window.location.href = "/template-dashboard";
       },
       error: function (err) {
+        alert("Template name already exists.");
         console.log("error in saveTemplate:" + err);
         var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
         addError(textField, 0, "template name already exists");
@@ -1235,3 +1241,5 @@ function decodeLetterHTML(text) {
     .replace(/\<br\>/gi, "\n")
     .replace(/\&nbsp;/g, " ");
 }
+
+
