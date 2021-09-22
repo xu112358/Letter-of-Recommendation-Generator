@@ -237,7 +237,7 @@ function getQuestionHTML(q) {
                                   questionTypes[0] === q.type
                                     ? " selected='true'"
                                     : ""
-                                }>Text Answer</option>
+                                }>Text</option>
                                 <option ${
                                   questionTypes[1] === q.type ? " selected" : ""
                                 }>Radio Button</option>
