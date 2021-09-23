@@ -411,7 +411,7 @@
 }
 
 .error {
-    box-shadow: 0 0 4px 3px rgb(245, 0, 0);
+    box-shadow: 0 0 6px 6px gold;
     padding: 3px 0px 3px 3px;
     margin: 5px 1px 3px 0px;
     border: 1px solid rgba(192, 55, 55, 1);
