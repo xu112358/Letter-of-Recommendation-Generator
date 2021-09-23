@@ -258,7 +258,7 @@ function getQuestionHTML(q) {
                           q.type === "Checkbox"
                             ? `<div class="col-3"></div>`
                             : `<div class="col-3"><input type="text" class="form-control"
-                            placeholder="tag (e.g. #fname)" value="${convertLtGt(
+                            placeholder="tag (e.g. <!fname>)" value="${convertLtGt(
                               q.tag
                             )}" data-type="tag">
                         </div>`
@@ -499,6 +499,20 @@ function saveTemplate() {
   if (document.getElementById('name-container-text-field').value == "") {
     alert("Please enter a template name.");
     return;
+  }
+
+  var tags = document.querySelectorAll("[data-type='tag']");
+  const regex = new RegExp("^<![^<!>]+>$");
+  const regexWhitespace = new RegExp("[\\s]");
+  for (i=0; i < tags.length; ++i) {
+    if (tags[i].value == "") {
+      alert("Missing tag name.");
+    }
+    else if (!regex.test(tags[i].value)) {
+      alert(tags[i].value + "is not in proper format. \nFormat must be <!tag>");
+    }
+    else if (regexWhitespace.test(tags[i].value)) 
+      alert(tags[i].value + "is not in proper format. \nNo whitespaces allowed.");
   }
 
   if (questions.length == 0) {
