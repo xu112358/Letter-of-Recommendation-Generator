@@ -108,6 +108,38 @@ window.onload = function () {
     displayQuestions();
     renderAllTagButtons();
   }
+
+  // Regex search to check proper tag format
+  var tags = document.querySelectorAll("[data-type='tag']");
+  for (i=0; i < tags.length; ++i) {
+      tags[i].addEventListener('focusout', (e) => {
+        const regex = new RegExp("^<![^<!>]+>$");
+        const regexWhitespace = new RegExp("[\\s]");
+        
+        if (e.target.value == "") {
+          alert("Missing tag name.");
+        }
+        else if (!regex.test(e.target.value)) {
+          alert(e.target.value + " is not in proper format. \nFormat must be <!tag>");
+        }
+        else if (regexWhitespace.test(e.target.value)) {
+          alert(e.target.value + " is not in proper format. \nNo whitespaces allowed.");
+        }
+
+        updateQuestions();
+        // for (i=0; i < tags.length; ++i) {
+        //   if (tags[i].value == "") {
+        //     alert("Missing tag name.");
+        //   }
+        //   else if (!regex.test(tags[i].value)) {
+        //     alert(tags[i].value + "is not in proper format. \nFormat must be <!tag>");
+        //   }
+        //   else if (regexWhitespace.test(tags[i].value)) 
+        //     alert(tags[i].value + "is not in proper format. \nNo whitespaces allowed.");
+        // }
+      });
+  }
+
 };
 
 // creates default questions
@@ -501,6 +533,7 @@ function saveTemplate() {
     return;
   }
 
+  // Regex search to check proper tag format
   var tags = document.querySelectorAll("[data-type='tag']");
   const regex = new RegExp("^<![^<!>]+>$");
   const regexWhitespace = new RegExp("[\\s]");
@@ -509,10 +542,10 @@ function saveTemplate() {
       alert("Missing tag name.");
     }
     else if (!regex.test(tags[i].value)) {
-      alert(tags[i].value + "is not in proper format. \nFormat must be <!tag>");
+      alert(tags[i].value + " is not in proper format. \nFormat must be <!tag>");
     }
     else if (regexWhitespace.test(tags[i].value)) 
-      alert(tags[i].value + "is not in proper format. \nNo whitespaces allowed.");
+      alert(tags[i].value + " is not in proper format. \nNo whitespaces allowed.");
   }
 
   if (questions.length == 0) {
