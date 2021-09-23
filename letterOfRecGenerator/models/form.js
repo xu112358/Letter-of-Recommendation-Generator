@@ -28,7 +28,8 @@ var FormSchema = new Schema({
     letter: String,
     duplicated: Boolean,
     organization: String,
-    owner: { type: db.Schema.Types.ObjectId, ref: 'User' }
+    //this will store email addr of the owner, instead of owner's userID
+    owner: String
 });
 
 

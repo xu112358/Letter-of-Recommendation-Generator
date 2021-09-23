@@ -43,7 +43,7 @@ router.get("/", function (req, res, next) {
 
 router.post("/", function (req, res, next) {
   var currentUser = req.user;
-  var userId = currentUser._id;
+  var userId = currentUser.email;
   var subject = req.body.subject_text;
   var toEmail = req.body.email;
   var body = req.body.body_text;
