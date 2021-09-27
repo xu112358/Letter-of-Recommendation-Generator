@@ -125,18 +125,18 @@ window.onload = function () {
         else if (regexWhitespace.test(e.target.value)) {
           alert(e.target.value + " is not in proper format. \nNo whitespaces allowed.");
         }
+      });
 
-        updateQuestions();
-        // for (i=0; i < tags.length; ++i) {
-        //   if (tags[i].value == "") {
-        //     alert("Missing tag name.");
-        //   }
-        //   else if (!regex.test(tags[i].value)) {
-        //     alert(tags[i].value + "is not in proper format. \nFormat must be <!tag>");
-        //   }
-        //   else if (regexWhitespace.test(tags[i].value)) 
-        //     alert(tags[i].value + "is not in proper format. \nNo whitespaces allowed.");
-        // }
+      tags[i].addEventListener('input', (e) => {
+        const regex = new RegExp("^<![^<!>]+>$");
+        const regexWhitespace = new RegExp("[\\s]");
+        if (!(e.target.value == "") && regex.test(e.target.value) && !(regexWhitespace.test(e.target.value))) {
+          renderAllTagButtons(); 
+          e.target.classList.remove("error");
+        }
+        else {
+          e.target.classList.add("error");
+        }
       });
   }
 
