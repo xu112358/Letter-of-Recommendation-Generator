@@ -40,6 +40,14 @@ var UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  //newly added for user profile page
+  firstName: String,
+  lastName: String,
+  middleName: String,
+  phone: String,
+  titles: String,
+  school: String,
+  address: String,
 });
 
 UserSchema.statics.findUser = function (id, cb) {

@@ -29,7 +29,7 @@ router.use(function (req, res, next) {
  */
 router.get("/", function (req, res, next) {
   if (!req.user) {
-    res.render("login", {});
+    res.redirect("/");
   }
   console.log({ recdash: req.query.email });
   res.render("pages/recommender-dashboard", {

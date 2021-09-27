@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <link rel="stylesheet" type="text/css" href="/css/all.css" />
     <link rel="stylesheet" type="text/css" href="/css/profile.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   </head>
   <body>
     <header><% include ../partials/header %></header>
@@ -33,39 +35,65 @@
               id="titles"
               name="titles"
               class="scrollable-textbox"
-            ></textarea>
-          </div>
-
-          <div class="form-entry">
-            <label for="email"> E-mail: </label><br />
-            <input id="email" name="email" type="email" class="text-input" />
+              required
+            >
+            </textarea>
           </div>
 
           <div class="form-entry">
             <label for="telephone"> Telephone: </label><br />
-            <input id="telephone" name="telephone" type="tel" class="text-input" />
+            <input
+              id="telephone"
+              name="telephone"
+              type="tel"
+              class="text-input"
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              required
+            />
           </div>
 
           <div class="form-entry">
             <label for="school"> School: </label><br />
             <textarea
-              id="titles"
-              name="titles"
+              id="school"
+              name="school"
               class="scrollable-textbox"
+              required
             ></textarea>
           </div>
 
           <div class="form-entry">
             <label for="address"> Address: </label><br />
             <textarea
-              id="titles"
-              name="titles"
+              id="address"
+              name="address"
               class="scrollable-textbox"
+              required
             ></textarea>
           </div>
-          <button type="submit">Apply Changes</button>
+          <button type="button" onclick="return updateProfile()">
+            Apply Changes
+          </button>
         </form>
       </div>
     </div>
   </body>
+  <script>
+    var fName = "<%= fname %>";
+    var mName = "<%= mname %>";
+    var lName = "<%= lname %>";
+    var Titles = "<%= titles %>";
+    var tel = "<%=phone%>";
+    var School = "<%= school %>";
+    var addr = "<%= address %> ";
+
+    document.getElementById("fname").value = fName;
+    document.getElementById("mname").value = mName;
+    document.getElementById("lname").value = lName;
+    document.getElementById("titles").value = Titles;
+    document.getElementById("telephone").value = tel;
+    document.getElementById("school").value = School;
+    document.getElementById("address").value = addr;
+  </script>
+  <script src="/javascripts/profile.js"></script>
 </html>

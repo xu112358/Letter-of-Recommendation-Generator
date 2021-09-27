@@ -105,6 +105,7 @@ router.post("/login", (req, res, next) => {
   var name = userProfile.name;
 
   User.findOne({ email: userEmail }).then((user) => {
+    console.log(user);
     if (user) {
       console.log("user in system");
       user.save();
@@ -122,6 +123,8 @@ router.post("/login", (req, res, next) => {
         password: name,
         linkTemplate_subject: linkTemplate_subject1,
         linkTemplate_body: linkTemplate_body1,
+        firstName: userProfile.given_name,
+        lastName: userProfile.family_name,
       });
 
       bcrypt.genSalt(10, (err, salt) => {
@@ -145,11 +148,71 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-// Logout handle
-// router.get('/logout', (req, res) => {
-//   req.logout();
-//   req.flash('success_msg', 'You are logged out');
-//   res.redirect('/users/login');
-// });
+//user profile handle
+router.get("/profile", (req, res) => {
+  //if user is not logged in, put them back to home page
+  if (!req.user || !req.user.email) {
+    res.redirect("/");
+  }
+
+  //query database to grab user info
+  let userInfo = [];
+  User.findOne({ email: req.user.email }).then((user) => {
+    userInfo.push(user.firstName);
+    userInfo.push(user.middleName);
+    userInfo.push(user.lastName);
+    userInfo.push(user.titles);
+    userInfo.push(user.phone);
+    userInfo.push(user.school);
+    userInfo.push(user.address);
+
+    console.log(userInfo[0]);
+    console.log(userInfo[6]);
+    res.render("pages/profile", {
+      title: "Profile",
+      fname: userInfo[0],
+      mname: userInfo[1],
+      lname: userInfo[2],
+      titles: userInfo[3],
+      phone: userInfo[4],
+      school: userInfo[5],
+      address: userInfo[6],
+    });
+  });
+
+  //render user info
+});
+
+//update user profile
+router.post("/profile", (req, res) => {
+  let userInfo = req.body.userInfo;
+
+  User.findOne({ email: req.user.email }).then((user) => {
+    user.firstName = userInfo[0];
+    user.middleName = userInfo[1];
+    user.lastName = userInfo[2];
+    user.titles = userInfo[3];
+    user.phone = userInfo[4];
+    user.school = userInfo[5];
+    user.address = userInfo[6];
+
+    console.log(user);
+
+    //update db
+    user
+      .save()
+      .then((user) => {
+        //update the logged in user
+        req.user = user;
+        res.sendStatus(200);
+        console.log("user updated");
+        console.log(req.user);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  });
+});
 
 module.exports = router;

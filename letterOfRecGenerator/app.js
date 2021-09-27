@@ -105,6 +105,7 @@ app.all("/", (req, res) => {
     res.redirect("/login");
   }
 });
+//api routing handling
 app.use("/users", users);
 app.use("/forms", isAuthenticated, forms);
 app.use("/template-editor", isAuthenticated, createTemplate);
@@ -121,7 +122,6 @@ app.use("/archive", isAuthenticated, archive);
 app.use("/response", isAuthenticated, response);
 app.use("/docx", docxVar);
 app.use("/about", isAuthenticated, about);
-app.use("/profile", isAuthenticated, profile);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
