@@ -10,12 +10,12 @@ Team members:
 + Jiefan(Jeffery) Yang - jiefanya@usc.edu
 
 
-## How to Run Locally 
-+ Enter letterOfRecGenerator folder
-+ Run `DEBUG=letterOfRecGenerator:* npm run devstart` (for debug on console) or `npm run devstart`
+## How to Run Locally (Updated Fall 2021)
++ Enter letterOfRecGenerator folder 
++ Run `DEBUG=letterOfRecGenerator:* npm run devstart` (for debug on console) or `npm run dev`
 + Open up a browser tab to `127.0.0.1:3000` (make sure port 3000 was not already occupied)
-+ Run `npm install` from `\letterOfRecGenerator` and also specifically run `npm install docxtemplater` and `npm install jszip2`
-
++ Run `npm install` from `\letterOfRecGenerator` and also specifically run `npm install docxtemplater`, `npm install jszip2` and `npm install helmet`
++ Open up your browser, go to “https://localhost:443”
 ## How to Restart Session (added Fall 2019)
 + Run `npm update` from `\letterOfRecGenerator`
 
