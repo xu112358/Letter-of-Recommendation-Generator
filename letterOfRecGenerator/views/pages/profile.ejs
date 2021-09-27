@@ -2,14 +2,70 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/all.css" />
+    <link rel="stylesheet" type="text/css" href="/css/profile.css" />
   </head>
   <body>
-    <header>
-        <% include ../partials/header %>
-    </header>
-    <h1><%= title %></h1>
-        <p>This is an empty profile page.</p>
+    <header><% include ../partials/header %></header>
+    <div class="body">
+      <div class="user-profile">
+        <h1><%= title %></h1>
+        <form class="user-profile-form">
+          <div class="form-entry">
+            <label for="fname"> First name: </label><br />
+            <input id="fname" name="fname" class="text-input" required />
+          </div>
+
+          <div class="form-entry">
+            <label for="mname"> Middle name: </label><br />
+            <input id="mname" name="mname" class="text-input" />
+          </div>
+
+          <div class="form-entry">
+            <label for="lname"> Last name: </label><br />
+            <input id="lname" name="lname" class="text-input" required />
+          </div>
+
+          <div class="form-entry">
+            <label for="titles"> Titles: </label><br />
+            <textarea
+              id="titles"
+              name="titles"
+              class="scrollable-textbox"
+            ></textarea>
+          </div>
+
+          <div class="form-entry">
+            <label for="email"> E-mail: </label><br />
+            <input id="email" name="email" type="email" class="text-input" />
+          </div>
+
+          <div class="form-entry">
+            <label for="telephone"> Telephone: </label><br />
+            <input id="telephone" name="telephone" type="tel" class="text-input" />
+          </div>
+
+          <div class="form-entry">
+            <label for="school"> School: </label><br />
+            <textarea
+              id="titles"
+              name="titles"
+              class="scrollable-textbox"
+            ></textarea>
+          </div>
+
+          <div class="form-entry">
+            <label for="address"> Address: </label><br />
+            <textarea
+              id="titles"
+              name="titles"
+              class="scrollable-textbox"
+            ></textarea>
+          </div>
+          <button type="submit">Apply Changes</button>
+        </form>
+      </div>
+    </div>
   </body>
 </html>
