@@ -1,0 +1,23 @@
+.user-profile {
+  width: 80%;
+  background-color: white;
+
+  padding: 20px 50px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-entry {
+  padding-bottom: 24px;
+  line-height: 24px;
+}
+
+.scrollable-textbox {
+  width: 80%;
+  height: 64px;
+}
+
+.text-input {
+  width: 240px;
+}
