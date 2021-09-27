@@ -18,7 +18,6 @@ const passport = require("passport");
 require("./config/passport")(passport);
 
 //Email stuff
-//const exphbs = require('express-handlebars');
 const nodemailer = require("nodemailer");
 
 const fileUpload = require("express-fileupload");
@@ -45,7 +44,7 @@ const response = require("./routes/response");
 const emailLetterPreview = require("./routes/email-letter-preview");
 const docxVar = require("./routes/docx");
 const about = require("./routes/about");
-const profile = require("./routes/profile")
+const profile = require("./routes/profile");
 const forms = require("./routes/forms");
 
 const app = express();
@@ -87,38 +86,15 @@ app.use(fileUpload());
 
 // view engine setup
 
-//app.use(expressLayouts);
-//app.engine('handlebars', exphbs());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, "public", "favicon.png")));
-
-// go to google auth login
-app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: [
-      "openid",
-      "profile",
-      "email",
-      "https://www.googleapis.com/auth/gmail.send",
-    ],
-    prompt: "select_account",
-  })
-);
-
-// send to rec dashboard if login succeeds
-// app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/login'}), function (req, res) {
-//     // Successful authentication, redirect home.
-//     res.redirect('/recommender-dashboard');
-// });
-
 app.use("/logout", (req, res) => {
   req.logOut();
-  res.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout");
-  // res.redirect("/login");
+  //res.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout");
+  res.redirect("/login");
 });
 
 // Routes

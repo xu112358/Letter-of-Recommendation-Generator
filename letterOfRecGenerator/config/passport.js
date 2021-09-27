@@ -32,14 +32,6 @@ module.exports = function (passport) {
     )
   );
 
-  // OLD code
-  function extractProfile(profile) {
-    return {
-      id: profile.id,
-      displayName: profile.displayName,
-    };
-  }
-
   passport.serializeUser(function (user, done) {
     done(null, user);
   });
@@ -50,35 +42,3 @@ module.exports = function (passport) {
     });
   });
 };
-
-// Similar, but OLD code
-// passport.deserializeUser(function (id, done) {
-//     User.findUser(id, function (err, user) {
-//         done(err, user);
-//     });
-// });
-
-// OLD - Google Auth Strategy
-// passport.use(new GoogleStrategy({
-//     clientID: auth.clientId,
-//     clientSecret: auth.clientSecret,
-//     callbackURL: auth.clientCallback
-// }, function (token, refreshToken, profile, done) {
-//     process.nextTick(function () {
-//
-//         // Find the user based on their google id
-//         var details = extractProfile(profile);
-//         User.findOrCreate(details.id, function (err, user) {
-//             if (err) {
-//                 done(err, null);
-//             }
-//
-//             user.displayName = details.displayName;
-//             user.accessToken = token;
-//             user.save();
-//             done(null, user);
-//         });
-//     });
-//
-
-//module.exports = passport;
