@@ -4,7 +4,6 @@ var router = express.Router();
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 var jwt_decode = require("jwt-decode");
-var nl2br = require("nl2br");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
