@@ -172,7 +172,7 @@ router.post("/profile", (req, res) => {
     user.phone = userInfo[4];
     user.school = userInfo[5];
     user.address = userInfo[6];
-
+    user.isProfileSet = true;
     console.log(user);
 
     //update db
