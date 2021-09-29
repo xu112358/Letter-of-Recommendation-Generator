@@ -1,11 +1,33 @@
+$.ajax({
+  url: "/users/profile/get",
+  data: {},
+  type: "GET",
+  complete: function () {
+    console.log("profile loaded");
+    console.log();
+  },
+  error: function () {
+    console.log("error in loading user profile");
+  },
+}).done(function (data) {
+  console.log(data);
+  document.getElementById("fname").value = data.firstName;
+  document.getElementById("mname").value = data.middleName;
+  document.getElementById("lname").value = data.lastName;
+  document.getElementById("titles").value = data.titles;
+  document.getElementById("telephone").value = data.phone;
+  document.getElementById("school").value = data.school;
+  document.getElementById("address").value = data.address;
+});
+
 function updateProfile() {
-  var firstName = document.getElementById("fname").value;
-  var middleName = document.getElementById("mname").value;
-  var lastName = document.getElementById("lname").value;
-  var titles = document.getElementById("titles").value;
+  var firstName = document.getElementById("fname").value.trim();
+  var middleName = document.getElementById("mname").value.trim();
+  var lastName = document.getElementById("lname").value.trim();
+  var titles = document.getElementById("titles").value.trim();
   var phone = document.getElementById("telephone").value;
-  var school = document.getElementById("school").value;
-  var address = document.getElementById("address").value;
+  var school = document.getElementById("school").value.trim();
+  var address = document.getElementById("address").value.trim();
 
   //empty input for required field
   if (

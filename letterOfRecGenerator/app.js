@@ -147,7 +147,13 @@ app.use(helmet.frameguard({ action: "deny" }));
 
 function isAuthenticated(req, res, next) {
   if (req.user) {
-    next();
+    console.log(req.user);
+
+    if (req.user.isProfileSet == true) {
+      next();
+    } else {
+      res.redirect("/users/profile");
+    }
   } else {
     res.redirect("/login");
   }

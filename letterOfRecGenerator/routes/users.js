@@ -4,6 +4,7 @@ var router = express.Router();
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 var jwt_decode = require("jwt-decode");
+var nl2br = require("nl2br");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -105,7 +106,6 @@ router.post("/login", (req, res, next) => {
   var name = userProfile.name;
 
   User.findOne({ email: userEmail }).then((user) => {
-    console.log(user);
     if (user) {
       console.log("user in system");
       user.save();
@@ -125,6 +125,7 @@ router.post("/login", (req, res, next) => {
         linkTemplate_body: linkTemplate_body1,
         firstName: userProfile.given_name,
         lastName: userProfile.family_name,
+        isProfileSet: false,
       });
 
       bcrypt.genSalt(10, (err, salt) => {
@@ -151,36 +152,13 @@ router.post("/login", (req, res, next) => {
 //user profile handle
 router.get("/profile", (req, res) => {
   //if user is not logged in, put them back to home page
-  if (!req.user || !req.user.email) {
+  if (!req.user) {
     res.redirect("/");
   }
 
-  //query database to grab user info
-  let userInfo = [];
-  User.findOne({ email: req.user.email }).then((user) => {
-    userInfo.push(user.firstName);
-    userInfo.push(user.middleName);
-    userInfo.push(user.lastName);
-    userInfo.push(user.titles);
-    userInfo.push(user.phone);
-    userInfo.push(user.school);
-    userInfo.push(user.address);
-
-    console.log(userInfo[0]);
-    console.log(userInfo[6]);
-    res.render("pages/profile", {
-      title: "Profile",
-      fname: userInfo[0],
-      mname: userInfo[1],
-      lname: userInfo[2],
-      titles: userInfo[3],
-      phone: userInfo[4],
-      school: userInfo[5],
-      address: userInfo[6],
-    });
+  res.render("pages/profile", {
+    title: "Profile",
   });
-
-  //render user info
 });
 
 //update user profile
@@ -213,6 +191,10 @@ router.post("/profile", (req, res) => {
         res.sendStatus(500);
       });
   });
+});
+
+router.get("/profile/get", (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;

@@ -48,6 +48,7 @@ var UserSchema = new Schema({
   titles: String,
   school: String,
   address: String,
+  isProfileSet: Boolean,
 });
 
 UserSchema.statics.findUser = function (id, cb) {
