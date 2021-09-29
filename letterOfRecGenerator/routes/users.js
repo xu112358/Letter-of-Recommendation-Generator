@@ -125,6 +125,11 @@ router.post("/login", (req, res, next) => {
         firstName: userProfile.given_name,
         lastName: userProfile.family_name,
         isProfileSet: false,
+        middleName: "",
+        phone: "",
+        address: "",
+        titles: "",
+        school: "",
       });
 
       bcrypt.genSalt(10, (err, salt) => {
