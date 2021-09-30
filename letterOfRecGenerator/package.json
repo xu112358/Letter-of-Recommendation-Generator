@@ -47,6 +47,7 @@
     "mongodb-core": "^3.2.7",
     "mongoose": "^5.11.13",
     "morgan": "^1.10.0",
+    "node-fetch": "^3.0.0",
     "node-mandrill": "^1.0.1",
     "nodemailer": "^6.6.3",
     "opn": "^5.5.0",

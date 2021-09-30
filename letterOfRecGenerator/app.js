@@ -46,6 +46,7 @@ const docxVar = require("./routes/docx");
 const about = require("./routes/about");
 const profile = require("./routes/profile");
 const forms = require("./routes/forms");
+const api = require("./routes/api");
 
 const app = express();
 
@@ -122,6 +123,7 @@ app.use("/archive", isAuthenticated, archive);
 app.use("/response", isAuthenticated, response);
 app.use("/docx", docxVar);
 app.use("/about", isAuthenticated, about);
+app.use("/api", api);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
