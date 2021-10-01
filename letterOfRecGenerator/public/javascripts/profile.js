@@ -110,20 +110,74 @@ function getCountryCode(){
 function updateProfile() {
   
   var firstName = document.getElementById("fname").value.trim();
+
+  if (firstName.length == 0) {
+
+    alert("Please fill in your firstname");
+    return false;
+  }
   var middleName = document.getElementById("mname").value.trim();
   var lastName = document.getElementById("lname").value.trim();
+
+  if (lastName.length == 0){
+
+    alert("Please fill in your lastname");
+    return false;
+  }
   var titles = document.getElementById("titles").value.trim();
+
+  if (titles.length == 0){
+
+    alert("Please fill in your job title");
+    return false;
+  }
   var university = document.getElementById("university").value.trim();
+
+  if (university.length == 0){
+
+    alert("Please fill in the university you are working at");
+    return false;
+  }
   var department = document.getElementById("department").value.trim();
+
+  if (department.length == 0){
+
+    alert("Please fill in the department you are at");
+    return false;
+  }
   var e1 = document.getElementById("countryCode");
   var index = e1.options.selectedIndex;
   var codes = e1.options[index].value;
   var phone = document.getElementById("telephone").value;
+
+  if (phone.length == 0){
+
+    alert("Please fill in your phone number");
+    return false;
+  }
   var country = e1.options[index].getAttribute("name");
   var streetAddress = document.getElementById("address1").value.trim();
+
+  if (streetAddress.length == 0){
+
+    alert("Please fill in the street address of your on-campus office");
+    return false;
+  }
   var address2 = document.getElementById("address2").value.trim();
   var statesProvince = document.getElementById("address3").value.trim();
+
+  if (statesProvince.length == 0){
+
+    alert("Please fill in the state/provice which your office is at");
+    return false;
+  }
   var postalCode = document.getElementById("postalCode").value;
+
+  if (postalCode.length == 0){
+
+    alert("Please fill in the postal/zip code for your office");
+    return false;
+  }
 
   
   var json = {userInfo: [
