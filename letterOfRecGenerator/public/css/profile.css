@@ -21,3 +21,14 @@
 .text-input {
   width: 240px;
 }
+
+.info {
+  font-weight: normal;
+  font-size: 20px;
+}
+
+#general:hover,
+#title-help:hover,
+#address-help:hover {
+  cursor: pointer;
+}

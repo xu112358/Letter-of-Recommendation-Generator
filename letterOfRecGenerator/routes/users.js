@@ -126,10 +126,17 @@ router.post("/login", (req, res, next) => {
         lastName: userProfile.family_name,
         isProfileSet: false,
         middleName: "",
-        phone: "",
-        address: "",
+        university: "",
+        department: "",
         titles: "",
-        school: "",
+        codes: "",
+        phone: "",
+        streetAddress: "",
+        address2: "",
+        statesProvinces: "",
+        postalCode: "",
+        country: "",
+        selectedIndex: "",
       });
 
       bcrypt.genSalt(10, (err, salt) => {
@@ -167,18 +174,31 @@ router.get("/profile", (req, res) => {
 
 //update user profile
 router.post("/profile", (req, res) => {
-  let userInfo = req.body.userInfo;
-
+  
+  var data = JSON.parse(req.body.raw);
+  let userInfo = data.userInfo;
+  
+  console.log("data");
+  console.log(userInfo);
   User.findOne({ email: req.user.email }).then((user) => {
     user.firstName = userInfo[0];
     user.middleName = userInfo[1];
     user.lastName = userInfo[2];
-    user.titles = userInfo[3];
-    user.phone = userInfo[4];
-    user.school = userInfo[5];
-    user.address = userInfo[6];
+    user.university = userInfo[3];
+    user.department = userInfo[4];
+    user.titles = userInfo[5];
+    user.codes = userInfo[6];
+    user.phone = userInfo[7];
+    user.streetAddress = userInfo[8];
+    user.address2 = userInfo[9];
+    user.statesProvinces = userInfo[10];
+    user.postalCode = userInfo[11];
+    user.country = userInfo[12];
+    user.selectedIndex = userInfo[13];
     user.isProfileSet = true;
-    console.log(user);
+    
+    console.log("After update");
+    
 
     //update db
     user

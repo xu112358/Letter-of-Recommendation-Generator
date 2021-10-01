@@ -4,6 +4,7 @@
     "start": "cd letterOfRecGenerator && npm start"
   },
   "dependencies": {
+    "country-data": "^0.0.31",
     "docxtemplater": "^3.25.1",
     "helmet": "^4.4.1",
     "jszip2": "^3.1.8"

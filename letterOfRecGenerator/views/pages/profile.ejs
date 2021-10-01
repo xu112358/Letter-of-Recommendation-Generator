@@ -2,81 +2,117 @@
 <html>
   <head>
     <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <link rel="stylesheet" type="text/css" href="/css/all.css" />
     <link rel="stylesheet" type="text/css" href="/css/profile.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   </head>
   <body>
     <header><% include ../partials/header %></header>
     <div class="body">
       <div class="user-profile">
         <h1><%= title %></h1>
-        <form class="user-profile-form">
-          <div class="form-entry">
-            <label for="fname"> First name: </label><br />
-            <input id="fname" name="fname" class="text-input" required />
+          
+        <form>
+          <div class="mb-3">
+            <span class="info form-text">Why I need this? <svg id="general" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></span>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="fname" required>
+            <label for="fname" class="form-label">Firstname</label>
+            
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="mname">
+            <label for="mname" class="form-label">Middlename</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="lname" required>
+            <label for="mname" class="form-label">Lastname</label>
+            
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="university" required>
+            <label for="university" class="form-label">University</label>
+            
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="department" required>
+            <label for="department" class="form-label">Department</label>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea class="form-control" id="titles" rows="3" required></textarea>
+            <label for="titles" class="form-label">Titles</label>
+            <small class="form-text"> What should I write? <svg id="title-help" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></small>
+          </div>
+          <div class="form-floating mb-3">
+            <select id="countryCode" name="countryCode" class="form-control" required>
+            </select>
+            <label for="countryCode" class="form-text"> Country/Region Code </label><br />
+          </div>
+          <div class="form-floating mb-3">
+            <input type="tel" class="form-control" id="telephone" pattern="^[0-9]+" required>
+            <label for="phone" class="form-label">Phone Number</label>
+            <small class="form-text">Numbers only. Provide a number that is the best to contact you.</small>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="address1" required>
+            <label for="address1" class="form-label">Office Street Address</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="address2">
+            <label for="address2" class="form-label">Apt., ste., bldg</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="address3">
+            <label for="address3" class="form-label">States/Provinces</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="tel" class="form-control" id="postalCode" pattern="^[0-9]+" required>
+            <label for="postalCode" class="form-label">Postal/Zip code</label>
+            <small class="form-text"> What address should I provide? <svg id="address-help" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></small>
           </div>
 
-          <div class="form-entry">
-            <label for="mname"> Middle name: </label><br />
-            <input id="mname" name="mname" class="text-input" />
-          </div>
 
-          <div class="form-entry">
-            <label for="lname"> Last name: </label><br />
-            <input id="lname" name="lname" class="text-input" required />
-          </div>
-
-          <div class="form-entry">
-            <label for="titles"> Titles: </label><br />
-            <textarea
-              id="titles"
-              name="titles"
-              class="scrollable-textbox"
-              required
-            >
-            </textarea>
-          </div>
-
-          <div class="form-entry">
-            <label for="telephone"> Telephone: </label><br />
-            <input
-              id="telephone"
-              name="telephone"
-              type="tel"
-              class="text-input"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-              required
-            />
-          </div>
-
-          <div class="form-entry">
-            <label for="school"> School: </label><br />
-            <textarea
-              id="school"
-              name="school"
-              class="scrollable-textbox"
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-entry">
-            <label for="address"> Address: </label><br />
-            <textarea
-              id="address"
-              name="address"
-              class="scrollable-textbox"
-              required
-            ></textarea>
-          </div>
-          <button type="button" onclick="return updateProfile()">
+          <button class="btn btn-primary" type="button" onclick="return updateProfile()">
             Apply Changes
           </button>
         </form>
+        
       </div>
     </div>
+
+    <!-- Modal Component-->
+
+    <button style="display: none;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="open-modal">
+    </button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="instructions">
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/javascripts/profile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
   </body>
-  <script src="/javascripts/profile.js"></script>
 </html>
