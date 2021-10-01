@@ -69,7 +69,7 @@ function loadProfile(){
 
 
 //add eventListener to info icons
-/*document.getElementById("general").onclick = function(e){
+document.getElementById("general").onclick = function(e){
 
   document.getElementById("exampleModalLabel").innerHTML = "User Profile Guidance"
   document.getElementById("instructions").innerHTML = "User info are needed as part of the letter generation process. Institutions that read the recommendation letter may contact you accroding to the information you provided."
@@ -90,7 +90,7 @@ document.getElementById("address-help").onclick = function(e){
   document.getElementById("instructions").innerHTML = "Put down address of your school office if you have one. If not, put down the address of your department";
   document.getElementById("open-modal").click();
 
-} */
+}
 
 
 
