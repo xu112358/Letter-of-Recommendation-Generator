@@ -66,6 +66,9 @@ router.post("/templateUpload", function (req, res, next) {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   const filePath = __dirname + "/uploads/" + "letterTemplate";
   try {
+    // ANCHOR START - Try to get rid of this part.
+    // We do no need to let user to upload template anymore.
+    /*
     if (fs.existsSync(filePath)) {
       console.log("IT EXISTS");
       //template is uploaded
@@ -119,6 +122,16 @@ router.post("/templateUpload", function (req, res, next) {
             //text with the line breaks included
             date: actual_date,
             description: formatted_text,
+            // firstname: "Frost",
+            // lastname: "Xu",
+            // title: "B.S in Comupter Science",
+            // department: "Viterbi School of Engineering",
+            // university: "University of Southern California",
+            // address1: "123 St.",
+            // address2: "Los Angeles",
+            // state: "California",
+            // zip: "90007",
+            // phonenumber: "111111111"
           });
 
           try {
@@ -194,12 +207,14 @@ router.post("/templateUpload", function (req, res, next) {
       });
     } else {
       //it doesnt exist
-      //create file using blank page
-      console.log("Template not uploaded");
+      //create file using blank page 
+    */
+    // ANCHOR END - Try to get rid of this part.
+      // console.log("Template not uploaded");
       console.log(req.body.formID);
       var user = req.user;
       console.log("user:**********************");
-      console.log(user._id);
+      console.log(user);
 
       var pulled_text; //text that were getting and moving to docxtemplater
 
@@ -228,11 +243,25 @@ router.post("/templateUpload", function (req, res, next) {
           //enable linebreaks
           doc.setOptions({ linebreaks: true });
 
-          console.log("2");
+          // Parse date.
+          var date_raw = req.body.date;
+          let actual_date = letterParser.getDate(date_raw);
+
           //set the templateVariables
           doc.setData({
             //text with the line breaks included
             description: formatted_text,
+            date: actual_date,
+            firstname: user.firstName,
+            lastname: user.lastName,
+            title: user.titles,
+            department: user.department,
+            university: user.university,
+            address1: user.streetAddress,
+            address2: (user.address2 == "")? "" : user.address2 + ", ",  // A quick hack, we need to check every field whether they are emtpy.
+            state: user.statesProvinces,
+            postalcode: user.postalCode,
+            phonenumber: user.phone
           });
 
           try {
@@ -249,7 +278,6 @@ router.post("/templateUpload", function (req, res, next) {
             // The error thrown here contains additional information when logged with JSON.stringify (it contains a property object).
             throw error;
           }
-          console.log("3");
           var buf = doc.getZip().generate({ type: "nodebuffer" });
 
           // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
@@ -257,10 +285,9 @@ router.post("/templateUpload", function (req, res, next) {
             path.resolve("./routes/uploads", "output.docx"),
             buf
           );
-          console.log("4");
         }
       });
-    }
+    // } ANCHOR: Try to get rid of this part 
   } catch (err) {
     console.log(err);
   }
@@ -363,7 +390,6 @@ router.post("/drive", function (req, res, next) {
 });
 
 router.get("/downloads", function (req, res) {
-  console.log("Hi its Jerry");
   var file = path.resolve("./routes/uploads", "output.docx");
   res.download(file);
 });
