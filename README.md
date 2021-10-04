@@ -31,6 +31,9 @@ Windows, Mac and Linux:
  + then, run `docker run -p 443:443 -p 27017:27017 -i -t your_name_for_this_image`
  + in your browser, navigate to https://localhost 
 
+## How to Access App Running on USC Server
+Go to https://recommendation.usc.edu
+
 
 ____________________________________________________________________________________________________________________________
 
