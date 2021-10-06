@@ -1,1292 +1,145 @@
-var nextQuestionIdToUse = 0;
-var errors = [];
-var unknownTags = [];
-var errorScrollCoordinates = {
-  x: 0,
-  y: 0,
-};
-var id = parseAttribute("id");
-var letterheadImgData = parseAttribute("letterheadImgData");
-var footerImgData = parseAttribute("footerImgData");
-var saveSwitchData = parseAttribute("saveSwitchData");
-const TRIX_EDITOR = "trix-editor";
-const questionTypes = ["Text Answer", "Radio Button", "Checkbox", "Custom"];
-
-/**
- * Prototype class for Questions
- */
-
-var questions = [];
-var tags = [];
-var warningModalFunction;
-class Question {
-  constructor(type, value, tag, optional = false, orgQuestion = false) {
-    // Text, Radio Button, Checkbox
-    this.type = type;
-    this.value = value;
-    this.tag = tag;
-    this.optional = optional;
-    // local browser
-    this.id = questions.length;
-    // Filled with Objects of {option, fill, tag} (all strings) if dealing with Radio Button or Checkbox
-    // tag is always empty string for radio button options
-    this.options = [];
-
-    this.isOrganizationQuestion = orgQuestion;
+// Show options if checkbox or multiple choice is selected
+document.querySelector("form").addEventListener("change", (event) => {
+  console.log(event.target);
+  var select = event.target;
+  var value = select.options[select.selectedIndex].value;
+  if (value == "Multiple Choice" || value == "Checkboxes") {
+    var selectedCard = event.target.closest(".card");
+    selectedCard.querySelector(".options").classList.remove("d-none");
   }
-
-  setId(id) {
-    this.id = id;
+  else {
+    var selectedCard = event.target.closest(".card");
+    selectedCard.querySelector(".options").classList.add("d-none");
   }
+});
 
-  setOptions(options) {
-    this.options = options;
-  }
+// Add option
+document.querySelector(".add-options-btn").addEventListener("click", (event) => {
+  // Find options div of current card
+  var selectedOptions = event.target.closest(".options");
+  console.log(selectedOptions);
+  
+  var newOption = document.createDocumentFragment();
 
-  setOrganizationQuestion(booleanValue) {
-    this.isOrganizationQuestion = booleanValue;
-  }
+  var row = document.createElement("div");
+  row.classList.add("row");
+
+  var col1 = document.createElement("div");
+  col1.classList.add("col-radio-input");
+
+  var col2 = document.createElement("div");
+  col2.classList.add("col-radio-delete");
+
+  var input = document.createElement("input");
+  input.type = "text";
+  input.classList.add("form-control");
+  input.placeholder = "Option";
+  
+  var icon = document.createElement("i");
+  icon.classList.add("fas", "fa-times");
+
+  col1.appendChild(input);
+  col2.appendChild(icon);
+  row.appendChild(col1);
+  row.appendChild(col2);
+  newOption.appendChild(row);
+
+  // Inserts new option before add option button
+  var buttonRow = event.target.closest(".row");
+  selectedOptions.insertBefore(newOption, buttonRow);
+});
+
+// Delete option
+document.querySelector(".options").addEventListener("click", (event) => { 
+  var targetElem = event.target.closest(".col-radio-delete");
+  if (!targetElem) return;
+  targetElem.closest(".row").remove();
+
+});
+
+// Add question
+document.querySelector(".add-questions-btn").addEventListener("click", (event) => {
+  var form = document.querySelector("form");
+
+  var newQuestion = document.createDocumentFragment();
+
+  var card = document.createElement("div");
+  card.classList.add("card", "container", "align-middle");
+
+  var question = document.createElement("div");
+  question.classList.add("row");
+
+  var col1 = document.createElement("div");
+  col1.classList.add("col-8");
+
+  var ques_input = document.createElement("input");
+  ques_input.type = "text";
+  ques_input.classList.add("form-control");
+  ques_input.placeholder = "Question";
+
+  var col2 = document.createElement("div");
+  col2.classList.add("col-4");
+
+  var select = document.createElement("select");
+  select.classList.add("form-select");
+
+  var option1 = document.createElement("option");
+  option1.value = "Text";
+  option1.innerHTML = "Text";
+  var option2 = document.createElement("option");
+  option2.value = "Multiple Choice";
+  option2.innerHTML = "Multiple Choice";
+  var option3 = document.createElement("option");
+  option3.value = "Checkboxes";
+  option3.innerHTML = "Checkboxes";
+
+  var options = document.createElement("div");
+  options.classList.add("options", "d-none");
+
+  var tag = document.createElement("div");
+  tag.classList.add("row");
+  
+  var col3 = document.createElement("div");
+  col3.classList.add("col-4");
+
+  var tag_input = document.createElement("input");
+  tag_input.type = "text";
+  tag_input.classList.add("form-control");
+  tag_input.placeholder = "Tag";
+
+  var col4 = document.createElement("div");
+  col4.classList.add("col", "align-self-end");
+
+  var icon = document.createElement("i");
+  icon.classList.add("fas", "fa-trash", "float-end");
+
+  select.appendChild(option1);
+  select.appendChild(option2);
+  select.appendChild(option3);
+  
+  col2.appendChild(select);
+  col1.appendChild(ques_input);
+
+  question.appendChild(col1);
+  question.appendChild(col2);
+
+  col4.appendChild(icon);
+  col3.appendChild(tag_input);
+
+  tag.appendChild(col3);
+  tag.appendChild(col4);
+
+  card.appendChild(question);
+  card.appendChild(options);
+  card.appendChild(tag);
+
+  form.appendChild(card);
+});
+
+//add eventListener to info icons
+document.getElementById("default-questions-info").onclick = function(event) {
+
+  document.getElementById("exampleModalLabel").innerHTML = "Default Questions"
+  document.getElementById("instructions").innerHTML = "Default questions are automatically added to the form and default tags are automatically created for the questions."
+  document.getElementById("open-modal").click();
 }
-
-const NAME_CONTAINER_TEXT_FIELD_ID = "name-container-text-field";
-const LETTER_TEXT_AREA_ID = "letter-text-area";
-const QUESTIONS_CONTAINER_ID = "questions-container";
-const ADD_QUESTION_MODAL_ID = "add-question-modal";
-const WARNING_MODAL_ID = "warning-modal";
-
-const CUSTOM_QUESTION_TYPE = "Custom";
-
-let letter = "";
-
-window.onload = function () {
-  // return;
-  // setUpEventHandlers();
-  document
-    .getElementById(LETTER_TEXT_AREA_ID)
-    .addEventListener("paste", function (e) {
-      e.preventDefault();
-
-      if (e.clipboardData) {
-        content = (e.originalEvent || e).clipboardData.getData("text/plain");
-        document.execCommand("insertText", false, content);
-      } else if (window.clipboardData) {
-        content = window.clipboardData.getData("Text");
-        document.selection.createRange().pasteHTML(content);
-      }
-    });
-
-  if (id) {
-    $.ajax({
-      url: "/template-editor/template",
-      data: { id, saveSwitchData },
-      type: "GET",
-      success: function (data) {
-        document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = data.letter;
-        data.questions.forEach((question) => {
-          var savedQuestion = new Question(
-            question.type,
-            question.question,
-            question.tag,
-            question.optional,
-            question.isOrganizationQuestion
-          );
-          savedQuestion.options = question.options;
-          questions.push(savedQuestion);
-        });
-        console.log("success loading page");
-        console.log({ questions });
-        displayQuestions();
-        //emphasizeTags();
-        renderAllTagButtons();
-      },
-      error: function () {
-        console.log("error");
-      },
-    });
-  } else {
-    loadDefaultQuestions();
-    displayQuestions();
-    renderAllTagButtons();
-  }
-
-  // Regex search to check proper tag format
-  var tags = document.querySelectorAll("[data-type='tag']");
-  for (i=0; i < tags.length; ++i) {
-      tags[i].addEventListener('focusout', (e) => {
-        const regex = new RegExp("^<![^<!>]+>$");
-        const regexWhitespace = new RegExp("[\\s]");
-        
-        if (e.target.value == "") {
-          alert("Missing tag name.");
-        }
-        else if (!regex.test(e.target.value)) {
-          alert(e.target.value + " is not in proper format. \nFormat must be <!tag>");
-        }
-        else if (regexWhitespace.test(e.target.value)) {
-          alert(e.target.value + " is not in proper format. \nNo whitespaces allowed.");
-        }
-      });
-
-      tags[i].addEventListener('input', (e) => {
-        const regex = new RegExp("^<![^<!>]+>$");
-        const regexWhitespace = new RegExp("[\\s]");
-        if (!(e.target.value == "") && regex.test(e.target.value) && !(regexWhitespace.test(e.target.value))) {
-          renderAllTagButtons(); 
-          e.target.classList.remove("error");
-        }
-        else {
-          e.target.classList.add("error");
-        }
-      });
-  }
-
-};
-
-// creates default questions
-function loadDefaultQuestions() {
-  var default0 = new Question("Text", "What is your first name?", "<!FNAME>");
-  questions.push(default0);
-  var default1 = new Question("Text", "What is your last name?", "<!LNAME>");
-  questions.push(default1);
-  var default2 = new Question(
-    "Radio Button",
-    "What is your preferred personal pronoun (subject)?",
-    "<!SUB_PRONOUN>"
-  );
-  default2.options = [
-    constructOptionObject("He", "he"),
-    constructOptionObject("She", "she"),
-    constructOptionObject("They", "they"),
-  ];
-  questions.push(default2);
-  var default3 = new Question(
-    "Radio Button",
-    "What is your preferred personal pronoun (object)?",
-    "<!OBJ_PRONOUN>"
-  );
-  default3.options = [
-    constructOptionObject("Him", "him"),
-    constructOptionObject("Her", "her"),
-    constructOptionObject("Them", "them"),
-  ];
-  questions.push(default3);
-  var default4 = new Question(
-    "Radio Button",
-    "What is your preferred possessive pronoun?",
-    "<!POS_PRONOUN>"
-  );
-  default4.options = [
-    constructOptionObject("His", "his"),
-    constructOptionObject("Her", "her"),
-    constructOptionObject("Their", "their"),
-  ];
-  questions.push(default4);
-  var orgQuestion = new Question(
-    "Custom",
-    "What organizations are you applying to?",
-    "<!ORG>"
-  );
-  orgQuestion.options = [constructOptionObject("Organization", "", "<!ORG>")];
-  questions.push(orgQuestion);
-  var default5 = new Question(
-    "Text",
-    "What program are you applying to?",
-    "<!PROG>"
-  );
-  questions.push(default5);
-}
-
-function changeText() {
-  var files = $("#template-upload-file")[0].files;
-  if (files && files[0]) {
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      $("#template-preview").attr("src", e.target.result);
-      footerImgData = e.target.result;
-      var filename = files[0].name;
-      document.getElementById("template-preview-div").innerHTML =
-        "Uploaded File: " + filename;
-    };
-
-    reader.readAsDataURL(files[0]);
-  }
-}
-
-window.onclick = function (event) {
-  var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
-  if (event.target == modal) {
-    hideAddQuestionModal();
-  }
-};
-
-function displayQuestions() {
-  // grab the container that will hold all questions
-  var container = document.getElementById(QUESTIONS_CONTAINER_ID);
-
-  // fill in with questions
-  let questionsText = "";
-  for (var i = 0; i < questions.length; i++) {
-    questionsText += getQuestionHTML(questions[i]);
-  }
-  container.innerHTML = questionsText;
-  // let list = document.getElementById(QUESTIONS_CONTAINER_ID);
-  // Sortable.create(list);
-}
-
-function convertLtGt(s) {
-  return s.replace("<", "&lt;").replace(">", "&gt;");
-}
-
-/**
- * Creates HTML for the different question types
- * @param q
- * @returns {string}
- */
-function getQuestionHTML(q) {
-  return `<div class="sortable-questions">
-        <div class="row error-container">
-            <div class="question-outer-container">
-                <div class="question-container d-flex align-items-center my-4 error-container question-outer-container"
-                    data-id="${q.id}">
-                    <div class="ml-4"><img class="icon-effects" src="/images/hamburger_white.svg"></div>
-                    <div class="row col d-flex align-items-end ${
-                      q.type === questionTypes[1] || q.type === questionTypes[2]
-                        ? "multiple-choice-container"
-                        : ""
-                    }">
-                        <div class="col col-5"><input type="text" class="form-control"
-                                placeholder="Enter new question here..." data-type="value" value="${
-                                  q.value
-                                }"></div>
-                        <div class="col col-2">
-                            <select class="form-control" onchange="changeQuestionType(${
-                              q.id
-                            }, this)">
-                                ${
-                                  questionTypes[3] !== q.type
-                                    ? `
-                                <option ${
-                                  questionTypes[0] === q.type
-                                    ? " selected='true'"
-                                    : ""
-                                }>Text</option>
-                                <option ${
-                                  questionTypes[1] === q.type ? " selected" : ""
-                                }>Radio Button</option>
-                                <option ${
-                                  questionTypes[2] === q.type ? " selected" : ""
-                                }>Checkbox</option>`
-                                    : `<option selected>Custom</option>`
-                                }
-                            </select></div>
-                        <div class="d-flex align-items-center"><span
-                            class="text-white mr-2">Required?</span><input type="checkbox" ${
-                              q.optional ? "" : "checked"
-                            }
-                            class="big-checkbox">
-                        </div>
-                        
-                        ${
-                          q.type === "Checkbox"
-                            ? `<div class="col-3"></div>`
-                            : `<div class="col-3"><input type="text" class="form-control"
-                            placeholder="tag (e.g. <!fname>)" value="${convertLtGt(
-                              q.tag
-                            )}" data-type="tag">
-                        </div>`
-                        }
-
-                        ${getMultipleChoiceFieldsHTML(q)}
-                    </div>
-                </div>
-                <div class="mr-4 mt-4">
-                    <img class="remove-question-btn" src="/images/remove_white.png" alt="Remove" onclick="deleteQuestionWithWarning(${
-                      q.id
-                    })">
-                </div>
-            </div>
-        </div>`;
-}
-
-function getMultipleChoiceFieldsHTML(q) {
-  // if (q.type === "Text Answer") return "";
-  let html = "";
-  let option;
-  if (q.type === "Radio Button") {
-    for (let i = 0; i < q.options.length; i++) {
-      option = q.options[i];
-      html += `<div class="col col-3 mt-3"> <input type="text" class="form-control form-control-sm"
-                placeholder="Radio Button Option" data-type="mc-option" value="${option.option}"></div>
-                <div class="col col-3 mt-3"><input type="text" class="form-control form-control-sm"
-                    placeholder="Text to Replace Tag" data-type="mc-fill" value="${option.fill}"></div>
-                <div class="col col-1 pb-1">
-                    <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,${i})" alt="Remove">
-                </div>
-                <div class="col col-5"></div>`;
-    }
-    if (q.options.length === 0) {
-      html = `<div class="col col-3 mt-3"><input type="text" class="form-control"
-            placeholder="Radio Button Option" data-type="mc-option"></div>
-            <div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Text to Replace Tag" data-type="mc-fill"></div>
-            <div class="col col-1 pb-1">
-                <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,0)" alt="Remove">
-            </div>
-            <div class="col col-5"></div>`;
-    }
-
-    html += `<div class="col mt-3"><button class="btn btn-light btn-sm" onclick="addMultipleChoiceField(${q.id})">
-            Add Option</button></div>`;
-  } else if (q.type === "Checkbox") {
-    for (let i = 0; i < q.options.length; i++) {
-      option = q.options[i];
-      html += `<div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Checkbox Option." data-type="mc-option" value="${option.option}"></div>
-            <div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Text to Replace Tag" data-type="mc-fill" value="${option.fill}"></div>
-            <div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Tag (e.g. <!check-value>" data-type="tag" value="${option.tag}"></div>
-            <div class="col col-1 pb-1">
-                <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,${i})" alt="Remove">
-            </div>
-            <div class="col col-2"></div>`;
-    }
-    if (q.options.length === 0) {
-      html = `<div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Checkbox Option." data-type="mc-option"></div>
-            <div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Text to Replace Tag" data-type="mc-fill"></div>
-            <div class="col col-3 mt-3"><input type="text" class="form-control"
-                placeholder="Tag (e.g. <!check-value>" data-type="tag"></div>
-            <div class="col col-1 pb-1">
-                <img class="remove-option-btn" src="/images/remove_white.png" onclick="deleteMultipleChoiceFieldWithWarning(this,0)" alt="Remove">
-            </div>
-            <div class="col col-2"></div>`;
-    }
-    html += `<div class="col mt-3"><button class="btn btn-light btn-sm" onclick="addMultipleChoiceField(${q.id})">Add Option</button></div>`;
-  }
-  return html;
-}
-
-/**
- * Creates HTML for the different question types
- * @param q
- * @returns {string}
- */
-function getQuestionHTML_old(q) {
-  var data_id_attribute = 'data-id="' + q.id + '"';
-  var delete_onclick_attribute =
-    'onclick="deleteQuestionWithWarning(' + q.id + ')"';
-  var multiple_choice_fields_html = getMultipleChoiceFieldsHTML(q);
-  var placeholder = "Enter new question here...";
-
-  var question_type_label = "";
-  switch (q.type) {
-    case "Text":
-      question_type_label = "TEXT";
-      break;
-    case "Radio Button":
-      question_type_label = "RADIO BUTTON";
-      break;
-    case "Checkbox":
-      question_type_label = "CHECKBOX";
-      break;
-    case "Custom":
-      question_type_label = "Custom";
-      break;
-    default:
-      break;
-  }
-
-  var html =
-    '<div class="sortable-questions"> <h2 class="question-header"> <b>Question Type: </b>' +
-    question_type_label +
-    "</h2>" +
-    '<img class="icon-effects" src="/images/outline-reorder-24px.svg">' +
-    '<div class="error-container"><div class="question-outer-container"' +
-    data_id_attribute +
-    ">";
-  // "required" checkbox
-  html +=
-    '<div class="required-checkbox-container">' +
-    "<p>Required?" +
-    '<input type="checkbox" ';
-  html += q.optional ? "" : "checked";
-  html += ">" + "</p></div>";
-
-  // question box
-  html += [
-    '<div class="question-container"> <b>Question:</b>' +
-      getTextAreaHTML(placeholder, q.value) +
-      multiple_choice_fields_html,
-  ];
-
-  if (q.type !== "Checkbox" && q.type !== "Custom") {
-    html +=
-      '<span class="line"></span> <b>Tag:</b>' + getTagTextInputHTML(q.tag);
-  }
-  html += "</div>";
-  html +=
-    '<button class="question-button small-circle-button" ' +
-    delete_onclick_attribute +
-    ">X</button>";
-  html += "</div></div></div>";
-
-  return html;
-}
-
-// Note: the html needs to be nested within a question-container element in order to properly work
-function getMultipleChoiceFieldsHTML_old(q) {
-  if (q.type !== "Radio Button" && q.type !== "Checkbox" && q.type !== "Custom")
-    return "";
-
-  var option_placeholder = "Enter option here...";
-  var fill_placeholder = "Enter text that will replace the tag... (optional)";
-  var html = '<div class="multiple-choices-container">';
-  for (var i = 0; i < q.options.length; i++) {
-    var data_id_attribute = 'data-id="' + i + '"';
-    var delete_onclick_attribute =
-      'onclick="deleteMultipleChoiceFieldWithWarning(this,' + i + ')"';
-
-    var text_area_elements =
-      '<div class="text-area-container">' +
-      getTextAreaHTML(option_placeholder, q.options[i].option, "option") +
-      getTextAreaHTML(fill_placeholder, q.options[i].fill);
-    if (q.type === "Checkbox" || q.type === "Custom") {
-      //text_area_elements += getTextAreaHTML()
-      text_area_elements += getTagTextInputHTML(q.options[i].tag);
-    }
-    text_area_elements += "</div>";
-    html +=
-      '<div class="multiple-choice-container"' +
-      data_id_attribute +
-      ">" +
-      text_area_elements +
-      '<button class="question-button small-circle-button" ' +
-      delete_onclick_attribute +
-      ">X</button>" +
-      "</div>";
-  }
-  var add_multiple_choice_attribute =
-    'onclick="addMultipleChoiceField(' + q.id + ')"';
-  html +=
-    '<button class="small-circle-button" ' +
-    add_multiple_choice_attribute +
-    ">+</button>";
-  html += "</div>";
-
-  return html;
-}
-
-/**
- * Generates html for input field
- * @param placeholder - of input field
- * @param value
- * @param name
- * @returns {string}
- */
-function getTextAreaHTML(placeholder, value, name) {
-  if (name) {
-    return (
-      '<textarea name="' +
-      name +
-      '" data-type="value" class="text-area" type="text" placeholder="' +
-      placeholder +
-      '" onkeyup="auto_grow(this)">' +
-      value +
-      "</textarea>"
-    );
-  }
-
-  return (
-    '<textarea data-type="value" class="text-area" type="text" placeholder="' +
-    placeholder +
-    '" onkeyup="auto_grow(this)">' +
-    value +
-    "</textarea>"
-  );
-}
-
-function getTagTextInputHTML(tag_value) {
-  return (
-    '<input data-type="tag" class="text-field blue-text" type="text" placeholder="Enter answer tag here... " value="' +
-    tag_value +
-    '">'
-  );
-}
-
-// used for allowing text areas to grow in height (trick with onkeyup)
-function auto_grow(element) {
-  element.style.height = "5px";
-  element.style.height = element.scrollHeight + "px";
-}
-
-function addQuestion() {
-  showAddQuestionModal();
-}
-
-function saveTemplate() {
-  updateQuestions();
-
-  if (document.getElementById('name-container-text-field').value == "") {
-    alert("Please enter a template name.");
-    return;
-  }
-
-  // Regex search to check proper tag format
-  var tags = document.querySelectorAll("[data-type='tag']");
-  const regex = new RegExp("^<![^<!>]+>$");
-  const regexWhitespace = new RegExp("[\\s]");
-  for (i=0; i < tags.length; ++i) {
-    if (tags[i].value == "") {
-      alert("Missing tag name.");
-    }
-    else if (!regex.test(tags[i].value)) {
-      alert(tags[i].value + " is not in proper format. \nFormat must be <!tag>");
-    }
-    else if (regexWhitespace.test(tags[i].value)) 
-      alert(tags[i].value + " is not in proper format. \nNo whitespaces allowed.");
-  }
-
-  if (questions.length == 0) {
-    alert("Please provide at least one question");
-    return false;
-  }
-  var template = {
-    name: document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID).value,
-    text: letter,
-    questions: getQuestions(),
-  };
-
-  if (!validate(template)) {
-    window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
-    emphasizeTags();
-    return;
-  }
-
-  if (letterheadImgData) {
-    template.letterheadImg = letterheadImgData;
-  }
-
-  if (footerImgData) {
-    template.footerImg = footerImgData;
-  }
-
-  if (id) {
-    $.ajax({
-      url: "/template-editor/update",
-      data: {
-        id: id,
-        template,
-      },
-      type: "POST",
-      cache: false,
-      complete: function (data) {
-        console.log("complete");
-      },
-      success: function (data) {
-        console.log("success in SaveTemplate");
-        window.location.href = "/template-dashboard";
-      },
-      error: function (err) {
-        console.log("error in saveTemplate:" + err);
-        var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
-        addError(textField, 0, "template name already exists");
-        window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
-        emphasizeTags();
-        return;
-      },
-    });
-  } else {
-    console.log("creating template");
-    $.ajax({
-      url: "/template-editor/create",
-      data: { template: template },
-      type: "POST",
-      complete: function () {
-        console.log("complete");
-      },
-      success: function (data) {
-        id = data.id;
-        console.log("success in Creating Template");
-        window.location.href = "/template-dashboard";
-      },
-      error: function (err) {
-        alert("Template name already exists.");
-        console.log("error in saveTemplate:" + err);
-        var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
-        addError(textField, 0, "template name already exists");
-        window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
-        emphasizeTags();
-        return;
-      },
-    });
-  }
-}
-
-function getQuestions() {
-  var dbQuestions = [];
-  var questionNumber = 1;
-
-  var sortableQuestionsHTML = document
-    .getElementById(QUESTIONS_CONTAINER_ID)
-    .getElementsByClassName("sortable-questions");
-  var updatedQuestions = [];
-  var newQuestionIndex = 0;
-  console.log({ questions });
-
-  for (var i = 0; i < sortableQuestionsHTML.length; i++) {
-    var errorContainerHTML = sortableQuestionsHTML[i].getElementsByClassName(
-      "error-container"
-    );
-    var questionsOuterContainer = errorContainerHTML[0].getElementsByClassName(
-      "question-outer-container"
-    );
-    var newQuestion = new Question(
-      questions[i].type,
-      questions[i].value,
-      questions[i].tag,
-      questions[i].optional,
-      questions[i].isOrganizationQuestion
-    );
-    newQuestion.setOptions(questions[i].options);
-    newQuestion.setId(i);
-    updatedQuestions.push(newQuestion);
-  }
-  console.log({ updatedQuestions });
-
-  updatedQuestions.forEach((question) =>
-    dbQuestions.push({
-      number: questionNumber++,
-      type: question.type,
-      question: question.value,
-      options: question.options,
-      tag: question.tag,
-      optional: question.optional,
-      organizationFlag: question.isOrganizationQuestion,
-    })
-  );
-  console.log({ dbQuestions });
-  // throw Error('two pretty best friends not found');
-  return dbQuestions;
-}
-
-function showAddQuestionModal() {
-  var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
-  modal.style.display = "block";
-}
-
-function hideAddQuestionModal() {
-  var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
-  modal.style.display = "none";
-}
-
-function showWarningModal(func) {
-  var modal = document.getElementById(WARNING_MODAL_ID);
-  modal.style.display = "block";
-  warningModalFunction = func;
-}
-
-function hideWarningModal() {
-  var modal = document.getElementById(WARNING_MODAL_ID);
-  modal.style.display = "none";
-}
-
-function executeWarningModalFunction() {
-  hideWarningModal();
-  warningModalFunction();
-}
-
-// NOTE: need to push new question AFTER updateQuestions(), since display questions relies on a question being displayed once
-// to assign it a data_id
-function addTextAnswerQuestion() {
-  updateQuestions();
-  questions.push(new Question("Text", "", ""));
-  displayQuestions();
-  hideAddQuestionModal();
-  var question = document.querySelectorAll(".sortable-questions");
-  question[question.length - 1].scrollIntoView();
-}
-
-function addRadioButtonQuestion() {
-  updateQuestions();
-  var question = new Question("Radio Button", "", "");
-  question.options.push(constructOptionObject("", ""));
-  questions.push(question);
-  displayQuestions();
-  hideAddQuestionModal();
-  var question = document.querySelectorAll(".sortable-questions");
-  question[question.length - 1].scrollIntoView();
-}
-
-function addCheckboxQuestion() {
-  updateQuestions();
-  var question = new Question("Checkbox", "", "");
-  question.options.push(constructOptionObject("", ""));
-  questions.push(question);
-  displayQuestions();
-  hideAddQuestionModal();
-  var question = document.querySelectorAll(".sortable-questions");
-  question[question.length - 1].scrollIntoView();
-}
-
-/**
- * Creates a custom question
- */
-function addCustomQuestion() {
-  updateQuestions();
-  let question = new Question("Custom", "", "");
-  question.options.push(constructOptionObject("", ""));
-  questions.push(question);
-  displayQuestions();
-  hideAddQuestionModal();
-
-  // add a field
-}
-
-function changeQuestionType(id, selectEl) {
-  for (let option of selectEl.children) {
-    if (option.selected) {
-      console.log(questions[id]);
-      questions[id].type = option.value;
-    }
-  }
-  displayQuestions();
-}
-
-function updateQuestions() {
-  // update the letter
-  var element = document.querySelector(TRIX_EDITOR);
-  letter = element.value;
-
-  // update individual questions
-  for (const question of questions) {
-    // grab the question element
-    var query = "div[data-id='" + question.id + "']";
-    var questionEl = document.querySelector(query);
-
-    question.value = questionEl.querySelector("[data-type='value']").value;
-    // Checkbox questions do not have a general tag (as there are tags associated with each option instead)
-    if (
-      question.type !== "Checkbox" &&
-      question.type !== CUSTOM_QUESTION_TYPE
-    ) {
-      question.tag = questionEl.querySelector("[data-type='tag']").value;
-    }
-
-    question.optional = !questionEl.querySelector("[type='checkbox']").checked;
-
-    const options = questionEl.querySelectorAll("[data-type='mc-option']");
-    const fills = questionEl.querySelectorAll("[data-type='mc-fill']");
-    const tags = questionEl.querySelectorAll("[data-type='tag']");
-
-    for (let j = 0; j < options.length; j++) {
-      question.options[j].option = options[j].value;
-      question.options[j].fill = fills[j].value;
-      if (
-        question.type === "Checkbox" ||
-        question.type === CUSTOM_QUESTION_TYPE
-      ) {
-        question.options[j].tag = tags[j].value;
-      }
-    }
-
-    // var multipleChoices = questionEl.querySelector(".multiple-choice-container");
-    // for (var j = 0; j < multipleChoices.length; j++) {
-    //     var mc = multipleChoices[j];
-
-    //     question.options[j].option = mc.querySelectorAll("[data-type='mc-option-" + j + "']").value;
-    //     question.options[j].fill = mc.querySelectorAll("[data-type='mc-fill-" + j + "']").value;
-    //     if (question.type === "Checkbox" || question.type === CUSTOM_QUESTION_TYPE) {
-    //         question.options[j].tag = mc.querySelector("[data-type='mc-tag-" + j + "']").value;
-    //     }
-    // }
-  }
-}
-
-function deleteQuestion(id) {
-  updateQuestions();
-  for (var i = 0; i < questions.length; i++) {
-    if (questions[i].id == id) {
-      questions.splice(i, 1);
-      //
-      break;
-    }
-  }
-  displayQuestions();
-}
-
-function deleteQuestionWithWarning(id) {
-  showWarningModal(() => {
-    deleteQuestion(id);
-  });
-}
-
-function deleteMultipleChoiceFieldWithWarning(el, data_id) {
-  showWarningModal(() => {
-    deleteMultipleChoiceField(el, data_id);
-  });
-}
-
-function addMultipleChoiceField(id) {
-  var question = getQuestionById(id);
-  question.options.push(constructOptionObject("", ""));
-  updateQuestions();
-  displayQuestions();
-}
-
-function constructOptionObject(option, fill, tag = "") {
-  return {
-    option: option,
-    fill: fill,
-    tag: tag,
-  };
-}
-
-function getQuestionById(id) {
-  for (var i = 0; i < questions.length; i++) {
-    if (questions[i].id == id) {
-      return questions[i];
-    }
-  }
-  return null;
-}
-
-// needs the element as well as the data_id of the multiple choice field
-function deleteMultipleChoiceField(el, data_id) {
-  updateQuestions();
-
-  var questionEl = findAncestor(el, "question-outer-container");
-  var question_data_id = questionEl.getAttribute("data-id");
-
-  var question = getQuestionById(parseInt(question_data_id));
-  question.options.splice(parseInt(data_id), 1);
-  displayQuestions();
-}
-
-function findAncestor(el, cls) {
-  while ((el = el.parentElement) && !el.classList.contains(cls));
-  return el;
-}
-
-function parseAttribute(attr) {
-  return document.currentScript.getAttribute(attr) == ""
-    ? null
-    : document.currentScript.getAttribute(attr);
-}
-
-function validate(template) {
-  clearErrors();
-  var isValid = true;
-
-  if (isNotValid(template.name)) {
-    var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
-    addError(textField, 0, "template name is required");
-    isValid = false;
-  }
-
-  if (isNotValid(template.text)) {
-    var textField = document.getElementById(LETTER_TEXT_AREA_ID);
-    addError(textField, 0, "letter text is required");
-    isValid = false;
-  } else if (!isTagsExist(template.text, template.questions)) {
-    var textField = document.getElementById(LETTER_TEXT_AREA_ID);
-    addError(textField, 0, "letter contains unknown tags");
-    isValid = false;
-  }
-
-  for (var i = 0; i < template.questions.length; i++) {
-    var question = template.questions[i];
-    var query =
-      "div[data-id='" + questions[i].id + "'].question-outer-container";
-    var questionHTML = document.querySelector(query);
-
-    var totalFields = 3;
-    if (question.options.length) {
-      totalFields =
-        question.type === "Checkbox" || question.type === CUSTOM_QUESTION_TYPE
-          ? 4 + 3 * question.options.length
-          : 4 + 2 * question.options.length;
-    }
-
-    if (isNotValid(question.question)) {
-      var textField = questionHTML.querySelector("[data-type='value']");
-      addError(textField, 0, "question field is required");
-      isValid = false;
-    }
-
-    if (question.type === "Text" || question.type === "Radio Button") {
-      if (isNotValid(question.tag)) {
-        var textField = questionHTML.querySelector("[data-type='tag']");
-        addError(textField, totalFields - 1, "tag field is required");
-        isValid = false;
-      } else if (isTagNotValid(question.tag)) {
-        var textField = questionHTML.querySelector("[data-type='tag']");
-        addError(
-          textField,
-          totalFields - 1,
-          "tag field does not match expected pattern"
-        );
-        isValid = false;
-      }
-    }
-
-    if (question.type === "Radio Button") {
-      for (var j = 0; j < question.options.length; j++) {
-        var option = question.options[j];
-        var query = "div[data-id='" + j + "'] .multiple-choice-container";
-        var optionHTML = questionHTML.querySelector(query);
-
-        if (isNotValid(option.option)) {
-          var textField = optionHTML.querySelector("[name='option']");
-          addError(textField, 1 + j * 2, "option is required");
-          isValid = false;
-        }
-
-        if (isNotValid(option.fill)) {
-          option.fill = option.option;
-        }
-      }
-    }
-
-    if (
-      question.type === "Checkbox" ||
-      question.type === CUSTOM_QUESTION_TYPE
-    ) {
-      for (var j = 0; j < question.options.length; j++) {
-        var option = question.options[j];
-        var query = "div[data-id='" + j + "'] .multiple-choice-container";
-        var optionHTML = questionHTML.querySelector(query);
-
-        if (isNotValid(option.option)) {
-          var textField = optionHTML.querySelector("[name='option']");
-          addError(textField, 1 + j * 3, "option is required");
-          isValid = false;
-        }
-
-        if (isNotValid(option.tag)) {
-          var input = optionHTML.querySelector("input");
-          addError(input, 3 + j * 3, "tag is required");
-          isValid = false;
-        }
-
-        if (isNotValid(option.fill)) {
-          option.fill = option.option;
-        }
-      }
-    }
-  }
-
-  return isValid;
-}
-
-function clearErrors() {
-  for (var i = 0; i < errors.length; i++) {
-    errors[i].field.classList.remove("error");
-    if (errors[i].error) {
-      errors[i].error.remove();
-    }
-    if (errors[i].fill) {
-      errors[i].fill.remove();
-    }
-  }
-
-  errors.length = 0;
-  errorScrollCoordinates.x = 0;
-  errorScrollCoordinates.y = 0;
-}
-
-function isNotValid(field) {
-  return !field || field.trim() === "";
-}
-
-function addError(field, index, message) {
-  field.classList.add("error");
-  var container = getErrorContainer(field);
-  var header = getSectionHeader(container);
-  var errorElements = addErrorToContainer(container, index, message);
-
-  errors.push({
-    field: field,
-    error: errorElements.errorList,
-    fill: errorElements.fill,
-  });
-
-  setScrollCoordinates(header);
-}
-
-function getErrorContainer(field) {
-  var parentContainer = field.parentElement;
-
-  while (parentContainer) {
-    if (parentContainer.classList.contains("error-container")) {
-      return parentContainer;
-    }
-
-    parentContainer = parentContainer.parentElement;
-  }
-
-  return parentContainer;
-}
-
-function getSectionHeader(container) {
-  if (
-    container.previousElementSibling.classList.contains("section-header") ||
-    container.previousElementSibling.classList.contains("question-header")
-  ) {
-    return container.previousElementSibling;
-  }
-
-  return null;
-}
-
-function setScrollCoordinates(header) {
-  if (
-    errorScrollCoordinates.x != 0 ||
-    errorScrollCoordinates.y != 0 ||
-    !header
-  ) {
-    return;
-  }
-
-  var rect = header.getBoundingClientRect();
-  errorScrollCoordinates.x = rect.left + window.scrollX;
-  errorScrollCoordinates.y = rect.top + window.scrollY;
-}
-
-function addErrorToContainer(container, index, message) {
-  if (
-    !container.lastChild.classList ||
-    !container.lastChild.classList.contains("error-column-container")
-  ) {
-    addErrorListToErrorContainer(container);
-  }
-
-  var errorList = container.lastChild;
-  var fill = container.firstChild;
-  var error = getErrorHTML(message);
-  errorList.children[index].appendChild(error);
-
-  return {
-    errorList: errorList,
-    fill: fill,
-  };
-}
-
-function addErrorListToErrorContainer(container) {
-  var errorList = document.createElement("div");
-  errorList.classList.add("error-column-container");
-  errorList.style.width = "15vw";
-
-  var innerContainer = getInnerContainer(container);
-
-  for (var i = 0; i < innerContainer.children.length; i++) {
-    var child = innerContainer.children[i];
-
-    if (
-      child.classList &&
-      child.classList.contains("multiple-choices-container")
-    ) {
-      for (var j = 0; j < child.children.length; j++) {
-        var multipleChoiceContainer = child.children[j];
-
-        if (
-          multipleChoiceContainer.classList &&
-          multipleChoiceContainer.classList.contains(
-            "multiple-choice-container"
-          )
-        ) {
-          if (multipleChoiceContainer.firstChild.children.length > 2) {
-            for (var k = 0; k < 3; k++) {
-              errorList.appendChild(
-                getFillHTML(
-                  getAbsoluteHeight(
-                    multipleChoiceContainer.firstChild.children[k]
-                  )
-                )
-              );
-            }
-          } else {
-            errorList.appendChild(
-              getFillHTML(
-                getAbsoluteHeight(multipleChoiceContainer.firstChild.firstChild)
-              )
-            );
-            errorList.appendChild(
-              getFillHTML(
-                getAbsoluteHeight(multipleChoiceContainer.firstChild.lastChild)
-              )
-            );
-          }
-        } else {
-          var fill = getFillHTML(getAbsoluteHeight(multipleChoiceContainer));
-          errorList.appendChild(fill);
-        }
-      }
-    } else {
-      var fill = getFillHTML(getAbsoluteHeight(child));
-      errorList.appendChild(fill);
-    }
-  }
-
-  container.appendChild(errorList);
-
-  var fill = document.createElement("div");
-  fill.classList.add("fill");
-  fill.style.width = "15vw";
-  container.insertBefore(fill, container.firstChild);
-}
-
-function getInnerContainer(container) {
-  for (const child of container.children) {
-    if (!child.classList) {
-      continue;
-    }
-
-    if (child.id === "letter-container" || child.id === "name-container") {
-      return child;
-    }
-
-    if (child.classList.contains("question-outer-container")) {
-      return child.getElementsByClassName("question-container")[0];
-    }
-  }
-
-  return null;
-}
-
-function getAbsoluteHeight(element) {
-  var style = window.getComputedStyle(element);
-  var margin =
-    parseFloat(style["marginTop"]) + parseFloat(style["marginBottom"]);
-
-  return Math.ceil(element.offsetHeight + margin);
-}
-
-function getErrorHTML(message) {
-  var error = document.createElement("div");
-  error.classList.add("arrow-box");
-  error.innerHTML = getErrorMessage(message);
-
-  return error;
-}
-
-function getFillHTML(height) {
-  var fill = document.createElement("div");
-  fill.style.height = height + "px";
-  fill.classList.add("error-list-item");
-
-  return fill;
-}
-
-function getErrorMessage(message) {
-  return '<p class="arrow-text">Error: ' + message + ".</p>";
-}
-
-function isTagNotValid(tag) {
-  return !/\<\![a-z0-9_]+\>/i.test(tag);
-}
-
-function deemphasizeTags() {
-  var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-  document.getElementById(LETTER_TEXT_AREA_ID).innerHTML = letterHTML
-    .replace(/\<span class\="tag"\>/gi, "")
-    .replace(/\<span class\="tag-unknown"\>/gi, "")
-    .replace(/\<\/span\>/gi, "");
-}
-
-function emphasizeTags() {
-  var letterHTML = document.getElementById(LETTER_TEXT_AREA_ID).innerHTML;
-  var letterHTMLWithTagEmphasis = letterHTML.replace(
-    /&lt;\![a-z0-9_]+&gt;/gi,
-    function (match) {
-      if (
-        unknownTags.find(function (tag) {
-          return tag === match;
-        })
-      ) {
-        return '<span class="tag-unknown">' + match + "</span>";
-      }
-
-      return '<span class="tag">' + match + "</span>";
-    }
-  );
-  letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis)
-    ? letterHTML
-    : letterHTMLWithTagEmphasis;
-  document.getElementById(
-    LETTER_TEXT_AREA_ID
-  ).innerHTML = letterHTMLWithTagEmphasis
-    .replace(/\<div\>\<br\>\<\/div\>/gi, "<br>")
-    .replace(/\<div\>/gi, "<br>")
-    .replace(/\<\/div\>/gi, "");
-}
-
-function isTagsExist(letter, questions) {
-  var tags = letter.match(/\<\![a-z0-9_]+\>/gi);
-
-  if (!tags) {
-    return true;
-  }
-
-  var allFound = true;
-
-  for (var i = 0; i < tags.length; i++) {
-    var question = questions.find(function (question) {
-      return question.tag === tags[i];
-    });
-
-    var found = false;
-
-    if (!question) {
-      questions.forEach(function (question) {
-        if (
-          question.type === "Checkbox" ||
-          question.type === CUSTOM_QUESTION_TYPE
-        ) {
-          question.options.forEach(function (option) {
-            if (option.tag === tags[i]) {
-              found = true;
-            }
-          });
-        }
-      });
-
-      if (!found) {
-        unknownTags.push(encodeLetterHTML(tags[i]));
-      }
-    } else {
-      found = true;
-    }
-
-    allFound = allFound && found;
-  }
-  return allFound;
-}
-
-function encodeLetterHTML(text) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
-    .replace(/\n/gi, "<br>");
-}
-
-function decodeLetterHTML(text) {
-  return text
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/\<span class\="tag"\>/gi, "")
-    .replace(/\<\/span\>/gi, "")
-    .replace(/\<div\>/gi, "\n")
-    .replace(/\<\/div\>/gi, "")
-    .replace(/\<br\>/gi, "\n")
-    .replace(/\&nbsp;/g, " ");
-}
-
-

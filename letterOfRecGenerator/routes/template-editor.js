@@ -39,7 +39,7 @@ router.get("/", function (req, res, next) {
     }
   } else {
     res.render("pages/template-editor", {
-      title: "CREATE A NEW TEMPLATE",
+      title: "Create A New Template",
       templateName: req.query.title,
       id: null,
       letterheadImage: null,
