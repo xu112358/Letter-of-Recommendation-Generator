@@ -29,7 +29,7 @@
     </h1>
     <form>
       <input type="text" class="form-control form-control-lg" placeholder="Template Name">
-      <div class="card container align-middle">
+      <div class="card container align-middle no-focus">
         <div class="row">
           <div class="col">
             <h3>Default Questions <span class="info form-text"><svg class="info" id="default-questions-info" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
@@ -64,10 +64,21 @@
           </div>
         </div>
       </div>
+
+      <div class="card container align-middle no-focus">
+        <div class="row">
+          <div class="col">
+            <h3>Additional Questions <span class="info form-text"><svg class="info" id="additional-questions-info" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></span></h3>
+          </div>
+      </div>
+      </div>
       
-      <!-- Card -->
-      <div class="card container align-middle">
-        <!-- Question and Dropdown -->
+      <!-- Card Placeholder-->
+      <!-- <div class="card container align-middle">
+        Question and Dropdown
         <div class="row">
           <div class="col-8">
             <input type="text" class="form-control" placeholder="Question">
@@ -81,7 +92,7 @@
           </div>
         </div>
 
-        <!-- Options -->
+        Options
         <div class="options d-none">
           <div class="row">
             <div class="col-radio-input">
@@ -91,7 +102,7 @@
               <i class="fas fa-times"></i>
             </div>
           </div>
-          <!-- Add Option Button -->
+          Add Option Button
           <row class="row">
             <div class="col-radio-input">
               <button type="button" class="add-btn add-options-btn">Add Option</button>
@@ -99,62 +110,16 @@
           </row>
         </div>
 
-        <!-- Tag  -->
+        Tag 
         <div class="row">
           <div class="col-4">
             <input type="text" class="form-control" placeholder="Tag">
           </div>
           <div class="col align-self-end">
-            <i class="fas fa-trash float-end"></i>
+            <i class="fas fa-trash float-end delete-question-icon"></i>
           </div>
         </div>
-      </div>
-      <!-- Card End -->
-
-      <!-- Card -->
-      <div class="card container align-middle">
-        <!-- Question and Dropdown -->
-        <div class="row">
-          <div class="col-8">
-            <input type="text" class="form-control" placeholder="Question">
-          </div>
-          <div class="col-4">
-            <select class="form-select">
-              <option value="Text">Text</option>
-              <option selected="selected" value="Multiple Choice">Multiple Choice</option>
-              <option value="Checkboxes">Checkboxes</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Options -->
-        <div class="options">
-          <div class="row">
-            <div class="col-radio-input">
-              <input type="text" class="form-control" placeholder="Option">
-            </div>
-            <div class="col-radio-delete">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <!-- Add Option Button -->
-          <row class="row">
-            <div class="col-radio-input">
-              <button type="button" class="add-btn add-options-btn">Add Option</button>
-            </div>
-          </row>
-        </div>
-
-        <!-- Tag  -->
-        <div class="row">
-          <div class="col-4">
-            <input type="text" class="form-control" placeholder="Tag">
-          </div>
-          <div class="col align-self-end">
-            <i class="fas fa-trash float-end"></i>
-          </div>
-        </div>
-      </div>
+      </div> -->
       <!-- Card End -->
     </form>
     <button type="button" class="add-btn add-questions-btn">Add Question </button>
@@ -166,21 +131,27 @@
         </div>
       </div>
       <div class="row tags">
-        <div class="col-lg-auto tag border-white">
+        <div class="col-lg-auto tag-header">
           Tags: 
         </div>
-        <div class="col-lg-auto tag">
-          Tag1
+        <div class="col-lg-auto tag" data-value="First Name">
+          First Name
         </div>
-        <div class="col-lg-auto tag">
-          Tag2
+        <div class="col-lg-auto tag" data-value="Last Name">
+          Last Name
+        </div>
+        <div class="col-lg-auto tag" data-value="Pronoun (subject)">
+          Pronoun (subject)
+        </div>
+        <div class="col-lg-auto tag" data-value="Pronoun (object)">
+          Pronoun (object)
+        </div>
+        <div class="col-lg-auto tag" data-value="Possessive pronoun">
+          Possessive pronoun
         </div>
       </div>
       <!-- Create the editor container -->
       <div id="editor">
-        <p>Hello World!</p>
-        <p>Some initial <strong>bold</strong> text</p>
-        <p><br></p>
       </div>
     </div>
 
