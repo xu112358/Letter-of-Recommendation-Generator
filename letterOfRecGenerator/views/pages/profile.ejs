@@ -15,80 +15,95 @@
         <h1><%= title %></h1>
           
         <form>
-          <div class="mb-3">
+          <div class="mb-4">
             <span class="info form-text">Why I need this? <svg id="general" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
               <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
             </svg></span>
           </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="fname" required>
-            <label for="fname" class="form-label">Firstname</label>
+          
+          <div class = "row g-1 mb-4">
+            <div class="form-floating col-md">
+              <input type="text" class="form-control" id="fname" required>
+              <label for="fname" class="form-label">Firstname</label>
+            </div>
+            <div class="form-floating col-md">
+              <input type="text" class="form-control" id="mname">
+              <label for="mname" class="form-label">Middlename</label>
+            </div>
+            <div class="form-floating col-md">
+              <input type="text" class="form-control" id="lname" required>
+              <label for="mname" class="form-label">Lastname</label>  
+            </div>
+          </div>
+
+          <div class ="row g-1 mb-4">
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="university" required>
+              <label for="university" class="form-label">University</label>
+              
+            </div>
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="department" required>
+              <label for="department" class="form-label">Department</label>
+            </div>
+            <div class="form-floating mb-2">
+              <textarea class="form-control" id="titles" rows="3" required></textarea>
+              <label for="titles" class="form-label">Titles</label>
+              <small class="form-text mx-2 my-0"> What should I write? <svg id="title-help" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg></small>
+            </div>
             
           </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="mname">
-            <label for="mname" class="form-label">Middlename</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="lname" required>
-            <label for="mname" class="form-label">Lastname</label>
+                 
+          <div class = "row g-1 mb-4">
+            <div class="form-floating col-md">
+              <select id="countryCode" name="countryCode" class="form-control" required>
+              </select>
+              <label for="countryCode" class="form-text"> Country/Region Code </label>
+            </div>
             
+            <div class="form-floating col-md">
+              <input type="tel" class="form-control" id="telephone" pattern="^[0-9]+" required>
+              <label for="phone" class="form-label">Phone Number</label>
+            </div>
+            <small class="form-text mx-2 mb-2">Numbers only. Provide a number that is the best to contact you.</small>
+           
           </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="university" required>
-            <label for="university" class="form-label">University</label>
-            
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="department" required>
-            <label for="department" class="form-label">Department</label>
-          </div>
-          <div class="form-floating mb-3">
-            <textarea class="form-control" id="titles" rows="3" required></textarea>
-            <label for="titles" class="form-label">Titles</label>
-            <small class="form-text"> What should I write? <svg id="title-help" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+
+          <div class = "row g-1 mb-4">
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="address1" required>
+              <label for="address1" class="form-label">Office Street Address</label>
+            </div>
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="address2">
+              <label for="address2" class="form-label">Apt., ste., bldg</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="address3">
+              <label for="address3" class="form-label">City</label>
+            </div>
+            <div class="form-floating col-md">
+              <input type="text" class="form-control" id="address4">
+              <label for="address4" class="form-label">States/Provinces</label>
+            </div>
+
+            <div class="form-floating col-md">
+              <input type="tel" class="form-control" id="postalCode" pattern="^[0-9]+" required>
+              <label for="postalCode" class="form-label">Postal/Zip code</label>   
+            </div>
+            <small class="form-text mx-2 mb-2"> What address should I provide? <svg id="address-help" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
               <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
             </svg></small>
+  
           </div>
-          <div class="form-floating mb-3">
-            <select id="countryCode" name="countryCode" class="form-control" required>
-            </select>
-            <label for="countryCode" class="form-text"> Country/Region Code </label><br />
-          </div>
-          <div class="form-floating mb-3">
-            <input type="tel" class="form-control" id="telephone" pattern="^[0-9]+" required>
-            <label for="phone" class="form-label">Phone Number</label>
-            <small class="form-text">Numbers only. Provide a number that is the best to contact you.</small>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="address1" required>
-            <label for="address1" class="form-label">Office Street Address</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="address2">
-            <label for="address2" class="form-label">Apt., Ste., bldg</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="address3">
-            <label for="address3" class="form-label">City</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="address4">
-            <label for="address4" class="form-label">States/Provinces</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input type="tel" class="form-control" id="postalCode" pattern="^[0-9]+" required>
-            <label for="postalCode" class="form-label">Postal/Zip code</label>
-            <small class="form-text"> What address should I provide? <svg id="address-help" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-            </svg></small>
-          </div>
+          
 
-
-          <button class="btn btn-primary" type="button" onclick="return updateProfile()">
+          <button class="btn apply-btn " type="button" onclick="return updateProfile()">
             Apply Changes
           </button>
         </form>

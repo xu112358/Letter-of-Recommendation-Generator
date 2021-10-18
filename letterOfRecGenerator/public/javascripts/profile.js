@@ -124,13 +124,6 @@ function updateProfile() {
     alert("Please fill in your lastname");
     return false;
   }
-  var titles = document.getElementById("titles").value.trim();
-
-  if (titles.length == 0){
-
-    alert("Please fill in your job title");
-    return false;
-  }
   var university = document.getElementById("university").value.trim();
 
   if (university.length == 0){
@@ -143,6 +136,14 @@ function updateProfile() {
   if (department.length == 0){
 
     alert("Please fill in the department you are at");
+    return false;
+  }
+
+  var titles = document.getElementById("titles").value.trim();
+
+  if (titles.length == 0){
+
+    alert("Please fill in your job title");
     return false;
   }
   var e1 = document.getElementById("countryCode");
