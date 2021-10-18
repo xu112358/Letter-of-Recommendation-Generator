@@ -51,6 +51,7 @@ var UserSchema = new Schema({
   phone: String,
   streetAddress: String,
   address2: String,
+  city: String,
   statesProvinces: String,
   postalCode: String,
   country: String,

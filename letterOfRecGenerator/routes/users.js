@@ -191,10 +191,11 @@ router.post("/profile", (req, res) => {
     user.phone = userInfo[7];
     user.streetAddress = userInfo[8];
     user.address2 = userInfo[9];
-    user.statesProvinces = userInfo[10];
-    user.postalCode = userInfo[11];
-    user.country = userInfo[12];
-    user.selectedIndex = userInfo[13];
+    user.city = userInfo[10];
+    user.statesProvinces = userInfo[11];
+    user.postalCode = userInfo[12];
+    user.country = userInfo[13];
+    user.selectedIndex = userInfo[14];
     user.isProfileSet = true;
     
     console.log("After update");

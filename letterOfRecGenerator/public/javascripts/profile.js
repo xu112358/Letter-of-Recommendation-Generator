@@ -59,9 +59,9 @@ function loadProfile(){
     document.getElementById("department").value = data.department;
     document.getElementById("address1").value = data.streetAddress;
     document.getElementById("address2").value = data.address2;
-    document.getElementById("address3").value = data.statesProvinces;
+    document.getElementById("address3").value = data.city;
+    document.getElementById("address4").value = data.statesProvinces;
     document.getElementById("postalCode").value = data.postalCode;
-  
   });
 }
 
@@ -164,10 +164,16 @@ function updateProfile() {
     return false;
   }
   var address2 = document.getElementById("address2").value.trim();
-  var statesProvince = document.getElementById("address3").value.trim();
+
+  var city = document.getElementById("address3").value.trim();
+  if (city.length == 0) {
+    alert("Please fill in the city which your office is at");
+    return false;
+  }
+
+  var statesProvince = document.getElementById("address4").value.trim();
 
   if (statesProvince.length == 0){
-
     alert("Please fill in the state/provice which your office is at");
     return false;
   }
@@ -191,6 +197,7 @@ function updateProfile() {
     phone,
     streetAddress,
     address2,
+    city,
     statesProvince,
     postalCode,
     country,
