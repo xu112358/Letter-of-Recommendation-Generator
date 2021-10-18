@@ -258,7 +258,8 @@ router.post("/templateUpload", function (req, res, next) {
             department: user.department,
             university: user.university,
             address1: user.streetAddress,
-            address2: (user.address2 == "")? "" : user.address2 + ", ",  // A quick hack, we need to check every field whether they are emtpy.
+            address2: (user.address2 == "")? "" : " ," + user.address2,  // A quick hack, we need to check every field whether they are emtpy.
+            city: user.city,
             state: user.statesProvinces,
             postalcode: user.postalCode,
             phonenumber: user.phone
