@@ -1,6 +1,10 @@
 let Embed = Quill.import('blots/embed');
 var quill = new Quill("#editor");
 
+var questionID = 0;
+// array of tags
+const tags = [];
+
 class SpanEmbed extends Embed {
   static create(value) {
     const node = super.create();
@@ -52,6 +56,15 @@ document.querySelector("form").addEventListener("click", (event) => {
   // Delete question from form
   if (event.target.classList.contains("delete-question-icon")) {
     console.log(event.target);
+
+    // Deleting corresponding tag if any
+    if(tags.includes(event.target.id)){
+      var index = tags.indexOf(event.target.id);
+      tags.splice(index,1);
+
+      document.querySelector("#t"+event.target.id).remove();
+    }
+
     event.target.closest(".card").remove();
   }
 });
@@ -214,13 +227,20 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   var tag_input = document.createElement("input");
   tag_input.type = "text";
   tag_input.classList.add("form-control");
+  tag_input.classList.add("tag-input");
   tag_input.placeholder = "Tag";
+
+  // Adding Unique ID to dynamically created question
+  tag_input.id = questionID;
 
   var col4 = document.createElement("div");
   col4.classList.add("col", "align-self-end");
 
   var icon = document.createElement("i");
   icon.classList.add("fas", "fa-trash", "float-end", "delete-question-icon");
+  // Adding Unique ID to dynamically created question's delete button
+  icon.id = questionID;
+  questionID++;
 
   col4.appendChild(icon);
   col3.appendChild(tag_input);
@@ -234,6 +254,37 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
   form.appendChild(card);
 });
+
+// Tag generation from Question
+
+document.querySelector("form").addEventListener("change", function(event){
+  event.preventDefault();
+
+  if(event.target && event.target.classList[1] == "tag-input"){
+
+    if(!tags.includes(event.target.id)){
+      console.log(event.target);
+      var tag_container = document.querySelector(".tags");
+
+      var tag = document.createElement("div");
+      tag.classList.add("col-sm-auto");
+      tag.classList.add("tag");
+      tag.id = "t" + event.target.id;
+      tag.innerHTML = event.target.value;
+      tag.setAttribute("data-value", event.target.value);
+
+      tags.push(event.target.id);
+
+      tag_container.appendChild(tag);
+    }
+    else{
+      var tag = document.querySelector("#t" + event.target.id);
+      tag.innerHTML = event.target.value;
+      tag.setAttribute("data-value", event.target.value);
+    }
+  } 
+});
+
 
 // Tag insert
 document.querySelector(".tags").addEventListener("mouseup", (event) => {
