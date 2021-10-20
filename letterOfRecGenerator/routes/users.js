@@ -178,8 +178,6 @@ router.post("/profile", (req, res) => {
   var data = JSON.parse(req.body.raw);
   let userInfo = data.userInfo;
   
-  console.log("data");
-  console.log(userInfo);
   User.findOne({ email: req.user.email }).then((user) => {
     user.firstName = userInfo[0];
     user.middleName = userInfo[1];
@@ -198,7 +196,7 @@ router.post("/profile", (req, res) => {
     user.selectedIndex = userInfo[14];
     user.isProfileSet = true;
     
-    console.log("After update");
+    
     
 
     //update db
@@ -233,11 +231,11 @@ router.post('/mockProfileUpdate', (req, res) => {
     }
 
     //forward request to actual profile update;
-    var data = JSON.parse(req.body.raw);
+  var data = JSON.parse(req.body.raw);
   let userInfo = data.userInfo;
   
-  console.log("data");
-  console.log(userInfo);
+  
+  
   User.findOne({ email: req.user.email }).then((user) => {
     user.firstName = userInfo[0];
     user.middleName = userInfo[1];
@@ -256,7 +254,7 @@ router.post('/mockProfileUpdate', (req, res) => {
     user.selectedIndex = userInfo[14];
     user.isProfileSet = true;
     
-    console.log("After update");
+    
     
 
     //update db

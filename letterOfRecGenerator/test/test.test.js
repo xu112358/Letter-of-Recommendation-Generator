@@ -19,7 +19,10 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
   });
 
    describe("Unit Test for Profile", () => {
-    beforeAll(() => {});
+     let testUser;
+    beforeAll(async () => {
+      testUser = await User.findOne({email: 'test@usc.edu'});
+    });
 
     afterAll((done) => {
       done();
@@ -50,8 +53,7 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
         ],
       };
       
-      //grab the test user from db
-      const testUser = await User.findOne({email: 'test@usc.edu'});
+      
       await request(app).post('/users/mockProfileUpdate').send({user: testUser, raw: JSON.stringify(data)});
 
       
@@ -78,7 +80,7 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
 
       
     });
-  }); 
+  }, 10000); 
 
   
 
