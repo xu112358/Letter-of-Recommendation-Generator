@@ -3,7 +3,7 @@ var quill = new Quill("#editor");
 
 var questionID = 0;
 // array of tags
-const tags = [];
+const tagArray = [];
 
 class SpanEmbed extends Embed {
   static create(value) {
@@ -58,9 +58,9 @@ document.querySelector("form").addEventListener("click", (event) => {
     console.log(event.target);
 
     // Deleting corresponding tag if any
-    if (tags.includes(event.target.id)) {
-      var index = tags.indexOf(event.target.id);
-      tags.splice(index, 1);
+    if (tagArray.includes(event.target.id)) {
+      var index = tagArray.indexOf(event.target.id);
+      tagArray.splice(index, 1);
 
       document.querySelector("#t" + event.target.id).remove();
     }
@@ -240,10 +240,11 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   tag_input.type = "text";
   tag_input.classList.add("form-control");
   tag_input.classList.add("tag-input");
+  tag_input.setAttribute("data-value", "");
   tag_input.placeholder = "Tag";
 
   // Adding Unique ID to dynamically created question
-  tag_input.id = questionID;
+  tag_input.id = "i" + questionID;
 
   var col4 = document.createElement("div");
   col4.classList.add("col", "align-self-end");
@@ -273,33 +274,41 @@ document.querySelector("form").addEventListener("input", function (event) {
   event.preventDefault();
 
   if (event.target && event.target.classList[1] == "tag-input") {
+    
+    var tag_inputs = document.querySelectorAll(".tag-input");
+    for (var i = 0; i < tag_inputs.length; i++) {
+      if(tag_inputs[i].value != ""){
+        tag_inputs[i].classList.remove("is-invalid");
+      }   
+    }
     var tag;
-    if (!tags.includes(event.target.id)) {
+
+    if (!tagArray.includes(event.target.id.substr(1))) {
       // console.log(event.target);
       var tag_container = document.querySelector(".tags");
 
       tag = document.createElement("div");
       tag.classList.add("col-sm-auto");
       tag.classList.add("tag");
-      tag.id = "t" + event.target.id;
+      tag.id = "t" + event.target.id.substr(1);
       tag.innerHTML = event.target.value;
       tag.setAttribute("data-value", event.target.value);
 
-      tags.push(event.target.id);
+      tagArray.push(event.target.id.substr(1));
 
       tag_container.appendChild(tag);
     }
     else {
       console.log("test");
-      tag = document.querySelector("#t" + event.target.id);
+      tag = document.querySelector("#t" + event.target.id.substr(1));
       tag.innerHTML = event.target.value;
       tag.setAttribute("data-value", event.target.value);
-      console.log(tags.length);
+      console.log(tagArray.length);
     }
 
     // Tag validation
-    for (var i = 0; i < tags.length; i++) {
-      var temp = document.querySelector("#t" + tags[i]);
+    for (var i = 0; i < tagArray.length; i++) {
+      var temp = document.querySelector("#t" + tagArray[i]);
       temp.classList.remove("d-none");
     }
 
@@ -308,18 +317,22 @@ document.querySelector("form").addEventListener("input", function (event) {
       tag.classList.add("d-none");
     }
     
-    for (var j=0; j<tags.length; j++) {
-      var cur_tag = document.querySelector("#t" + tags[j]);
-      for (var i = 0; i < tags.length; i++) {
-        if (!(cur_tag.id === "t" + tags[i])) {
-          var other_tag = document.querySelector("#t" + tags[i]);
+    for (var j=0; j<tagArray.length; j++) {
+      var cur_tag = document.querySelector("#t" + tagArray[j]);
+      for (var i = 0; i < tagArray.length; i++) {
+        if (!(cur_tag.id === "t" + tagArray[i])) {
+          var other_tag = document.querySelector("#t" + tagArray[i]);
           if (other_tag.innerHTML === cur_tag.innerHTML) {
             cur_tag.classList.add("d-none");
             other_tag.classList.add("d-none");
+            isUnique = 1;
           }
         }
       }
     }
+
+  
+
   }
 });
 
@@ -376,6 +389,35 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
       }
     }
   }
+
+  // Check duplicate tags 
+  var tag_inputs = document.querySelectorAll(".tag-input");
+  for (var i = 0; i < tag_inputs.length; i++) {
+    tag_inputs[i].classList.remove("is-invalid");
+  }
+
+  for (var i = 0; i < tag_inputs.length; i++) {
+    for(var j = 0 ; j < tag_inputs.length ; j++){
+      if(i != j){
+        if(tag_inputs[i].value === tag_inputs[j].value){
+          tag_inputs[i].classList.add("is-invalid");
+          tag_inputs[j].classList.add("is-invalid");
+          hasError = 1;
+        }
+      }
+    }
+  }
+
+  // Check Empty Tag
+  
+  console.log(tag_inputs);
+  for (var i = 0; i < tag_inputs.length; i++) {
+    if(tag_inputs[i].value == ""){
+      tag_inputs[i].classList.add("is-invalid");
+    }   
+  }
+
+    
 
   if (hasError) {
     alert("There are missing or invalid fields");
