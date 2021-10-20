@@ -21,7 +21,11 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
    describe("Unit Test for Profile", () => {
      let testUser;
     beforeAll(async () => {
-      testUser = await User.findOne({email: 'test@usc.edu'});
+      testUser = new User({
+        email: 'test@usc.edu',
+        password: 'Test User',
+      });
+      testUser.save();
     });
 
     afterAll((done) => {
