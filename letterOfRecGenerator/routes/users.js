@@ -222,4 +222,59 @@ router.get("/profile/get", (req, res) => {
   res.json(req.user);
 });
 
+//a mock update for the purpose of unit testing
+router.post('/mockProfileUpdate', (req, res) => {
+  
+  //grab the user param from req body;
+  var users = req.body.user;
+  req.login(users, function(err){
+    if (err){
+      console.log(err);
+    }
+
+    //forward request to actual profile update;
+    var data = JSON.parse(req.body.raw);
+  let userInfo = data.userInfo;
+  
+  console.log("data");
+  console.log(userInfo);
+  User.findOne({ email: req.user.email }).then((user) => {
+    user.firstName = userInfo[0];
+    user.middleName = userInfo[1];
+    user.lastName = userInfo[2];
+    user.university = userInfo[3];
+    user.department = userInfo[4];
+    user.titles = userInfo[5];
+    user.codes = userInfo[6];
+    user.phone = userInfo[7];
+    user.streetAddress = userInfo[8];
+    user.address2 = userInfo[9];
+    user.city = userInfo[10];
+    user.statesProvinces = userInfo[11];
+    user.postalCode = userInfo[12];
+    user.country = userInfo[13];
+    user.selectedIndex = userInfo[14];
+    user.isProfileSet = true;
+    
+    console.log("After update");
+    
+
+    //update db
+    user
+      .save()
+      .then((user) => {
+        //update the logged in user
+        req.user = user;
+        res.sendStatus(200);
+        console.log("user updated");
+        console.log(req.user);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  });
+  });
+});
+
 module.exports = router;
