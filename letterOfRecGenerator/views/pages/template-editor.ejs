@@ -28,7 +28,7 @@
       <%= title %>
     </h1>
     <form>
-      <input type="text" class="zz form-control form-control-lg" placeholder="Template Name">
+      <input id="template-name" type="text" class="form-control form-control-lg" placeholder="Template Name">
       <div class="card container align-middle no-focus">
         <div class="row">
           <div class="col">
@@ -81,7 +81,7 @@
         Question and Dropdown
         <div class="row">
           <div class="col-8">
-            <input type="text" class="form-control" placeholder="Question">
+            <input type="text" class="form-control question-input" placeholder="Question">
           </div>
           <div class="col-4">
             <select class="form-select">
@@ -96,7 +96,7 @@
         <div class="options d-none">
           <div class="row">
             <div class="col-radio-input">
-              <input type="text" class="form-control" placeholder="Option">
+              <input type="text" class="form-control option-input" placeholder="Option">
             </div>
             <div class="col-radio-delete">
               <i class="fas fa-times"></i>
@@ -122,7 +122,7 @@
       </div> -->
       <!-- Card End -->
     </form>
-    <button type="button" class="add-btn add-questions-btn">Add Question </button>
+    <button type="button" class="add-btn add-questions-btn">Add Question</button>
 
     <div class="card container">
       <div class="row">
@@ -154,6 +154,8 @@
       <div id="editor">
       </div>
     </div>
+
+    <button type="button" class="add-btn save-btn">Save Template</button>
 
 
   <!-- Modal Component-->

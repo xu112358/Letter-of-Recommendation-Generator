@@ -14,7 +14,7 @@ class SpanEmbed extends Embed {
   }
 }
 
-window.onload = function() {
+window.onload = function () {
   // Quill initialization
   SpanEmbed.blotName = 'spanEmbed';
   SpanEmbed.tagName = 'span';
@@ -24,7 +24,7 @@ window.onload = function() {
 // Show options if checkbox or multiple choice is selected
 document.querySelector("form").addEventListener("change", (event) => {
   // console.log(event.target);
-  
+
   if (event.target.classList.contains("form-select")) {
     var select = event.target;
     var value = select.options[select.selectedIndex].value;
@@ -41,7 +41,7 @@ document.querySelector("form").addEventListener("change", (event) => {
 
 // Handles click events inside form element
 document.querySelector("form").addEventListener("click", (event) => {
- 
+
   // Add option to question
   if (event.target.classList.contains("add-options-btn")) {
     addOption(event);
@@ -58,14 +58,26 @@ document.querySelector("form").addEventListener("click", (event) => {
     console.log(event.target);
 
     // Deleting corresponding tag if any
-    if(tags.includes(event.target.id)){
+    if (tags.includes(event.target.id)) {
       var index = tags.indexOf(event.target.id);
-      tags.splice(index,1);
+      tags.splice(index, 1);
 
-      document.querySelector("#t"+event.target.id).remove();
+      document.querySelector("#t" + event.target.id).remove();
     }
 
     event.target.closest(".card").remove();
+  }
+});
+
+// Handles input events inside form
+document.querySelector("form").addEventListener("input", (event) => {
+  // console.log(event);
+  // Form validation
+  if (event.target.value.length == 0) {
+    event.target.classList.add("is-invalid");
+  }
+  else {
+    event.target.classList.remove("is-invalid");
   }
 });
 
@@ -80,7 +92,7 @@ function addOption(event) {
 
   // Find options div of current card
   var selectedOptions = event.target.closest(".options");
-  
+
   var newOption = document.createDocumentFragment();
 
   var row = document.createElement("div");
@@ -94,9 +106,9 @@ function addOption(event) {
 
   var input = document.createElement("input");
   input.type = "text";
-  input.classList.add("form-control");
+  input.classList.add("form-control", "option-input");
   input.placeholder = "Option";
-  
+
   var icon = document.createElement("i");
   icon.classList.add("fas", "fa-times");
 
@@ -117,7 +129,7 @@ function deleteOption(targetElem) {
   var targetOptions = targetElem.closest(".options");
   var optionsCount = targetOptions.childElementCount - 1;
   if (optionsCount > 1) {
-    targetElem.closest(".row").remove(); 
+    targetElem.closest(".row").remove();
     if (optionsCount == 2) {
       targetOptions.querySelector(".col-radio-delete").classList.add("d-none");
     }
@@ -142,7 +154,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
   var ques_input = document.createElement("input");
   ques_input.type = "text";
-  ques_input.classList.add("form-control");
+  ques_input.classList.add("form-control", "question-input");
   ques_input.placeholder = "Question";
 
   var col2 = document.createElement("div");
@@ -164,7 +176,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   select.appendChild(option1);
   select.appendChild(option2);
   select.appendChild(option3);
-  
+
   col2.appendChild(select);
   col1.appendChild(ques_input);
 
@@ -184,12 +196,12 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
   var opt_input = document.createElement("input");
   opt_input.type = "text";
-  opt_input.classList.add("form-control");
+  opt_input.classList.add("form-control", "option-input");
   opt_input.placeholder = "Option";
 
   var col_delete = document.createElement("div");
   col_delete.classList.add("col-radio-delete", "d-none");
-  
+
   var del_option_icon = document.createElement("i");
   del_option_icon.classList.add("fas", "fa-times");
 
@@ -206,7 +218,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
   col_delete.appendChild(del_option_icon);
   col_input.appendChild(opt_input);
-  
+
   row1.appendChild(col_input);
   row1.appendChild(col_delete);
 
@@ -220,7 +232,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
   var tag = document.createElement("div");
   tag.classList.add("row");
-  
+
   var col3 = document.createElement("div");
   col3.classList.add("col-4");
 
@@ -257,16 +269,16 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
 // Tag generation from Question
 
-document.querySelector("form").addEventListener("change", function(event){
+document.querySelector("form").addEventListener("input", function (event) {
   event.preventDefault();
 
-  if(event.target && event.target.classList[1] == "tag-input"){
-
-    if(!tags.includes(event.target.id)){
-      console.log(event.target);
+  if (event.target && event.target.classList[1] == "tag-input") {
+    var tag;
+    if (!tags.includes(event.target.id)) {
+      // console.log(event.target);
       var tag_container = document.querySelector(".tags");
 
-      var tag = document.createElement("div");
+      tag = document.createElement("div");
       tag.classList.add("col-sm-auto");
       tag.classList.add("tag");
       tag.id = "t" + event.target.id;
@@ -277,41 +289,110 @@ document.querySelector("form").addEventListener("change", function(event){
 
       tag_container.appendChild(tag);
     }
-    else{
-      var tag = document.querySelector("#t" + event.target.id);
+    else {
+      console.log("test");
+      tag = document.querySelector("#t" + event.target.id);
       tag.innerHTML = event.target.value;
       tag.setAttribute("data-value", event.target.value);
+      console.log(tags.length);
     }
-  } 
-});
+
+    // Tag validation
+    for (var i = 0; i < tags.length; i++) {
+      var temp = document.querySelector("#t" + tags[i]);
+      temp.classList.remove("d-none");
+    }
 
 
-// Tag insert
-document.querySelector(".tags").addEventListener("mouseup", (event) => {
-  event.preventDefault();
-  if (event.target.classList.contains("tag")) {
-    console.log("click tag");
+    if (tag.innerHTML == "") {
+      tag.classList.add("d-none");
+    }
     
-    quill.focus();
-    var range  = quill.getSelection();
-    if (range) {
-      console.log(range.index);
-      quill.insertEmbed(range.index, 'spanEmbed', " " + event.target.getAttribute('data-value') + " ");
-      quill.setSelection(range.index+1);
+    for (var j=0; j<tags.length; j++) {
+      var cur_tag = document.querySelector("#t" + tags[j]);
+      for (var i = 0; i < tags.length; i++) {
+        if (!(cur_tag.id === "t" + tags[i])) {
+          var other_tag = document.querySelector("#t" + tags[i]);
+          if (other_tag.innerHTML === cur_tag.innerHTML) {
+            cur_tag.classList.add("d-none");
+            other_tag.classList.add("d-none");
+          }
+        }
+      }
     }
   }
 });
 
 
+// Tag insert
+document.querySelector(".tags").addEventListener("click", (event) => {
+  event.preventDefault();
+  if (event.target.classList.contains("tag")) {
+    console.log("click tag");
+
+    quill.focus();
+    var range = quill.getSelection();
+    while (!range) { };
+    if (range) {
+      console.log(range.index);
+      quill.insertEmbed(range.index, 'spanEmbed', " " + event.target.getAttribute('data-value') + " ")
+      quill.setSelection(range.index + 1);
+    }
+  }
+});
+
+// Save template
+document.querySelector(".save-btn").addEventListener("click", (event) => {
+
+  // Form validation
+  var hasError = 0;
+  // Check template name
+  var template_name = document.querySelector("#template-name");
+  if (template_name.value.length == 0) {
+    hasError = 1;
+    template_name.classList.add("is-invalid");
+  }
+
+  // Check questions
+  var questions = document.querySelectorAll(".question-input");
+  for (var i = 0; i < questions.length; i++) {
+    console.log(questions[i].value);
+    if (questions[i].value.length == 0) {
+      hasError = 1;
+      questions[i].classList.add("is-invalid");
+    }
+  }
+
+  // Check options
+  var options = document.querySelectorAll(".option-input");
+  console.log(options);
+  for (var i = 0; i < options.length; i++) {
+    console.log(options[i].value);
+    if (options[i].value.length == 0) {
+      console.log(options[i].closest(".options"));
+      if (!options[i].closest(".options").classList.contains("d-none")) {
+        hasError = 1;
+        options[i].classList.add("is-invalid");
+      }
+    }
+  }
+
+  if (hasError) {
+    alert("There are missing or invalid fields");
+    return;
+  }
+});
+
+
 // Add eventListener to info icons
-document.getElementById("default-questions-info").onclick = function(event) {
+document.getElementById("default-questions-info").onclick = function (event) {
 
   document.getElementById("exampleModalLabel").innerHTML = "Default Questions"
   document.getElementById("instructions").innerHTML = "Default questions are automatically added to the form and default tags are automatically created for the questions."
   document.getElementById("open-modal").click();
 }
 
-document.getElementById("additional-questions-info").onclick = function(event) {
+document.getElementById("additional-questions-info").onclick = function (event) {
 
   document.getElementById("exampleModalLabel").innerHTML = "Additional Questions"
   document.getElementById("instructions").innerHTML = "Add additional custom questions to the form."
