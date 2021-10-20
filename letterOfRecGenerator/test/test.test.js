@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db");
 const User = require("../models/user");
 
+
 describe("Unit Test for Letter of Recommendation Generator", () => {
   beforeAll(() => {});
   afterAll((done) => {
@@ -17,7 +18,7 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
       });
   });
 
-  /* describe("Unit Test for Profile", () => {
+   describe("Unit Test for Profile", () => {
     beforeAll(() => {});
 
     afterAll((done) => {
@@ -25,13 +26,17 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
     });
 
     test("User Profile Update Test", async () => {
+      
+      //this can be changed
+      //could be done using random string generator
       var data = {
         userInfo: [
           "John",
           "H.",
           "Doe",
           "USC",
-          "CS",
+          "BUSINESS",
+          "Student",
           "+1",
           "0123456789",
           "123 St",
@@ -44,28 +49,38 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
           true,
         ],
       };
-      await request(app).post("/users/dummy");
-      await request(app)
-        .post("/users/profile")
-        .send({ raw: JSON.stringify(data) });
+      
+      //grab the test user from db
+      const testUser = await User.findOne({email: 'test@usc.edu'});
+      await request(app).post('/users/mockProfileUpdate').send({user: testUser, raw: JSON.stringify(data)});
 
-      const updatedUser = await request(app).get("/users/profile/get");
-      expect(updatedUser.firstName).toBe("John");
-      expect(updatedUser.middleName).toBe("H.");
-      expect(updatedUser.lastName).toBe("Doe");
-      expect(updatedUser.university).toBe("USC");
-      expect(updatedUser.department).toBe("CS");
-      expect(updatedUser.codes).toBe("+1");
-      expect(updatedUser.phone).toBe("0123456789");
-      expect(updatedUser.streetAddress).toBe("123 St");
-      expect(updatedUser.address2).toBe("APT 456");
-      expect(updatedUser.city).toBe("LA");
-      expect(updatedUser.postalCode).toBe("90089");
-      expect(updatedUser.country).toBe("United States");
-      expect(updatedUser.selectedIndex).toBe(235);
-      expect(updatedUser.isProfileSet).toBe("true");
+      
+      //query db again
+      const updatedUser = await User.findOne({email: 'test@usc.edu'});
+
+      expect(updatedUser.firstName).toBe(data.userInfo[0]);
+      expect(updatedUser.middleName).toBe(data.userInfo[1]);
+      expect(updatedUser.lastName).toBe(data.userInfo[2]);
+      expect(updatedUser.university).toBe(data.userInfo[3]);
+      expect(updatedUser.department).toBe(data.userInfo[4]);
+      expect(updatedUser.titles).toBe(data.userInfo[5]);
+      expect(updatedUser.codes).toBe(data.userInfo[6]);
+      expect(updatedUser.phone).toBe(data.userInfo[7]);
+      expect(updatedUser.streetAddress).toBe(data.userInfo[8]);
+      expect(updatedUser.address2).toBe(data.userInfo[9]);
+      expect(updatedUser.city).toBe(data.userInfo[10]);
+      expect(updatedUser.statesProvinces).toBe(data.userInfo[11]);
+      expect(updatedUser.postalCode).toBe(data.userInfo[12]);
+      expect(updatedUser.country).toBe(data.userInfo[13]);
+      expect(updatedUser.selectedIndex).toBe(data.userInfo[14]);
+      expect(updatedUser.isProfileSet).toBe(data.userInfo[15]);
+
+
+      
     });
-  }); */
+  }); 
+
+  
 
   describe("Unit Test for Utility API and Resources", () => {
     test("Country Code API Should Have 200 Status", () => {

@@ -6,27 +6,15 @@ const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const { google } = require("googleapis");
-const querystring = require("querystring");
-const url = require("url");
-const jwt_decode = require("jwt-decode");
-const OAuth2 = google.auth.OAuth2;
-
 const passport = require("passport");
 
 // Passport Config
 require("./config/passport")(passport);
 
 //Email stuff
-const nodemailer = require("nodemailer");
+
 
 const fileUpload = require("express-fileupload");
-const mammoth = require("mammoth");
-const opn = require("opn");
-const downloadsFolder = require("downloads-folder");
-const docx = require("docx");
-const fs = require("fs");
-const request = require("request");
 const flash = require("connect-flash");
 
 const createTemplate = require("./routes/template-editor");
@@ -40,7 +28,6 @@ const templateDashboard = require("./routes/template-dashboard");
 const users = require("./routes/users");
 const archive = require("./routes/archive");
 const about = require("./routes/about");
-const profile = require("./routes/profile");
 const forms = require("./routes/forms");
 const api = require("./routes/api");
 
