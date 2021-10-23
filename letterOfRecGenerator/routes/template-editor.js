@@ -164,15 +164,6 @@ router.get("/template", function (req, res, next) {
   }
 });
 
-router.post("/fileUpload", function (req, res, next) {
-  console.log(req.files.file);
-  var file = req.files.file;
-  var headerPathP = __dirname + "/uploads/" + "uploaded.pdf";
-  file.mv(headerPathP, function (err) {
-    if (err) return res.status(500).send(err);
-  });
-});
-
 router.post("/create", function (req, res, next) {
   console.log("USER EXISTS: ", req.user);
 
@@ -209,22 +200,6 @@ router.post("/update", function (req, res, next) {
       }
     }
   );
-});
-
-router.post("/uploadLetterTemplate", function (req, res, next) {
-  console.log(req.files.file);
-  // console.log(req)
-  var file = req.files.file;
-
-  var filePath = __dirname + "/uploads/" + "letterTemplate";
-  file.mv(filePath, function (err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-  });
-
-  console.log("about to print file");
-  console.log(file);
 });
 
 module.exports = router;
