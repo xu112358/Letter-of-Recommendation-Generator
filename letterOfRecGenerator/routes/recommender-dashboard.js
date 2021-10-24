@@ -16,33 +16,39 @@ var path = require("path");
 var builder = require("docx-builder");
 var docx = new builder.Document();
 var dt = require("./letter-parser");
+var redis = require("redis");
+var client = redis.createClient();
+var jwt_decode = require("jwt-decode");
+var User = require("../models/user");
 
 ("use strict");
-
-router.use(function (req, res, next) {
-  res.locals.statusMessage = null;
-  next();
-});
 
 /**
  * data needed to render recommender-dashboard
  */
-router.get("/", function (req, res, next) {
-  if (!req.user) {
-    res.redirect("/");
-  }
-  console.log({ recdash: req.query.email });
+router.get("/", async function (req, res, next) {
+  //need user data
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+
   res.render("pages/recommender-dashboard", {
-    title: req.user.displayName,
-    templates: req.user.getTemplates(),
-    email: req.query.email,
-    subject: req.user.getLinkTemplateSubject(),
-    body: req.user.getLinkTemplateBody(),
+    title: user.displayName,
+    templates: user.getTemplates(),
+    email: user.email,
+    subject: user.getLinkTemplateSubject(),
+    body: user.getLinkTemplateBody(),
   });
 });
 
-router.post("/", function (req, res, next) {
-  var currentUser = req.user;
+router.post("/", async function (req, res, next) {
+  //need user data
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  var currentUser = user;
   var userId = currentUser.email;
   var subject = req.body.subject_text;
   var toEmail = req.body.email;
@@ -50,13 +56,13 @@ router.post("/", function (req, res, next) {
 
   Form.createForm(
     toEmail,
-    req.user.getTemplate(req.body.templateId),
+    currentUser.getTemplate(req.body.templateId),
     userId,
     function (err, form) {
       if (err) {
         console.log(`error: ${err}`);
       } else {
-        req.user.addForm(form, function (err) {
+        user.addForm(form, function (err) {
           if (err) {
             console.log(`error: ${err}`);
             return;
@@ -119,8 +125,12 @@ router.post("/", function (req, res, next) {
   );
 });
 
-router.post("/delete", function (req, res, next) {
-  var user = req.user;
+router.post("/delete", async function (req, res, next) {
+  //need user data
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
 
   user.removeForm(req.body.id, function (err) {
     if (err) {
@@ -141,8 +151,12 @@ router.post("/delete", function (req, res, next) {
   });
 });
 
-router.post("/update", function (req, res, next) {
-  var user = req.user;
+router.post("/update", async function (req, res, next) {
+  //need user data
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
 
   user.update_linkTemplate_subject(req.body.subject, function (err) {
     if (err) {
