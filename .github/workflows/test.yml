@@ -25,6 +25,9 @@ jobs:
       - uses: supercharge/mongodb-github-action@1.6.0
         with:
           mongodb-version: '4.0'
+      - uses: supercharge/redis-github-action@1.2.0
+        with:
+          redis-version: '4'
       
       - uses: actions/setup-node@v2
         with: 
