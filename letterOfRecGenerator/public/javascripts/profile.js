@@ -18,7 +18,6 @@ $.ajax({
   data.sort(compare);
 
   countryData = data;
-  console.log(data);
   var length = data.length;
   for (var i = 0; i < length; i++){
 
@@ -32,6 +31,19 @@ $.ajax({
   }
 
   loadProfile();
+});
+
+// Load the university list.
+$.ajax({
+  url: "/api/universityList",
+  type: "GET"
+}).done(universities => {
+  universities.forEach(u => {
+    let opt = document.createElement("option");
+    opt.setAttribute("value", u);
+    opt.innerHTML = u;
+    document.getElementById("university-list").append(opt);
+  });
 });
 
 
@@ -66,8 +78,6 @@ function loadProfile(){
 }
 
 
-
-
 //add eventListener to info icons
 document.getElementById("general").onclick = function(e){
 
@@ -91,8 +101,6 @@ document.getElementById("address-help").onclick = function(e){
   document.getElementById("open-modal").click();
 
 }
-
-
 
 
 

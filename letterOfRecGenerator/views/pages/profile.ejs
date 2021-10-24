@@ -39,10 +39,13 @@
 
           <div class ="row g-1 mb-4">
             <div class="form-floating mb-2">
-              <input type="text" class="form-control" id="university" required>
+              <input type="text" class="form-control" id="university" list="university-list" required>
+                <datalist id="university-list">
+                </datalist>
+              </input>
               <label for="university" class="form-label">University</label>
-              
             </div>
+
             <div class="form-floating mb-2">
               <input type="text" class="form-control" id="department" required>
               <label for="department" class="form-label">Department</label>
