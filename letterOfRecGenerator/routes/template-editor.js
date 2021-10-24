@@ -1,18 +1,27 @@
 var express = require("express");
 var User = require("../models/user");
-
+var fs = require("fs");
+var path = require("path");
+const publicKey = fs.readFileSync(
+  path.join(__dirname, "../config/jwtRS256.key.pub")
+);
+const jwt_decode = require("jwt-decode");
 var router = express.Router();
 
-router.get("/", function (req, res, next) {
+router.get("/", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
   var letterheadImg;
   var footerImg;
   var saveStatus = req.query.saveSwitch;
   var questions;
   if (req.query.id) {
     if (saveStatus == "true") {
-      letterheadImg = req.user.getTemplate(req.query.id).letterheadImg;
-      footerImg = req.user.getTemplate(req.query.id).footerImg;
-      questions = req.user.getTemplate(req.query.id).getQuestions();
+      letterheadImg = user.getTemplate(req.query.id).letterheadImg;
+      footerImg = user.getTemplate(req.query.id).footerImg;
+      questions = user.getTemplate(req.query.id).getQuestions();
       res.render("pages/template-editor", {
         title: "EDITING TEMPLATE",
         templateName: req.query.title,
@@ -23,8 +32,9 @@ router.get("/", function (req, res, next) {
         questions: questions,
       });
     } else {
-      letterheadImg = req.user.getDeactivatedTemplate(req.query.id)
-        .letterheadImg;
+      letterheadImg = req.user.getDeactivatedTemplate(
+        req.query.id
+      ).letterheadImg;
       footerImg = req.user.getDeactivatedTemplate(req.query.id).footerImg;
       questions = req.user.getDeactivatedTemplate(req.query.id).getQuestions();
       res.render("pages/template-editor", {
@@ -66,10 +76,14 @@ router.get("/", function (req, res, next) {
   }
 });
 
-router.get("/edit", function (req, res, next) {
+router.get("/edit", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
   if (req.query.id) {
-    var templateName = req.user.getTemplate(req.query.id).getName();
-    var questions = req.user.getTemplate(req.query.id).getQuestions();
+    var templateName = user.getTemplate(req.query.id).getName();
+    var questions = user.getTemplate(req.query.id).getQuestions();
     res.json({
       title: templateName,
       id: req.query.id,
@@ -102,12 +116,14 @@ router.get("/edit", function (req, res, next) {
   }
 });
 
-router.get("/deactivated-edit", function (req, res, next) {
+router.get("/deactivated-edit", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
   if (req.query.id) {
-    var templateName = req.user.getDeactivatedTemplate(req.query.id).getName();
-    var questions = req.user
-      .getDeactivatedTemplate(req.query.id)
-      .getQuestions();
+    var templateName = user.getDeactivatedTemplate(req.query.id).getName();
+    var questions = user.getDeactivatedTemplate(req.query.id).getQuestions();
     res.json({
       title: templateName,
       id: req.query.id,
@@ -140,34 +156,40 @@ router.get("/deactivated-edit", function (req, res, next) {
   }
 });
 
-router.get("/template", function (req, res, next) {
+router.get("/template", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
   if (req.query.saveSwitchData == "true") {
     res.json({
-      letter: req.user.getTemplate(req.query.id).getText(),
-      questions: req.user.getTemplate(req.query.id).getQuestions(),
-      letterheadImg: req.user.getTemplate(req.query.id).getLetterheadImg(),
-      footerImg: req.user.getTemplate(req.query.id).getFooterImg(),
+      letter: user.getTemplate(req.query.id).getText(),
+      questions: user.getTemplate(req.query.id).getQuestions(),
+      letterheadImg: user.getTemplate(req.query.id).getLetterheadImg(),
+      footerImg: user.getTemplate(req.query.id).getFooterImg(),
       saveSwitch: req.query.saveSwitchData,
-      questions: req.user.getTemplate(req.query.id).getQuestions(),
+      questions: user.getTemplate(req.query.id).getQuestions(),
     });
   } else {
     res.json({
-      letter: req.user.getDeactivatedTemplate(req.query.id).getText(),
-      questions: req.user.getDeactivatedTemplate(req.query.id).getQuestions(),
-      letterheadImg: req.user
+      letter: user.getDeactivatedTemplate(req.query.id).getText(),
+      questions: user.getDeactivatedTemplate(req.query.id).getQuestions(),
+      letterheadImg: user
         .getDeactivatedTemplate(req.query.id)
         .getLetterheadImg(),
-      footerImg: req.user.getDeactivatedTemplate(req.query.id).getFooterImg(),
+      footerImg: user.getDeactivatedTemplate(req.query.id).getFooterImg(),
       saveSwitch: req.query.saveSwitchData,
-      questions: req.user.getDeactivatedTemplate(req.query.id).getQuestions(),
+      questions: user.getDeactivatedTemplate(req.query.id).getQuestions(),
     });
   }
 });
 
-router.post("/create", function (req, res, next) {
-  console.log("USER EXISTS: ", req.user);
+router.post("/create", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
 
-  req.user.addTemplate(req.body.template, function (err, id) {
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  user.addTemplate(req.body.template, function (err, id) {
     console.log(req.body.template);
     if (err) {
       console.log(err);
@@ -185,21 +207,21 @@ router.post("/create", function (req, res, next) {
   });
 });
 
-router.post("/update", function (req, res, next) {
-  req.user.updateTemplate(
-    req.body.id,
-    req.body.template,
-    function (err, template) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.json({
-          success: "Updated Successfully",
-          status: 200,
-        });
-      }
+router.post("/update", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  user.updateTemplate(req.body.id, req.body.template, function (err, template) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({
+        success: "Updated Successfully",
+        status: 200,
+      });
     }
-  );
+  });
 });
 
 module.exports = router;

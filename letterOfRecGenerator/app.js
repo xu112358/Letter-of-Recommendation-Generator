@@ -7,12 +7,13 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
+const redis = require("redis");
+const client = redis.createClient();
 
 // Passport Config
 require("./config/passport")(passport);
 
 //Email stuff
-
 
 const fileUpload = require("express-fileupload");
 const flash = require("connect-flash");
@@ -30,6 +31,13 @@ const archive = require("./routes/archive");
 const about = require("./routes/about");
 const forms = require("./routes/forms");
 const api = require("./routes/api");
+const fs = require("fs");
+const jwt = require("jsonwebtoken");
+const jwt_decode = require("jwt-decode");
+const User = require("./models/user");
+const publicKey = fs.readFileSync(
+  path.join(__dirname, "/config/jwtRS256.key.pub")
+);
 
 const app = express();
 
@@ -75,11 +83,6 @@ app.set("view engine", "ejs");
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, "public", "favicon.png")));
-app.use("/logout", (req, res) => {
-  req.logOut();
-  //res.redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout");
-  res.redirect("/login");
-});
 
 // Routes
 app.all("/", (req, res) => {
@@ -91,18 +94,60 @@ app.all("/", (req, res) => {
 });
 //api routing handling
 app.use("/users", users);
-app.use("/forms", isAuthenticated, forms);
-app.use("/template-editor", isAuthenticated, createTemplate);
-app.use("/email-template-editor", isAuthenticated, createEmailTemplate);
+app.use("/forms", [isAuthenticated, isProfileSet], forms);
+app.use("/template-editor", [isAuthenticated, isProfileSet], createTemplate);
 app.use("/form-completed", formCompleted);
 app.use("/form-entry", formEntry);
-app.use("/letter-preview", isAuthenticated, letterPreview);
+app.use("/letter-preview", [isAuthenticated, isProfileSet], letterPreview);
 app.use("/login", login);
-app.use("/recommender-dashboard", isAuthenticated, recommenderDashboard);
-app.use("/template-dashboard", isAuthenticated, templateDashboard);
-app.use("/archive", isAuthenticated, archive);
-app.use("/about", isAuthenticated, about);
+app.use(
+  "/recommender-dashboard",
+  [isAuthenticated, isProfileSet],
+  recommenderDashboard
+);
+app.use(
+  "/template-dashboard",
+  [isAuthenticated, isProfileSet],
+  templateDashboard
+);
+app.use("/archive", [isAuthenticated, isProfileSet], archive);
+app.use("/about", about);
 app.use("/api", api);
+app.use("/logout", (req, res) => {
+  //add current token to redis with an expiration time
+  let decoded;
+
+  var token = req.cookies.auth;
+  var needToAdd = true;
+
+  console.log("Logging out user");
+  try {
+    decoded = jwt.verify(token, publicKey, {
+      issuer: "Letter of Recommendation Generator",
+      ignoreExpiration: false,
+    });
+  } catch (err) {
+    //verification failed or token expired
+    //we don't need to add an invalid token to redis cache
+    needToAdd = false;
+  }
+  //valid token and we want to logout
+
+  console.log("JWT verified");
+  if (needToAdd) {
+    client.set(token, token, function (err, reply) {
+      //set the expiration of cache as remaing time
+      client.expire(
+        token,
+        Math.floor(Math.max(1, decoded.exp - Date.now() / 1000))
+      );
+    });
+
+    //now we will remove auth headers and go to home page
+    delete req.headers.authorization;
+    res.redirect("/");
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -126,18 +171,56 @@ app.use(function (err, req, res, next) {
 // Sets "X-Frame-Options: DENY"
 app.use(helmet.frameguard({ action: "deny" }));
 
+//check auth header
 function isAuthenticated(req, res, next) {
-  if (req.user) {
-    console.log(req.user);
+  //extract token
+  var header = req.headers.authorization || "Bearer " + req.cookies.auth;
+  var token = header.replace("Bearer ", "");
+  let decoded;
+  try {
+    //verify the token integrity
+    decoded = jwt.verify(token, publicKey, {
+      issuer: "Letter of Recommendation Generator",
+      ignoreExpiration: false,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.redirect("/");
+  }
 
-    if (req.user.isProfileSet == true) {
-      next();
+  //set auth header
+  req.headers.authorization = header;
+
+  console.log(req.headers.authorization);
+  //check if this token is invalidated by a logout request
+
+  client.get(token, function (err, reply) {
+    console.log("Find token with email of " + decoded.email);
+    if (reply) {
+      //user logged out, but someone try to use this unexpired token to access server
+      console.log("User logged out");
+      res.redirect("/");
     } else {
-      res.redirect("/users/profile");
+      //passed security check
+      //next page!!!
+      next();
     }
+  });
+}
+
+//check if user profile is set
+async function isProfileSet(req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+  var user = await User.findOne({ email: decoded.email });
+
+  console.log(user);
+  if (user.isProfileSet) {
+    next();
   } else {
-    res.redirect("/login");
+    return res.redirect("/users/profile");
   }
 }
+
+//logout the user
 
 module.exports = app;

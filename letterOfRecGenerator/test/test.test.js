@@ -22,8 +22,8 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
      let testUser;
     beforeAll(async () => {
       testUser = new User({
-        email: 'test@usc.edu',
-        password: 'Test User',
+        email: 'test1@usc.edu',
+        password: 'Test User1',
       });
       testUser.save();
     });
@@ -56,14 +56,11 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
           true,
         ],
       };
-      
-      
+
       await request(app).post('/users/mockProfileUpdate').send({user: testUser, raw: JSON.stringify(data)});
 
-      
       //query db again
-      const updatedUser = await User.findOne({email: 'test@usc.edu'});
-
+      const updatedUser = await User.findOne({email: 'test1@usc.edu'});
       expect(updatedUser.firstName).toBe(data.userInfo[0]);
       expect(updatedUser.middleName).toBe(data.userInfo[1]);
       expect(updatedUser.lastName).toBe(data.userInfo[2]);
@@ -80,9 +77,6 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
       expect(updatedUser.country).toBe(data.userInfo[13]);
       expect(updatedUser.selectedIndex).toBe(data.userInfo[14]);
       expect(updatedUser.isProfileSet).toBe(data.userInfo[15]);
-
-
-      
     });
   }, 10000); 
 

@@ -8,6 +8,11 @@ const client = new OAuth2Client(
   "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com"
 );
 var jwt_decode = require("jwt-decode");
+var jwt = require("jsonwebtoken");
+var fs = require("fs");
+var path = require("path");
+
+//secret for JWT encoding
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -20,81 +25,8 @@ router.get("/", function (req, res, next) {
   });
 });
 
-// Get Register page
-router.get("/register", (req, res) => res.render("register"));
-
 // Get Login page
 router.get("/login", (req, res) => res.render("login"));
-
-//Register handle
-router.post("/register", (req, res) => {
-  const { email, password, password2 } = req.body;
-  const linkTemplate_body = "Please click the following questionnaire ";
-  const linkTemplate_subject =
-    "Invitation to Fill Recommendation Letter Questionnaire";
-
-  let errors = [];
-
-  if (!email || !password || !password2) {
-    errors.push({ msg: "Please enter all fields" });
-  }
-
-  if (password != password2) {
-    errors.push({ msg: "Passwords do not match" });
-  }
-
-  if (password.length < 6) {
-    errors.push({ msg: "Password must be at least 6 characters" });
-  }
-
-  if (errors.length > 0) {
-    res.render("register", {
-      errors,
-      email,
-      password,
-      password2,
-    });
-  } else {
-    // Validation passes
-    User.findOne({ email: email }).then((user) => {
-      if (user) {
-        errors.push({ msg: "Email already exists" });
-        res.render("register", {
-          errors,
-          email,
-          password,
-          password2,
-        });
-      } else {
-        const newUser = new User({
-          email,
-          password,
-          linkTemplate_subject,
-          linkTemplate_body,
-        });
-
-        console.log(newUser);
-
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if (err) throw err;
-            newUser.password = hash;
-            newUser
-              .save()
-              .then((user) => {
-                req.flash(
-                  "success_msg",
-                  "You are now registered and can log in"
-                );
-                res.redirect("/users/login");
-              })
-              .catch((err) => console.log(err));
-          });
-        });
-      }
-    });
-  }
-});
 
 // Login handle
 router.post("/login", async (req, res, next) => {
@@ -105,9 +37,6 @@ router.post("/login", async (req, res, next) => {
   //verify google JWT token to prevent CSRF attacks
   var csrf_token_cookie = req.cookies.g_csrf_token;
   var csrf_token_body = req.body.g_csrf_token;
-
-  console.log(req.cookies);
-  console.log(req);
   if (
     !csrf_token_cookie ||
     !csrf_token_body ||
@@ -118,9 +47,31 @@ router.post("/login", async (req, res, next) => {
 
   //verify JWT's signature
   let status = true;
-  await verify(req.body.credential).catch(() => {
+  await verify(req.body.credential).catch((err) => {
+    console.log(err);
     status = false;
   });
+  //extract userInfo
+  var userProfile = jwt_decode(req.body.credential);
+  //authentication with jwt
+  //our token expires in 1h
+  var privateKey = fs.readFileSync(
+    path.join(__dirname, "../config/jwtRS256.key")
+  );
+  var mytoken = jwt.sign(
+    {
+      iss: "Letter of Recommendation Generator",
+      aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+      email: userProfile.email,
+    },
+    privateKey,
+    { algorithm: "RS256", expiresIn: "1h" }
+  );
+
+  var publicKey = fs.readFileSync(
+    path.join(__dirname, "../config/jwtRS256.key.pub")
+  );
+  var decoded = jwt.verify(mytoken, publicKey);
 
   //failed signature verification
   if (!status) {
@@ -128,9 +79,6 @@ router.post("/login", async (req, res, next) => {
   } else {
     //signature verified
     //we will go ahead and use google jwt token to create our own jwt
-
-    var userProfile = jwt_decode(req.body.credential);
-    console.log(userProfile);
 
     var userEmail = userProfile.email;
     var name = userProfile.name;
@@ -140,12 +88,12 @@ router.post("/login", async (req, res, next) => {
       if (user) {
         console.log("user in system");
         user.save();
-        req.login(user, function (err) {
-          if (err) {
-            return next(err);
-          }
-          return res.redirect("/recommender-dashboard");
-        });
+        //since redirect will not pass any headers forward
+        //we will use cookie get our header in
+        //new login using JWT token
+
+        res.cookie("auth", mytoken);
+        res.redirect("/recommender-dashboard");
       } else {
         console.log("user not in system");
         //use user's name to hash to password
@@ -165,6 +113,7 @@ router.post("/login", async (req, res, next) => {
           phone: "",
           streetAddress: "",
           address2: "",
+          city: "",
           statesProvinces: "",
           postalCode: "",
           country: "",
@@ -178,12 +127,9 @@ router.post("/login", async (req, res, next) => {
             newUser
               .save()
               .then((user) => {
-                req.login(user, function (err) {
-                  if (err) {
-                    return next(err);
-                  }
-                  return res.redirect("/recommender-dashboard");
-                });
+                //send jwt back using cookie
+                res.cookie("auth", mytoken);
+                res.redirect("/recommender-dashboard");
               })
               .catch((err) => console.log(err));
           });
@@ -195,22 +141,21 @@ router.post("/login", async (req, res, next) => {
 
 //user profile handle
 router.get("/profile", (req, res) => {
-  //if user is not logged in, put them back to home page
-  if (!req.user) {
-    res.redirect("/");
-  }
-
   res.render("pages/profile", {
     title: "Profile",
   });
 });
 
 //update user profile
-router.post("/profile", (req, res) => {
+router.post("/profile", async (req, res) => {
   var data = JSON.parse(req.body.raw);
   let userInfo = data.userInfo;
 
-  User.findOne({ email: req.user.email }).then((user) => {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user_ = await User.findOne({ email: decoded.email });
+  User.findOne({ email: user_.email }).then((user) => {
     user.firstName = userInfo[0];
     user.middleName = userInfo[1];
     user.lastName = userInfo[2];
@@ -232,11 +177,10 @@ router.post("/profile", (req, res) => {
     user
       .save()
       .then((user) => {
-        //update the logged in user
-        req.user = user;
+        //updated profile, so user is not new anymore
+        delete req.cookies.new;
         res.sendStatus(200);
         console.log("user updated");
-        console.log(req.user);
       })
       .catch((err) => {
         console.log(err);
@@ -245,10 +189,16 @@ router.post("/profile", (req, res) => {
   });
 });
 
-router.get("/profile/get", (req, res) => {
-  res.json(req.user);
+router.get("/profile/get", async (req, res) => {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  console.log(decoded.email);
+  res.json(user);
 });
 
+//google jwt token verification function
 async function verify(token) {
   const ticket = await client.verifyIdToken({
     idToken: token,
@@ -256,51 +206,5 @@ async function verify(token) {
       "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
   });
 }
-
-//a mock update for the purpose of unit testing
-router.post("/mockProfileUpdate", (req, res) => {
-  //grab the user param from req body;
-  var users = req.body.user;
-  req.login(users, function (err) {
-    if (err) {
-      console.log(err);
-    }
-    //forward request to actual profile update;
-    var data = JSON.parse(req.body.raw);
-    let userInfo = data.userInfo;
-    User.findOne({ email: req.user.email }).then((user) => {
-      user.firstName = userInfo[0];
-      user.middleName = userInfo[1];
-      user.lastName = userInfo[2];
-      user.university = userInfo[3];
-      user.department = userInfo[4];
-      user.titles = userInfo[5];
-      user.codes = userInfo[6];
-      user.phone = userInfo[7];
-      user.streetAddress = userInfo[8];
-      user.address2 = userInfo[9];
-      user.city = userInfo[10];
-      user.statesProvinces = userInfo[11];
-      user.postalCode = userInfo[12];
-      user.country = userInfo[13];
-      user.selectedIndex = userInfo[14];
-      user.isProfileSet = true;
-      //update db
-      user
-        .save()
-        .then((user) => {
-          //update the logged in user
-          req.user = user;
-          res.sendStatus(200);
-          console.log("user updated");
-          console.log(req.user);
-        })
-        .catch((err) => {
-          console.log(err);
-          res.sendStatus(500);
-        });
-    });
-  });
-});
 
 module.exports = router;
