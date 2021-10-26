@@ -2,7 +2,12 @@ const request = require("supertest");
 const app = require("../app");
 const db = require("../db");
 const User = require("../models/user");
-
+const fs = require("fs");
+const path = require("path");
+const privateKey = fs.readFileSync(
+  path.join(__dirname, "../config/jwtRS256.key")
+);
+const jwt = require("jsonwebtoken");
 
 describe("Unit Test for Letter of Recommendation Generator", () => {
   beforeAll(() => {});
@@ -18,14 +23,14 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
       });
   });
 
-   describe("Unit Test for Profile", () => {
-     let testUser;
+  describe("Unit Test for Profile", () => {
+    let testUser;
     beforeAll(async () => {
       testUser = new User({
-        email: 'test1@usc.edu',
-        password: 'Test User1',
+        email: "test1@usc.edu",
+        password: "Test User1",
       });
-      testUser.save();
+      await testUser.save();
     });
 
     afterAll((done) => {
@@ -33,7 +38,6 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
     });
 
     test("User Profile Update Test", async () => {
-      
       //this can be changed
       //could be done using random string generator
       var data = {
@@ -57,10 +61,26 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
         ],
       };
 
-      await request(app).post('/users/mockProfileUpdate').send({user: testUser, raw: JSON.stringify(data)});
+      var token = jwt.sign(
+        {
+          iss: "Letter of Recommendation Generator",
+          aud:
+            "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+          email: "test1@usc.edu",
+        },
+        privateKey,
+        {
+          algorithm: "RS256",
+          expiresIn: "1h",
+        }
+      );
+      await request(app)
+        .post("/users/profile")
+        .set("Authorization", "Bearer " + token)
+        .send({ user: testUser, raw: JSON.stringify(data) });
 
       //query db again
-      const updatedUser = await User.findOne({email: 'test1@usc.edu'});
+      const updatedUser = await User.findOne({ email: "test1@usc.edu" });
       expect(updatedUser.firstName).toBe(data.userInfo[0]);
       expect(updatedUser.middleName).toBe(data.userInfo[1]);
       expect(updatedUser.lastName).toBe(data.userInfo[2]);
@@ -78,9 +98,7 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
       expect(updatedUser.selectedIndex).toBe(data.userInfo[14]);
       expect(updatedUser.isProfileSet).toBe(data.userInfo[15]);
     });
-  }, 10000); 
-
-  
+  }, 10000);
 
   describe("Unit Test for Utility API and Resources", () => {
     test("Country Code API Should Have 200 Status", () => {
