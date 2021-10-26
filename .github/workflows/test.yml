@@ -35,4 +35,7 @@ jobs:
           cache: 'npm'
           
       - run: npm install
+      #copy secrey key to config folder
+      - run: touch letterOfRecGenerator/config/jwtRS256.key
+      - run: cat ${{secret.SECRETKEY}} >> letterOfRecGenerator/config/jwtRS256.key
       - run: cd letterOfRecGenerator && npm test
