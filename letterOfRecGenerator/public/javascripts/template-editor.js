@@ -340,7 +340,7 @@ document.querySelector("form").addEventListener("input", function (event) {
 document.querySelector(".tags").addEventListener("click", (event) => {
   event.preventDefault();
   if (event.target.classList.contains("tag")) {
-    console.log("click tag");
+    // console.log("click tag");
 
     quill.focus();
     var range = quill.getSelection();
@@ -348,10 +348,13 @@ document.querySelector(".tags").addEventListener("click", (event) => {
     if (range) {
       console.log(range.index);
       quill.insertEmbed(range.index, 'spanEmbed', " " + event.target.getAttribute('data-value') + " ")
-      quill.setSelection(range.index + 1);
+      quill.setSelection();
+      // quill.insertText(range.index + 1, ' ', Quill.sources.SILENT)
     }
   }
 });
+
+
 
 // Save template
 document.querySelector(".save-btn").addEventListener("click", (event) => {
