@@ -1,5 +1,4 @@
 let Embed = Quill.import('blots/embed');
-var quill = new Quill("#editor");
 
 var questionID = 0;
 // array of tags
