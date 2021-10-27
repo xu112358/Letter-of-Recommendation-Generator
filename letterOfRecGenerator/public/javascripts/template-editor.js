@@ -347,9 +347,9 @@ document.querySelector(".tags").addEventListener("click", (event) => {
     while (!range) { };
     if (range) {
       console.log(range.index);
-      quill.insertEmbed(range.index, 'spanEmbed', " " + event.target.getAttribute('data-value') + " ")
-      quill.setSelection();
-      // quill.insertText(range.index + 1, ' ', Quill.sources.SILENT)
+      quill.insertEmbed(range.index, 'spanEmbed', " " + event.target.getAttribute('data-value') + " ");
+      quill.setSelection(range.index + 1);
+      quill.insertText(range.index + 1, ' ', Quill.sources.SILENT);
     }
   }
 });
