@@ -8,8 +8,15 @@ class SpanEmbed extends Embed {
   static create(value) {
     const node = super.create();
     node.classList.add('span-insert');
-    node.innerText = value;
+    node.setAttribute('data-type', value.value);
+    node.innerText = " " + value.value + " ";
     return node;
+  }
+
+  static value(node) {
+    return {
+      value: node.getAttribute('data-type')
+    };
   }
 }
 
@@ -347,7 +354,7 @@ document.querySelector(".tags").addEventListener("click", (event) => {
     while (!range) { };
     if (range) {
       console.log(range.index);
-      quill.insertEmbed(range.index, 'spanEmbed', " " + event.target.getAttribute('data-value') + " ");
+      quill.insertEmbed(range.index, 'spanEmbed' ,  { value: event.target.getAttribute('data-value')});
       quill.setSelection(range.index + 1);
       quill.insertText(range.index + 1, ' ', Quill.sources.SILENT);
     }
@@ -419,7 +426,9 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     }   
   }
 
-    
+  var delta = quill.getContents();
+
+  console.log(delta);
 
   if (hasError) {
     alert("There are missing or invalid fields");
