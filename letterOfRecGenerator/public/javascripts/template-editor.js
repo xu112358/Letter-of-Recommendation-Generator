@@ -315,7 +315,9 @@ document.querySelector("form").addEventListener("input", function (event) {
     // Tag validation
     for (var i = 0; i < tagArray.length; i++) {
       var temp = document.querySelector("#t" + tagArray[i]);
-      temp.classList.remove("d-none");
+      if(temp.innerHTML != ""){
+        temp.classList.remove("d-none");
+      }  
     }
 
 
