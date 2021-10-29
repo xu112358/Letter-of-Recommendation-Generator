@@ -27,14 +27,16 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
     let testUser;
     beforeAll(async () => {
       testUser = new User({
-        email: "test1@usc.edu",
-        password: "Test User1",
+        email: "test2@usc.edu",
+        password: "Test User2",
       });
       await testUser.save();
     });
 
     afterAll((done) => {
-      done();
+      User.deleteOne({ email: "test2@usc.edu" }, function (err) {
+        done();
+      });
     });
 
     test("User Profile Update Test", async () => {
@@ -62,7 +64,7 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
         {
           iss: "Letter of Recommendation Generator",
           aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
-          email: "test1@usc.edu",
+          email: "test2@usc.edu",
         },
         privateKey,
         {
@@ -76,7 +78,9 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
         .send({ user: testUser, raw: JSON.stringify(data) });
 
       //query db again
-      const updatedUser = await User.findOne({ email: "test1@usc.edu" });
+      const updatedUser = await User.findOne({ email: "test2@usc.edu" });
+
+      console.log(updatedUser);
       expect(updatedUser.firstName).toBe(data.firstName);
       expect(updatedUser.middleName).toBe(data.middleName);
       expect(updatedUser.lastName).toBe(data.lastName);

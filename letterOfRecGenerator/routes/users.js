@@ -191,7 +191,7 @@ router.post("/profile", async (req, res) => {
   var result = check.validate(data, schema);
 
   //validation failed
-  if (!result) {
+  if (!result.valid) {
     console.log("Invalid request paramaters");
     return res.status(400).json({ error: "Invalid request paramaters" });
   }
@@ -240,6 +240,7 @@ router.post("/profile", async (req, res) => {
     user.phone = data.phone;
     user.streetAddress = data.streetAddress;
     user.address2 = data.address2;
+    user.city = data.city;
     user.statesProvinces = data.statesProvinces;
     user.postalCode = data.postalCode;
     user.country = data.country;
