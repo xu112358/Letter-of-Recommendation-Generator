@@ -33,9 +33,9 @@ $.ajax({
 // Load the university list.
 $.ajax({
   url: "/api/universityList",
-  type: "GET"
-}).done(universities => {
-  universities.forEach(u => {
+  type: "GET",
+}).done((universities) => {
+  universities.forEach((u) => {
     let opt = document.createElement("option");
     opt.setAttribute("value", u);
     opt.innerHTML = u;
@@ -187,26 +187,25 @@ function updateProfile() {
     return false;
   }
 
-  var json = {
-    userInfo: [
-      firstName,
-      middleName,
-      lastName,
-      university,
-      department,
-      titles,
-      codes,
-      phone,
-      streetAddress,
-      address2,
-      city,
-      statesProvince,
-      postalCode,
-      country,
-      index,
-    ],
+  var data = {
+    firstName: firstName,
+    middleName: middleName,
+    lastName: lastName,
+    university: university,
+    department: department,
+    titles: titles,
+    codes: codes,
+    phone: phone,
+    streetAddress: streetAddress,
+    address2: address2,
+    city: city,
+    statesProvinces: statesProvince,
+    postalCode: postalCode,
+    country: country,
+    selectedIndex: index,
   };
 
+  //load jwt token from cookie
   var auth;
   var cookie = document.cookie.split(";");
   for (var i = 0; i < cookie.length; i++) {
@@ -215,22 +214,21 @@ function updateProfile() {
     }
   }
 
-  console.log(json);
+  //update user profile
   $.ajax({
     url: "/users/profile",
     headers: {
       authorization: "Bearer " + auth.split("=")[1],
     },
     data: {
-      raw: JSON.stringify(json),
+      raw: JSON.stringify(data),
     },
     type: "POST",
-    error: function () {
-      console.log(
-        "error in updating profile for " + firstname + " " + lastName
-      );
+    error: function (err) {
+      alert(err.responseJSON.error);
     },
-  }).done(function () {
+  }).done(function (res) {
+    console.log(res);
     console.log(
       "successfully updated user profile for " + firstName + " " + lastName
     );

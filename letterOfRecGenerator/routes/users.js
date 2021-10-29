@@ -11,6 +11,7 @@ var jwt_decode = require("jwt-decode");
 var jwt = require("jsonwebtoken");
 var fs = require("fs");
 var path = require("path");
+var Validator = require("jsonschema").Validator;
 
 //secret for JWT encoding
 
@@ -148,32 +149,103 @@ router.get("/profile", (req, res) => {
 
 //update user profile
 router.post("/profile", async (req, res) => {
-  var data = JSON.parse(req.body.raw);
-  let userInfo = data.userInfo;
-
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+  var data = JSON.parse(req.body.raw);
+
+  //validate data from request
+  var check = new Validator();
+  var schema = {
+    id: "/UserProfileSchema",
+    type: "object",
+    properties: {
+      firstName: { type: "string" },
+      middleName: { type: "string" },
+      lastName: { type: "string" },
+      university: { type: "string" },
+      department: { type: "string" },
+      titles: { type: "string" },
+      codes: { type: "string" },
+      phone: { type: "string" },
+      streetAddress: { type: "string" },
+      address2: { type: "string" },
+      statesProvinces: { type: "string" },
+      postalCode: { type: "string" },
+      country: { type: "string" },
+      selectedIndex: { type: "integer" },
+      required: [
+        "firstName",
+        "lastName",
+        "university",
+        "department",
+        "titles",
+        "codes",
+        "phone",
+        "streetAddress",
+        "statesProvinces",
+        "postalCode",
+        "country",
+        "selectedIndex",
+      ],
+    },
+  };
+  var result = check.validate(data, schema);
+
+  //validation failed
+  if (!result) {
+    console.log("Invalid request paramaters");
+    return res.status(400).json({ error: "Invalid request paramaters" });
+  }
+
+  //use regex to match postalCodes, phone number and selectedIndex
+  var postalCheck = /^\d{5}(-\d{4})?$/;
+  var phoneCheck = /\d{5,}/;
+  var selectedIndexCheck = /\d{1,3}/;
+  var codesCheck = /\+\d{1,3}|\+\d{1}\-\d{3}/;
+
+  //postal failed to match
+  if (!postalCheck.test(data.postalCode)) {
+    console.log("Invalid postalCode");
+    return res.status(400).json({ error: "Invalid postal code" });
+  }
+  //not a valid phone number
+  if (!phoneCheck.test(data.phone)) {
+    console.log("Invalid telephone number");
+    return res.status(400).json({ error: "Invalid telephone number" });
+  }
+  //not a number or index out of bounds (total of 248 entries so far in country_code_and_details.json)
+  if (
+    !selectedIndexCheck.test(data.selectedIndex) ||
+    data.selectedIndex > 247
+  ) {
+    console.log("Invalid index");
+    return res.status(400).json({ error: "Invalid index" });
+  }
+  //not a valid formatted country code
+  if (!codesCheck.test(data.codes)) {
+    console.log("Invalid codes");
+    return res.status(400).json({ error: "Invalid codes" });
+  }
 
   //retrive user obj from mongodb
   var user_ = await User.findOne({ email: decoded.email });
   User.findOne({ email: user_.email }).then((user) => {
-    user.firstName = userInfo[0];
-    user.middleName = userInfo[1];
-    user.lastName = userInfo[2];
-    user.university = userInfo[3];
-    user.department = userInfo[4];
-    user.titles = userInfo[5];
-    user.codes = userInfo[6];
-    user.phone = userInfo[7];
-    user.streetAddress = userInfo[8];
-    user.address2 = userInfo[9];
-    user.city = userInfo[10];
-    user.statesProvinces = userInfo[11];
-    user.postalCode = userInfo[12];
-    user.country = userInfo[13];
-    user.selectedIndex = userInfo[14];
+    //update db
+    user.firstName = data.firstName;
+    user.middleName = data.middleName;
+    user.lastName = data.lastName;
+    user.university = data.university;
+    user.department = data.department;
+    user.titles = data.titles;
+    user.codes = data.codes;
+    user.phone = data.phone;
+    user.streetAddress = data.streetAddress;
+    user.address2 = data.address2;
+    user.statesProvinces = data.statesProvinces;
+    user.postalCode = data.postalCode;
+    user.country = data.country;
+    user.selectedIndex = data.selectedIndex;
     user.isProfileSet = true;
 
-    //update db
     user
       .save()
       .then((user) => {
