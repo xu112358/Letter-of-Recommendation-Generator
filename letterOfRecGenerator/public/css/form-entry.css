@@ -1,5 +1,13 @@
 body {
-    background-color: #990000;
+    background-color: #F2F2F2;
+}
+
+.body {
+    width: 80%;
+    max-width: 800px !important;
+    margin: auto;
+    background-color: white;
+    padding: 20px 50px;
 }
 
 .invalid-feedback {
@@ -8,7 +16,6 @@ body {
 
 #form-title {
     font-size: 36px;
-    margin-left: 15px;
 }
 
 .form-group {
@@ -32,24 +39,29 @@ body {
 }
 
 #outside {
-    padding-top: 25px;
+    /* padding-top: px; */
 }
 
 .btn-primary {
-    background-color: white;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #EFEFEF;
     color: black;
-    border-color: white;
-    margin-bottom: 20px;
 }
 
 #button-container {
     border-color: white;
 }
 
+
 .btn:hover,
 .btn:active,
 .btn:focus {
-    background-color: #FFCC00 !important;
-    border-color: #FFCC00 !important;
-    color: black;
+    background-color: lightgray;
+}
+
+.card:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
