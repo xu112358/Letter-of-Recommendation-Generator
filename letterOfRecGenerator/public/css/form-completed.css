@@ -15,13 +15,15 @@ body {
 }
 
 #form-title {
-    font-size: 36px;
+    font-size: 30px;
+    text-align: center;
 }
 
 .form-group {
     background-color: white;
     border-radius: 10px;
-    padding:20px;
+    padding-bottom:10px;
+    text-align: center;
 }
 
 #required {
@@ -56,17 +58,26 @@ body {
 }
 
 .title {
-    font-size: 30px !important;
+    font-size: 24px !important;
     text-align: center;
 }
 
+.completed-box{
+    margin: 50px;
+}
+
+#check-icon {
+    font-size: 100px;
+    color: green;
+    margin-bottom: 5px;
+}
 
 .btn:hover,
 .btn:active,
 .btn:focus {
     background-color: lightgray;
 }
-
+/* 
 .card:hover {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-}
+} */

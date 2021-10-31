@@ -3,25 +3,28 @@
     <head>
         <title><%= title %></title>
         <link rel="stylesheet" href="/stylesheets/style.css" />
-        <link rel="stylesheet" type="text/css" href="/css/form-entry.css" />
+        <link rel="stylesheet" type="text/css" href="/css/form-completed.css" />
         <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
     </head>
     <body>
-        <div class="header"></div>
-        <form style="width: 50%; margin: auto"  id="RecommendeeForm">
-            <div class="container-fluid" id="outside">
-                <div class="row justify-content-md-center">
-                    <div class="col-md-7 col-md-offset-5">
-                        <div id="form-title-container" class="form-group center-block">
-                            <p id="form-title">LETTER OF RECOMMENDATION QUESTIONNAIRE</p>
-                            <div class="question-container">
-                                <p id="form-title" class="title"><%= title %></p>
-
+            <form id="RecommendeeForm">
+                <div class="container completed-box" id="outside">
+                    <div class="row justify-content-md-center">
+                        <div class="col">
+                            <div id="form-title-container" class="form-group center-block">
+                                <i id = "check-icon" class="bi bi-check-lg"></i>
+                                <p id="form-title">Thank You!</p>
+                                <div class="question-container">
+                                    <p id="form-title" class="title p-4"><%= title %></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        
     </body>
 </html>
