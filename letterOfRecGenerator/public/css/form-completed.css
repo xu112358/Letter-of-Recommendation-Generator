@@ -30,32 +30,6 @@ body {
     color: #9d2235;
 }
 
-.question-container {
-    padding-top: 5px;
-    margin-bottom: 30px;
-}
-.question {
-    margin-left: 5px;
-    display: inline;
-    font-weight: bold;
-}
-
-#outside {
-    /* padding-top: px; */
-}
-
-.btn-primary {
-    width: 100%;
-    border: none;
-    border-radius: 5px;
-    padding: 5px;
-    background-color: #EFEFEF;
-    color: black;
-}
-
-#button-container {
-    border-color: white;
-}
 
 .title {
     font-size: 24px !important;
@@ -63,13 +37,30 @@ body {
 }
 
 .completed-box{
+    display: flex;
+    width: 60%;
+    
     margin: 50px;
+    justify-content: center;
+   
+}
+
+
+#form-title-container{
+    width:100%;
+    justify-content: center;
+    
 }
 
 #check-icon {
     font-size: 100px;
     color: green;
     margin-bottom: 5px;
+}
+
+.row {
+    width: 80%;
+    max-width: 900px;
 }
 
 .btn:hover,
