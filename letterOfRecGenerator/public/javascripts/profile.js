@@ -209,7 +209,12 @@ function updateProfile() {
   var auth;
   var cookie = document.cookie.split(";");
   for (var i = 0; i < cookie.length; i++) {
-    if (cookie[i].substr(0, 6) == " auth=") {
+    //seems safari's cookie is sorted
+    //so we need to check if cookie begins with auth=
+    if (
+      cookie[i].substr(0, 6) == " auth=" ||
+      cookie[i].substr(0, 5) == "auth="
+    ) {
       auth = cookie[i];
     }
   }
