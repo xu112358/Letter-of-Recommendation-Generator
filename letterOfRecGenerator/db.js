@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-var mongoDB = 'mongodb://localhost/lor_db';
+var mongoDB = 'mongodb://127.0.0.1/lor_db';
 mongoose.connect(mongoDB);
 
 var db = mongoose.connection;

@@ -31,6 +31,7 @@ const archive = require("./routes/archive");
 const about = require("./routes/about");
 const forms = require("./routes/forms");
 const api = require("./routes/api");
+const response = require("./routes/response");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
@@ -100,6 +101,7 @@ app.use("/form-completed", formCompleted);
 app.use("/form-entry", formEntry);
 app.use("/letter-preview", [isAuthenticated, isProfileSet], letterPreview);
 app.use("/login", login);
+app.use("/response", [isAuthenticated, isProfileSet], response);
 app.use(
   "/recommender-dashboard",
   [isAuthenticated, isProfileSet],

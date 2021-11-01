@@ -27,46 +27,44 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
     let testUser;
     beforeAll(async () => {
       testUser = new User({
-        email: "test1@usc.edu",
-        password: "Test User1",
+        email: "test2@usc.edu",
+        password: "Test User2",
       });
       await testUser.save();
     });
 
     afterAll((done) => {
-      done();
+      User.deleteOne({ email: "test2@usc.edu" }, function (err) {
+        done();
+      });
     });
 
     test("User Profile Update Test", async () => {
       //this can be changed
       //could be done using random string generator
       var data = {
-        userInfo: [
-          "John",
-          "H.",
-          "Doe",
-          "USC",
-          "BUSINESS",
-          "Student",
-          "+1",
-          "0123456789",
-          "123 St",
-          "APT 456",
-          "LA",
-          "CA",
-          "90089",
-          "United States",
-          235,
-          true,
-        ],
+        firstName: "John",
+        middleName: "H.",
+        lastName: "Doe",
+        university: "USC",
+        department: "BUSINESS",
+        titles: "Student",
+        codes: "+1",
+        phone: "0123456789",
+        streetAddress: "123 St",
+        address2: "APT 456",
+        city: "LA",
+        statesProvinces: "CA",
+        postalCode: "90089",
+        country: "United States",
+        selectedIndex: 235,
       };
 
       var token = jwt.sign(
         {
           iss: "Letter of Recommendation Generator",
-          aud:
-            "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
-          email: "test1@usc.edu",
+          aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+          email: "test2@usc.edu",
         },
         privateKey,
         {
@@ -80,23 +78,25 @@ describe("Unit Test for Letter of Recommendation Generator", () => {
         .send({ user: testUser, raw: JSON.stringify(data) });
 
       //query db again
-      const updatedUser = await User.findOne({ email: "test1@usc.edu" });
-      expect(updatedUser.firstName).toBe(data.userInfo[0]);
-      expect(updatedUser.middleName).toBe(data.userInfo[1]);
-      expect(updatedUser.lastName).toBe(data.userInfo[2]);
-      expect(updatedUser.university).toBe(data.userInfo[3]);
-      expect(updatedUser.department).toBe(data.userInfo[4]);
-      expect(updatedUser.titles).toBe(data.userInfo[5]);
-      expect(updatedUser.codes).toBe(data.userInfo[6]);
-      expect(updatedUser.phone).toBe(data.userInfo[7]);
-      expect(updatedUser.streetAddress).toBe(data.userInfo[8]);
-      expect(updatedUser.address2).toBe(data.userInfo[9]);
-      expect(updatedUser.city).toBe(data.userInfo[10]);
-      expect(updatedUser.statesProvinces).toBe(data.userInfo[11]);
-      expect(updatedUser.postalCode).toBe(data.userInfo[12]);
-      expect(updatedUser.country).toBe(data.userInfo[13]);
-      expect(updatedUser.selectedIndex).toBe(data.userInfo[14]);
-      expect(updatedUser.isProfileSet).toBe(data.userInfo[15]);
+      const updatedUser = await User.findOne({ email: "test2@usc.edu" });
+
+      console.log(updatedUser);
+      expect(updatedUser.firstName).toBe(data.firstName);
+      expect(updatedUser.middleName).toBe(data.middleName);
+      expect(updatedUser.lastName).toBe(data.lastName);
+      expect(updatedUser.university).toBe(data.university);
+      expect(updatedUser.department).toBe(data.department);
+      expect(updatedUser.titles).toBe(data.titles);
+      expect(updatedUser.codes).toBe(data.codes);
+      expect(updatedUser.phone).toBe(data.phone);
+      expect(updatedUser.streetAddress).toBe(data.streetAddress);
+      expect(updatedUser.address2).toBe(data.address2);
+      expect(updatedUser.city).toBe(data.city);
+      expect(updatedUser.statesProvinces).toBe(data.statesProvinces);
+      expect(updatedUser.postalCode).toBe(data.postalCode);
+      expect(updatedUser.country).toBe(data.country);
+      expect(updatedUser.selectedIndex).toBe(data.selectedIndex);
+      expect(updatedUser.isProfileSet).toBe(true);
     });
   }, 10000);
 

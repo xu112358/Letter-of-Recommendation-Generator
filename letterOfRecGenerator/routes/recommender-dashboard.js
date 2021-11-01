@@ -4,20 +4,6 @@ var router = express.Router();
 var nodemailer = require("nodemailer");
 var Form = require("../models/form");
 var Link = require("../models/link");
-var credentials = require("../config/auth");
-var googleAuth = require("google-auth-library");
-var { google } = require("googleapis");
-var OAuth2 = google.auth.OAuth2;
-const fs = require("fs");
-var Docxtemplater = require("docxtemplater");
-var DocxMerger = require("docx-merger");
-var Readable = require("stream").Readable;
-var path = require("path");
-var builder = require("docx-builder");
-var docx = new builder.Document();
-var dt = require("./letter-parser");
-var redis = require("redis");
-var client = redis.createClient();
 var jwt_decode = require("jwt-decode");
 var User = require("../models/user");
 
@@ -136,13 +122,13 @@ router.post("/delete", async function (req, res, next) {
     if (err) {
       console.log(err);
     } else {
-      req.user.getForms(function (err, forms) {
+      user.getForms(function (err, forms) {
         if (err) {
           console.log(`error: ${err}`);
         } else {
           res.render("pages/recommender-dashboard", {
-            title: "Welcome " + req.user.displayName + "!",
-            templates: req.user.getTemplates(),
+            title: "Welcome " + user.displayName + "!",
+            templates: user.getTemplates(),
             forms: forms,
           });
         }

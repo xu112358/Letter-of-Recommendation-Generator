@@ -67,3 +67,4 @@ letterOfRecGenerator/.DS_Store
 letterOfRecGenerator/.DS_Store
 letterOfRecGenerator/views/.DS_Store
 letterOfRecGenerator/views/.DS_Store
+letterOfRecGenerator/config/jwtRS256.key
