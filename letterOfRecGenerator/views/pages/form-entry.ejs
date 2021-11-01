@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>LETTER OF RECOMMENDATION QUESTIONNAIRE</title>
+    <title>Letter of Recommendation Questionaire</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <link rel="stylesheet" type="text/css" href="/css/form-entry.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
     <script>
       var questions = <%- JSON.stringify(questions) %>
       console.log(questions);
@@ -21,98 +18,101 @@
   </head>
 
   <body>
-    <form id="RecommendeeForm">
-      <div class="container-fluid" id="outside">
-        <div class="row justify-content-md-center">
-          <div class="col-md-7 col-md-offset-5">
-            <div id="form-title-container" class="form-group center-block">
-              <p id="form-title">LETTER OF RECOMMENDATION QUESTIONNAIRE</p>
-            </div>
-            <% for (var q of questions) { %>
-            <div class="form-group center-block">
-              <% if (q.optional) { %>
-              <p class="question"><%= q.question %></p>
-              <% } else if (!q.optional || q.type == 'Custom') { %>
-              <div class="question-container">
-                <p id="question" class="question"><%= q.question %></p>
-                <p id="required" class="question">*</p>
+    <div class = "body">
+      <form id="RecommendeeForm">
+        <div class="container-fluid" id="outside">
+          <div class="row justify-content-md-center">
+            <div class="col">
+              <div id="form-title-container" class="form-group center-block">
+                <p id="form-title">Letter of Recommendation Questionaire</p>
               </div>
-              <% } %> <% if (q.type === 'Text') { %> <% if (q.optional) { %>
-              <input type="text" class="form-control" name="<%= q.number %>" />
-              <% } else { %>
-              <input
-                type="text"
-                required
-                class="form-control"
-                name="<%= q.number %>"
-              />
-              <% } %> <% } %> <% if (q.type === 'Radio Button') { %> <% if
-              (q.optional) { %> <% for (var option of q.options) { %>
-              <div class="form-check">
+              <% for (var q of questions) { %>
+              <div class="card container align-middle no-shadow mb-3 form-group center-block">
+                <% if (q.optional) { %>
+                <p class="question"><%= q.question %></p>
+                <% } else if (!q.optional || q.type == 'Custom') { %>
+                <div class="question-container">
+                  <p id="question" class="question"><%= q.question %></p>
+                  <p id="required" class="question">*</p>
+                </div>
+                <% } %> <% if (q.type === 'Text') { %> <% if (q.optional) { %>
+                <input type="text" class="form-control" name="<%= q.number %>" />
+                <% } else { %>
                 <input
-                  class="form-check-input"
-                  type="radio"
-                  value="<%= option.fill %>"
-                  name="<%= q.number %>"
-                />
-                <label class="form-check-label" for="<%= option.option %>">
-                  <%= option.option %>
-                </label>
-              </div>
-              <% } %> <% } else { %> <% for (var option of q.options) { %>
-              <div class="form-check">
-                <input
+                  type="text"
                   required
-                  class="form-check-input"
-                  type="radio"
-                  value="<%= option.option %>"
+                  class="form-control"
                   name="<%= q.number %>"
                 />
-                <label class="form-check-label" for="<%= option.option %>">
-                  <%= option.option %>
-                </label>
+                <% } %> <% } %> <% if (q.type === 'Radio Button') { %> <% if
+                (q.optional) { %> <% for (var option of q.options) { %>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    value="<%= option.fill %>"
+                    name="<%= q.number %>"
+                  />
+                  <label class="form-check-label" for="<%= option.option %>">
+                    <%= option.option %>
+                  </label>
+                </div>
+                <% } %> <% } else { %> <% for (var option of q.options) { %>
+                <div class="form-check">
+                  <input
+                    required
+                    class="form-check-input"
+                    type="radio"
+                    value="<%= option.option %>"
+                    name="<%= q.number %>"
+                  />
+                  <label class="form-check-label" for="<%= option.option %>">
+                    <%= option.option %>
+                  </label>
+                </div>
+                <% } %> <% } %> <% } %> <% if (q.type === 'Checkbox') { %> <% for
+                (var option of q.options) { %>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="<%= option.fill %>"
+                    name="<%= q.number %>"
+                  />
+                  <label class="form-check-label" for="<%= option.option %>">
+                    <%= option.option %>
+                  </label>
+                </div>
+                <% } %> <% } %> <% if (q.type === 'Custom') { %>
+                <input type="text" class="form-control" id="<%= q.number %>" />
+                <button
+                  type="button"
+                  id="add_button_<%= q.number %>"
+                  onclick="addCustomElement(event, this, <%= q.number %>)"
+                >
+                  Add
+                </button>
+                <ul id="list_<%= q.number %>"></ul>
+                <% } %>
               </div>
-              <% } %> <% } %> <% } %> <% if (q.type === 'Checkbox') { %> <% for
-              (var option of q.options) { %>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value="<%= option.fill %>"
-                  name="<%= q.number %>"
-                />
-                <label class="form-check-label" for="<%= option.option %>">
-                  <%= option.option %>
-                </label>
-              </div>
-              <% } %> <% } %> <% if (q.type === 'Custom') { %>
-              <input type="text" class="form-control" id="<%= q.number %>" />
-              <button
-                type="button"
-                id="add_button_<%= q.number %>"
-                onclick="addCustomElement(event, this, <%= q.number %>)"
-              >
-                Add
-              </button>
-              <ul id="list_<%= q.number %>"></ul>
               <% } %>
             </div>
-            <% } %>
+          </div>
+          <div id="button-container" class="row justify-content-md-center">
+            <div class="text-center">
+              <button
+                class="btn btn-primary btn-block"
+                type="submit"
+                onclick="return submitForm(event, '<%= form._id %>')"
+              >
+                Submit Form
+              </button>
+            </div>
           </div>
         </div>
-        <div id="button-container" class="row justify-content-md-center">
-          <div class="col-sm-2 col-sm-offset-5 text-center">
-            <button
-              class="btn btn-primary btn-block"
-              type="submit"
-              onclick="return submitForm(event, '<%= form._id %>')"
-            >
-              Submit Form
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
+    
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
