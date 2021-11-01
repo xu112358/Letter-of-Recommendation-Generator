@@ -127,8 +127,8 @@ router.post("/delete", async function (req, res, next) {
           console.log(`error: ${err}`);
         } else {
           res.render("pages/recommender-dashboard", {
-            title: "Welcome " + req.user.displayName + "!",
-            templates: req.user.getTemplates(),
+            title: "Welcome " + user.displayName + "!",
+            templates: user.getTemplates(),
             forms: forms,
           });
         }

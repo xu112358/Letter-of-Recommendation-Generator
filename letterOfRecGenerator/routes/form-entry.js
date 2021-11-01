@@ -19,7 +19,7 @@ router.get("/:hash", function (req, res, next) {
         if (!link.isActive) {
           return res.status(200).json({
             error:
-              "Recommendation request has completed. You cannot alter your answers. Please contact " +
+              "Recommendation request has been deactivated by the owner. Please contact " +
               owner_email +
               " for further questions",
           });
