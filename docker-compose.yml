@@ -20,7 +20,7 @@ services:
       - "3000:3000"
       - "80:80"
     depends_on:
-      - mongodb
+      - db
       - redis
 
 #a container for database data for data persistence
