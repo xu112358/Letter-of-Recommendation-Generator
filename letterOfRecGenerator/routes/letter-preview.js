@@ -34,6 +34,7 @@ router.get("/", async function (req, res, next) {
   user.getForm(req.query.id, function (err, form) {
     if (err) {
       console.log("get /  error in letter-preivew: " + err);
+      res.status(400).json({ error: "Invalid paramaters" });
     } else {
       res.render("pages/letter-preview", {
         title: form.email,
