@@ -13,6 +13,7 @@ var Docxtemplater = require("docxtemplater");
 var fs = require("fs");
 var path = require("path");
 var User = require("../models/user");
+var Link = require("../models/link");
 var jwt_decode = require("jwt-decode");
 var jwt = require("jsonwebtoken");
 //const Readable = require('stream').Readable;
@@ -87,7 +88,18 @@ router.post("/prepareLetter", async function (req, res, next) {
     var pulled_text; //text that were getting and moving to docxtemplater
 
     //console.log(req.body.formID);
+    console.log("Form link data");
     user.getForm(req.body.formID, function (err, form) {
+      //decativate the link to this form
+      //so student cannot change answers after letter is generated
+      console.log(form.link);
+      Link.findOne({ _id: form.link._id }, function (errs, link) {
+        console.log("Updating link");
+        console.log(link);
+        link.isActive = false;
+        link.save();
+      });
+
       if (err) {
         console.log(err);
       } else {
