@@ -212,8 +212,8 @@ function updateProfile() {
     //seems safari's cookie is sorted
     //so we need to check if cookie begins with auth=
     if (
-      cookie[i].substr(0, 6) == " auth=" ||
-      cookie[i].substr(0, 5) == "auth="
+      cookie[i].substr(0, 5) == "auth=" ||
+      cookie[i].substr(0, 6) == " auth="
     ) {
       auth = cookie[i];
     }
