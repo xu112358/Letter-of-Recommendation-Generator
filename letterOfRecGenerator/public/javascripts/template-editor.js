@@ -272,6 +272,8 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   card.appendChild(tag);
 
   form.appendChild(card);
+
+  ques_input.focus();
 });
 
 // Tag generation from Question
