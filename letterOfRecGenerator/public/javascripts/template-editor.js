@@ -436,6 +436,15 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     alert("There are missing or invalid fields");
     return;
   }
+
+  // Check text editor
+  var delta = quill.getContents();
+  if (quill.getLength() == 1) {
+    var confirm = window.confirm("Text editor is blank. Are you sure you want to continue?");
+    if (!confirm) {
+      return;
+    }
+  }
 });
 
 

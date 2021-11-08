@@ -79,3 +79,7 @@ i:hover {
     background-color: lightblue;
     border-radius: 5px;
 }
+
+.editor-is-invalid {
+    border-color: red;
+}
