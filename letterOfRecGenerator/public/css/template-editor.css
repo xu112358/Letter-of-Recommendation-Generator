@@ -80,6 +80,10 @@ i:hover {
     border-radius: 5px;
 }
 
+.span-insert-is-invalid {
+    background-color: #FF7F7F;
+}
+
 .editor-is-invalid {
     border-color: red;
 }

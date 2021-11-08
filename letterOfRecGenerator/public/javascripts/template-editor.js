@@ -61,7 +61,6 @@ document.querySelector("form").addEventListener("click", (event) => {
 
   // Delete question from form
   if (event.target.classList.contains("delete-question-icon")) {
-    console.log(event.target);
 
     // Deleting corresponding tag if any
     if (tagArray.includes(event.target.id)) {
@@ -307,11 +306,18 @@ document.querySelector("form").addEventListener("input", function (event) {
       tag_container.appendChild(tag);
     }
     else {
-      console.log("test");
       tag = document.querySelector("#t" + event.target.id.substr(1));
       tag.innerHTML = event.target.value;
       tag.setAttribute("data-value", event.target.value);
-      console.log(tagArray.length);
+      // console.log(tagArray.length);
+    }
+
+    // Check inserted tags and remove error if tag matches
+    var tagInserts = document.querySelectorAll(".span-insert");
+    for (var i=0; i<tagInserts.length; ++i) {
+      if (tagInserts[i].getAttribute("data-type") === tag.innerHTML) {
+        tagInserts[i].classList.remove("span-insert-is-invalid");
+      }
     }
 
     // Tag validation
@@ -357,7 +363,7 @@ document.querySelector(".tags").addEventListener("click", (event) => {
     var range = quill.getSelection();
     while (!range) { };
     if (range) {
-      console.log(range.index);
+      // console.log(range.index);
       quill.insertEmbed(range.index, 'spanEmbed' ,  { value: event.target.getAttribute('data-value')});
       quill.setSelection(range.index + 1);
       quill.insertText(range.index + 1, ' ', Quill.sources.SILENT);
@@ -382,7 +388,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
   // Check questions
   var questions = document.querySelectorAll(".question-input");
   for (var i = 0; i < questions.length; i++) {
-    console.log(questions[i].value);
+    // console.log(questions[i].value);
     if (questions[i].value.length == 0) {
       hasError = 1;
       questions[i].classList.add("is-invalid");
@@ -391,11 +397,11 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
   // Check options
   var options = document.querySelectorAll(".option-input");
-  console.log(options);
+  // console.log(options);
   for (var i = 0; i < options.length; i++) {
-    console.log(options[i].value);
+    // console.log(options[i].value);
     if (options[i].value.length == 0) {
-      console.log(options[i].closest(".options"));
+      // console.log(options[i].closest(".options"));
       if (!options[i].closest(".options").classList.contains("d-none")) {
         hasError = 1;
         options[i].classList.add("is-invalid");
@@ -423,16 +429,12 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
   // Check Empty Tag
   
-  console.log(tag_inputs);
+  // console.log(tag_inputs);
   for (var i = 0; i < tag_inputs.length; i++) {
     if(tag_inputs[i].value == ""){
       tag_inputs[i].classList.add("is-invalid");
     }   
   }
-
-  var delta = quill.getContents();
-
-  console.log(delta);
 
   if (hasError) {
     alert("There are missing or invalid fields");
@@ -447,20 +449,73 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
       return;
     }
   }
+
+  hasError = parseEditor();
+  if (hasError) {
+    return;
+  }
 });
+
+// Parse text editor 
+// Returns 1 on error, 0 on success
+function parseEditor() {
+  var hasError = 0;
+  var delta = quill.getContents();
+  // console.log(delta);
+  var contents = delta.ops;
+  // console.log(contents);
+  // console.log(quill.root.innerHTML)
+
+  var tags = document.querySelectorAll(".tag-input")
+
+  var text = "";
+  for (var i=0; i<contents.length; ++i) {
+    var op = contents[i];
+    if (op?.insert?.spanEmbed?.value !== undefined) {
+      // Check if tag question still exists
+      var found = false;
+      tags.forEach((tag) => {
+        if (op?.insert?.spanEmbed?.value === tag.value) {
+          found = true;
+        }
+      });
+
+      if (!found) {
+        alert("Some tags do not have corresponding questions.");
+        var tagInserts = document.querySelectorAll(".span-insert");
+        tagInserts.forEach((tag) => {
+          if (op?.insert?.spanEmbed?.value === tag.getAttribute("data-type"))
+            tag.classList.add("span-insert-is-invalid")
+        });
+        return -1;
+      }
+      else {
+        text += "<!" + op?.insert?.spanEmbed?.value + ">";
+      }
+    }
+    else {
+      text += op?.insert;
+    }
+  }
+
+  // text is a string that contains the parsed text editor with tags in <!tag> format
+  console.log(text);
+
+  return 0;
+}
 
 
 // Add eventListener to info icons
-document.getElementById("default-questions-info").onclick = function (event) {
+// document.getElementById("default-questions-info").onclick = function (event) {
 
-  document.getElementById("exampleModalLabel").innerHTML = "Default Questions"
-  document.getElementById("instructions").innerHTML = "Default questions are automatically added to the form and default tags are automatically created for the questions."
-  document.getElementById("open-modal").click();
-}
+//   document.getElementById("exampleModalLabel").innerHTML = "Default Questions"
+//   document.getElementById("instructions").innerHTML = "Default questions are automatically added to the form and default tags are automatically created for the questions."
+//   document.getElementById("open-modal").click();
+// }
 
 document.getElementById("additional-questions-info").onclick = function (event) {
 
-  document.getElementById("exampleModalLabel").innerHTML = "Additional Questions"
-  document.getElementById("instructions").innerHTML = "Add additional custom questions to the form."
+  document.getElementById("exampleModalLabel").innerHTML = "Custom Questions"
+  document.getElementById("instructions").innerHTML = "Customize questions form the form."
   document.getElementById("open-modal").click();
 }
