@@ -21,6 +21,15 @@ describe("Unit Test for Utility API and Resources", () => {
         });
     });
 
+    test("University list API should return a non-empty list as response body.", () => {
+      request(app)
+        .get("/api/universityList")
+        .then(response => {
+          expect(response.body instanceof Array).toBe(true);
+          expect(response.body.length).toBeGreaterThan(0);
+        });
+    });
+
     test("University list should contain some random popular universities.", () => {
       request(app)
         .get("/api/universityList")
