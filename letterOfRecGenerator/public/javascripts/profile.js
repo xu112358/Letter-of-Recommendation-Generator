@@ -1,5 +1,8 @@
 //load country names and phone codes
 let countryData;
+
+//template file data in text
+let fileData = "";
 $.ajax({
   url: "/api/countryCodes",
   type: "GET",
@@ -81,6 +84,15 @@ function loadProfile() {
     document.getElementById("address3").value = data.city;
     document.getElementById("address4").value = data.statesProvinces;
     document.getElementById("postalCode").value = data.postalCode;
+    document.getElementById("flexSwitch").checked = data.enableCustomTemplate;
+    document.getElementById("switchLabel").innerHTML = data.enableCustomTemplate
+      ? "Click to Disable Custom Template"
+      : "Click to Enable Custom Template";
+
+    if (data.enableCustomTemplate) {
+      document.getElementById("fileUpload").innerHTML =
+        '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" onchange="handleFiles(this.files)"></div>';
+    }
   });
 }
 
@@ -107,6 +119,25 @@ document.getElementById("address-help").onclick = function (e) {
     "Put down address of your school office if you have one. If not, put down the address of your department";
   document.getElementById("open-modal").click();
 };
+
+//add event listener to toggling custom template
+function changeLabel() {
+  document.getElementById("switchLabel").innerHTML = document.getElementById(
+    "flexSwitch"
+  ).checked
+    ? "Click to Disable Custom Template"
+    : "Click to Enable Custom Template";
+
+  document.getElementById("fileUpload").innerHTML = document.getElementById(
+    "fileUpload"
+  ).innerHTML = document.getElementById("flexSwitch").checked
+    ? '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" onchange="handleFiles(this.files)"></div>'
+    : "";
+
+  if (!document.getElementById("flexSwitch").checked) {
+    fileData = "";
+  }
+}
 
 function getCountryCode() {
   $.ajax({
@@ -308,4 +339,17 @@ function fillInAddress() {
   // prediction, set cursor focus on the second address line to encourage
   // entry of subpremise information such as apartment, unit, or floor number.
   address2Field.focus();
+}
+
+//handle user loading letter template
+function handleFiles(files) {
+  //$("#output").html("got: "+files[0].name);
+  var reader = new FileReader();
+
+  reader.onload = function (e) {
+    //console.log(reader.result);
+    fileData = reader.result;
+  };
+
+  reader.readAsText(files[0]);
 }

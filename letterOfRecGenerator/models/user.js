@@ -58,6 +58,10 @@ var UserSchema = new Schema({
   country: String,
   selectedIndex: Number,
   isProfileSet: Boolean,
+  enableCustomTemplate: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 UserSchema.statics.findUser = function (id, cb) {
