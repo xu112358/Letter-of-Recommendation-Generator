@@ -7,6 +7,8 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(
   "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com"
 );
+const multer = require("multer");
+const buffer = require("buffer");
 var jwt_decode = require("jwt-decode");
 var jwt = require("jsonwebtoken");
 var fs = require("fs");
@@ -62,7 +64,8 @@ router.post("/login", async (req, res, next) => {
   var mytoken = jwt.sign(
     {
       iss: "Letter of Recommendation Generator",
-      aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+      aud:
+        "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
       email: userProfile.email,
     },
     privateKey,
@@ -246,6 +249,26 @@ router.post("/profile", async (req, res) => {
     user.country = data.country;
     user.selectedIndex = data.selectedIndex;
     user.isProfileSet = true;
+    user.enableCustomTemplate = data.enableCustomTemplate;
+
+    //console.log(data.fileData);
+    if (user.enableCustomTemplate) {
+      var dir = path.join("uploads", decoded.email);
+      dir = path.join(__dirname, dir);
+      console.log(dir);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+        console.log("create directory");
+      }
+
+      const buf = Buffer.from(data.fileData);
+      fs.writeFileSync(
+        path.join(dir, "recommendation" + path.extname(data.fileName)),
+        buf
+      );
+
+      console.log("template upload succeed");
+    }
 
     user
       .save()

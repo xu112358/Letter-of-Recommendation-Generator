@@ -1,7 +1,7 @@
 //load country names and phone codes
 let countryData;
 
-//template file data in text
+let fileName = "";
 let fileData = "";
 $.ajax({
   url: "/api/countryCodes",
@@ -50,7 +50,10 @@ function loadProfile() {
   var auth;
   var cookie = document.cookie.split(";");
   for (var i = 0; i < cookie.length; i++) {
-    if (cookie[i].substr(0, 6) == " auth=") {
+    if (
+      cookie[i].substr(0, 5) == "auth=" ||
+      cookie[i].substr(0, 6) == " auth="
+    ) {
       auth = cookie[i];
     }
   }
@@ -91,7 +94,7 @@ function loadProfile() {
 
     if (data.enableCustomTemplate) {
       document.getElementById("fileUpload").innerHTML =
-        '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" onchange="handleFiles(this.files)"></div>';
+        '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)"></div>';
     }
   });
 }
@@ -131,11 +134,12 @@ function changeLabel() {
   document.getElementById("fileUpload").innerHTML = document.getElementById(
     "fileUpload"
   ).innerHTML = document.getElementById("flexSwitch").checked
-    ? '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" onchange="handleFiles(this.files)"></div>'
+    ? '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)"></div>'
     : "";
 
   if (!document.getElementById("flexSwitch").checked) {
     fileData = "";
+    fileName = "";
   }
 }
 
@@ -234,7 +238,12 @@ function updateProfile() {
     postalCode: postalCode,
     country: country,
     selectedIndex: index,
+    enableCustomTemplate: document.getElementById("flexSwitch").checked,
+    fileName: fileName,
+    fileData: fileData,
   };
+
+  console.log(data);
 
   //load jwt token from cookie
   var auth;
@@ -341,15 +350,27 @@ function fillInAddress() {
   address2Field.focus();
 }
 
-//handle user loading letter template
-function handleFiles(files) {
-  //$("#output").html("got: "+files[0].name);
-  var reader = new FileReader();
+//function for handling file upload
+function handleFile(files) {
+  let file = files[0];
 
-  reader.onload = function (e) {
-    //console.log(reader.result);
-    fileData = reader.result;
+  var fileReader = new FileReader();
+
+  /*
+  Read in file in binary, then convert to Uint8Array.
+  Next, convert to normal array to deserealize
+  In server, we will use this array to write to plain docx
+   */
+  fileReader.onload = () => {
+    fileData = Array.from(new Uint8Array(fileReader.result));
+    fileName = file.name;
+
+    console.log(fileData);
   };
 
-  reader.readAsText(files[0]);
+  fileReader.readAsArrayBuffer(file);
+
+  fileReader.onerror = () => {
+    console.log(fileReader.error);
+  };
 }
