@@ -69,15 +69,17 @@ document.querySelector("form").addEventListener("click", (event) => {
 
   // Delete question from form
   if (event.target.classList.contains("delete-question-icon")) {
-
     // Deleting corresponding tag if any
-    if (tagArray.includes(event.target.id)) {
+    if (tagArray.indexOf(event.target.id) == -1) {
       var index = tagArray.indexOf(event.target.id);
+      console.log(event.target.id);
       tagArray.splice(index, 1);
 
-      document.querySelector("#t" + event.target.id).remove();
+      var tag = document.querySelector("#t" + event.target.id);
+      console.log(tag.id);
+      tag.remove();
+      
     }
-
     event.target.closest(".card").remove();
   }
 });
@@ -303,18 +305,23 @@ function createCard(questionVal, tagVal, optionsVal) {
   // Adding Unique ID to dynamically created question
   tag_input.id = "i" + questionID;
 
-    var tag_container = document.querySelector(".tags");
+  var tag_container = document.querySelector(".tags");
 
-    boilerTag = document.createElement("div");
-    boilerTag.classList.add("col-sm-auto");
-    boilerTag.classList.add("tag");
-    boilerTag.id = "t" + questionID;
-    boilerTag.innerHTML = tagVal;
-    boilerTag.setAttribute("data-value", tagVal);
+  boilerTag = document.createElement("div");
+  boilerTag.classList.add("col-sm-auto");
+  boilerTag.classList.add("tag");
+  boilerTag.id = "t" + questionID;
+  boilerTag.innerHTML = tagVal;
+  boilerTag.setAttribute("data-value", tagVal);
 
-    tagArray.push(questionID);
+  tagArray.push(questionID);
 
-    tag_container.appendChild(boilerTag);
+  tag_container.appendChild(boilerTag);
+
+  // Hide tag if blank
+  if (boilerTag.innerHTML == "") {
+    boilerTag.classList.add("d-none");
+  }
 
   var col4 = document.createElement("div");
   col4.classList.add("col", "align-self-end");
@@ -355,27 +362,27 @@ document.querySelector("form").addEventListener("input", function (event) {
     }
     var tag;
 
-    if (!tagArray.includes(event.target.id.substr(1))) {
-      console.log(event.target);
-      var tag_container = document.querySelector(".tags");
+    // if (!tagArray.includes(event.target.id.substr(1))) {
+    //   console.log(event.target);
+    //   var tag_container = document.querySelector(".tags");
 
-      tag = document.createElement("div");
-      tag.classList.add("col-sm-auto");
-      tag.classList.add("tag");
-      tag.id = "t" + event.target.id.substr(1);
-      tag.innerHTML = event.target.value;
-      tag.setAttribute("data-value", event.target.value);
+    //   tag = document.createElement("div");
+    //   tag.classList.add("col-sm-auto");
+    //   tag.classList.add("tag");
+    //   tag.id = "t" + event.target.id.substr(1);
+    //   tag.innerHTML = event.target.value;
+    //   tag.setAttribute("data-value", event.target.value);
 
-      tagArray.push(event.target.id.substr(1));
+    //   tagArray.push(event.target.id.substr(1));
 
-      tag_container.appendChild(tag);
-    }
-    else {
+    //   tag_container.appendChild(tag);
+    // }
+    // else {
       tag = document.querySelector("#t" + event.target.id.substr(1));
       tag.innerHTML = event.target.value;
       tag.setAttribute("data-value", event.target.value);
       // console.log(tagArray.length);
-    }
+    // }
 
     // Check inserted tags and remove error if tag matches
     var tagInserts = document.querySelectorAll(".span-insert");
