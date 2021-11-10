@@ -514,6 +514,7 @@ function parseEditor() {
 
   // text is a string that contains the parsed text editor with tags in <!tag> format
   console.log(text);
+  console.log(quill.root.innerHTML);
 
   return 0;
 }
