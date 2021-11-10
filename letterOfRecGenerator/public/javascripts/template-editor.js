@@ -25,6 +25,14 @@ window.onload = function () {
   SpanEmbed.blotName = 'spanEmbed';
   SpanEmbed.tagName = 'span';
   Quill.register(SpanEmbed);
+
+  // Prefilled  questions
+  createCard("What is your first name?", "First Name", null);
+  createCard("What is your last name?", "First Name", null);
+  createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null);
+  createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null);
+  createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null);
+  document.activeElement.blur();
 };
 
 // Show options if checkbox or multiple choice is selected
@@ -148,6 +156,11 @@ function deleteOption(targetElem) {
 
 // Add question
 document.querySelector(".add-questions-btn").addEventListener("click", (event) => {
+  createCard("", "", null);
+});
+
+// Args string, string, array of strings
+function createCard(questionVal, tagVal, optionsVal) {
   var form = document.querySelector("form");
 
   var newQuestion = document.createDocumentFragment();
@@ -166,6 +179,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   ques_input.type = "text";
   ques_input.classList.add("form-control", "question-input");
   ques_input.placeholder = "Question";
+  ques_input.value = questionVal;
 
   var col2 = document.createElement("div");
   col2.classList.add("col-4");
@@ -196,24 +210,64 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   // Create options section
 
   var options = document.createElement("div");
-  options.classList.add("options", "d-none");
+  
+  if (optionsVal == null) {
+    options.classList.add("options", "d-none");
 
-  var row1 = document.createElement("row");
-  row1.classList.add("row");
+    var row1 = document.createElement("row");
+    row1.classList.add("row");
 
-  var col_input = document.createElement("div");
-  col_input.classList.add("col-radio-input");
+    var col_input = document.createElement("div");
+    col_input.classList.add("col-radio-input");
 
-  var opt_input = document.createElement("input");
-  opt_input.type = "text";
-  opt_input.classList.add("form-control", "option-input");
-  opt_input.placeholder = "Option";
+    var opt_input = document.createElement("input");
+    opt_input.type = "text";
+    opt_input.classList.add("form-control", "option-input");
+    opt_input.placeholder = "Option";
 
-  var col_delete = document.createElement("div");
-  col_delete.classList.add("col-radio-delete", "d-none");
+    var col_delete = document.createElement("div");
+    col_delete.classList.add("col-radio-delete", "d-none");
 
-  var del_option_icon = document.createElement("i");
-  del_option_icon.classList.add("fas", "fa-times");
+    var del_option_icon = document.createElement("i");
+    del_option_icon.classList.add("fas", "fa-times");
+
+    col_delete.appendChild(del_option_icon);
+    col_input.appendChild(opt_input);
+
+    row1.appendChild(col_input);
+    row1.appendChild(col_delete);
+
+    options.appendChild(row1);
+  }
+  else {
+    for (var i=0; i<optionsVal.length; ++i) {
+      var row1 = document.createElement("row");
+    row1.classList.add("row");
+
+    var col_input = document.createElement("div");
+    col_input.classList.add("col-radio-input");
+
+    var opt_input = document.createElement("input");
+    opt_input.type = "text";
+    opt_input.classList.add("form-control", "option-input");
+    opt_input.placeholder = "Option";
+    opt_input.value = optionsVal[i];
+
+    var col_delete = document.createElement("div");
+    col_delete.classList.add("col-radio-delete", "d-none");
+
+    var del_option_icon = document.createElement("i");
+    del_option_icon.classList.add("fas", "fa-times");
+
+    col_delete.appendChild(del_option_icon);
+    col_input.appendChild(opt_input);
+
+    row1.appendChild(col_input);
+    row1.appendChild(col_delete);
+
+    options.appendChild(row1);
+    }
+  }
 
   var row2 = document.createElement("row");
   row2.classList.add("row");
@@ -226,16 +280,9 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   add_opt_button.classList.add("add-btn", "add-options-btn");
   add_opt_button.innerHTML = "Add Option";
 
-  col_delete.appendChild(del_option_icon);
-  col_input.appendChild(opt_input);
-
-  row1.appendChild(col_input);
-  row1.appendChild(col_delete);
-
   col_input2.appendChild(add_opt_button);
   row2.appendChild(col_input2);
 
-  options.appendChild(row1);
   options.appendChild(row2);
 
   // Creates tag section and question delete icon
@@ -252,9 +299,22 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   tag_input.classList.add("tag-input");
   tag_input.setAttribute("data-value", "");
   tag_input.placeholder = "Tag";
-
+  tag_input.value = tagVal;
   // Adding Unique ID to dynamically created question
   tag_input.id = "i" + questionID;
+
+    var tag_container = document.querySelector(".tags");
+
+    boilerTag = document.createElement("div");
+    boilerTag.classList.add("col-sm-auto");
+    boilerTag.classList.add("tag");
+    boilerTag.id = "t" + questionID;
+    boilerTag.innerHTML = tagVal;
+    boilerTag.setAttribute("data-value", tagVal);
+
+    tagArray.push(questionID);
+
+    tag_container.appendChild(boilerTag);
 
   var col4 = document.createElement("div");
   col4.classList.add("col", "align-self-end");
@@ -278,8 +338,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   form.appendChild(card);
 
   ques_input.focus();
-});
-
+}
 
 // Handles form input events
 document.querySelector("form").addEventListener("input", function (event) {
@@ -297,7 +356,7 @@ document.querySelector("form").addEventListener("input", function (event) {
     var tag;
 
     if (!tagArray.includes(event.target.id.substr(1))) {
-      // console.log(event.target);
+      console.log(event.target);
       var tag_container = document.querySelector(".tags");
 
       tag = document.createElement("div");
