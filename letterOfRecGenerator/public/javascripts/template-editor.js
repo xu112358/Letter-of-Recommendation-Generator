@@ -28,7 +28,7 @@ window.onload = function () {
 
   // Prefilled  questions
   createCard("What is your first name?", "First Name", null);
-  createCard("What is your last name?", "First Name", null);
+  createCard("What is your last name?", "Last Name", null);
   createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null);
   createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null);
   createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null);
