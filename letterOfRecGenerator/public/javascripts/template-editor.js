@@ -45,17 +45,17 @@ document.querySelector("form").addEventListener("change", (event) => {
     if (value == "Radio Button") {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.remove("d-none");
-      selectedCard.querySelector(".seperate_tag_options").classList.add("d-none");
+      selectedCard.querySelector(".seperate-tag-options").classList.add("d-none");
     }
     else if(value == "Checkbox"){
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.add("d-none");
-      selectedCard.querySelector(".seperate_tag_options").classList.remove("d-none");
+      selectedCard.querySelector(".seperate-tag-options").classList.remove("d-none");
     }
     else {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.add("d-none");
-      selectedCard.querySelector(".seperate_tag_options").classList.add("d-none");
+      selectedCard.querySelector(".seperate-tag-options").classList.add("d-none");
     }
   }
 });
@@ -63,15 +63,15 @@ document.querySelector("form").addEventListener("change", (event) => {
 // Handles click events inside form element
 document.querySelector("form").addEventListener("click", (event) => {
 
+  var selectedCard = event.target.closest(".card");
+  var select = selectedCard.children.item(0);
+  select = select.children.item(1);
+  select = select.children.item(0);
+  console.log(selectedCard);
+  console.log(select);
   // Add option to question
   if (event.target.classList.contains("add-options-btn")) {
-    var selectedCard = event.target.closest(".card");
-    var select = selectedCard.children.item(0);
-    select = select.children.item(1);
-    select = select.children.item(0);
-    console.log(selectedCard);
-    console.log(select);
-
+    
     var value = select.value;
     if(value == "Radio Button"){
       addOption(event);
@@ -85,7 +85,13 @@ document.querySelector("form").addEventListener("click", (event) => {
   // Delete option from question
   var targetElem = event.target.closest(".col-radio-delete");
   if (targetElem) {
-    deleteOption(targetElem);
+    if(value == "Radio Button"){
+      deleteOption(targetElem);
+    }
+    else{
+      deleteSeperateTagOption(targetElem);
+    }
+    
   }
 
   // Delete question from form
@@ -168,7 +174,7 @@ function addOption(event) {
 
 function addSeperateTagOption(event) {
   // Check if there is only one option, if so, show delete button
-  var targetOptions = event.target.closest(".seperate_tag_options");
+  var targetOptions = event.target.closest(".seperate-tag-options");
   console.log(event.target);
   console.log(targetOptions);
   var optionsCount = targetOptions.childElementCount - 1;
@@ -177,7 +183,7 @@ function addSeperateTagOption(event) {
   }
 
   // Find options div of current card
-  var selectedOptions = event.target.closest(".seperate_tag_options");
+  var selectedOptions = event.target.closest(".seperate-tag-options");
 
   var newOption = document.createDocumentFragment();
 
@@ -213,6 +219,18 @@ function addSeperateTagOption(event) {
 function deleteOption(targetElem) {
   // Check if there is at least on option left, subtract one for options button
   var targetOptions = targetElem.closest(".options");
+  var optionsCount = targetOptions.childElementCount - 1;
+  if (optionsCount > 1) {
+    targetElem.closest(".row").remove();
+    if (optionsCount == 2) {
+      targetOptions.querySelector(".col-radio-delete").classList.add("d-none");
+    }
+  }
+}
+
+function deleteSeperateTagOption(targetElem) {
+  // Check if there is at least on option left, subtract one for options button
+  var targetOptions = targetElem.closest(".seperate-tag-options");
   var optionsCount = targetOptions.childElementCount - 1;
   if (optionsCount > 1) {
     targetElem.closest(".row").remove();
@@ -358,8 +376,8 @@ function createCard(questionVal, tagVal, optionsVal) {
   var seperate_tag_options = document.createElement("div");
   
   if (optionsVal == null) {
-    seperate_tag_options.classList.add("seperate_tag_options", "d-none");
-
+    seperate_tag_options.classList.add("seperate-tag-options", "d-none");
+    var seperate_tag_id = 0;
     var row1 = document.createElement("row");
     row1.classList.add("row");
 
@@ -371,6 +389,20 @@ function createCard(questionVal, tagVal, optionsVal) {
     opt_input.classList.add("form-control", "option-input");
     opt_input.placeholder = "Option";
 
+    var col_tag_input = document.createElement("div");
+    col_tag_input.classList.add("col-tag-input");
+    
+    var seperate_tag_input = document.createElement("input");
+    seperate_tag_input.type = "text";
+    seperate_tag_input.classList.add("form-control", "col-5");
+    seperate_tag_input.classList.add("tag-input");
+    seperate_tag_input.setAttribute("data-value", "");
+    seperate_tag_input.placeholder = "Tag";
+    seperate_tag_input.value = tagVal;
+    // Adding Unique ID to dynamically created question
+    seperate_tag_input.id = "i" + seperate_tag_id;
+    seperate_tag_id += 1;
+
     var col_delete = document.createElement("div");
     col_delete.classList.add("col-radio-delete", "d-none", "col-6");
 
@@ -380,12 +412,16 @@ function createCard(questionVal, tagVal, optionsVal) {
     col_delete.appendChild(del_option_icon);
     col_input.appendChild(opt_input);
 
+    col_tag_input.appendChild(seperate_tag_input);
+
     row1.appendChild(col_input);
+    row1.appendChild(col_tag_input);
     row1.appendChild(col_delete);
 
     seperate_tag_options.appendChild(row1);
   }
   else {
+    var seperate_tag_id = 0;
     for (var i=0; i<optionsVal.length; ++i) {
       var row1 = document.createElement("row");
     row1.classList.add("row");
@@ -399,6 +435,22 @@ function createCard(questionVal, tagVal, optionsVal) {
     opt_input.placeholder = "Option";
     opt_input.value = optionsVal[i];
 
+    var col_tag_input = document.createElement("div");
+    col_tag_input.classList.add("col-tag-input");
+
+    var seperate_tag_input = document.createElement("input");
+    seperate_tag_input.type = "text";
+    seperate_tag_input.classList.add("form-control", "col-5");
+    seperate_tag_input.classList.add("tag-input");
+    seperate_tag_input.setAttribute("data-value", "");
+    seperate_tag_input.placeholder = "Tag";
+    seperate_tag_input.value = tagVal;
+    // Adding Unique ID to dynamically created question
+    seperate_tag_input.id = "i" + seperate_tag_id;
+    seperate_tag_id += 1;
+
+    
+
     var col_delete = document.createElement("div");
     col_delete.classList.add("col-radio-delete", "d-none");
 
@@ -408,7 +460,10 @@ function createCard(questionVal, tagVal, optionsVal) {
     col_delete.appendChild(del_option_icon);
     col_input.appendChild(opt_input);
 
+    col_tag_input.appendChild(seperate_tag_input);
+
     row1.appendChild(col_input);
+    row1.appendChild(col_tag_input);
     row1.appendChild(col_delete);
 
     seperate_tag_options.appendChild(row1);
@@ -434,7 +489,7 @@ function createCard(questionVal, tagVal, optionsVal) {
   // Creates tag section and question delete icon
 
   var tag = document.createElement("div");
-  tag.classList.add("row");
+  tag.classList.add("row", "tag-section");
 
   var col3 = document.createElement("div");
   col3.classList.add("col-4");
