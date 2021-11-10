@@ -183,12 +183,18 @@
 
 <!-- Initialize Quill editor -->
 <script>
+
+  var toolbarOptions = [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline'] ,
+      [{'list' : 'ordered'}, {'list' : 'bullet'}],
+      [{ 'align': 'justify'}, {'align': 'center'}, {'align': 'right'}, {'align': null}]
+    ];
+
+
   var quill = new Quill('#editor', {
   modules: {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'list']
-    ]
+    toolbar: toolbarOptions
   },
   theme: 'snow'  // or 'bubble'
 });
