@@ -280,11 +280,12 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   ques_input.focus();
 });
 
-// Tag generation from Question
 
+// Handles form input events
 document.querySelector("form").addEventListener("input", function (event) {
   event.preventDefault();
 
+  // Tag generation from Question on tag input
   if (event.target && event.target.classList[1] == "tag-input") {
     
     var tag_inputs = document.querySelectorAll(".tag-input");
@@ -333,11 +334,12 @@ document.querySelector("form").addEventListener("input", function (event) {
       }  
     }
 
-
+    // Hide tag if blank
     if (tag.innerHTML == "") {
       tag.classList.add("d-none");
     }
     
+    // Hide tags if duplicate tags exist
     for (var j=0; j<tagArray.length; j++) {
       var cur_tag = document.querySelector("#t" + tagArray[j]);
       for (var i = 0; i < tagArray.length; i++) {
@@ -347,6 +349,10 @@ document.querySelector("form").addEventListener("input", function (event) {
             cur_tag.classList.add("d-none");
             other_tag.classList.add("d-none");
             isUnique = 1;
+            event.target.classList.add("is-invalid");
+          }
+          else {
+            event.target.classList.remove("is-invalid");
           }
         }
       }
@@ -372,6 +378,7 @@ document.querySelector(".tags").addEventListener("click", (event) => {
       quill.insertEmbed(range.index, 'spanEmbed' ,  { value: event.target.getAttribute('data-value')});
       quill.setSelection(range.index + 1);
       quill.insertText(range.index + 1, ' ', Quill.sources.SILENT);
+      document.querySelector("#editor").classList.remove("editor-is-invalid");
     }
   }
 });
@@ -457,8 +464,9 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     }
   }
 
-  hasError = parseEditor();
-  if (hasError) {
+  var tagError = parseEditor();
+  if (!hasError && tagError) {
+    alert("Some inserted tags do not have corresponding questions.");
     return;
   }
 });
@@ -488,13 +496,12 @@ function parseEditor() {
       });
 
       if (!found) {
-        alert("Some tags do not have corresponding questions.");
         var tagInserts = document.querySelectorAll(".span-insert");
         tagInserts.forEach((tag) => {
           if (op?.insert?.spanEmbed?.value === tag.getAttribute("data-type"))
             tag.classList.add("span-insert-is-invalid")
         });
-        return -1;
+        return 1;
       }
       else {
         text += "<!" + op?.insert?.spanEmbed?.value + ">";
