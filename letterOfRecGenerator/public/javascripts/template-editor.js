@@ -86,6 +86,11 @@ document.querySelector("form").addEventListener("input", (event) => {
   }
 });
 
+// Handles input events inside text editor
+document.querySelector("#editor").addEventListener("input", (event) => {
+  document.querySelector("#editor").classList.remove("editor-is-invalid");
+});
+
 // Adds option element
 function addOption(event) {
   // Check if there is only one option, if so, show delete button
@@ -438,13 +443,15 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
   if (hasError) {
     alert("There are missing or invalid fields");
-    return;
   }
 
   // Check text editor
   var delta = quill.getContents();
   if (quill.getLength() == 1) {
-    var confirm = window.confirm("Text editor is blank. Are you sure you want to continue?");
+    if (!hasError) {
+      var confirm = window.confirm("Text editor is blank. Are you sure you want to continue?");
+    }
+    document.querySelector("#editor").classList.add("editor-is-invalid");
     if (!confirm) {
       return;
     }
