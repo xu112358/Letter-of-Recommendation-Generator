@@ -42,13 +42,20 @@ document.querySelector("form").addEventListener("change", (event) => {
   if (event.target.classList.contains("form-select")) {
     var select = event.target;
     var value = select.options[select.selectedIndex].value;
-    if (value == "Radio Button" || value == "Checkbox") {
+    if (value == "Radio Button") {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.remove("d-none");
+      selectedCard.querySelector(".seperate_tag_options").classList.add("d-none");
+    }
+    else if(value == "Checkbox"){
+      var selectedCard = event.target.closest(".card");
+      selectedCard.querySelector(".options").classList.add("d-none");
+      selectedCard.querySelector(".seperate_tag_options").classList.remove("d-none");
     }
     else {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.add("d-none");
+      selectedCard.querySelector(".seperate_tag_options").classList.add("d-none");
     }
   }
 });
@@ -58,7 +65,21 @@ document.querySelector("form").addEventListener("click", (event) => {
 
   // Add option to question
   if (event.target.classList.contains("add-options-btn")) {
-    addOption(event);
+    var selectedCard = event.target.closest(".card");
+    var select = selectedCard.children.item(0);
+    select = select.children.item(1);
+    select = select.children.item(0);
+    console.log(selectedCard);
+    console.log(select);
+
+    var value = select.value;
+    if(value == "Radio Button"){
+      addOption(event);
+    }
+    else{
+      addSeperateTagOption(event);
+    }
+    
   }
 
   // Delete option from question
@@ -122,6 +143,49 @@ function addOption(event) {
 
   var col1 = document.createElement("div");
   col1.classList.add("col-radio-input");
+
+  var col2 = document.createElement("div");
+  col2.classList.add("col-radio-delete");
+
+  var input = document.createElement("input");
+  input.type = "text";
+  input.classList.add("form-control", "option-input");
+  input.placeholder = "Option";
+
+  var icon = document.createElement("i");
+  icon.classList.add("fas", "fa-times");
+
+  col1.appendChild(input);
+  col2.appendChild(icon);
+  row.appendChild(col1);
+  row.appendChild(col2);
+  newOption.appendChild(row);
+
+  // Inserts new option before add option button
+  var buttonRow = event.target.closest(".row");
+  selectedOptions.insertBefore(newOption, buttonRow);
+}
+
+function addSeperateTagOption(event) {
+  // Check if there is only one option, if so, show delete button
+  var targetOptions = event.target.closest(".seperate_tag_options");
+  console.log(event.target);
+  console.log(targetOptions);
+  var optionsCount = targetOptions.childElementCount - 1;
+  if (optionsCount == 1) {
+    targetOptions.querySelector(".col-radio-delete").classList.remove("d-none");
+  }
+
+  // Find options div of current card
+  var selectedOptions = event.target.closest(".seperate_tag_options");
+
+  var newOption = document.createDocumentFragment();
+
+  var row = document.createElement("div");
+  row.classList.add("row");
+
+  var col1 = document.createElement("div");
+  col1.classList.add("col-radio-input", "col-6");
 
   var col2 = document.createElement("div");
   col2.classList.add("col-radio-delete");
@@ -289,6 +353,84 @@ function createCard(questionVal, tagVal, optionsVal) {
 
   options.appendChild(row2);
 
+  // Creates Seperate Tag options
+
+  var seperate_tag_options = document.createElement("div");
+  
+  if (optionsVal == null) {
+    seperate_tag_options.classList.add("seperate_tag_options", "d-none");
+
+    var row1 = document.createElement("row");
+    row1.classList.add("row");
+
+    var col_input = document.createElement("div");
+    col_input.classList.add("col-radio-input", "col-6");
+
+    var opt_input = document.createElement("input");
+    opt_input.type = "text";
+    opt_input.classList.add("form-control", "option-input");
+    opt_input.placeholder = "Option";
+
+    var col_delete = document.createElement("div");
+    col_delete.classList.add("col-radio-delete", "d-none", "col-6");
+
+    var del_option_icon = document.createElement("i");
+    del_option_icon.classList.add("fas", "fa-times");
+
+    col_delete.appendChild(del_option_icon);
+    col_input.appendChild(opt_input);
+
+    row1.appendChild(col_input);
+    row1.appendChild(col_delete);
+
+    seperate_tag_options.appendChild(row1);
+  }
+  else {
+    for (var i=0; i<optionsVal.length; ++i) {
+      var row1 = document.createElement("row");
+    row1.classList.add("row");
+
+    var col_input = document.createElement("div");
+    col_input.classList.add("col-radio-input");
+
+    var opt_input = document.createElement("input");
+    opt_input.type = "text";
+    opt_input.classList.add("form-control", "option-input", "col-6");
+    opt_input.placeholder = "Option";
+    opt_input.value = optionsVal[i];
+
+    var col_delete = document.createElement("div");
+    col_delete.classList.add("col-radio-delete", "d-none");
+
+    var del_option_icon = document.createElement("i");
+    del_option_icon.classList.add("fas", "fa-times");
+
+    col_delete.appendChild(del_option_icon);
+    col_input.appendChild(opt_input);
+
+    row1.appendChild(col_input);
+    row1.appendChild(col_delete);
+
+    seperate_tag_options.appendChild(row1);
+    }
+  }
+
+  var row2 = document.createElement("row");
+  row2.classList.add("row");
+
+  var col_input2 = document.createElement("div");
+  col_input2.classList.add("col-radio-input");
+
+  var add_opt_button = document.createElement("button");
+  add_opt_button.type = "button";
+  add_opt_button.classList.add("add-btn", "add-options-btn");
+  add_opt_button.innerHTML = "Add Option";
+
+  col_input2.appendChild(add_opt_button);
+  row2.appendChild(col_input2);
+
+  seperate_tag_options.appendChild(row2);
+
   // Creates tag section and question delete icon
 
   var tag = document.createElement("div");
@@ -332,7 +474,7 @@ function createCard(questionVal, tagVal, optionsVal) {
   icon.classList.add("fas", "fa-trash", "float-end", "delete-question-icon");
   // Adding Unique ID to dynamically created question's delete button
   icon.id = questionID;
-  questionID++;
+  questionID += 10;
 
   col4.appendChild(icon);
   col3.appendChild(tag_input);
@@ -342,6 +484,7 @@ function createCard(questionVal, tagVal, optionsVal) {
 
   card.appendChild(question);
   card.appendChild(options);
+  card.appendChild(seperate_tag_options);
   card.appendChild(tag);
 
   form.appendChild(card);
@@ -378,10 +521,8 @@ document.querySelector("form").addEventListener("input", function (event) {
     }
 
     // Tag validation
-    console.log(tagArray);
     for (var i = 0; i < tagArray.length; i++) {
       var temp = document.querySelector("#t" + tagArray[i]);
-      console.log(temp);
       if(temp.innerHTML != ""){
         temp.classList.remove("d-none");
       }  
@@ -403,6 +544,8 @@ document.querySelector("form").addEventListener("input", function (event) {
             other_tag.classList.add("d-none");
             isUnique = 1;
             event.target.classList.add("is-invalid");
+            console.log("asdsa");
+            break;
           }
           else {
             event.target.classList.remove("is-invalid");
