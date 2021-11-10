@@ -2,7 +2,7 @@ let Embed = Quill.import('blots/embed');
 
 var questionID = 0;
 // array of tags
-const tagArray = [];
+var tagArray = [];
 
 class SpanEmbed extends Embed {
   static create(value) {
@@ -42,7 +42,7 @@ document.querySelector("form").addEventListener("change", (event) => {
   if (event.target.classList.contains("form-select")) {
     var select = event.target;
     var value = select.options[select.selectedIndex].value;
-    if (value == "Multiple Choice" || value == "Checkboxes") {
+    if (value == "Radio Button" || value == "Checkbox") {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.remove("d-none");
     }
@@ -70,13 +70,15 @@ document.querySelector("form").addEventListener("click", (event) => {
   // Delete question from form
   if (event.target.classList.contains("delete-question-icon")) {
     // Deleting corresponding tag if any
-    if (tagArray.indexOf(event.target.id) == -1) {
-      var index = tagArray.indexOf(event.target.id);
-      console.log(event.target.id);
-      tagArray.splice(index, 1);
+    console.log(tagArray);
+    console.log(event.target.id);
 
-      var tag = document.querySelector("#t" + event.target.id);
-      console.log(tag.id);
+    var id = parseInt(event.target.id,10);
+    var index = tagArray.indexOf(id);
+    console.log(index);
+    if (index != -1) {
+      tagArray.splice(index, 1);
+      var tag = document.querySelector("#t" + id);
       tag.remove();
       
     }
@@ -193,11 +195,11 @@ function createCard(questionVal, tagVal, optionsVal) {
   option1.value = "Text";
   option1.innerHTML = "Text";
   var option2 = document.createElement("option");
-  option2.value = "Multiple Choice";
-  option2.innerHTML = "Multiple Choice";
+  option2.value = "Radio Button";
+  option2.innerHTML = "Radio Button";
   var option3 = document.createElement("option");
-  option3.value = "Checkboxes";
-  option3.innerHTML = "Checkboxes";
+  option3.value = "Checkbox";
+  option3.innerHTML = "Checkbox";
 
   select.appendChild(option1);
   select.appendChild(option2);
@@ -362,27 +364,10 @@ document.querySelector("form").addEventListener("input", function (event) {
     }
     var tag;
 
-    // if (!tagArray.includes(event.target.id.substr(1))) {
-    //   console.log(event.target);
-    //   var tag_container = document.querySelector(".tags");
-
-    //   tag = document.createElement("div");
-    //   tag.classList.add("col-sm-auto");
-    //   tag.classList.add("tag");
-    //   tag.id = "t" + event.target.id.substr(1);
-    //   tag.innerHTML = event.target.value;
-    //   tag.setAttribute("data-value", event.target.value);
-
-    //   tagArray.push(event.target.id.substr(1));
-
-    //   tag_container.appendChild(tag);
-    // }
-    // else {
-      tag = document.querySelector("#t" + event.target.id.substr(1));
-      tag.innerHTML = event.target.value;
-      tag.setAttribute("data-value", event.target.value);
-      // console.log(tagArray.length);
-    // }
+    tag = document.querySelector("#t" + event.target.id.substr(1));
+    tag.innerHTML = event.target.value;
+    tag.setAttribute("data-value", event.target.value);
+ 
 
     // Check inserted tags and remove error if tag matches
     var tagInserts = document.querySelectorAll(".span-insert");
@@ -393,8 +378,10 @@ document.querySelector("form").addEventListener("input", function (event) {
     }
 
     // Tag validation
+    console.log(tagArray);
     for (var i = 0; i < tagArray.length; i++) {
       var temp = document.querySelector("#t" + tagArray[i]);
+      console.log(temp);
       if(temp.innerHTML != ""){
         temp.classList.remove("d-none");
       }  
