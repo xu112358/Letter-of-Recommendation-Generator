@@ -27,11 +27,11 @@ window.onload = function () {
   Quill.register(SpanEmbed);
 
   // Prefilled  questions
-  createCard("What is your first name?", "First Name", null);
-  createCard("What is your last name?", "Last Name", null);
-  createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null);
-  createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null);
-  createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null);
+  createCard("What is your first name?", "First Name", null, null);
+  createCard("What is your last name?", "Last Name", null, null);
+  createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null, null);
+  createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null, null);
+  createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null, null);
   document.activeElement.blur();
 };
 
@@ -46,16 +46,19 @@ document.querySelector("form").addEventListener("change", (event) => {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.remove("d-none");
       selectedCard.querySelector(".seperate-tag-options").classList.add("d-none");
+      selectedCard.querySelector(".normal-tag").classList.remove("d-none");
     }
     else if(value == "Checkbox"){
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.add("d-none");
       selectedCard.querySelector(".seperate-tag-options").classList.remove("d-none");
+      selectedCard.querySelector(".normal-tag").classList.add("d-none");
     }
     else {
       var selectedCard = event.target.closest(".card");
       selectedCard.querySelector(".options").classList.add("d-none");
       selectedCard.querySelector(".seperate-tag-options").classList.add("d-none");
+      selectedCard.querySelector(".normal-tag").classList.remove("d-none");
     }
   }
 });
@@ -63,16 +66,25 @@ document.querySelector("form").addEventListener("change", (event) => {
 // Handles click events inside form element
 document.querySelector("form").addEventListener("click", (event) => {
 
+  if(event.target.id == "template-name")
+    return;
+
+  console.log(tagArray);
+
   var selectedCard = event.target.closest(".card");
+
+  if(selectedCard.id == "question-box")
+    return;
   var select = selectedCard.children.item(0);
   select = select.children.item(1);
   select = select.children.item(0);
   console.log(selectedCard);
   console.log(select);
+
+  var value = select.value;
   // Add option to question
   if (event.target.classList.contains("add-options-btn")) {
     
-    var value = select.value;
     if(value == "Radio Button"){
       addOption(event);
     }
@@ -100,30 +112,46 @@ document.querySelector("form").addEventListener("click", (event) => {
     console.log(tagArray);
     console.log(event.target.id);
 
-    var id = parseInt(event.target.id,10);
-    var index = tagArray.indexOf(id);
-    console.log(index);
-    if (index != -1) {
-      tagArray.splice(index, 1);
-      var tag = document.querySelector("#t" + id);
-      tag.remove();
-      
+    if(value =="Radio Button"){
+      var id = parseInt(event.target.id,10);
+      var index = tagArray.indexOf(id);
+      console.log(index);
+      if (index != -1) {
+        tagArray.splice(index, 1);
+        var tag = document.querySelector("#t" + id);
+        tag.remove();
+        
+      }
+      event.target.closest(".card").remove();
     }
-    event.target.closest(".card").remove();
+    else{
+      var id = parseInt(event.target.id, 10);
+      var numOptions = event.target.closest(".card");
+      numOptions = numOptions.children.item(2);
+      numOptions = numOptions.childElementCount;
+      numOptions -= 1;
+      
+      for(var i = 1 ; i <= numOptions ; ++i){
+        var target_id = id + i;
+        var index = tagArray.indexOf(target_id);
+        if (index != -1) {
+          tagArray.splice(index, 1);
+          console.log(target_id);
+          var tag = document.querySelector("#t" + target_id);
+          tag.remove();      
+        }
+      }
+      var index = tagArray.indexOf(id);
+      tagArray.splice(index, 1);
+
+      event.target.closest(".card").remove();
+    }
+
+    console.log(tagArray);
   }
 });
 
-// Handles input events inside form
-document.querySelector("form").addEventListener("input", (event) => {
-  // console.log(event);
-  // Form validation
-  if (event.target.value.length == 0) {
-    event.target.classList.add("is-invalid");
-  }
-  else {
-    event.target.classList.remove("is-invalid");
-  }
-});
+
 
 // Handles input events inside text editor
 document.querySelector("#editor").addEventListener("input", (event) => {
@@ -185,6 +213,13 @@ function addSeperateTagOption(event) {
   // Find options div of current card
   var selectedOptions = event.target.closest(".seperate-tag-options");
 
+  var firstTag = selectedOptions.children.item(0);
+  firstTag = firstTag.children.item(1);
+  firstTag = firstTag.children.item(0);
+
+  var firstTagID = firstTag.id;
+
+
   var newOption = document.createDocumentFragment();
 
   var row = document.createElement("div");
@@ -201,12 +236,47 @@ function addSeperateTagOption(event) {
   input.classList.add("form-control", "option-input");
   input.placeholder = "Option";
 
+  var col_tag_input = document.createElement("div");
+  col_tag_input.classList.add("col-tag-input", "col-5");
+  
+  var seperate_tag_input = document.createElement("input");
+  seperate_tag_input.type = "text";
+  seperate_tag_input.classList.add("form-control");
+  seperate_tag_input.classList.add("tag-input");
+  seperate_tag_input.setAttribute("data-value", "");
+  seperate_tag_input.placeholder = "Tag";
+  seperate_tag_input.value = "";
+  // Adding Unique ID to dynamically created question
+  seperate_tag_input.id = "i" + (parseInt(firstTagID.substr(1)) + parseInt(optionsCount));
+
+  var tag_container = document.querySelector(".tags");
+
+  boilerTag = document.createElement("div");
+  boilerTag.classList.add("col-sm-auto");
+  boilerTag.classList.add("tag");
+  boilerTag.id = "t" + seperate_tag_input.id.substr(1);
+  boilerTag.innerHTML = "";
+  boilerTag.setAttribute("data-value", "tagVal");
+
+  tagArray.push(parseInt(seperate_tag_input.id.substr(1)));
+
+  tag_container.appendChild(boilerTag);
+
+  // Hide tag if blank
+  if (boilerTag.innerHTML == "") {
+    boilerTag.classList.add("d-none");
+  }
+  
+
   var icon = document.createElement("i");
   icon.classList.add("fas", "fa-times");
 
   col1.appendChild(input);
   col2.appendChild(icon);
+  col_tag_input.appendChild(seperate_tag_input);
+
   row.appendChild(col1);
+  row.appendChild(col_tag_input);
   row.appendChild(col2);
   newOption.appendChild(row);
 
@@ -233,6 +303,22 @@ function deleteSeperateTagOption(targetElem) {
   var targetOptions = targetElem.closest(".seperate-tag-options");
   var optionsCount = targetOptions.childElementCount - 1;
   if (optionsCount > 1) {
+    var targetTagInput = targetElem.closest(".row");
+    targetTagInput = targetTagInput.children.item(1);
+    targetTagInput = targetTagInput.children.item(0);
+    targetTagID = targetTagInput.id.substr(1);
+
+
+    // Remove tag from tag boilerplate
+    var tag = document.querySelector("#t" + targetTagID);
+    tag.remove();
+
+    var index = tagArray.indexOf(parseInt(targetTagID));
+    console.log(index);
+    if (index != -1) {
+      tagArray.splice(index, 1);
+    }
+
     targetElem.closest(".row").remove();
     if (optionsCount == 2) {
       targetOptions.querySelector(".col-radio-delete").classList.add("d-none");
@@ -245,8 +331,9 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
   createCard("", "", null);
 });
 
-// Args string, string, array of strings
-function createCard(questionVal, tagVal, optionsVal) {
+// Args string, string, array of strings, array of strings
+function createCard(questionVal, tagVal, optionsVal, tagsVal) {
+
   var form = document.querySelector("form");
 
   var newQuestion = document.createDocumentFragment();
@@ -328,30 +415,30 @@ function createCard(questionVal, tagVal, optionsVal) {
   else {
     for (var i=0; i<optionsVal.length; ++i) {
       var row1 = document.createElement("row");
-    row1.classList.add("row");
+      row1.classList.add("row");
 
-    var col_input = document.createElement("div");
-    col_input.classList.add("col-radio-input");
+      var col_input = document.createElement("div");
+      col_input.classList.add("col-radio-input");
 
-    var opt_input = document.createElement("input");
-    opt_input.type = "text";
-    opt_input.classList.add("form-control", "option-input");
-    opt_input.placeholder = "Option";
-    opt_input.value = optionsVal[i];
+      var opt_input = document.createElement("input");
+      opt_input.type = "text";
+      opt_input.classList.add("form-control", "option-input");
+      opt_input.placeholder = "Option";
+      opt_input.value = optionsVal[i];
 
-    var col_delete = document.createElement("div");
-    col_delete.classList.add("col-radio-delete", "d-none");
+      var col_delete = document.createElement("div");
+      col_delete.classList.add("col-radio-delete", "d-none");
 
-    var del_option_icon = document.createElement("i");
-    del_option_icon.classList.add("fas", "fa-times");
+      var del_option_icon = document.createElement("i");
+      del_option_icon.classList.add("fas", "fa-times");
 
-    col_delete.appendChild(del_option_icon);
-    col_input.appendChild(opt_input);
+      col_delete.appendChild(del_option_icon);
+      col_input.appendChild(opt_input);
 
-    row1.appendChild(col_input);
-    row1.appendChild(col_delete);
+      row1.appendChild(col_input);
+      row1.appendChild(col_delete);
 
-    options.appendChild(row1);
+      options.appendChild(row1);
     }
   }
 
@@ -374,10 +461,9 @@ function createCard(questionVal, tagVal, optionsVal) {
   // Creates Seperate Tag options
 
   var seperate_tag_options = document.createElement("div");
-  
+
   if (optionsVal == null) {
     seperate_tag_options.classList.add("seperate-tag-options", "d-none");
-    var seperate_tag_id = 0;
     var row1 = document.createElement("row");
     row1.classList.add("row");
 
@@ -390,21 +476,22 @@ function createCard(questionVal, tagVal, optionsVal) {
     opt_input.placeholder = "Option";
 
     var col_tag_input = document.createElement("div");
-    col_tag_input.classList.add("col-tag-input");
+    col_tag_input.classList.add("col-tag-input", "col-5");
     
     var seperate_tag_input = document.createElement("input");
     seperate_tag_input.type = "text";
-    seperate_tag_input.classList.add("form-control", "col-5");
+    seperate_tag_input.classList.add("form-control");
     seperate_tag_input.classList.add("tag-input");
     seperate_tag_input.setAttribute("data-value", "");
     seperate_tag_input.placeholder = "Tag";
-    seperate_tag_input.value = tagVal;
+    seperate_tag_input.value = null;
     // Adding Unique ID to dynamically created question
-    seperate_tag_input.id = "i" + seperate_tag_id;
-    seperate_tag_id += 1;
+    seperate_tag_input.id = "i" + (questionID + 1);
+
+    tagArray.push(parseInt(seperate_tag_input.id.substr(1)));
 
     var col_delete = document.createElement("div");
-    col_delete.classList.add("col-radio-delete", "d-none", "col-6");
+    col_delete.classList.add("col-radio-delete", "d-none", "col-1");
 
     var del_option_icon = document.createElement("i");
     del_option_icon.classList.add("fas", "fa-times");
@@ -419,54 +506,86 @@ function createCard(questionVal, tagVal, optionsVal) {
     row1.appendChild(col_delete);
 
     seperate_tag_options.appendChild(row1);
+
+    var tag_container = document.querySelector(".tags");
+
+    boilerTag = document.createElement("div");
+    boilerTag.classList.add("col-sm-auto");
+    boilerTag.classList.add("tag");
+    boilerTag.id = "t" + seperate_tag_input.id.substr(1);
+    boilerTag.innerHTML = null;
+    boilerTag.setAttribute("data-value", null);
+
+    tag_container.appendChild(boilerTag);
+
+    // Hide tag if blank
+    if (boilerTag.innerHTML == "") {
+      boilerTag.classList.add("d-none");
+    }
+
   }
   else {
-    var seperate_tag_id = 0;
-    for (var i=0; i<optionsVal.length; ++i) {
-      var row1 = document.createElement("row");
-    row1.classList.add("row");
-
-    var col_input = document.createElement("div");
-    col_input.classList.add("col-radio-input");
-
-    var opt_input = document.createElement("input");
-    opt_input.type = "text";
-    opt_input.classList.add("form-control", "option-input", "col-6");
-    opt_input.placeholder = "Option";
-    opt_input.value = optionsVal[i];
-
-    var col_tag_input = document.createElement("div");
-    col_tag_input.classList.add("col-tag-input");
-
-    var seperate_tag_input = document.createElement("input");
-    seperate_tag_input.type = "text";
-    seperate_tag_input.classList.add("form-control", "col-5");
-    seperate_tag_input.classList.add("tag-input");
-    seperate_tag_input.setAttribute("data-value", "");
-    seperate_tag_input.placeholder = "Tag";
-    seperate_tag_input.value = tagVal;
-    // Adding Unique ID to dynamically created question
-    seperate_tag_input.id = "i" + seperate_tag_id;
-    seperate_tag_id += 1;
-
     
+    for (var i=1; i<=optionsVal.length; ++i) {
+      var row1 = document.createElement("row");
+      row1.classList.add("row");
 
-    var col_delete = document.createElement("div");
-    col_delete.classList.add("col-radio-delete", "d-none");
+      var col_input = document.createElement("div");
+      col_input.classList.add("col-radio-input", "col-6");
 
-    var del_option_icon = document.createElement("i");
-    del_option_icon.classList.add("fas", "fa-times");
+      var opt_input = document.createElement("input");
+      opt_input.type = "text";
+      opt_input.classList.add("form-control", "option-input");
+      opt_input.placeholder = "Option";
+      opt_input.value = optionsVal[i];
 
-    col_delete.appendChild(del_option_icon);
-    col_input.appendChild(opt_input);
+      var col_tag_input = document.createElement("div");
+      col_tag_input.classList.add("col-tag-input", "col-5");
 
-    col_tag_input.appendChild(seperate_tag_input);
+      var seperate_tag_input = document.createElement("input");
+      seperate_tag_input.type = "text";
+      seperate_tag_input.classList.add("form-control");
+      seperate_tag_input.classList.add("tag-input");
+      seperate_tag_input.setAttribute("data-value", "");
+      seperate_tag_input.placeholder = "Tag";
+      seperate_tag_input.value = tagsVal[i];
+      // Adding Unique ID to dynamically created question
+      seperate_tag_input.id = "i" + (parseInt(questionID) + parseInt(i));
 
-    row1.appendChild(col_input);
-    row1.appendChild(col_tag_input);
-    row1.appendChild(col_delete);
+      tagArray.push(parseInt(seperate_tag_input.id.substr(1)));
+      
+      var col_delete = document.createElement("div");
+      col_delete.classList.add("col-radio-delete", "d-none" , "col-1");
 
-    seperate_tag_options.appendChild(row1);
+      var del_option_icon = document.createElement("i");
+      del_option_icon.classList.add("fas", "fa-times");
+
+      col_delete.appendChild(del_option_icon);
+      col_input.appendChild(opt_input);
+
+      col_tag_input.appendChild(seperate_tag_input);
+
+      row1.appendChild(col_input);
+      row1.appendChild(col_tag_input);
+      row1.appendChild(col_delete);
+
+      seperate_tag_options.appendChild(row1);
+
+      var tag_container = document.querySelector(".tags");
+
+      boilerTag = document.createElement("div");
+      boilerTag.classList.add("col-sm-auto");
+      boilerTag.classList.add("tag");
+      boilerTag.id = "t" + seperate_tag_input.id.substr(1);
+      boilerTag.innerHTML = tagsVal[i];
+      boilerTag.setAttribute("data-value", tagVal);
+
+      tag_container.appendChild(boilerTag);
+
+      // Hide tag if blank
+      if (boilerTag.innerHTML == "") {
+        boilerTag.classList.add("d-none");
+      }
     }
   }
 
@@ -489,14 +608,14 @@ function createCard(questionVal, tagVal, optionsVal) {
   // Creates tag section and question delete icon
 
   var tag = document.createElement("div");
-  tag.classList.add("row", "tag-section");
+  tag.classList.add("row");
 
   var col3 = document.createElement("div");
   col3.classList.add("col-4");
 
   var tag_input = document.createElement("input");
   tag_input.type = "text";
-  tag_input.classList.add("form-control");
+  tag_input.classList.add("form-control", "normal-tag");
   tag_input.classList.add("tag-input");
   tag_input.setAttribute("data-value", "");
   tag_input.placeholder = "Tag";
@@ -551,9 +670,16 @@ function createCard(questionVal, tagVal, optionsVal) {
 document.querySelector("form").addEventListener("input", function (event) {
   event.preventDefault();
 
+  if (event.target.value.length == 0) {
+    event.target.classList.add("is-invalid");
+  }
+  else {
+    event.target.classList.remove("is-invalid");
+  }
+
   // Tag generation from Question on tag input
-  if (event.target && event.target.classList[1] == "tag-input") {
-    
+  if (event.target && event.target.classList.contains("tag-input")) {
+    console.log("AA");
     var tag_inputs = document.querySelectorAll(".tag-input");
     for (var i = 0; i < tag_inputs.length; i++) {
       if(tag_inputs[i].value != ""){
@@ -563,6 +689,7 @@ document.querySelector("form").addEventListener("input", function (event) {
     var tag;
 
     tag = document.querySelector("#t" + event.target.id.substr(1));
+    console.log(event.target.id.substr(1));
     tag.innerHTML = event.target.value;
     tag.setAttribute("data-value", event.target.value);
  
@@ -599,7 +726,7 @@ document.querySelector("form").addEventListener("input", function (event) {
             other_tag.classList.add("d-none");
             isUnique = 1;
             event.target.classList.add("is-invalid");
-            console.log("asdsa");
+            // console.log("asdsa" + event.target.id + " " + cur_tag.id + " " + other_tag.id);
             break;
           }
           else {
@@ -665,7 +792,12 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     // console.log(options[i].value);
     if (options[i].value.length == 0) {
       // console.log(options[i].closest(".options"));
-      if (!options[i].closest(".options").classList.contains("d-none")) {
+
+      var options_div = options[i].parentNode;
+      options_div = options_div.parentNode;
+      options_div = options_div.parentNode;
+
+      if (!options_div.classList.contains("d-none")) {
         hasError = 1;
         options[i].classList.add("is-invalid");
       }
@@ -680,7 +812,11 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
   for (var i = 0; i < tag_inputs.length; i++) {
     for(var j = 0 ; j < tag_inputs.length ; j++){
-      if(i != j){
+
+      var options_div = tag_inputs[i].parentNode.parentNode.parentNode;
+      var options_div2 = tag_inputs[j].parentNode.parentNode.parentNode;
+      
+      if(i != j && !options_div.classList.contains("d-none") && !options_div2.classList.contains("d-none")){
         if(tag_inputs[i].value === tag_inputs[j].value){
           tag_inputs[i].classList.add("is-invalid");
           tag_inputs[j].classList.add("is-invalid");
