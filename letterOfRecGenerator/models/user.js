@@ -2,6 +2,7 @@ var db = require("../db");
 var Form = require("./form");
 var Template = require("./template");
 var Email = require("./email");
+var Link = require("./link");
 
 var Schema = db.Schema;
 
@@ -51,11 +52,16 @@ var UserSchema = new Schema({
   phone: String,
   streetAddress: String,
   address2: String,
+  city: String,
   statesProvinces: String,
   postalCode: String,
   country: String,
   selectedIndex: Number,
   isProfileSet: Boolean,
+  enableCustomTemplate: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 UserSchema.statics.findUser = function (id, cb) {
@@ -350,10 +356,20 @@ UserSchema.methods.getDeactivatedForm = function (id, cb) {
       }
     });
 };
-
+//this will put recommendation request to deactivated category and will also inactivate the link
 UserSchema.methods.removeForm = function (id, cb) {
+  //remove this from from active and push it to decativated
   this.forms.pull(id);
   this.deactivatedForms.push(id);
+
+  //update the link corresponding to this form
+  Form.findOne({ _id: id }, function (err, form) {
+    Link.findOne({ _id: form.link._id }, function (e, link) {
+      link.isActive = false;
+      link.save();
+    });
+  });
+
   this.save(cb);
 };
 

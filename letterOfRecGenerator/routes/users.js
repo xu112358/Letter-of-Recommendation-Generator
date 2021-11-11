@@ -3,7 +3,19 @@ var User = require("../models/user");
 var router = express.Router();
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(
+  "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com"
+);
+const multer = require("multer");
+const buffer = require("buffer");
 var jwt_decode = require("jwt-decode");
+var jwt = require("jsonwebtoken");
+var fs = require("fs");
+var path = require("path");
+var Validator = require("jsonschema").Validator;
+
+//secret for JWT encoding
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -16,60 +28,101 @@ router.get("/", function (req, res, next) {
   });
 });
 
-// Get Register page
-router.get("/register", (req, res) => res.render("register"));
-
 // Get Login page
 router.get("/login", (req, res) => res.render("login"));
 
-//Register handle
-router.post("/register", (req, res) => {
-  const { email, password, password2 } = req.body;
-  const linkTemplate_body = "Please click the following questionnaire ";
-  const linkTemplate_subject =
+// Login handle
+router.post("/login", async (req, res, next) => {
+  const linkTemplate_body1 = "Please click the following questionnaire ";
+  const linkTemplate_subject1 =
     "Invitation to Fill Recommendation Letter Questionnaire";
 
-  let errors = [];
-
-  if (!email || !password || !password2) {
-    errors.push({ msg: "Please enter all fields" });
+  //verify google JWT token to prevent CSRF attacks
+  var csrf_token_cookie = req.cookies.g_csrf_token;
+  var csrf_token_body = req.body.g_csrf_token;
+  if (
+    !csrf_token_cookie ||
+    !csrf_token_body ||
+    csrf_token_body != csrf_token_cookie
+  ) {
+    res.status(400).json({ error: "Failed to verify CSRF token" });
   }
 
-  if (password != password2) {
-    errors.push({ msg: "Passwords do not match" });
-  }
+  //verify JWT's signature
+  let status = true;
+  await verify(req.body.credential).catch((err) => {
+    console.log(err);
+    status = false;
+  });
+  //extract userInfo
+  var userProfile = jwt_decode(req.body.credential);
+  //authentication with jwt
+  //our token expires in 1h
+  var privateKey = fs.readFileSync(
+    path.join(__dirname, "../config/jwtRS256.key")
+  );
+  var mytoken = jwt.sign(
+    {
+      iss: "Letter of Recommendation Generator",
+      aud:
+        "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+      email: userProfile.email,
+    },
+    privateKey,
+    { algorithm: "RS256", expiresIn: "1h" }
+  );
 
-  if (password.length < 6) {
-    errors.push({ msg: "Password must be at least 6 characters" });
-  }
+  var publicKey = fs.readFileSync(
+    path.join(__dirname, "../config/jwtRS256.key.pub")
+  );
+  var decoded = jwt.verify(mytoken, publicKey);
 
-  if (errors.length > 0) {
-    res.render("register", {
-      errors,
-      email,
-      password,
-      password2,
-    });
+  //failed signature verification
+  if (!status) {
+    res.status(400).json({ error: "Failed to verify signature" });
   } else {
-    // Validation passes
-    User.findOne({ email: email }).then((user) => {
-      if (user) {
-        errors.push({ msg: "Email already exists" });
-        res.render("register", {
-          errors,
-          email,
-          password,
-          password2,
-        });
-      } else {
-        const newUser = new User({
-          email,
-          password,
-          linkTemplate_subject,
-          linkTemplate_body,
-        });
+    //signature verified
+    //we will go ahead and use google jwt token to create our own jwt
 
-        console.log(newUser);
+    var userEmail = userProfile.email;
+    var name = userProfile.name;
+
+    //check if this user is in system
+    User.findOne({ email: userEmail }).then((user) => {
+      if (user) {
+        console.log("user in system");
+        user.save();
+        //since redirect will not pass any headers forward
+        //we will use cookie get our header in
+        //new login using JWT token
+
+        res.cookie("auth", mytoken);
+        res.redirect("/recommender-dashboard");
+      } else {
+        console.log("user not in system");
+        //use user's name to hash to password
+        const newUser = new User({
+          email: userEmail,
+          password: name,
+          linkTemplate_subject: linkTemplate_subject1,
+          linkTemplate_body: linkTemplate_body1,
+          firstName: userProfile.given_name,
+          lastName: userProfile.family_name,
+          isProfileSet: false,
+          middleName: "",
+          university: "",
+          department: "",
+          titles: "",
+          codes: "",
+          phone: "",
+          streetAddress: "",
+          address2: "",
+          city: "",
+          statesProvinces: "",
+          postalCode: "",
+          country: "",
+          selectedIndex: "",
+        });
 
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -78,11 +131,9 @@ router.post("/register", (req, res) => {
             newUser
               .save()
               .then((user) => {
-                req.flash(
-                  "success_msg",
-                  "You are now registered and can log in"
-                );
-                res.redirect("/users/login");
+                //send jwt back using cookie
+                res.cookie("auth", mytoken);
+                res.redirect("/recommender-dashboard");
               })
               .catch((err) => console.log(err));
           });
@@ -92,123 +143,140 @@ router.post("/register", (req, res) => {
   }
 });
 
-// Login handle
-router.post("/login", (req, res, next) => {
-  const linkTemplate_body1 = "Please click the following questionnaire ";
-  const linkTemplate_subject1 =
-    "Invitation to Fill Recommendation Letter Questionnaire";
-
-  var userProfile = jwt_decode(req.body.credential);
-  console.log(userProfile);
-
-  var userEmail = userProfile.email;
-  var name = userProfile.name;
-
-  User.findOne({ email: userEmail }).then((user) => {
-    if (user) {
-      console.log("user in system");
-      user.save();
-      req.login(user, function (err) {
-        if (err) {
-          return next(err);
-        }
-        return res.redirect("/recommender-dashboard");
-      });
-    } else {
-      console.log("user not in system");
-      //use user's name to hash to password
-      const newUser = new User({
-        email: userEmail,
-        password: name,
-        linkTemplate_subject: linkTemplate_subject1,
-        linkTemplate_body: linkTemplate_body1,
-        firstName: userProfile.given_name,
-        lastName: userProfile.family_name,
-        isProfileSet: false,
-        middleName: "",
-        university: "",
-        department: "",
-        titles: "",
-        codes: "",
-        phone: "",
-        streetAddress: "",
-        address2: "",
-        statesProvinces: "",
-        postalCode: "",
-        country: "",
-        selectedIndex: "",
-      });
-
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then((user) => {
-              req.login(user, function (err) {
-                if (err) {
-                  return next(err);
-                }
-                return res.redirect("/recommender-dashboard");
-              });
-            })
-            .catch((err) => console.log(err));
-        });
-      });
-    }
-  });
-});
-
 //user profile handle
 router.get("/profile", (req, res) => {
-  //if user is not logged in, put them back to home page
-  if (!req.user) {
-    res.redirect("/");
-  }
-
   res.render("pages/profile", {
     title: "Profile",
   });
 });
 
 //update user profile
-router.post("/profile", (req, res) => {
-  
+router.post("/profile", async (req, res) => {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
   var data = JSON.parse(req.body.raw);
-  let userInfo = data.userInfo;
-  
-  console.log("data");
-  console.log(userInfo);
-  User.findOne({ email: req.user.email }).then((user) => {
-    user.firstName = userInfo[0];
-    user.middleName = userInfo[1];
-    user.lastName = userInfo[2];
-    user.university = userInfo[3];
-    user.department = userInfo[4];
-    user.titles = userInfo[5];
-    user.codes = userInfo[6];
-    user.phone = userInfo[7];
-    user.streetAddress = userInfo[8];
-    user.address2 = userInfo[9];
-    user.statesProvinces = userInfo[10];
-    user.postalCode = userInfo[11];
-    user.country = userInfo[12];
-    user.selectedIndex = userInfo[13];
-    user.isProfileSet = true;
-    
-    console.log("After update");
-    
 
+  //validate data from request
+  var check = new Validator();
+  var schema = {
+    id: "/UserProfileSchema",
+    type: "object",
+    properties: {
+      firstName: { type: "string" },
+      middleName: { type: "string" },
+      lastName: { type: "string" },
+      university: { type: "string" },
+      department: { type: "string" },
+      titles: { type: "string" },
+      codes: { type: "string" },
+      phone: { type: "string" },
+      streetAddress: { type: "string" },
+      address2: { type: "string" },
+      statesProvinces: { type: "string" },
+      postalCode: { type: "string" },
+      country: { type: "string" },
+      selectedIndex: { type: "integer" },
+      required: [
+        "firstName",
+        "lastName",
+        "university",
+        "department",
+        "titles",
+        "codes",
+        "phone",
+        "streetAddress",
+        "statesProvinces",
+        "postalCode",
+        "country",
+        "selectedIndex",
+      ],
+    },
+  };
+  var result = check.validate(data, schema);
+
+  //validation failed
+  if (!result.valid) {
+    console.log("Invalid request paramaters");
+    return res.status(400).json({ error: "Invalid request paramaters" });
+  }
+
+  //use regex to match postalCodes, phone number and selectedIndex
+  var postalCheck = /^\d{5}(-\d{4})?$/;
+  var phoneCheck = /\d{5,}/;
+  var selectedIndexCheck = /\d{1,3}/;
+  var codesCheck = /\+\d{1,3}|\+\d{1}\-\d{3}/;
+
+  //postal failed to match
+  if (!postalCheck.test(data.postalCode)) {
+    console.log("Invalid postalCode");
+    return res.status(400).json({ error: "Invalid postal code" });
+  }
+  //not a valid phone number
+  if (!phoneCheck.test(data.phone)) {
+    console.log("Invalid telephone number");
+    return res.status(400).json({ error: "Invalid telephone number" });
+  }
+  //not a number or index out of bounds (total of 248 entries so far in country_code_and_details.json)
+  if (
+    !selectedIndexCheck.test(data.selectedIndex) ||
+    data.selectedIndex > 247
+  ) {
+    console.log("Invalid index");
+    return res.status(400).json({ error: "Invalid index" });
+  }
+  //not a valid formatted country code
+  if (!codesCheck.test(data.codes)) {
+    console.log("Invalid codes");
+    return res.status(400).json({ error: "Invalid codes" });
+  }
+
+  //retrive user obj from mongodb
+  var user_ = await User.findOne({ email: decoded.email });
+  User.findOne({ email: user_.email }).then((user) => {
     //update db
+    user.firstName = data.firstName;
+    user.middleName = data.middleName;
+    user.lastName = data.lastName;
+    user.university = data.university;
+    user.department = data.department;
+    user.titles = data.titles;
+    user.codes = data.codes;
+    user.phone = data.phone;
+    user.streetAddress = data.streetAddress;
+    user.address2 = data.address2;
+    user.city = data.city;
+    user.statesProvinces = data.statesProvinces;
+    user.postalCode = data.postalCode;
+    user.country = data.country;
+    user.selectedIndex = data.selectedIndex;
+    user.isProfileSet = true;
+    user.enableCustomTemplate = data.enableCustomTemplate;
+
+    //console.log(data.fileData);
+    if (user.enableCustomTemplate) {
+      var dir = path.join("uploads", decoded.email);
+      dir = path.join(__dirname, dir);
+      console.log(dir);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+        console.log("create directory");
+      }
+
+      const buf = Buffer.from(data.fileData);
+      fs.writeFileSync(
+        path.join(dir, "recommendation" + path.extname(data.fileName)),
+        buf
+      );
+
+      console.log("template upload succeed");
+    }
+
     user
       .save()
       .then((user) => {
-        //update the logged in user
-        req.user = user;
+        //updated profile, so user is not new anymore
+        delete req.cookies.new;
         res.sendStatus(200);
         console.log("user updated");
-        console.log(req.user);
       })
       .catch((err) => {
         console.log(err);
@@ -217,8 +285,22 @@ router.post("/profile", (req, res) => {
   });
 });
 
-router.get("/profile/get", (req, res) => {
-  res.json(req.user);
+router.get("/profile/get", async (req, res) => {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  console.log(decoded.email);
+  res.json(user);
 });
+
+//google jwt token verification function
+async function verify(token) {
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience:
+      "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+  });
+}
 
 module.exports = router;

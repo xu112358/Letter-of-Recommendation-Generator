@@ -15,4 +15,11 @@ router.get("/countryCodes", function(req, res) {
 
 });
 
+// Load the names of accredited universities.
+router.get("/universityList", function(req, res) {
+    let data = fs.readFileSync(path.join(__dirname, "university_list.json"));
+    let result = JSON.parse(data);
+    res.json(result);
+});
+
 module.exports = router;

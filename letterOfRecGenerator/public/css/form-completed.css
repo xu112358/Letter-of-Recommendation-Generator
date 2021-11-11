@@ -15,58 +15,60 @@ body {
 }
 
 #form-title {
-    font-size: 36px;
+    font-size: 30px;
+    text-align: center;
 }
 
 .form-group {
     background-color: white;
     border-radius: 10px;
-    padding:20px;
+    padding-bottom:10px;
+    text-align: center;
 }
 
 #required {
     color: #9d2235;
 }
 
-.question-container {
-    padding-top: 5px;
-    margin-bottom: 30px;
-}
-.question {
-    margin-left: 5px;
-    display: inline;
-    font-weight: bold;
-}
-
-#outside {
-    /* padding-top: px; */
-}
-
-.btn-primary {
-    width: 100%;
-    border: none;
-    border-radius: 5px;
-    padding: 5px;
-    background-color: #EFEFEF;
-    color: black;
-}
-
-#button-container {
-    border-color: white;
-}
 
 .title {
-    font-size: 30px !important;
+    font-size: 24px !important;
     text-align: center;
 }
 
+.completed-box{
+    display: flex;
+    width: 60%;
+    
+    margin: 50px;
+    justify-content: center;
+   
+}
+
+
+#form-title-container{
+    width:100%;
+    justify-content: center;
+    
+}
+
+#check-icon {
+    font-size: 100px;
+    color: green;
+    margin-bottom: 5px;
+}
+
+.row {
+    width: 80%;
+    max-width: 900px;
+}
 
 .btn:hover,
 .btn:active,
 .btn:focus {
     background-color: lightgray;
 }
-
+/* 
 .card:hover {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-}
+} */

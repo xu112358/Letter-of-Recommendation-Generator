@@ -32,3 +32,15 @@
 #address-help:hover {
   cursor: pointer;
 }
+
+.apply-btn {
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: #EFEFEF;
+}
+
+.apply-btn:hover {
+  background-color: lightgray;
+}

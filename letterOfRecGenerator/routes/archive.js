@@ -1,63 +1,76 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
+var Form = require("../models/form");
+var jwt_decode = require("jwt-decode");
+var User = require("../models/user");
 
-var Form = require('../models/form');
+router.get("/", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
 
-router.get('/', function (req, res, next) {
-    req.user.getDeactivatedForms( function (err, deactivatedForms) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render('pages/archive', {
-                title: 'Archive',
-                forms: deactivatedForms,
-                emailtemplates: req.user.getDeactivatedEmailTemplates(),
-                templates: req.user.getDeactivatedTemplates(),
-            });
-        }
-    });
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  user.getDeactivatedForms(function (err, deactivatedForms) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("pages/archive", {
+        title: "Archive",
+        forms: deactivatedForms,
+        emailtemplates: user.getDeactivatedEmailTemplates(),
+        templates: user.getDeactivatedTemplates(),
+      });
+    }
+  });
 });
 
-router.post('/restore-template', function (req, res, next) {
-    req.user.activateTemplate(req.body.id, function (err) {
+router.post("/restore-template", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  user.activateTemplate(req.body.id, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      user.getDeactivatedForms(function (err, deactivatedForms) {
         if (err) {
-            console.log(err);
+          console.log(err);
         } else {
-            req.user.getDeactivatedForms( function (err, deactivatedForms) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.render('pages/archive', {
-                        title: 'Archive Page',
-                        forms: deactivatedForms,
-                        emailtemplates: req.user.getDeactivatedEmailTemplates(),
-                        templates: req.user.getDeactivatedTemplates(),
-                    });
-                }
-            });
+          res.render("pages/archive", {
+            title: "Archive Page",
+            forms: deactivatedForms,
+            emailtemplates: user.getDeactivatedEmailTemplates(),
+            templates: user.getDeactivatedTemplates(),
+          });
         }
-    });
+      });
+    }
+  });
 });
 
-router.post('/restore-email-template', function (req, res, next) {
-    req.user.activateEmailTemplate(req.body.id, function (err) {
+router.post("/restore-email-template", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  user.activateEmailTemplate(req.body.id, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      user.getDeactivatedForms(function (err, deactivatedForms) {
         if (err) {
-            console.log(err);
+          console.log(err);
         } else {
-            req.user.getDeactivatedForms( function (err, deactivatedForms) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.render('pages/archive', {
-                        title: 'Archive Page',
-                        forms: deactivatedForms,
-                        emailtemplates: req.user.getDeactivatedEmailTemplates(),
-                        templates: req.user.getDeactivatedTemplates(),
-                    });
-                }
-            });
+          res.render("pages/archive", {
+            title: "Archive Page",
+            forms: deactivatedForms,
+            emailtemplates: user.getDeactivatedEmailTemplates(),
+            templates: user.getDeactivatedTemplates(),
+          });
         }
-    });
+      });
+    }
+  });
 });
 
 module.exports = router;
