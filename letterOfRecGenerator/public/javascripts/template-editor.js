@@ -727,18 +727,13 @@ document.querySelector("form").addEventListener("input", function (event) {
             console.log(cur_tag.id);
             if(event.target.id.substr(1) == cur_tag.id.substr(1) || event.target.id.substr(1) == other_tag.id.substr(1)){
               event.target.classList.add("is-invalid");
-              console.log(event.target);
-              console.log("asdsa" + event.target.id + " " + cur_tag.id + " " + other_tag.id);
+              // console.log(event.target);
+              // console.log("asdsa" + event.target.id + " " + cur_tag.id + " " + other_tag.id);
               break;
             }      
           }
           else {
             event.target.classList.remove("is-invalid");
-            if(event.target.id == "i51"){
-              console.log(event.target);
-              console.log(cur_tag.id);
-              console.log(other_tag.id);
-            }
           }
         }
       }
