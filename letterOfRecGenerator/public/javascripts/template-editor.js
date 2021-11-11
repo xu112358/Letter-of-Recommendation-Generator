@@ -679,7 +679,6 @@ document.querySelector("form").addEventListener("input", function (event) {
 
   // Tag generation from Question on tag input
   if (event.target && event.target.classList.contains("tag-input")) {
-    console.log("AA");
     var tag_inputs = document.querySelectorAll(".tag-input");
     for (var i = 0; i < tag_inputs.length; i++) {
       if(tag_inputs[i].value != ""){
@@ -689,7 +688,6 @@ document.querySelector("form").addEventListener("input", function (event) {
     var tag;
 
     tag = document.querySelector("#t" + event.target.id.substr(1));
-    console.log(event.target.id.substr(1));
     tag.innerHTML = event.target.value;
     tag.setAttribute("data-value", event.target.value);
  
@@ -725,18 +723,35 @@ document.querySelector("form").addEventListener("input", function (event) {
             cur_tag.classList.add("d-none");
             other_tag.classList.add("d-none");
             isUnique = 1;
-            event.target.classList.add("is-invalid");
-            // console.log("asdsa" + event.target.id + " " + cur_tag.id + " " + other_tag.id);
-            break;
+            console.log(event.target.id.substr(1));
+            console.log(cur_tag.id);
+            if(event.target.id.substr(1) == cur_tag.id.substr(1) || event.target.id.substr(1) == other_tag.id.substr(1)){
+              event.target.classList.add("is-invalid");
+              console.log(event.target);
+              console.log("asdsa" + event.target.id + " " + cur_tag.id + " " + other_tag.id);
+              break;
+            }      
           }
           else {
             event.target.classList.remove("is-invalid");
+            if(event.target.id == "i51"){
+              console.log(event.target);
+              console.log(cur_tag.id);
+              console.log(other_tag.id);
+            }
           }
         }
       }
     }
 
-  
+    for(var i = 0 ; i < tagArray.length ; i++){
+      if(tagArray[i] != event.target.id.substr(1)){
+        cur_tag = document.querySelector("#t" + tagArray[i]);
+        if(cur_tag.innerHTML === event.target.value){
+          event.target.classList.add("is-invalid");
+        }
+      }
+    }
 
   }
 });
