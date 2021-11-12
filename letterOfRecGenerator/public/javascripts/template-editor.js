@@ -100,21 +100,17 @@ document.querySelector("form").addEventListener("click", (event) => {
   // Delete option from question
   var targetElem = event.target.closest(".col-radio-delete");
   if (targetElem) {
+    var card = event.target.closest(".card");
     if(value == "Radio Button"){
       deleteOption(targetElem);
     }
     else{
       deleteSeperateTagOption(targetElem);
     }
-    console.log(event.target);
-    
-    var card = event.target.closest(".card");
-    var addButton = card.querySelector(".add-options-btn");
-    console.log(card);
-    
-    console.log(addButton);
-    addButton.classList.remove("d-none");
-    
+   
+    var addButtons = card.querySelectorAll(".add-options-btn");
+    addButtons[1].classList.remove("d-none");
+
   }
 
   // Delete question from form
