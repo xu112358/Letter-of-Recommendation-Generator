@@ -93,6 +93,9 @@ document.querySelector("form").addEventListener("change", (event) => {
       selectedCard.querySelector(".options").classList.remove("d-none");
       selectedCard.querySelector(".seperate-tag-options").classList.add("d-none");
       selectedCard.querySelector(".normal-tag").classList.remove("d-none");
+
+
+
     }
     else if(value == "Checkbox"){
       var selectedCard = event.target.closest(".card");
@@ -150,6 +153,8 @@ document.querySelector("form").addEventListener("click", (event) => {
     else{
       deleteSeperateTagOption(targetElem);
     }
+
+   
     var addButtons = card.querySelectorAll(".add-options-btn");
     addButtons[1].classList.remove("d-none");
   }
@@ -191,7 +196,6 @@ document.querySelector("form").addEventListener("click", (event) => {
       }
       var index = tagArray.indexOf(id);
       tagArray.splice(index, 1);
-
       event.target.closest(".card").remove();
     }
 
@@ -249,7 +253,6 @@ function addOption(event) {
 }
 
 function addSeperateTagOption(event) {
-  // Check if there is only one option, if so, show delete button
   var targetOptions = event.target.closest(".seperate-tag-options");
   console.log(event.target);
   console.log(targetOptions);
@@ -257,6 +260,11 @@ function addSeperateTagOption(event) {
   if (optionsCount == 1) {
     targetOptions.querySelector(".col-radio-delete").classList.remove("d-none");
   }
+
+  if(optionsCount >= 8){
+    event.target.classList.add("d-none");
+  }
+
 
   // Find options div of current card
   var selectedOptions = event.target.closest(".seperate-tag-options");
