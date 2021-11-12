@@ -3,6 +3,47 @@ let Embed = Quill.import('blots/embed');
 var questionID = 0;
 // array of tags
 var tagArray = [];
+var letter;
+
+var id = parseAttribute("id");
+
+
+/**
+ * Prototype class for Questions
+ */
+
+ var questions = [];
+ var tags = [];
+ var warningModalFunction;
+ class Question {
+   constructor(type, value, tag, optional = false, orgQuestion = false) {
+     // Text, Radio Button, Checkbox
+     this.type = type;
+     this.value = value;
+     this.tag = tag;
+     this.optional = optional;
+     // local browser
+     this.id = questions.length;
+     // Filled with Objects of {option, fill, tag} (all strings) if dealing with Radio Button or Checkbox
+     // tag is always empty string for radio button options
+     this.options = [];
+ 
+     this.isOrganizationQuestion = orgQuestion;
+   }
+ 
+   setId(id) {
+     this.id = id;
+   }
+ 
+   setOptions(options) {
+     this.options = options;
+   }
+ 
+   setOrganizationQuestion(booleanValue) {
+     this.isOrganizationQuestion = booleanValue;
+   }
+ }
+
 
 class SpanEmbed extends Embed {
   static create(value) {
@@ -32,6 +73,9 @@ window.onload = function () {
   createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null, null);
   createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null, null);
   createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null, null);
+
+  
+
   document.activeElement.blur();
 };
 
@@ -73,7 +117,7 @@ document.querySelector("form").addEventListener("click", (event) => {
 
   var selectedCard = event.target.closest(".card");
 
-  if(selectedCard.id == "question-box")
+  if(selectedCard.id != null && selectedCard.id == "question-box")
     return;
   var select = selectedCard.children.item(0);
   select = select.children.item(1);
@@ -97,13 +141,15 @@ document.querySelector("form").addEventListener("click", (event) => {
   // Delete option from question
   var targetElem = event.target.closest(".col-radio-delete");
   if (targetElem) {
+    var card = event.target.closest(".card");
     if(value == "Radio Button"){
       deleteOption(targetElem);
     }
     else{
       deleteSeperateTagOption(targetElem);
     }
-    
+    var addButtons = card.querySelectorAll(".add-options-btn");
+    addButtons[1].classList.remove("d-none");
   }
 
   // Delete question from form
@@ -866,6 +912,64 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     alert("Some inserted tags do not have corresponding questions.");
     return;
   }
+
+  var template = {
+    name: document.getElementById("template-name").value,
+    text: letter,
+    questions: getQuestions(),
+    };
+
+  if(id){
+    $.ajax({
+      url: "/template-editor/update",
+      data: {
+        id: id,
+        template,
+      },
+      type: "POST",
+      cache: false,
+      complete: function (data) {
+        console.log("complete");
+      },
+      success: function (data) {
+        console.log("success in SaveTemplate");
+        window.location.href = "/template-dashboard";
+      },
+      error: function (err) {
+        console.log("error in saveTemplate:" + err);
+        return;
+      },
+    });
+  }
+  else{
+    console.log("creating template");
+    $.ajax({
+      url: "/template-editor/create",
+      data: { template: template },
+      type: "POST",
+      complete: function () {
+        console.log("complete");
+      },
+      success: function (data) {
+        id = data.id;
+        console.log("success in Creating Template");
+        window.location.href = "/template-dashboard";
+      },
+      error: function (err) {
+        alert("Template name already exists.");
+        console.log("error in saveTemplate:" + err);
+        var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
+        addError(textField, 0, "template name already exists");
+        window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
+        emphasizeTags();
+        return;
+      },
+    });
+  }
+  
+
+
+
 });
 
 // Parse text editor 
@@ -913,6 +1017,8 @@ function parseEditor() {
   console.log(text);
   console.log(quill.root.innerHTML);
 
+  letter = text;
+
   return 0;
 }
 
@@ -930,4 +1036,84 @@ document.getElementById("additional-questions-info").onclick = function (event) 
   document.getElementById("exampleModalLabel").innerHTML = "Custom Questions"
   document.getElementById("instructions").innerHTML = "Customize questions form the form."
   document.getElementById("open-modal").click();
+}
+
+function getQuestions() {
+  var dbQuestions = [];
+  var questionNumber = 1;
+
+  var questionInputs = document.getElementsByClassName("question-input");
+  var updatedQuestions = [];
+
+  for (var i = 0; i < questionInputs.length; i++) {
+
+    var card = questionInputs[i].closest(".card");
+    var type = card.children.item(0).children.item(1).children.item(0).value;
+    var tag = card.children.item(3).children.item(0).children.item(0).value;
+
+    var optionTagInputs = card.querySelectorAll(".tag-input");
+    var optionInputs = card.querySelectorAll(".option-input");
+
+    var options = [];
+
+    for(var j = 0 ; j < optionTagInputs.length ; j++){
+      var option = constructOptionObject(optionInputs[j].value, optionTagInputs[j].value);
+      options.push(option);
+    }
+
+
+    if(selectValue == "Radio Button"){
+      type = 0;
+    }
+    else if(selectValue == "Checkbox"){
+      type = 1;
+    }
+    else if(selectValue == "Text"){
+      type = 2;
+    }
+    else {
+      type = 3;
+    }
+
+    var newQuestion = new Question(
+      type,
+      questions[i].value,
+      tag,
+      false,
+      false
+    );
+    newQuestion.setOptions(options);
+    newQuestion.setId(i);
+    updatedQuestions.push(newQuestion);
+  }
+  console.log({ updatedQuestions });
+
+  updatedQuestions.forEach((question) =>
+    dbQuestions.push({
+      number: questionNumber++,
+      type: question.type,
+      question: question.value,
+      options: question.options,
+      tag: question.tag,
+      optional: question.optional,
+      organizationFlag: question.isOrganizationQuestion,
+    })
+  );
+  console.log({ dbQuestions });
+  // throw Error('two pretty best friends not found');
+  return dbQuestions;
+}
+
+function parseAttribute(attr) {
+  return document.currentScript.getAttribute(attr) == ""
+    ? null
+    : document.currentScript.getAttribute(attr);
+}
+
+function constructOptionObject(option, tag = "") {
+  return {
+    option: option,
+    fill: fill,
+    tag: tag,
+  };
 }
