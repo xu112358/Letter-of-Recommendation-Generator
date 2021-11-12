@@ -1,8 +1,8 @@
 //load country names and phone codes
 let countryData;
 
-let fileName = "";
-let fileData = "";
+let fileName = [];
+let fileData = [];
 $.ajax({
   url: "/api/countryCodes",
   type: "GET",
@@ -94,7 +94,7 @@ function loadProfile() {
 
     if (data.enableCustomTemplate) {
       document.getElementById("fileUpload").innerHTML =
-        '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)"></div>';
+        '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)" multiple></div>';
     }
   });
 }
@@ -134,12 +134,12 @@ function changeLabel() {
   document.getElementById("fileUpload").innerHTML = document.getElementById(
     "fileUpload"
   ).innerHTML = document.getElementById("flexSwitch").checked
-    ? '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)"></div>'
+    ? '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)" multiple></div>'
     : "";
 
   if (!document.getElementById("flexSwitch").checked) {
-    fileData = "";
-    fileName = "";
+    fileData = [];
+    fileName = [];
   }
 }
 
@@ -352,25 +352,24 @@ function fillInAddress() {
 
 //function for handling file upload
 function handleFile(files) {
-  let file = files[0];
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    var fileReader = new FileReader();
 
-  var fileReader = new FileReader();
-
-  /*
+    /*
   Read in file in binary, then convert to Uint8Array.
   Next, convert to normal array to deserealize
   In server, we will use this array to write to plain docx
    */
-  fileReader.onload = () => {
-    fileData = Array.from(new Uint8Array(fileReader.result));
-    fileName = file.name;
+    fileReader.onload = () => {
+      fileData.push(Array.from(new Uint8Array(fileReader.result)));
+      fileName.push(file.name);
+    };
 
-    console.log(fileData);
-  };
+    fileReader.readAsArrayBuffer(file);
 
-  fileReader.readAsArrayBuffer(file);
-
-  fileReader.onerror = () => {
-    console.log(fileReader.error);
-  };
+    fileReader.onerror = () => {
+      console.log(fileReader.error);
+    };
+  }
 }

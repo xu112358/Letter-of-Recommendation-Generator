@@ -64,8 +64,7 @@ router.post("/login", async (req, res, next) => {
   var mytoken = jwt.sign(
     {
       iss: "Letter of Recommendation Generator",
-      aud:
-        "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+      aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
       email: userProfile.email,
     },
     privateKey,
@@ -251,22 +250,16 @@ router.post("/profile", async (req, res) => {
     user.isProfileSet = true;
     user.enableCustomTemplate = data.enableCustomTemplate;
 
-    //console.log(data.fileData);
+    //if user opt to use custom templates
     if (user.enableCustomTemplate) {
-      var dir = path.join("uploads", decoded.email);
-      dir = path.join(__dirname, dir);
-      console.log(dir);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-        console.log("create directory");
+      var bufArray = data.fileData;
+      //set or update user's letter templates
+      for (var i = 0; i < bufArray.length; i++) {
+        user.letterTemplates.set(
+          path.parse(data.fileName[i]).name,
+          bufArray[i]
+        );
       }
-
-      const buf = Buffer.from(data.fileData);
-      fs.writeFileSync(
-        path.join(dir, "recommendation" + path.extname(data.fileName)),
-        buf
-      );
-
       console.log("template upload succeed");
     }
 
