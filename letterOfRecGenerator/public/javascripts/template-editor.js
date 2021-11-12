@@ -872,13 +872,14 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
   }
 
   var tagError = parseEditor();
+  parseEditorHTML();
   if (!hasError && tagError) {
     alert("Some inserted tags do not have corresponding questions.");
     return;
   }
 });
 
-// Parse text editor 
+// Parse text editor into plain text
 // Returns 1 on error, 0 on success
 function parseEditor() {
   var hasError = 0;
@@ -890,7 +891,7 @@ function parseEditor() {
 
   var tags = document.querySelectorAll(".tag-input")
 
-  var text = "";
+  var plainText = "";
   for (var i=0; i<contents.length; ++i) {
     var op = contents[i];
     if (op?.insert?.spanEmbed?.value !== undefined) {
@@ -911,21 +912,32 @@ function parseEditor() {
         return 1;
       }
       else {
-        text += "<!" + op?.insert?.spanEmbed?.value + ">";
+        plainText += "<!" + op?.insert?.spanEmbed?.value + ">";
       }
     }
     else {
-      text += op?.insert;
+      plainText += op?.insert;
     }
   }
 
-  // text is a string that contains the parsed text editor with tags in <!tag> format
-  console.log(text);
-  console.log(quill.root.innerHTML);
+  // plainText is a string that contains the parsed text editor with tags in <!tag> format
+  console.log(plainText);
 
   return 0;
 }
 
+// Parse text editor mainting html format but replacing tags with <!tag>
+function parseEditorHTML() {
+  var htmlText = quill.root.innerHTML;
+  const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\">.*<span contenteditable=\"false\">\\s");
+  const tagRegexEnd = new RegExp("\\s<\/span>.*<\/span>");
+  console.log(htmlText);
+  
+  htmlText = htmlText.replace(tagRegexStart, "<!");
+  htmlText = htmlText.replace(tagRegexEnd, ">");
+  
+  console.log(htmlText);
+}
 
 // Add eventListener to info icons
 // document.getElementById("default-questions-info").onclick = function (event) {
