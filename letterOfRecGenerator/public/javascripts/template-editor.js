@@ -93,6 +93,9 @@ document.querySelector("form").addEventListener("change", (event) => {
       selectedCard.querySelector(".options").classList.remove("d-none");
       selectedCard.querySelector(".seperate-tag-options").classList.add("d-none");
       selectedCard.querySelector(".normal-tag").classList.remove("d-none");
+
+
+
     }
     else if(value == "Checkbox"){
       var selectedCard = event.target.closest(".card");
@@ -150,8 +153,15 @@ document.querySelector("form").addEventListener("click", (event) => {
     else{
       deleteSeperateTagOption(targetElem);
     }
+<<<<<<< HEAD
     var addButtons = card.querySelectorAll(".add-options-btn");
     addButtons[1].classList.remove("d-none");
+=======
+   
+    var addButtons = card.querySelectorAll(".add-options-btn");
+    addButtons[1].classList.remove("d-none");
+
+>>>>>>> quill-tag
   }
 
   // Delete question from form
@@ -191,7 +201,6 @@ document.querySelector("form").addEventListener("click", (event) => {
       }
       var index = tagArray.indexOf(id);
       tagArray.splice(index, 1);
-
       event.target.closest(".card").remove();
     }
 
@@ -249,7 +258,6 @@ function addOption(event) {
 }
 
 function addSeperateTagOption(event) {
-  // Check if there is only one option, if so, show delete button
   var targetOptions = event.target.closest(".seperate-tag-options");
   console.log(event.target);
   console.log(targetOptions);
@@ -257,6 +265,11 @@ function addSeperateTagOption(event) {
   if (optionsCount == 1) {
     targetOptions.querySelector(".col-radio-delete").classList.remove("d-none");
   }
+
+  if(optionsCount >= 8){
+    event.target.classList.add("d-none");
+  }
+
 
   // Find options div of current card
   var selectedOptions = event.target.closest(".seperate-tag-options");
@@ -910,6 +923,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
   }
 
   var tagError = parseEditor();
+  parseEditorHTML();
   if (!hasError && tagError) {
     alert("Some inserted tags do not have corresponding questions.");
     return;
@@ -974,7 +988,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
 });
 
-// Parse text editor 
+// Parse text editor into plain text
 // Returns 1 on error, 0 on success
 function parseEditor() {
   var hasError = 0;
@@ -986,7 +1000,7 @@ function parseEditor() {
 
   var tags = document.querySelectorAll(".tag-input")
 
-  var text = "";
+  var plainText = "";
   for (var i=0; i<contents.length; ++i) {
     var op = contents[i];
     if (op?.insert?.spanEmbed?.value !== undefined) {
@@ -1007,23 +1021,34 @@ function parseEditor() {
         return 1;
       }
       else {
-        text += "<!" + op?.insert?.spanEmbed?.value + ">";
+        plainText += "<!" + op?.insert?.spanEmbed?.value + ">";
       }
     }
     else {
-      text += op?.insert;
+      plainText += op?.insert;
     }
   }
 
-  // text is a string that contains the parsed text editor with tags in <!tag> format
-  console.log(text);
-  console.log(quill.root.innerHTML);
+  // plainText is a string that contains the parsed text editor with tags in <!tag> format
+  console.log(plainText);
 
   letter = text;
 
   return 0;
 }
 
+// Parse text editor mainting html format but replacing tags with <!tag>
+function parseEditorHTML() {
+  var htmlText = quill.root.innerHTML;
+  const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\">.*<span contenteditable=\"false\">\\s");
+  const tagRegexEnd = new RegExp("\\s<\/span>.*<\/span>");
+  console.log(htmlText);
+  
+  htmlText = htmlText.replace(tagRegexStart, "<!");
+  htmlText = htmlText.replace(tagRegexEnd, ">");
+  
+  console.log(htmlText);
+}
 
 // Add eventListener to info icons
 // document.getElementById("default-questions-info").onclick = function (event) {
