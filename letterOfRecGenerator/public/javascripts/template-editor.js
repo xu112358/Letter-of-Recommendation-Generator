@@ -935,6 +935,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
       },
       success: function (data) {
         console.log("success in SaveTemplate");
+        console.log(data);
         window.location.href = "/template-dashboard";
       },
       error: function (err) {
@@ -945,6 +946,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
   }
   else{
     console.log("creating template");
+    console.log(template);
     $.ajax({
       url: "/template-editor/create",
       data: { template: template },
@@ -955,15 +957,13 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
       success: function (data) {
         id = data.id;
         console.log("success in Creating Template");
+        console.log(data);
         window.location.href = "/template-dashboard";
       },
       error: function (err) {
         alert("Template name already exists.");
         console.log("error in saveTemplate:" + err);
-        var textField = document.getElementById(NAME_CONTAINER_TEXT_FIELD_ID);
-        addError(textField, 0, "template name already exists");
-        window.scrollTo(errorScrollCoordinates.x, errorScrollCoordinates.y);
-        emphasizeTags();
+       
         return;
       },
     });
@@ -1050,8 +1050,10 @@ function getQuestions() {
   for (var i = 0; i < questionInputs.length; i++) {
 
     var card = questionInputs[i].closest(".card");
-    var type = card.children.item(0).children.item(1).children.item(0).value;
+    var selectValue = card.children.item(0).children.item(1).children.item(0).value;
     var tag = card.children.item(3).children.item(0).children.item(0).value;
+
+    var type;
 
     var optionTagInputs = card.querySelectorAll(".tag-input");
     var optionInputs = card.querySelectorAll(".option-input");
@@ -1059,7 +1061,7 @@ function getQuestions() {
     var options = [];
 
     for(var j = 0 ; j < optionTagInputs.length ; j++){
-      var option = constructOptionObject(optionInputs[j].value, optionTagInputs[j].value);
+      var option = constructOptionObject(optionInputs[j].value, "" ,optionTagInputs[j].value);
       options.push(option);
     }
 
@@ -1079,7 +1081,7 @@ function getQuestions() {
 
     var newQuestion = new Question(
       type,
-      questions[i].value,
+      questionInputs[i].value,
       tag,
       false,
       false
@@ -1112,7 +1114,7 @@ function parseAttribute(attr) {
     : document.currentScript.getAttribute(attr);
 }
 
-function constructOptionObject(option, tag = "") {
+function constructOptionObject(option, fill = "" ,tag = "") {
   return {
     option: option,
     fill: fill,
