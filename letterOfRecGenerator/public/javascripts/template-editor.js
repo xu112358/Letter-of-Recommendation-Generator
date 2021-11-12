@@ -5,8 +5,10 @@ var questionID = 0;
 var tagArray = [];
 var letter;
 
-var id = parseAttribute("id");
+const questionTypes = ["Text Answer", "Radio Button", "Checkbox", "Custom"];
 
+var id = parseAttribute("id");
+var saveSwitchData = parseAttribute("saveSwitchData");
 
 /**
  * Prototype class for Questions
@@ -74,7 +76,7 @@ window.onload = function () {
   createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null, null);
   createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null, null);
 
-  
+
 
   document.activeElement.blur();
 };
