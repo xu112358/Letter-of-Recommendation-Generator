@@ -23,7 +23,9 @@ var TemplateSchema = new Schema({
         organizationFlag: Boolean
     }],
     letterheadImg: String,
-    footerImg: String
+    footerImg: String,
+    htmlText: String,
+    parsedHtmlText: String
 });
 
 TemplateSchema.methods.getId = function () {

@@ -4,10 +4,14 @@ var questionID = 0;
 // array of tags
 var tagArray = [];
 var letter;
+var htmlLetter;
+var parsedHtmlLetter;
 
 const questionTypes = ["Text Answer", "Radio Button", "Checkbox", "Custom"];
 
 var id = parseAttribute("id");
+var letterheadImgData = parseAttribute("letterheadImgData");
+var footerImgData = parseAttribute("footerImgData");
 var saveSwitchData = parseAttribute("saveSwitchData");
 
 /**
@@ -917,6 +921,12 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
   var tagError = parseEditor();
   parseEditorHTML();
+
+  var htmlstring = quill.root.innerHTML;
+
+  // htmlstring = htmlstring.replace(/\"/g, /\\\"/);
+  htmlLetter = htmlstring;
+
   if (!hasError && tagError) {
     alert("Some inserted tags do not have corresponding questions.");
     return;
@@ -925,8 +935,18 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
   var template = {
     name: document.getElementById("template-name").value,
     text: letter,
+    htmlText: htmlLetter,
+    parsedHtmlText: parsedHtmlLetter,
     questions: getQuestions(),
     };
+
+  if (letterheadImgData) {
+    template.letterheadImg = letterheadImgData;
+  }
+
+  if (footerImgData) {
+    template.footerImg = footerImgData;
+  }
 
   if(id){
     $.ajax({
@@ -1025,7 +1045,7 @@ function parseEditor() {
   // plainText is a string that contains the parsed text editor with tags in <!tag> format
   console.log(plainText);
 
-  letter = text;
+  letter = plainText;
 
   return 0;
 }
@@ -1035,12 +1055,16 @@ function parseEditorHTML() {
   var htmlText = quill.root.innerHTML;
   const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\">.*<span contenteditable=\"false\">\\s");
   const tagRegexEnd = new RegExp("\\s<\/span>.*<\/span>");
-  console.log(htmlText);
+  // console.log(htmlText);
   
   htmlText = htmlText.replace(tagRegexStart, "<!");
   htmlText = htmlText.replace(tagRegexEnd, ">");
   
-  console.log(htmlText);
+  // htmlText = htmlText.replace(/\"/g, /\\\"/);
+
+  parsedHtmlLetter = htmlText;
+
+  // console.log(htmlText);
 }
 
 // Add eventListener to info icons
@@ -1085,16 +1109,16 @@ function getQuestions() {
 
 
     if(selectValue == "Radio Button"){
-      type = 0;
+      type = "Radio Button";
     }
     else if(selectValue == "Checkbox"){
-      type = 1;
+      type = "Checkbox";
     }
     else if(selectValue == "Text"){
-      type = 2;
+      type = "Text";
     }
     else {
-      type = 3;
+      type = "Custom";
     }
 
     var newQuestion = new Question(
