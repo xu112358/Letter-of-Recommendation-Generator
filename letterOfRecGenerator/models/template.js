@@ -52,6 +52,15 @@ TemplateSchema.methods.getFooterImg = function () {
     return this.footerImg;
 };
 
+TemplateSchema.methods.gethtmlText = function () {
+    return this.htmlText;
+};
+
+TemplateSchema.methods.getparsedHtmlText= function () {
+    return this.parsedHtmlText;
+};
+
+
 TemplateSchema.methods.getTags = function () {
     var allTags = [];
     for(let q = 0; q < this.questions.length; q++) {

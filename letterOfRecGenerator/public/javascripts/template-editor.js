@@ -996,7 +996,12 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     });
   }
   
+  console.log(template);
 
+  
+
+
+// console.log(data);
 
 
 });
@@ -1055,11 +1060,13 @@ function parseEditorHTML() {
   var htmlText = quill.root.innerHTML;
   const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\">.*<span contenteditable=\"false\">\\s");
   const tagRegexEnd = new RegExp("\\s<\/span>.*<\/span>");
+
+  
   // console.log(htmlText);
   
   htmlText = htmlText.replace(tagRegexStart, "<!");
   htmlText = htmlText.replace(tagRegexEnd, ">");
-  
+
   // htmlText = htmlText.replace(/\"/g, /\\\"/);
 
   parsedHtmlLetter = htmlText;
