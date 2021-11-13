@@ -84,7 +84,6 @@ router.post("/prepareLetter", async function (req, res, next) {
     console.log(req.body.formID);
 
     console.log("user:**********************");
-    console.log(user);
 
     var pulled_text; //text that were getting and moving to docxtemplater
 

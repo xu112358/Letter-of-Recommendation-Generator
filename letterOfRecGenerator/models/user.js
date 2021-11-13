@@ -62,6 +62,12 @@ var UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  //map for storing multiple templates
+  letterTemplates: {
+    type: Map,
+    of: [Number],
+    default: {},
+  },
 });
 
 UserSchema.statics.findUser = function (id, cb) {
