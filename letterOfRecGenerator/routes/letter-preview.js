@@ -115,7 +115,11 @@ router.post("/prepareLetter", async function (req, res, next) {
         console.log(parseLetter(form));
 
         console.log(user.templates);
-        var formatted_text = letterParser.htmlstuff(parseLetter(form));
+        form.template.text = letterParser.htmlstuff(
+          decodeLetterHTML(pulled_text)
+        );
+
+        var formatted_text = parseLetter(form);
 
         console.log("loading input.txt");
 
@@ -210,6 +214,7 @@ router.get("/downloads", function (req, res) {
   res.download(file);
 });
 
+//parse the text
 function parseLetter(form) {
   var tagRegex = /\<\![a-z0-9_]+\>/gi;
   var letter = form.template.text;
@@ -268,6 +273,24 @@ function parseLetter(form) {
   }
 
   return noCapitalization.join("");
+}
+
+function decodeLetterHTML(text) {
+  text = text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/\<span class\="tag"\>/gi, "")
+    .replace(/\<\/span\>/gi, "")
+    .replace(/\<div\>/gi, "\n")
+    .replace(/\<\/div\>/gi, "")
+    .replace(/\<br\>/gi, "\n")
+    .replace(/\&nbsp;/g, " ");
+  text = text.replace(/\<strong\>\<\!/gi, "<!").replace(/\<\/strong\>/gi, "");
+  text = text.replace(/\<strong\>/gi, "");
+  return text;
 }
 
 module.exports = router;
