@@ -377,6 +377,7 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
       formattedQuestions.push({
         tag: question.tag,
         question: question.question,
+        type: question.type,
       });
     } else if (question.type === "Custom") {
       // custom
@@ -387,6 +388,7 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
         formattedQuestions.push({
           tag: question.options[i].tag,
           question: customQuestion,
+          type: question.type,
         });
         customQuestion = question.question; //Reupdate to original question
       }
@@ -399,6 +401,7 @@ FormSchema.methods.getFormattedQuestions = function (id, cb) {
         formattedQuestions.push({
           tag: question.options[i].tag,
           question: checkboxQuestion,
+          type: question.type,
         });
         checkboxQuestion = question.question; //Reupdate to original question
       }
