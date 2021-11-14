@@ -1044,7 +1044,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     name: document.getElementById("template-name").value,
     text: encodeLetterHTML(quill.root.innerHTML),
     htmlText: encodeLetterHTML(quill.root.innerHTML),
-    parsedHtmlText: encodeLetterHTML(quill.root.innerHTML),
+    parsedHtmlText: parsedHtmlLetter,
     questions: getQuestions(),
     };
 
@@ -1169,16 +1169,17 @@ function parseEditor() {
 // Parse text editor mainting html format but replacing tags with <!tag>
 function parseEditorHTML() {
   var htmlText = quill.root.innerHTML;
-  const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\"><span contenteditable=\"false\">\s");
-  const tagRegexEnd = new RegExp("\\s<\/span>.*<\/span>");
-
-  console.log(htmlText);
-
+  const tagRegexStart = new RegExp(/<span class=\"span-insert\" data-type=\".*?\"><span contenteditable=\"false\">\s/g);
+  const tagRegexEnd = new RegExp(/\s<\/span>.*?<\/span>/g);
+  
   htmlText = htmlText.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
   // console.log(htmlText);
+  htmlText = htmlText.replaceAll(tagRegexStart, "<!");
+  htmlText = htmlText.replaceAll(tagRegexEnd, ">");
 
   parsedHtmlLetter = htmlText;
-
+  
   // console.log(htmlText);
 }
 
@@ -1218,15 +1219,15 @@ function getQuestions() {
 
     var options = [];
 
-    if(selectValue == "Radio Button"){
+    if(selectValue === "Radio Button"){
       for(var j = 0 ; j < optionInputs.length ; j++){
-        var option = constructOptionObject(optionInputs[j].value, "fill" ,"fill");
+        var option = constructOptionObject(optionInputs[j].value, optionInputs[j].value ,null);
         options.push(option);
       }
     }
-    else if(selectValue == "Checkbox"){
+    else if(selectValue === "Checkbox"){
       for(var j = 0 ; j < seperateOptionInputs.length ; j++){
-        var option = constructOptionObject(seperateOptionInputs[j].value, "fill" ,seperateOptionTagInputs[j].value);
+        var option = constructOptionObject(seperateOptionInputs[j].value, seperateOptionTagInputs[j].value, seperateOptionTagInputs[j].value);
         options.push(option);
       }
     }
