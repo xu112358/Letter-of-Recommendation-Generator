@@ -232,7 +232,7 @@ document.querySelector("form").addEventListener("click", (event) => {
     console.log(tagArray);
     console.log(event.target.id);
 
-    if(value =="Radio Button"){
+    if(value =="Text" || value == "Radio Button"){
       var id = parseInt(event.target.id,10);
       var index = tagArray.indexOf(id);
       console.log(index);
@@ -613,7 +613,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
     seperate_tag_input.type = "text";
     seperate_tag_input.classList.add("form-control");
     seperate_tag_input.classList.add("tag-input");
-    seperate_tag_input.setAttribute("data-value", "");
+    seperate_tag_input.setAttribute("data-value", null);
     seperate_tag_input.placeholder = "Tag";
     seperate_tag_input.value = null;
     // Adding Unique ID to dynamically created question
@@ -677,7 +677,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
       seperate_tag_input.type = "text";
       seperate_tag_input.classList.add("form-control");
       seperate_tag_input.classList.add("tag-input");
-      seperate_tag_input.setAttribute("data-value", "");
+      seperate_tag_input.setAttribute("data-value", tagsVal[i]);
       seperate_tag_input.placeholder = "Tag";
       seperate_tag_input.value = tagsVal[i];
       // Adding Unique ID to dynamically created question
@@ -709,7 +709,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
       boilerTag.classList.add("tag");
       boilerTag.id = "t" + seperate_tag_input.id.substr(1);
       boilerTag.innerHTML = tagsVal[i];
-      boilerTag.setAttribute("data-value", tagVal);
+      boilerTag.setAttribute("data-value", tagsVal[i]);
 
       tag_container.appendChild(boilerTag);
 
@@ -750,7 +750,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
   tag_input.type = "text";
   tag_input.classList.add("form-control", "normal-tag");
   tag_input.classList.add("tag-input");
-  tag_input.setAttribute("data-value", "");
+  tag_input.setAttribute("data-value", tagVal);
   tag_input.placeholder = "Tag";
   tag_input.value = tagVal;
   // Adding Unique ID to dynamically created question
@@ -1342,7 +1342,7 @@ function encodeLetterHTML(text) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;")
     .replace(/\n/gi, "<br>")
-    .replace(/\t/gi, " ");
+    .replace(/\t/gi, "&tab");
 }
 
 function decodeLetterHTML(text) {
@@ -1352,11 +1352,7 @@ function decodeLetterHTML(text) {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
-    .replace(/\<span class\="tag"\>/gi, "")
-    .replace(/\<\/span\>/gi, "")
-    .replace(/\<div\>/gi, "\n")
-    .replace(/\<\/div\>/gi, "")
     .replace(/\<br\>/gi, "\n")
-    .replace(/\&nbsp;/g, " ");
+    .replace(/&tab/gi, "\t");
 }
 
