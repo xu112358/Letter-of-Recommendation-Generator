@@ -924,19 +924,35 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
 
   var htmlstring = quill.root.innerHTML;
 
+  htmlstring = htmlstring.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+
+  // htmlstring = htmlstring.replace(/\n/g,"\\n");
+  // htmlstring = htmlstring.replace(/\t/g,"\\t");
+
   // htmlstring = htmlstring.replace(/\"/g, /\\\"/);
   htmlLetter = htmlstring;
+
+  
+  
+
+  // letter = letter.replace(/[u0000-u0019]+/g,""); 
+  // htmlLetter = htmlLetter.replace(/[u0000-u0019]+/g,""); 
+  // parsedHtmlLetter = parsedHtmlLetter.replace(/[u0000-u0019]+/g,""); 
+
 
   if (!hasError && tagError) {
     alert("Some inserted tags do not have corresponding questions.");
     return;
   }
 
+
+
   var template = {
     name: document.getElementById("template-name").value,
-    text: letter,
-    htmlText: htmlLetter,
-    parsedHtmlText: parsedHtmlLetter,
+    text: encodeLetterHTML(quill.root.innerHTML),
+    htmlText: encodeLetterHTML(quill.root.innerHTML),
+    parsedHtmlText: encodeLetterHTML(quill.root.innerHTML),
     questions: getQuestions(),
     };
 
@@ -1049,6 +1065,9 @@ function parseEditor() {
 
   // plainText is a string that contains the parsed text editor with tags in <!tag> format
   console.log(plainText);
+  // plainText = plainText.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+
 
   letter = plainText;
 
@@ -1058,16 +1077,13 @@ function parseEditor() {
 // Parse text editor mainting html format but replacing tags with <!tag>
 function parseEditorHTML() {
   var htmlText = quill.root.innerHTML;
-  const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\">.*<span contenteditable=\"false\">\\s");
+  const tagRegexStart = new RegExp("<span class=\"span-insert\" data-type=\".*\"><span contenteditable=\"false\">\s");
   const tagRegexEnd = new RegExp("\\s<\/span>.*<\/span>");
 
-  
-  // console.log(htmlText);
-  
-  htmlText = htmlText.replace(tagRegexStart, "<!");
-  htmlText = htmlText.replace(tagRegexEnd, ">");
+  console.log(htmlText);
 
-  // htmlText = htmlText.replace(/\"/g, /\\\"/);
+  htmlText = htmlText.replace(/[\u200B-\u200D\uFEFF]/g, '');
+  // console.log(htmlText);
 
   parsedHtmlLetter = htmlText;
 
@@ -1170,3 +1186,73 @@ function constructOptionObject(option, fill = "" ,tag = "") {
     tag: tag,
   };
 }
+
+
+
+
+function isTagNotValid(tag) {
+  return !/\<\![a-z0-9_]+\>/i.test(tag);
+}
+
+function deemphasizeTags() {
+  var letterHTML = quill.root.innerHTML;
+  letter = letterHTML
+    .replace(/\<span class\="tag"\>/gi, "")
+    .replace(/\<span class\="tag-unknown"\>/gi, "")
+    .replace(/\<\/span\>/gi, "");
+}
+
+function emphasizeTags() {
+  var letterHTML = quill.root.innerHTML;
+  var letterHTMLWithTagEmphasis = letterHTML.replace(
+    /&lt;\![a-z0-9_]+&gt;/gi,
+    function (match) {
+      if (
+        unknownTags.find(function (tag) {
+          return tag === match;
+        })
+      ) {
+        return '<span class="tag-unknown">' + match + "</span>";
+      }
+
+      return '<span class="tag">' + match + "</span>";
+    }
+  );
+  letterHTMLWithTagEmphasis = isNotValid(letterHTMLWithTagEmphasis)
+    ? letterHTML
+    : letterHTMLWithTagEmphasis;
+  document.getElementById(
+    LETTER_TEXT_AREA_ID
+  ).innerHTML = letterHTMLWithTagEmphasis
+    .replace(/\<div\>\<br\>\<\/div\>/gi, "<br>")
+    .replace(/\<div\>/gi, "<br>")
+    .replace(/\<\/div\>/gi, "");
+}
+
+
+
+function encodeLetterHTML(text) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+    .replace(/\n/gi, "<br>");
+}
+
+function decodeLetterHTML(text) {
+  return text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/\<span class\="tag"\>/gi, "")
+    .replace(/\<\/span\>/gi, "")
+    .replace(/\<div\>/gi, "\n")
+    .replace(/\<\/div\>/gi, "")
+    .replace(/\<br\>/gi, "\n")
+    .replace(/\&nbsp;/g, " ");
+}
+
