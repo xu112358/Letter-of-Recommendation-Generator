@@ -28,7 +28,7 @@
       <%= title %>
     </h1>
     <form>
-      <input id="template-name" type="text" class="form-control form-control-lg" placeholder="Template Name">
+      <input id="template-name" type="text" class="form-control form-control-lg" placeholder="Template Name" value= <%= templateName %>>
       <!-- <div class="card container align-middle no-focus">
         <div class="row">
           <div class="col">
@@ -199,9 +199,8 @@
   theme: 'snow'  // or 'bubble'
 });
 </script>
-<script
-  type="text/javascript"
-  src="/javascripts/template-editor.js">
-</script>
+<script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
+  letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>"
+  saveSwitchData="<%= saveSwitch %>"></script>
 </html>
 

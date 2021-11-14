@@ -68,18 +68,83 @@ class SpanEmbed extends Embed {
 }
 
 window.onload = function () {
+
+
   // Quill initialization
   SpanEmbed.blotName = 'spanEmbed';
   SpanEmbed.tagName = 'span';
   Quill.register(SpanEmbed);
 
-  // Prefilled  questions
-  createCard("What is your first name?", "First Name", null, null);
-  createCard("What is your last name?", "Last Name", null, null);
-  createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null, null);
-  createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null, null);
-  createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null, null);
+  console.log(id);
 
+  if (id) {
+    $.ajax({
+      url: "/template-editor/template",
+      data: { id, saveSwitchData },
+      type: "GET",
+      success: function (data) {
+        quill.root.innerHTML = decodeLetterHTML(data.letter);
+        data.questions.forEach((question) => {
+          var savedQuestion = new Question(
+            question.type,
+            question.question,
+            question.tag,
+            question.optional,
+            question.isOrganizationQuestion
+          );
+          savedQuestion.options = question.options;
+          questions.push(savedQuestion);
+        });
+        console.log("success loading page");
+        console.log({ questions });
+        for(var i = 0 ; i < questions.length ; ++i){
+          if(questions[i].type === "Radio Button"){
+
+            var optionVals = [];
+            for (var j = 0 ; j < questions[i].options.length ; ++j){
+              optionVals.push(questions[i].options[j].option);
+            }
+
+            createCard(questions[i].value, questions[i].tag, optionVals, null, "Radio Button");
+          }
+          else if(questions[i].type === "Checkbox"){
+            var optionVals = [];
+            var tagVals = [];
+            for (var j = 0 ; j < questions[i].options.length ; ++j){
+              optionVals.push(questions[i].options[j].option);
+              tagVals.push(questions[i].options[j].tag)
+            }
+
+            createCard(questions[i].value, null, optionVals, tagVals, "Checkbox");
+            
+          }
+          else if(questions[i].type === "Text"){
+            createCard(questions[i].value, questions[i].tag, null, null , "Text");
+          }
+          else{
+            //// MAYBE CUSTOM??
+          }
+        }
+
+
+
+      },
+      error: function () {
+        console.log("error");
+      },
+    });
+  } else {
+    console.log("AAA");
+    // Prefilled  questions
+    createCard("What is your first name?", "First Name", null, null , "Text");
+    createCard("What is your last name?", "Last Name", null, null , "Text");
+    createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null, null , "Text");
+    createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null, null , "Text");
+    createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null, null , "Text");
+
+  }
+
+  
 
 
   document.activeElement.blur();
@@ -239,6 +304,7 @@ function addOption(event) {
   input.type = "text";
   input.classList.add("form-control", "option-input");
   input.placeholder = "Option";
+  input.value = null;
 
   var icon = document.createElement("i");
   icon.classList.add("fas", "fa-times");
@@ -291,7 +357,7 @@ function addSeperateTagOption(event) {
 
   var input = document.createElement("input");
   input.type = "text";
-  input.classList.add("form-control", "option-input");
+  input.classList.add("form-control", "seperate-option-input");
   input.placeholder = "Option";
 
   var col_tag_input = document.createElement("div");
@@ -303,7 +369,7 @@ function addSeperateTagOption(event) {
   seperate_tag_input.classList.add("tag-input");
   seperate_tag_input.setAttribute("data-value", "");
   seperate_tag_input.placeholder = "Tag";
-  seperate_tag_input.value = "";
+  seperate_tag_input.value = null;
   // Adding Unique ID to dynamically created question
   seperate_tag_input.id = "i" + (parseInt(firstTagID.substr(1)) + parseInt(optionsCount));
 
@@ -386,11 +452,11 @@ function deleteSeperateTagOption(targetElem) {
 
 // Add question
 document.querySelector(".add-questions-btn").addEventListener("click", (event) => {
-  createCard("", "", null);
+  createCard("", "", null, null, "Text");
 });
 
 // Args string, string, array of strings, array of strings
-function createCard(questionVal, tagVal, optionsVal, tagsVal) {
+function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
 
   var form = document.querySelector("form");
 
@@ -432,6 +498,8 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
   select.appendChild(option2);
   select.appendChild(option3);
 
+  select.value = questionType;
+
   col2.appendChild(select);
   col1.appendChild(ques_input);
 
@@ -442,6 +510,8 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
 
   var options = document.createElement("div");
   
+
+
   if (optionsVal == null) {
     options.classList.add("options", "d-none");
 
@@ -455,6 +525,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
     opt_input.type = "text";
     opt_input.classList.add("form-control", "option-input");
     opt_input.placeholder = "Option";
+    opt_input.value = null;
 
     var col_delete = document.createElement("div");
     col_delete.classList.add("col-radio-delete", "d-none");
@@ -471,6 +542,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
     options.appendChild(row1);
   }
   else {
+    options.classList.add("options", "d-none");
     for (var i=0; i<optionsVal.length; ++i) {
       var row1 = document.createElement("row");
       row1.classList.add("row");
@@ -520,7 +592,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
 
   var seperate_tag_options = document.createElement("div");
 
-  if (optionsVal == null) {
+  if (tagsVal == null) {
     seperate_tag_options.classList.add("seperate-tag-options", "d-none");
     var row1 = document.createElement("row");
     row1.classList.add("row");
@@ -530,8 +602,9 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
 
     var opt_input = document.createElement("input");
     opt_input.type = "text";
-    opt_input.classList.add("form-control", "option-input");
+    opt_input.classList.add("form-control", "seperate-option-input");
     opt_input.placeholder = "Option";
+    opt_input.value = null;
 
     var col_tag_input = document.createElement("div");
     col_tag_input.classList.add("col-tag-input", "col-5");
@@ -583,8 +656,8 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
 
   }
   else {
-    
-    for (var i=1; i<=optionsVal.length; ++i) {
+    seperate_tag_options.classList.add("seperate-tag-options", "d-none");
+    for (var i=0; i<optionsVal.length; ++i) {
       var row1 = document.createElement("row");
       row1.classList.add("row");
 
@@ -593,7 +666,7 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
 
       var opt_input = document.createElement("input");
       opt_input.type = "text";
-      opt_input.classList.add("form-control", "option-input");
+      opt_input.classList.add("form-control", "seperate-option-input");
       opt_input.placeholder = "Option";
       opt_input.value = optionsVal[i];
 
@@ -608,12 +681,12 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
       seperate_tag_input.placeholder = "Tag";
       seperate_tag_input.value = tagsVal[i];
       // Adding Unique ID to dynamically created question
-      seperate_tag_input.id = "i" + (parseInt(questionID) + parseInt(i));
+      seperate_tag_input.id = "i" + (parseInt(questionID) + parseInt(i+1));
 
       tagArray.push(parseInt(seperate_tag_input.id.substr(1)));
       
       var col_delete = document.createElement("div");
-      col_delete.classList.add("col-radio-delete", "d-none" , "col-1");
+      col_delete.classList.add("col-radio-delete", "col-1");
 
       var del_option_icon = document.createElement("i");
       del_option_icon.classList.add("fas", "fa-times");
@@ -645,6 +718,8 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
         boilerTag.classList.add("d-none");
       }
     }
+
+
   }
 
   var row2 = document.createElement("row");
@@ -721,7 +796,24 @@ function createCard(questionVal, tagVal, optionsVal, tagsVal) {
 
   form.appendChild(card);
 
+  if (questionType == "Radio Button") {
+    card.querySelector(".options").classList.remove("d-none");
+    card.querySelector(".seperate-tag-options").classList.add("d-none");
+    card.querySelector(".normal-tag").classList.remove("d-none");
+  }
+  else if(questionType == "Checkbox"){
+    card.querySelector(".options").classList.add("d-none");
+    card.querySelector(".seperate-tag-options").classList.remove("d-none");
+    card.querySelector(".normal-tag").classList.add("d-none");
+  }
+  else {
+    card.querySelector(".options").classList.add("d-none");
+    card.querySelector(".seperate-tag-options").classList.add("d-none");
+    card.querySelector(".normal-tag").classList.remove("d-none");
+  }
+
   ques_input.focus();
+
 }
 
 // Handles form input events
@@ -1120,15 +1212,26 @@ function getQuestions() {
 
     var type;
 
-    var optionTagInputs = card.querySelectorAll(".tag-input");
+    var seperateOptionInputs = card.querySelectorAll(".seperate-option-input");
+    var seperateOptionTagInputs = card.querySelectorAll(".tag-input");
     var optionInputs = card.querySelectorAll(".option-input");
 
     var options = [];
 
-    for(var j = 0 ; j < optionTagInputs.length ; j++){
-      var option = constructOptionObject(optionInputs[j].value, "" ,optionTagInputs[j].value);
-      options.push(option);
+    if(selectValue == "Radio Button"){
+      for(var j = 0 ; j < optionInputs.length ; j++){
+        var option = constructOptionObject(optionInputs[j].value, "fill" ,"fill");
+        options.push(option);
+      }
     }
+    else if(selectValue == "Checkbox"){
+      for(var j = 0 ; j < seperateOptionInputs.length ; j++){
+        var option = constructOptionObject(seperateOptionInputs[j].value, "fill" ,seperateOptionTagInputs[j].value);
+        options.push(option);
+      }
+    }
+
+    
 
 
     if(selectValue == "Radio Button"){
@@ -1238,7 +1341,8 @@ function encodeLetterHTML(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;")
-    .replace(/\n/gi, "<br>");
+    .replace(/\n/gi, "<br>")
+    .replace(/\t/gi, " ");
 }
 
 function decodeLetterHTML(text) {
