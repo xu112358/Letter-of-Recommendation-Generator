@@ -344,12 +344,13 @@ function parseAttribute(attr) {
 
 function encodeLetterHTML(text) {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
-    .replace(/\n/gi, "<br>");
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#039;")
+  .replace(/\n/gi, "<br>")
+  .replace(/\t/gi, "&tab");
 }
 
 function decodeLetterHTML(text) {
@@ -359,14 +360,15 @@ function decodeLetterHTML(text) {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
+    .replace(/\<br\>/gi, "\n")
+    .replace(/&tab/gi, "&emsp;")
     .replace(/\<span class\="tag"\>/gi, "")
     .replace(/\<\/span\>/gi, "")
     .replace(/\<div\>/gi, "\n")
     .replace(/\<\/div\>/gi, "")
-    .replace(/\<br\>/gi, "\n")
-    .replace(/\&nbsp;/g, " ");
-  text = text.replace(/\<strong\>\<\!/gi, "<!").replace(/\<\/strong\>/gi, "");
-  text = text.replace(/\<strong\>/gi, "");
+    .replace(/\&nbsp/g, " ");
+  // text = text.replace(/\<strong\>\<\!/gi, "<!").replace(/\<\/strong\>/gi, "");
+  // text = text.replace(/\<strong\>/gi, "");
   return text;
 }
 
