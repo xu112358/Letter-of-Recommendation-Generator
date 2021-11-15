@@ -222,6 +222,13 @@ function updateProfile() {
     return false;
   }
 
+  if (document.getElementById("flexSwitch").checked) {
+    if (document.getElementById("formFile").files.length == 0) {
+      alert("Please upload at least one letter template");
+      return false;
+    }
+  }
+
   var data = {
     firstName: firstName,
     middleName: middleName,
