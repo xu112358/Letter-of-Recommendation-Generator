@@ -119,7 +119,10 @@ router.post("/prepareLetter", async function (req, res, next) {
 
         var content;
         //if user choose default mode
-        if (!user.useCustomTemplate) {
+
+        console.log("Custom?");
+        console.log(user.enableCustomTemplate);
+        if (!user.enableCustomTemplate) {
           content = fs.readFileSync(
             path.resolve("./routes/uploads", "input.docx"),
             "binary"
@@ -131,15 +134,22 @@ router.post("/prepareLetter", async function (req, res, next) {
           if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
           }
-          i;
-          if (!user.letterTemplates[req.body.fileName]) {
+
+          console.log("Filename:", req.body.fileName);
+          console.log(Array.from(user.letterTemplates.keys()));
+          if (!user.letterTemplates.get(req.body.fileName)) {
             return res
               .status(400)
               .json({ error: "No letter templates associated with this user" });
           }
           fs.writeFileSync(
-            path.join(dir, "input.docx"),
-            user.letterTemplates[req.body.fileName]
+            path.join(dir, req.body.fileName + ".docx"),
+            Buffer.from(user.letterTemplates.get(req.body.fileName))
+          );
+
+          content = fs.readFileSync(
+            path.join(dir, req.body.fileName + ".docx"),
+            "binary"
           );
         }
 
