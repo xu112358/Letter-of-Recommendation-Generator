@@ -213,11 +213,8 @@ function createLetterPreview(form, letter) {
     letterContainer.style.cursor = "pointer";
     var outerContainer = document.getElementById(OUTER_CONTAINER);
 
-    if (letter) {
-      letterHTML = letter;
-    } else {
-      letterHTML = parseLetter(form);
-    }
+    letterHTML = parseLetter(form);
+
     innerContainer.innerHTML +=
       '<div id = "letter-text" style="white-space: pre-line">' +
       letterHTML +
@@ -237,7 +234,7 @@ function parseLetter(form) {
   //replace tags with student's
   responses.forEach((i) => {
     var tag = "<!" + i.tag + ">";
-    letter_html = letter_html.replace(tag, i.response);
+    letter_html = letter_html.replaceAll(tag, i.response);
   });
 
   var noCapitalization = Array.from(letter_html);

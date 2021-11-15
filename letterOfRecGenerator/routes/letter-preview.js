@@ -225,11 +225,11 @@ function parseLetter(form) {
   //substitute the tag
   responses.forEach((i) => {
     var tag = "<!" + i.tag + ">";
-    letter = letter.replace(tag, i.response);
+    letter = letter.replaceAll(tag, i.response);
   });
 
   //replace <p> and <p/>
-  letter = letter.replace("<p>", "").replace("</p>", "\n");
+  letter = letter.replaceAll("<p>", "").replaceAll("</p>", "\n");
 
   return letter;
 
