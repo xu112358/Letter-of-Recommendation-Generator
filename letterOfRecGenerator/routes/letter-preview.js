@@ -217,7 +217,7 @@ router.get("/downloads", function (req, res) {
 });
 
 //parse the text
-async function parseLetter(form) {
+function parseLetter(form) {
   //var tagRegex = /\<\![a-z0-9_]+\>/gi;
   var letter = form.template.parsedHtmlText;
   var responses = form.responses;
@@ -228,20 +228,8 @@ async function parseLetter(form) {
     letter = letter.replace(tag, i.response);
   });
 
-  //user use their own template
-  //create a directory for this user to do file IO
-  var dir = path.join(__dirname, "uploads/" + form.email);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-
-  //keep the styling from html and dump into a temporary docx
-  const buf = await HTMLtoDOCX(letter, null, {});
-  fs.writeFileSync(dir + "/temp.docx", buf);
-
-  //extract text from this docx
-  const text = await any_text.getText(__dirname + "/uploads/input.docx");
-  console.log(text);
+  //replace <p> and <p/>
+  letter = letter.replace("<p>", "").replace("</p>", "\n");
 
   return letter;
 
