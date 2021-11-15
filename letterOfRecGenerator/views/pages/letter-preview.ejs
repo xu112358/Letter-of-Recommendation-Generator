@@ -1,133 +1,158 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/stylesheets/style.css"/>
-        <link rel="stylesheet" type="text/css" href="/css/letter-preview.css"/>
-        <link rel="stylesheet" type="text/css" href="/css/modal.css"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css">
-        <link rel="stylesheet" type="text/css" href="/css/all.css"/>
-        <link rel="stylesheet" type="text/css" href="/css/profile.css" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="/javascripts/letter-preview.js" id="'<%= id %>'"></script>
-        <script type="text/javascript" src="/javascripts/html2pdf.bundle.min.js" id="'<%= id %>'"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
-    </head>
-    <body onload="onLoad()">
-
-    <header>
-        <% include ../partials/header %>
-    </header> 
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/letter-preview.css" />
+    <link rel="stylesheet" type="text/css" href="/css/modal.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/css/all.css" />
+    <link rel="stylesheet" type="text/css" href="/css/profile.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script
+      type="text/javascript"
+      src="/javascripts/letter-preview.js"
+      id="'<%= id %>'"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/javascripts/html2pdf.bundle.min.js"
+      id="'<%= id %>'"
+    ></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.1/trix.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
+  </head>
+  <body onload="onLoad()">
+    <header><% include ../partials/header %></header>
     <div class="body">
-        
-        
-
-        <div class="user-profile">
-            <div class="row">
-                <h1>Preview Letter </h1>
-            </div>
-            <div class="row">
-                <div class="mb-4">
-                    For Recommendee <%= title %>
-                </div>
-
-                <div class="mb-4" id="outer-container">
-            
-                </div>
-
-                <div class="row">
-                    <% if (useCustom){ %>
-                        <div class="col-5">
-                            <p class="text-start">
-                                Custom Template Status: <strong>Enabled</strong>
-                            </p>
-                        </div>
-                    <% } else { %>
-                        <div class="col-5">
-                            <p class="text-start align-middle">
-                                Custom Template Status: <strong>Disabled</strong>
-                            </p>
-                        </div>
-                    <% } %>
-                </div>
-
-                
-                
-                    <form>
-                        <div class="form-group row">
-                            <% if (useCustom){ %>
-                                <div class="col-md">
-                                
-                                <label for="selectTemplate" class="form-label">Select A Template to Generate Letter</label>
-                                
-                                <select class="form-select" id="selectTemplate">
-                                    <%  for (var i = 0; i < letterTemplates.length; i++) { %>
-                                        <% if (i == 0) { %>
-                                            <option value="<%=letterTemplates[i]%>" selected> <%=letterTemplates[i]%></option>
-                                        <% } else{ %>
-                                            <option value="<%=letterTemplates[i]%>" selected> <%=letterTemplates[i]%></option>
-                                        <% } %>
-                                    <% } %>
-                                </select>
-                            </div>
-                            <% } %>
-                            <div class="col-md">
-                                <label for="theDate" class="form-label">Enter Date</label>
-                                <input class="form-control" type = "date" id = "theDate" name = "date">
-                            </div>
-                        </div>
-                        <br/>
-                        <button id="save" class="btn apply-btn"  type="button" onclick="saveLetter()">Save Letter</button>
-                    </form>
-                
-
-                
-                
-                
-
-            </div>
+      <div class="user-profile">
+        <div class="row">
+          <h1>Preview Letter</h1>
         </div>
+        <div class="row">
+          <div class="mb-4">For Recommendee <%= title %></div>
 
-        <!-- Save and Cancel Letter Preview Edit -->
-        <div id="add-question-modal">
-            <div id="letter-preview-modal" class="inside">
+          <div class="mb-4" id="outer-container"></div>
 
-                <form class="ui form example">
-                    <p class="modal-title"> Edit Letter </p>
-                    <div class="ui message error"></div>
-
-                    <div id="content" value="" type="hidden" name="content"></div>
-                    <trix-editor input="content"></trix-editor>
-
-                </form>
-
-                <div class="flex-row">
-                    <button id="save-btn" class="convert-pdf modal-btns" onclick="saveEditModal()">Save</button>
-                    <button id="cancel-btn" class="convert-pdf modal-btns" onclick="cancelEditModal()">Cancel</button>
-                </div>
-
+          <div class="row">
+            <% if (useCustom){ %>
+            <div class="col-5">
+              <p class="text-start">
+                Custom Template Status: <strong>Enabled</strong>
+              </p>
             </div>
-        </div>
+            <% } else { %>
+            <div class="col-5">
+              <p class="text-start align-middle">
+                Custom Template Status: <strong>Disabled</strong>
+              </p>
+            </div>
+            <% } %>
+          </div>
 
-     
-            
+          <form>
+            <div class="form-group row">
+              <% if (useCustom){ %>
+              <div class="col-md">
+                <label for="selectTemplate" class="form-label"
+                  >Select A Template to Generate Letter</label
+                >
+
+                <select class="form-select" id="selectTemplate">
+                  <% for (var i = 0; i < letterTemplates.length; i++) { %> <% if
+                  (i == 0) { %>
+                  <option value="<%=letterTemplates[i]%>" selected>
+                    <%=letterTemplates[i]%>
+                  </option>
+                  <% } else{ %>
+                  <option value="<%=letterTemplates[i]%>" selected>
+                    <%=letterTemplates[i]%>
+                  </option>
+                  <% } %> <% } %>
+                </select>
+              </div>
+              <% } %>
+              <div class="col-md">
+                <label for="theDate" class="form-label">Enter Date</label>
+                <input
+                  class="form-control"
+                  type="date"
+                  id="theDate"
+                  name="date"
+                />
+              </div>
+            </div>
+            <br />
+            <button
+              id="save"
+              class="btn apply-btn"
+              type="button"
+              onclick="saveLetter()"
+            >
+              Save Letter
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Save and Cancel Letter Preview Edit -->
+      <div id="add-question-modal">
+        <div id="letter-preview-modal" class="inside">
+          <form class="ui form example">
+            <p class="modal-title">Edit Letter</p>
+            <div class="ui message error"></div>
+
+            <div id="content" value="" type="hidden" name="content"></div>
+            <trix-editor input="content"></trix-editor>
+          </form>
+
+          <div class="flex-row">
+            <button
+              id="save-btn"
+              class="convert-pdf modal-btns"
+              onclick="saveEditModal()"
+            >
+              Save
+            </button>
+            <button
+              id="cancel-btn"
+              class="convert-pdf modal-btns"
+              onclick="cancelEditModal()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    </body>
-  
-<script>
-  var date = new Date();
-  var day = date.getDate();
-  var month = date.getMonth() + 1;
-  var year = date.getFullYear();
-  if (month < 10) month = "0" + month;
-  if (day < 10) day = "0" + day;
-  var today = year + "-" + month + "-" + day;
-  document.getElementById('theDate').value = today;
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+  </body>
+
+  <script>
+    var date = new Date();
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    var today = year + "-" + month + "-" + day;
+    document.getElementById('theDate').value = today;
+
+    let useCustom = <%= useCustom %>;
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"
+  ></script>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

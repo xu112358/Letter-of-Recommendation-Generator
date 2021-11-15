@@ -3,6 +3,7 @@ let countryData;
 
 let fileName = [];
 let fileData = [];
+let usr;
 $.ajax({
   url: "/api/countryCodes",
   type: "GET",
@@ -72,6 +73,7 @@ function loadProfile() {
       console.log("error in loading user profile");
     },
   }).done(function (data) {
+    usr = data;
     console.log(data);
     document.getElementById("fname").value = data.firstName;
     document.getElementById("mname").value = data.middleName;
@@ -223,8 +225,11 @@ function updateProfile() {
   }
 
   if (document.getElementById("flexSwitch").checked) {
-    if (document.getElementById("formFile").files.length == 0) {
-      alert("Please upload at least one letter template");
+    if (
+      document.getElementById("formFile").files.length == 0 &&
+      !usr.letterTemplates.size
+    ) {
+      alert("Please upload at least one letter template to you profile.");
       return false;
     }
   }

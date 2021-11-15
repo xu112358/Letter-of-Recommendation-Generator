@@ -25,6 +25,8 @@ var jwt = require("jsonwebtoken");
 const docx = require("docx");
 const request = require("request");
 const { Document, Paragraph, Packer } = docx;
+const HTMLtoDOCX = require("html-to-docx");
+const any_text = require("any-text");
 
 router.get("/", async function (req, res, next) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
@@ -76,6 +78,7 @@ router.post("/save", async function (req, res, next) {
   });
 });
 
+//generate recommendation letter
 router.post("/prepareLetter", async function (req, res, next) {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   const filePath = __dirname + "/uploads/" + "letterTemplate";
@@ -109,15 +112,6 @@ router.post("/prepareLetter", async function (req, res, next) {
         console.log("Form Data");
         console.log(form);
         //console.log(form.letter);
-        pulled_text = form.template.text;
-        res.json(form);
-
-        console.log(parseLetter(form));
-
-        console.log(user.templates);
-        form.template.text = letterParser.htmlstuff(
-          decodeLetterHTML(pulled_text)
-        );
 
         var formatted_text = parseLetter(form);
 
@@ -137,7 +131,12 @@ router.post("/prepareLetter", async function (req, res, next) {
           if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
           }
-
+          i;
+          if (!user.letterTemplates[req.body.fileName]) {
+            return res
+              .status(400)
+              .json({ error: "No letter templates associated with this user" });
+          }
           fs.writeFileSync(
             path.join(dir, "input.docx"),
             user.letterTemplates[req.body.fileName]
@@ -185,7 +184,7 @@ router.post("/prepareLetter", async function (req, res, next) {
           };
           console.log(JSON.stringify({ error: e }));
           // The error thrown here contains additional information when logged with JSON.stringify (it contains a property object).
-          throw error;
+          return res.status(500).json({ error: error });
         }
         var buf = doc.getZip().generate({ type: "nodebuffer" });
 
@@ -197,6 +196,9 @@ router.post("/prepareLetter", async function (req, res, next) {
         }
 
         fs.writeFileSync(path.resolve(dir_, "output.docx"), buf);
+
+        console.log("letter saved");
+        res.status(200).json({ success: true });
       }
     });
     // } ANCHOR: Try to get rid of this part
@@ -215,64 +217,76 @@ router.get("/downloads", function (req, res) {
 });
 
 //parse the text
-function parseLetter(form) {
-  var tagRegex = /\<\![a-z0-9_]+\>/gi;
-  var letter = form.template.text;
+async function parseLetter(form) {
+  //var tagRegex = /\<\![a-z0-9_]+\>/gi;
+  var letter = form.template.parsedHtmlText;
   var responses = form.responses;
 
-  var noCapitalization = Array.from(
-    letter
-      .replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-          return item.tag.localeCompare(match, { sensitivity: "base" }) == 0;
-        });
-        return response ? response.response : "";
-      })
-      .replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-          return item.tag.localeCompare(match, { sensitivity: "base" }) == 0;
-        });
-        return response ? response.response : "";
-      })
-  );
+  //substitute the tag
+  responses.forEach((i) => {
+    var tag = "<!" + i.tag + ">";
+    letter = letter.replace(tag, i.response);
+  });
 
-  for (var i = 0; i < noCapitalization.length; i++) {
-    // Found ending punctuation that isn't the last letter in the text
-    if (
-      (noCapitalization[i] == "." ||
-        noCapitalization[i] == "?" ||
-        noCapitalization[i] == "!") &&
-      i != noCapitalization.length - 1
-    ) {
-      // Make sure exclamation point is not from a tag
-      if (
-        noCapitalization[i] == "!" &&
-        i > 0 &&
-        noCapitalization[i - 1] == "<"
-      ) {
-        continue;
-      }
-
-      // Look for the next alphabetical character to capitalize
-      var j = i + 1;
-      while (
-        !(
-          (noCapitalization[j] >= "a" && noCapitalization[j] <= "z") ||
-          (noCapitalization[j] >= "A" && noCapitalization[j] <= "Z")
-        ) &&
-        j < noCapitalization.length
-      ) {
-        j++;
-      }
-
-      // Found character to capitalize
-      if (j < noCapitalization.length) {
-        noCapitalization[j] = noCapitalization[j].toUpperCase();
-      }
-    }
+  //user use their own template
+  //create a directory for this user to do file IO
+  var dir = path.join(__dirname, "uploads/" + form.email);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
   }
 
-  return noCapitalization.join("");
+  //keep the styling from html and dump into a temporary docx
+  const buf = await HTMLtoDOCX(letter, null, {});
+  fs.writeFileSync(dir + "/temp.docx", buf);
+
+  //extract text from this docx
+  const text = await any_text.getText(__dirname + "/uploads/input.docx");
+  console.log(text);
+
+  return letter;
+
+  //This is the part to capitalize characters
+  //Don't think it is needed as user themselves should be responsible for capitalization
+
+  // var noCapitalization = Array.from(letter);
+
+  // for (var i = 0; i < noCapitalization.length; i++) {
+  //   // Found ending punctuation that isn't the last letter in the text
+  //   if (
+  //     (noCapitalization[i] == "." ||
+  //       noCapitalization[i] == "?" ||
+  //       noCapitalization[i] == "!") &&
+  //     i != noCapitalization.length - 1
+  //   ) {
+  //     // Make sure exclamation point is not from a tag
+  //     if (
+  //       noCapitalization[i] == "!" &&
+  //       i > 0 &&
+  //       noCapitalization[i - 1] == "<"
+  //     ) {
+  //       continue;
+  //     }
+
+  //     // Look for the next alphabetical character to capitalize
+  //     var j = i + 1;
+  //     while (
+  //       !(
+  //         (noCapitalization[j] >= "a" && noCapitalization[j] <= "z") ||
+  //         (noCapitalization[j] >= "A" && noCapitalization[j] <= "Z")
+  //       ) &&
+  //       j < noCapitalization.length
+  //     ) {
+  //       j++;
+  //     }
+
+  //     // Found character to capitalize
+  //     if (j < noCapitalization.length) {
+  //       noCapitalization[j] = noCapitalization[j].toUpperCase();
+  //     }
+  //   }
+  // }
+
+  // return noCapitalization.join("");
 }
 
 function decodeLetterHTML(text) {

@@ -110,33 +110,57 @@ function cancelEditModal() {
 function saveLetter() {
   var date = document.getElementById("theDate").value;
   var notifyRecommendee = true;
-  var selectedTemplateIndex =
-    document.getElementById("selectTemplate").selectedIndex;
-  var templateFilename =
-    document.getElementById("selectTemplate").options[selectedTemplateIndex]
-      .value;
-  $.ajax({
-    url: "/letter-preview/prepareLetter",
-    data: {
-      id: id,
-      letter: letterHTML,
-      formID: form._id,
-      date: date,
-      notify: notifyRecommendee,
-      fileName: templateFilename,
-    },
-    type: "POST",
-    success: function (d) {
-      console.log("letter saved successfully");
-      document.getElementById("save").innerHTML = "Download Letter";
-      document.getElementById("save").onclick = downloadLetter;
-      alert("Document saved");
-      //window.location.href = '/recommender-dashboard';
-    },
-    error: function () {
-      console.log("error saving letter");
-    },
-  });
+  if (useCustom) {
+    var selectedTemplateIndex = document.getElementById("selectTemplate")
+      .selectedIndex;
+    var templateFilename = document.getElementById("selectTemplate").options[
+      selectedTemplateIndex
+    ].value;
+    $.ajax({
+      url: "/letter-preview/prepareLetter",
+      data: {
+        id: id,
+        letter: letterHTML,
+        formID: form._id,
+        date: date,
+        notify: notifyRecommendee,
+        fileName: templateFilename,
+      },
+      type: "POST",
+      success: function (d) {
+        console.log("letter saved successfully");
+        document.getElementById("save").innerHTML = "Download Letter";
+        document.getElementById("save").onclick = downloadLetter;
+        alert("Document saved");
+        //window.location.href = '/recommender-dashboard';
+      },
+      error: function () {
+        console.log("error saving letter");
+      },
+    });
+  } else {
+    $.ajax({
+      url: "/letter-preview/prepareLetter",
+      data: {
+        id: id,
+        letter: letterHTML,
+        formID: form._id,
+        date: date,
+        notify: notifyRecommendee,
+      },
+      type: "POST",
+      success: function (d) {
+        console.log("letter saved successfully");
+        document.getElementById("save").innerHTML = "Download Letter";
+        document.getElementById("save").onclick = downloadLetter;
+        alert("Document saved");
+        //window.location.href = '/recommender-dashboard';
+      },
+      error: function () {
+        console.log("error saving letter");
+      },
+    });
+  }
 }
 
 function downloadLetter() {
@@ -205,25 +229,18 @@ function createLetterPreview(form, letter) {
   });
 }
 function parseLetter(form) {
-  var letter = form.template.text;
-  var letter_html = decodeLetterHTML(letter);
+  //var letter = form.template.parsed;
+  var letter_html = form.template.parsedHtmlText;
   var responses = form.responses;
-  var noCapitalization = Array.from(
-    letter_html
-      .replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-          return item.tag.localeCompare(match, { sensitivity: "base" }) == 0;
-        });
-        return response ? response.response : "";
-      })
-      .replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-          return item.tag.localeCompare(match, { sensitivity: "base" }) == 0;
-        });
-        return response ? response.response : "";
-      })
-  );
+  console.log(responses);
 
+  //replace tags with student's
+  responses.forEach((i) => {
+    var tag = "<!" + i.tag + ">";
+    letter_html = letter_html.replace(tag, i.response);
+  });
+
+  var noCapitalization = Array.from(letter_html);
   for (var i = 0; i < noCapitalization.length; i++) {
     // Found ending punctuation that isn't the last letter in the text
     if (
@@ -344,13 +361,13 @@ function parseAttribute(attr) {
 
 function encodeLetterHTML(text) {
   return text
-  .replace(/&/g, "&amp;")
-  .replace(/</g, "&lt;")
-  .replace(/>/g, "&gt;")
-  .replace(/"/g, "&quot;")
-  .replace(/'/g, "&#039;")
-  .replace(/\n/gi, "<br>")
-  .replace(/\t/gi, "&tab");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+    .replace(/\n/gi, "<br>")
+    .replace(/\t/gi, "&tab");
 }
 
 function decodeLetterHTML(text) {
