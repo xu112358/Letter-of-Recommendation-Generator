@@ -238,8 +238,11 @@ function parseLetter(form) {
     letter = letter.replaceAll(tag, i.response);
   });
 
-  //replace <p> and <p/>
-  letter = letter.replaceAll("<p>", "").replaceAll("</p>", "\n");
+  //replace <br>, <p> and <p/>
+  letter = letter
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "\n")
+    .replaceAll("<br>", "\n");
 
   return letter;
 
