@@ -181,6 +181,12 @@ document.querySelector("form").addEventListener("change", (event) => {
   }
 });
 
+
+document.querySelector("#collapse-btn").addEventListener("click", (event) => {
+  console.log("AAA");
+  $('[data-bs-toggle="popover"]').popover("hide");
+});
+
 // Handles click events inside form element
 document.querySelector("form").addEventListener("click", (event) => {
 
