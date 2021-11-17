@@ -217,8 +217,9 @@ function isAuthenticated(req, res, next) {
 async function isProfileSet(req, res, next) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
   var user = await User.findOne({ email: decoded.email });
-
-  console.log(user);
+  if (!user) {
+    return res.redirect("/");
+  }
   if (user.isProfileSet) {
     next();
   } else {

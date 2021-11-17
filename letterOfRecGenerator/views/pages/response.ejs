@@ -31,21 +31,22 @@
                </div>
             </td>
             <td width="40%">
-                <div id="responses-container" contenteditable="true">
-                        <%  for(var k=0; k < responses.length; k++) {
-                                if(questions[q].tag == responses[k].tag) { %>
-                                    <%= responses[k].response %>
-                                <%}
-                            }%>
+                <div id="responses-container">
+                        <%  for(var k=0; k < responses.length; k++) { %>
+                                <% if(questions[q].tag == responses[k].tag) { %>
+                                    <% if(questions[q].type != "Checkbox") { %>
+                                    <span><%= responses[k].response %></span>
+                                    <% } else { %>
+                                    <span><%= "checked!" %></span>
+                                    <% } %>
+                                <%} %>
+                            <% } %>
                 </div>
             </td>
         </tr>
         <% } %>
         </tbody>
     </table>
-    </div>
-    <div class="flex-row">
-        <button id="save-button" onclick="saveEditedAnswers()">Save</button>
     </div>
 </body>
 <script>

@@ -23,7 +23,9 @@ var TemplateSchema = new Schema({
         organizationFlag: Boolean
     }],
     letterheadImg: String,
-    footerImg: String
+    footerImg: String,
+    htmlText: String,
+    parsedHtmlText: String
 });
 
 TemplateSchema.methods.getId = function () {
@@ -49,6 +51,15 @@ TemplateSchema.methods.getLetterheadImg = function () {
 TemplateSchema.methods.getFooterImg = function () {
     return this.footerImg;
 };
+
+TemplateSchema.methods.gethtmlText = function () {
+    return this.htmlText;
+};
+
+TemplateSchema.methods.getparsedHtmlText= function () {
+    return this.parsedHtmlText;
+};
+
 
 TemplateSchema.methods.getTags = function () {
     var allTags = [];

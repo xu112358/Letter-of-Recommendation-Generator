@@ -1,313 +1,206 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link rel="stylesheet" href="/css/template-editor.css" />
-    <link rel="stylesheet" type="text/css" href="/css/all.css" />
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="//sortablejs.github.io/Sortable/Sortable.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/trix/1.2.1/trix.css"
-    />
-        
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/trix/1.2.1/trix.js"></script>
-    <!-- <script type="text/javascript" src="http://livejs.com/live.js"></script> -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
-  </head>
 
-  <body>
-    <div id="tmp-editor-cont" class="templates">
-      <header><% include ../partials/header %></header>
-      <!-- start of bootstrap overhaul -->
-      <p class="title"><%= title %></p>
-      <div class="container py-3 my-3 section">
-        <div class="row my-3 section">
-          <div class="col d-flex align-items-center error-container">
-            <!-- <div class="error-container"> -->
-            <div class="text-white section-header">Template Name</div>
-            <div class="ml-2 col-6">
-              <input
-                id="name-container-text-field"
-                type="text"
-                class="form-control"
-                value="<%= templateName %>"
-                placeholder="e.g. Graduate School Recommendation Form"
-              />
-            </div>
-            <!-- </div> -->
-          </div>
-        </div>
-      </div>
-
-      <div class="container py-3 my-3 section">
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="/css/template-editor.css" />
+  <link rel="stylesheet" type="text/css" href="/css/all.css" />
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/e558bbfafc.js" crossorigin="anonymous"></script>
+<!-- Include stylesheet -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<body>
+  <div id="tmp-editor-cont" class="templates">
+    <header>
+      <% include ../partials/header %>
+    </header>
+  </div>
+  <div class="body">
+    <h1>
+      <%= title %>
+    </h1>
+    <form>
+      <input id="template-name" type="text" class="form-control form-control-lg" placeholder="Template Name" value= <%= templateName %>>
+      <!-- <div class="card container align-middle no-focus">
         <div class="row">
-          <div class="col-12 text-white">Custom Questions</div>
-        </div>
-        <div id="questions-container">
-          <div class="sortable-questions">
-            <div class="row error-container">
-              <div class="question-outer-container">
-                <div
-                  class="question-container d-flex align-items-center my-4 error-container question-outer-container"
-                  data-id="0"
-                >
-                  <div class="ml-4">
-                    <img
-                      class="icon-effects"
-                      src="/images/hamburger_white.svg"
-                    />
-                  </div>
-                  <div class="row col d-flex align-items-end">
-                    <div class="col col-5">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter new question here..."
-                        data-type="value"
-                      />
-                    </div>
-                    <div class="col col-2">
-                      <select
-                        class="form-control"
-                        id="exampleFormControlSelect1"
-                      >
-                        <option>Text Answer</option>
-                        <option>Radio Button</option>
-                        <option>Checkbox</option>
-                        <option>Custom</option>
-                      </select>
-                    </div>
-                    <div class="d-flex align-items-center">
-                      <span class="text-white mr-2">Required?</span
-                      ><input type="checkbox" checked="" class="big-checkbox" />
-                    </div>
-                    <div class="col-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="tag (e.g. <!FNAME>)"
-                        data-type="tag"
-                      />
-                    </div>
-
-                    <!-- Radio Button questions -->
-                    <div class="col col-3 mt-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Radio Button Option"
-                        data-type="value"
-                      />
-                    </div>
-                    <div class="col col-3 mt-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Text to Replace Tag"
-                        data-type="value"
-                      />
-                    </div>
-                    <div class="col col-6"></div>
-
-                    <!-- Checkbox questions -->
-                    <div class="col col-3 mt-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Checkbox Option."
-                        data-type="value"
-                      />
-                    </div>
-                    <div class="col col-3 mt-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Text to Replace Tag"
-                        data-type="value"
-                      />
-                    </div>
-                    <div class="col col-3 mt-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Tag (e.g. <!check-value>"
-                        data-type="value"
-                      />
-                    </div>
-
-                    <div class="col col-1 pb-1">
-                      <img
-                        class="remove-option-btn"
-                        src="/images/remove_white.png"
-                        alt="Remove"
-                      />
-                    </div>
-
-                    <div class="col col-2"></div>
-
-                    <div class="col mt-3">
-                      <button class="btn btn-light btn-sm">Add Option</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="mr-4 mt-4">
-                  <img
-                    class="remove-question-btn"
-                    src="/images/remove_white.png"
-                    alt="Remove"
-                  />
-                </div>
-              </div>
-            </div>
+          <div class="col">
+            <h3>Default Questions <span class="info form-text"><svg class="info" id="default-questions-info" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></span></h3>
           </div>
         </div>
-        <div class="row dflex">
-          <div class="ml-4">
-            <img
-              class="add-question"
-              src="images/plus.png"
-              onclick="addQuestion()"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- letter boilerplate -->
-      <div class="container py-3 my-3 section">
         <div class="row">
-          <div class="col-12 text-white">Letter Boilerplate</div>
+          <div class="col">
+            What is your first name?
+          </div>
         </div>
-        <div class="row bg-light m-3 p-3">
-          <div id="tags" class="d-flex align-items-center m-3 p-3">
-            <div class="col-1">
-              <span>Tags: </span>
+        <div class="row">
+          <div class="col">
+            What is your last name?
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            What is your preferred personal pronoun (subject)?
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            What is your preferred personal pronoun (object)?
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            What is your preferred possessive pronoun?
+          </div>
+        </div>
+      </div> -->
+
+      <div class="card container align-middle no-focus" id ="question-box">
+        <div class="row">
+          <div class="col">
+            <h3>Questions <span class="info form-text"><svg class="info" id="additional-questions-info" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></span></h3>
+          </div>
+      </div>
+      </div>
+      
+      <!-- Card Placeholder-->
+      <!-- <div class="card container align-middle">
+        Question and Dropdown
+        <div class="row">
+          <div class="col-8">
+            <input type="text" class="form-control question-input" placeholder="Question">
+          </div>
+          <div class="col-4">
+            <select class="form-select">
+              <option value="Text">Text</option>
+              <option value="Multiple Choice">Multiple Choice</option>
+              <option value="Checkboxes">Checkboxes</option>
+            </select>
+          </div>
+        </div>
+
+        Options
+        <div class="options d-none">
+          <div class="row">
+            <div class="col-radio-input">
+              <input type="text" class="form-control option-input" placeholder="Option">
             </div>
-            <div class="col-11 d-flex">
-              <div id="tag-container"></div>
+            <div class="col-radio-delete">
+              <i class="fas fa-times"></i>
             </div>
           </div>
-          <!-- <div class="col col-1">Template:</div> -->
-          <div class="col col-12 error-container my-5">
-            <div id="letter-container" class="">
-              <div class="">
-                <trix-editor
-                  class="trix-content"
-                  id="letter-text-area"
-                ></trix-editor>
-              </div>
+          Add Option Button
+          <row class="row">
+            <div class="col-radio-input">
+              <button type="button" class="add-btn add-options-btn">Add Option</button>
             </div>
+          </row>
+        </div>
+
+        Tag 
+        <div class="row">
+          <div class="col-4">
+            <input type="text" class="form-control" placeholder="Tag">
           </div>
+          <div class="col align-self-end">
+            <i class="fas fa-trash float-end delete-question-icon"></i>
+          </div>
+        </div>
+      </div> -->
+      <!-- Card End -->
+    </form>
+    <button type="button" class="add-btn add-questions-btn">Add Question</button>
+
+    <div class="card container">
+      <div class="row">
+        <div class="col">
+          <h3>Letter Boilerplate</h3>
         </div>
       </div>
-
-      <!-- end of bootstrap overhaul -->
-      <div id="template-editor-container">
-        <script>
-          function sendFile() {
-            // Form Data
-            var formData = new FormData();
-
-            var fileSelect = document.getElementById("template-upload-file");
-            if (fileSelect.files && fileSelect.files.length == 1) {
-              var file = fileSelect.files[0];
-              formData.set("file", file, file.name);
-            }
-
-            // Http Request
-            var request = new XMLHttpRequest();
-            request.open("POST", "/template-dashboard/uploadLetterTemplate");
-            request.send(formData);
-
-            //Submit success
-            alert("template uploaded");
-            //location.reload();
-          }
-        </script>
-        <!-- <div class="flex-display upload-cont">
-          <h2 id="upload-template" class="section-header">
-            Apply Body Text to Custom Template
-          </h2>
-          <div class="upload-preview-container flex1">
-            <form encType="multipart/form-data">
-              <input type="file" id="template-upload-file" />
-              <button type="button" onclick="sendFile()">Upload</button>
-            </form>
-          </div>
+      <div class="row tags">
+        <div class="col-sm-auto tag-header">
+          Tags: 
+        </div>
+        <!-- <div class="col-sm-auto tag" data-value="First Name">
+          First Name
+        </div>
+        <div class="col-sm-auto tag" data-value="Last Name">
+          Last Name
+        </div>
+        <div class="col-sm-auto tag" data-value="Pronoun (subject)">
+          Pronoun (subject)
+        </div>
+        <div class="col-sm-auto tag" data-value="Pronoun (object)">
+          Pronoun (object)
+        </div>
+        <div class="col-sm-auto tag" data-value="Possessive pronoun">
+          Possessive pronoun
         </div> -->
-
-        <br /><br />
-        <% if (typeof saveSwitch == "boolean") { if(saveSwitch){%>
-        <div class="flex-row">
-          <button id="save-button" onclick="saveTemplate()">Save</button>
-        </div>
-        <% }} else if (typeof saveSwitch == "string") { if (saveSwitch ==
-        "true"){%>
-        <div class="flex-row">
-          <button id="save-button" onclick="saveTemplate()">Save</button>
-        </div>
-        <% }} %>
+      </div>
+      <!-- Create the editor container -->
+      <div id="editor">
       </div>
     </div>
 
-    <script
-      type="text/javascript"
-      src="/javascripts/template-editor.js"
-      id="<%= id %>"
-      letterheadImgData="<%= letterheadImage %>"
-      footerImgData="<%= footerImage %>"
-      saveSwitchData="<%= saveSwitch %>"
-    ></script>
-    <script
-      type="text/javascript"
-      src="/javascripts/template-editor-tags.js"
-    ></script>
-  </body>
+    <button type="button" class="add-btn save-btn">Save Template</button>
 
-  <div id="add-question-modal">
-    <div class="content">
-      <div class="flex-row">
-        <h1>Select Question Type</h1>
-      </div>
-      <div class="flex-row option-cont">
-        <button onclick="addTextAnswerQuestion()">Text</button>
-      </div>
-      <div class="line"></div>
-      <div class="flex-row option-cont">
-        <button onclick="addRadioButtonQuestion()">Radio Button</button>
-      </div>
-      <div class="line"></div>
-      <div class="flex-row option-cont">
-        <button onclick="addCheckboxQuestion()">Checkbox</button>
+
+  <!-- Modal Component-->
+  <button style="display: none;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="open-modal">
+  </button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="instructions">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
+</body>
+<!-- Include the Quill library -->
+<script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
 
-  <div id="warning-modal">
-    <div class="content">
-      <div class="flex-row">
-        <h1>Are you sure?</h1>
-      </div>
-      <div class="flex-row">
-        <button onclick="executeWarningModalFunction()">Yes</button>
-        <button onclick="hideWarningModal()">No</button>
-      </div>
-    </div>
-  </div>
+<!-- Initialize Quill editor -->
+<script>
+
+  var toolbarOptions = [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline'] ,
+      [{'list' : 'ordered'}, {'list' : 'bullet'}],
+      [{ 'align': 'justify'}, {'align': 'center'}, {'align': 'right'}, {'align': null}]
+    ];
+
+
+  var quill = new Quill('#editor', {
+  modules: {
+    toolbar: toolbarOptions
+  },
+  theme: 'snow'  // or 'bubble'
+});
+</script>
+<script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
+  letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>"
+  saveSwitchData="<%= saveSwitch %>"></script>
 </html>
+

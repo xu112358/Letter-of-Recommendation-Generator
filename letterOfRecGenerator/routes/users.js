@@ -7,6 +7,8 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(
   "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com"
 );
+const multer = require("multer");
+const buffer = require("buffer");
 var jwt_decode = require("jwt-decode");
 var jwt = require("jsonwebtoken");
 var fs = require("fs");
@@ -62,7 +64,8 @@ router.post("/login", async (req, res, next) => {
   var mytoken = jwt.sign(
     {
       iss: "Letter of Recommendation Generator",
-      aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+      aud:
+        "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
       email: userProfile.email,
     },
     privateKey,
@@ -97,6 +100,7 @@ router.post("/login", async (req, res, next) => {
         res.redirect("/recommender-dashboard");
       } else {
         console.log("user not in system");
+        console.log(userProfile);
         //use user's name to hash to password
         const newUser = new User({
           email: userEmail,
@@ -246,6 +250,20 @@ router.post("/profile", async (req, res) => {
     user.country = data.country;
     user.selectedIndex = data.selectedIndex;
     user.isProfileSet = true;
+    user.enableCustomTemplate = data.enableCustomTemplate;
+
+    //if user opt to use custom templates
+    if (user.enableCustomTemplate) {
+      var bufArray = data.fileData;
+      //set or update user's letter templates
+      for (var i = 0; i < bufArray.length; i++) {
+        user.letterTemplates.set(
+          path.parse(data.fileName[i]).name,
+          bufArray[i]
+        );
+      }
+      console.log("template upload succeed");
+    }
 
     user
       .save()

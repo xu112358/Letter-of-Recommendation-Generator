@@ -1,5 +1,9 @@
 //load country names and phone codes
 let countryData;
+
+let fileName = [];
+let fileData = [];
+let usr;
 $.ajax({
   url: "/api/countryCodes",
   type: "GET",
@@ -47,7 +51,10 @@ function loadProfile() {
   var auth;
   var cookie = document.cookie.split(";");
   for (var i = 0; i < cookie.length; i++) {
-    if (cookie[i].substr(0, 6) == " auth=") {
+    if (
+      cookie[i].substr(0, 5) == "auth=" ||
+      cookie[i].substr(0, 6) == " auth="
+    ) {
       auth = cookie[i];
     }
   }
@@ -66,6 +73,7 @@ function loadProfile() {
       console.log("error in loading user profile");
     },
   }).done(function (data) {
+    usr = data;
     console.log(data);
     document.getElementById("fname").value = data.firstName;
     document.getElementById("mname").value = data.middleName;
@@ -81,6 +89,15 @@ function loadProfile() {
     document.getElementById("address3").value = data.city;
     document.getElementById("address4").value = data.statesProvinces;
     document.getElementById("postalCode").value = data.postalCode;
+    document.getElementById("flexSwitch").checked = data.enableCustomTemplate;
+    document.getElementById("switchLabel").innerHTML = data.enableCustomTemplate
+      ? "Click to Disable Custom Template"
+      : "Click to Enable Custom Template";
+
+    if (data.enableCustomTemplate) {
+      document.getElementById("fileUpload").innerHTML =
+        '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)" multiple></div>';
+    }
   });
 }
 
@@ -107,6 +124,26 @@ document.getElementById("address-help").onclick = function (e) {
     "Put down address of your school office if you have one. If not, put down the address of your department";
   document.getElementById("open-modal").click();
 };
+
+//add event listener to toggling custom template
+function changeLabel() {
+  document.getElementById("switchLabel").innerHTML = document.getElementById(
+    "flexSwitch"
+  ).checked
+    ? "Click to Disable Custom Template"
+    : "Click to Enable Custom Template";
+
+  document.getElementById("fileUpload").innerHTML = document.getElementById(
+    "fileUpload"
+  ).innerHTML = document.getElementById("flexSwitch").checked
+    ? '<div><label for="formFile" class="form-label">Recommendation Letter Template</label><input class="form-control" type="file" id="formFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files)" multiple></div>'
+    : "";
+
+  if (!document.getElementById("flexSwitch").checked) {
+    fileData = [];
+    fileName = [];
+  }
+}
 
 function getCountryCode() {
   $.ajax({
@@ -187,6 +224,16 @@ function updateProfile() {
     return false;
   }
 
+  if (document.getElementById("flexSwitch").checked) {
+    if (
+      document.getElementById("formFile").files.length == 0 &&
+      !usr.letterTemplates.size
+    ) {
+      alert("Please upload at least one letter template to you profile.");
+      return false;
+    }
+  }
+
   var data = {
     firstName: firstName,
     middleName: middleName,
@@ -203,7 +250,12 @@ function updateProfile() {
     postalCode: postalCode,
     country: country,
     selectedIndex: index,
+    enableCustomTemplate: document.getElementById("flexSwitch").checked,
+    fileName: fileName,
+    fileData: fileData,
   };
+
+  console.log(data);
 
   //load jwt token from cookie
   var auth;
@@ -313,4 +365,28 @@ function fillInAddress() {
   // prediction, set cursor focus on the second address line to encourage
   // entry of subpremise information such as apartment, unit, or floor number.
   address2Field.focus();
+}
+
+//function for handling file upload
+function handleFile(files) {
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    var fileReader = new FileReader();
+
+    /*
+  Read in file in binary, then convert to Uint8Array.
+  Next, convert to normal array to deserealize
+  In server, we will use this array to write to plain docx
+   */
+    fileReader.onload = () => {
+      fileData.push(Array.from(new Uint8Array(fileReader.result)));
+      fileName.push(file.name);
+    };
+
+    fileReader.readAsArrayBuffer(file);
+
+    fileReader.onerror = () => {
+      console.log(fileReader.error);
+    };
+  }
 }

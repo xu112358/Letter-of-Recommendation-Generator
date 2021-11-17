@@ -1,3 +1,6 @@
+//flag for if user updated the preveiw or not
+let updated = false;
+
 var id = parseAttribute("id");
 
 var innerContainer;
@@ -58,7 +61,9 @@ function showEditModal(clicked) {
   var element = document.querySelector(TRIX_EDITOR);
   element.value = "";
   element.editor.setSelectedRange([0, 0]);
-  element.editor.insertHTML(innerContainer.innerHTML);
+  element.editor.insertHTML(
+    document.getElementById(LETTER_CONTAINER_ID).innerHTML
+  );
   var textt = document.getElementsByClassName("attachment__caption");
   modal.style.display = "block";
 }
@@ -67,34 +72,10 @@ function showEditModal(clicked) {
 function saveEditModal() {
   var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
   var element = document.querySelector(TRIX_EDITOR);
-  var editor = document.querySelector(TRIX_EDITOR).editor;
 
-  var child = $("#trix-editor").children().first().innerHTML;
-  var length = letterHTML.length;
-  letterHTML = element.value;
-  var inside = document.getElementsByClassName("inside");
-  document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
-  editor.setSelectedRange([0, editor.getDocument().getLength()]);
-  editor.deleteInDirection("forward");
-
-  $.ajax({
-    url: "/letter-preview/save",
-    data: {
-      id: id,
-      letter: letterHTML,
-    },
-    type: "POST",
-    success: function (data) {
-      console.log("success in saveEditModal");
-    },
-    error: function () {
-      console.log("error in saveEditModal");
-    },
-  });
-
+  document.getElementById("letter-text").innerText = element.innerText;
+  updated = true;
   modal.style.display = "none";
-  document.getElementById("downloadButton").style.display = "none";
-  document.getElementById("saveButton").style.display = "block";
 }
 
 // Closes without changing
@@ -103,53 +84,63 @@ function cancelEditModal() {
   modal.style.display = "none";
 }
 
-function downloadLetterOLD() {
-  var datepicker = document.querySelectorAll("input[type=date]")[0];
-  var date = datepicker.value;
-  $.ajax({
-    url: "/letter-preview/drive",
-    data: {
-      id: id,
-      letter: letterHTML,
-      date: date,
-    },
-    type: "POST",
-    success: function (d) {
-      console.log("success in drive");
-      window.location.href = "/recommender-dashboard";
-    },
-    error: function () {
-      console.log("error in drive");
-    },
-  });
-}
-
 function saveLetter() {
-  event.preventDefault();
-  var idt = document.getElementById("id1").value;
   var date = document.getElementById("theDate").value;
-  var notifyRecommendee = document.getElementById("notify").checked;
-  $.ajax({
-    url: "/letter-preview/prepareLetter",
-    data: {
-      id: id,
-      letter: letterHTML,
-      formID: idt,
-      date: date,
-      notify: notifyRecommendee,
-    },
-    type: "POST",
-    success: function (d) {
-      console.log("letter saved successfully");
-      document.getElementById("downloadButton").style.display = "block";
-      document.getElementById("saveButton").style.display = "none";
-      alert("Document saved");
-      //window.location.href = '/recommender-dashboard';
-    },
-    error: function () {
-      console.log("error saving letter");
-    },
-  });
+  var notifyRecommendee = true;
+  if (useCustom) {
+    var selectedTemplateIndex = document.getElementById("selectTemplate")
+      .selectedIndex;
+    var templateFilename = document.getElementById("selectTemplate").options[
+      selectedTemplateIndex
+    ].value;
+    $.ajax({
+      url: "/letter-preview/prepareLetter",
+      data: {
+        id: id,
+        letter: letterHTML,
+        formID: form._id,
+        date: date,
+        notify: notifyRecommendee,
+        fileName: templateFilename,
+        preview: updated
+          ? document.getElementById("letter-text").innerText
+          : "",
+      },
+      type: "POST",
+      success: function (d) {
+        console.log("letter saved successfully");
+        document.getElementById("save").innerHTML = "Download Letter";
+        document.getElementById("save").onclick = downloadLetter;
+        alert("Document saved");
+        //window.location.href = '/recommender-dashboard';
+      },
+      error: function () {
+        console.log("error saving letter");
+      },
+    });
+  } else {
+    $.ajax({
+      url: "/letter-preview/prepareLetter",
+      data: {
+        id: id,
+        letter: letterHTML,
+        formID: form._id,
+        date: date,
+        notify: notifyRecommendee,
+      },
+      type: "POST",
+      success: function (d) {
+        console.log("letter saved successfully");
+        document.getElementById("save").innerHTML = "Download Letter";
+        document.getElementById("save").onclick = downloadLetter;
+        alert("Document saved");
+        //window.location.href = '/recommender-dashboard';
+      },
+      error: function () {
+        console.log("error saving letter");
+      },
+    });
+  }
 }
 
 function downloadLetter() {
@@ -192,6 +183,7 @@ function getDestinationRoute(address, params) {
 function createLetterPreview(form, letter) {
   $(function () {
     var letterContainer = document.createElement("div");
+    letterContainer.classList.add("border", "border-secondary", "letterEditor");
     letterContainer.id = LETTER_CONTAINER_ID;
     innerContainer = document.createElement("div");
     innerContainer.id = "print";
@@ -201,11 +193,8 @@ function createLetterPreview(form, letter) {
     letterContainer.style.cursor = "pointer";
     var outerContainer = document.getElementById(OUTER_CONTAINER);
 
-    if (letter) {
-      letterHTML = letter;
-    } else {
-      letterHTML = parseLetter(form);
-    }
+    letterHTML = parseLetter(form);
+
     innerContainer.innerHTML +=
       '<div id = "letter-text" style="white-space: pre-line">' +
       letterHTML +
@@ -217,25 +206,18 @@ function createLetterPreview(form, letter) {
   });
 }
 function parseLetter(form) {
-  var letter = form.template.text;
-  var letter_html = decodeLetterHTML(letter);
+  //var letter = form.template.parsed;
+  var letter_html = form.template.parsedHtmlText;
   var responses = form.responses;
-  var noCapitalization = Array.from(
-    letter_html
-      .replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-          return item.tag.localeCompare(match, { sensitivity: "base" }) == 0;
-        });
-        return response ? response.response : "";
-      })
-      .replace(tagRegex, function (match) {
-        var response = responses.find(function (item) {
-          return item.tag.localeCompare(match, { sensitivity: "base" }) == 0;
-        });
-        return response ? response.response : "";
-      })
-  );
+  console.log(responses);
 
+  //replace tags with student's
+  responses.forEach((i) => {
+    var tag = "<!" + i.tag + ">";
+    letter_html = letter_html.replaceAll(tag, i.response);
+  });
+
+  var noCapitalization = Array.from(letter_html);
   for (var i = 0; i < noCapitalization.length; i++) {
     // Found ending punctuation that isn't the last letter in the text
     if (
@@ -361,7 +343,8 @@ function encodeLetterHTML(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;")
-    .replace(/\n/gi, "<br>");
+    .replace(/\n/gi, "<br>")
+    .replace(/\t/gi, "&tab");
 }
 
 function decodeLetterHTML(text) {
@@ -371,14 +354,15 @@ function decodeLetterHTML(text) {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
+    .replace(/\<br\>/gi, "\n")
+    .replace(/&tab/gi, "&emsp;")
     .replace(/\<span class\="tag"\>/gi, "")
     .replace(/\<\/span\>/gi, "")
     .replace(/\<div\>/gi, "\n")
     .replace(/\<\/div\>/gi, "")
-    .replace(/\<br\>/gi, "\n")
-    .replace(/\&nbsp;/g, " ");
-  text = text.replace(/\<strong\>\<\!/gi, "<!").replace(/\<\/strong\>/gi, "");
-  text = text.replace(/\<strong\>/gi, "");
+    .replace(/\&nbsp/g, " ");
+  // text = text.replace(/\<strong\>\<\!/gi, "<!").replace(/\<\/strong\>/gi, "");
+  // text = text.replace(/\<strong\>/gi, "");
   return text;
 }
 
@@ -418,15 +402,15 @@ function displayTemplate() {
   }
 }
 
-$(document).ready(function () {
-  setTimeout(function () {
-    var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
-    var element = document.querySelector(TRIX_EDITOR);
-    element.value = "";
-    element.editor.setSelectedRange([0, 0]);
-    element.editor.insertHTML(innerContainer.innerHTML);
-    var textt = document.getElementsByClassName("attachment__caption");
-    modal.style.display = "block";
-    saveEditModal();
-  }, 500);
-});
+// $(document).ready(function () {
+//   setTimeout(function () {
+//     var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
+//     var element = document.querySelector(TRIX_EDITOR);
+//     element.value = "";
+//     element.editor.setSelectedRange([0, 0]);
+//     element.editor.insertHTML(innerContainer.innerHTML);
+//     var textt = document.getElementsByClassName("attachment__caption");
+//     //modal.style.display = "block";
+//     saveEditModal();
+//   }, 500);
+// });
