@@ -87,7 +87,7 @@ router.post("/prepareLetter", async function (req, res, next) {
 
     //retrive user obj from mongodb
     var user = await User.findOne({ email: decoded.email });
-    console.log(req.body.formID);
+    console.log(req.body);
 
     console.log("user:**********************");
 
@@ -163,6 +163,12 @@ router.post("/prepareLetter", async function (req, res, next) {
         // Parse date.
         var date_raw = req.body.date;
         let actual_date = letterParser.getDate(date_raw);
+
+        //let's check if user updated the preview in the letter preview page
+
+        if (req.body.preview.length != 0) {
+          formatted_text = req.body.preview;
+        }
 
         //set the templateVariables
         doc.setData({

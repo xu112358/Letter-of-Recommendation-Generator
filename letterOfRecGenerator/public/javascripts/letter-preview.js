@@ -1,3 +1,6 @@
+//flag for if user updated the preveiw or not
+let updated = false;
+
 var id = parseAttribute("id");
 
 var innerContainer;
@@ -69,36 +72,10 @@ function showEditModal(clicked) {
 function saveEditModal() {
   var modal = document.getElementById(ADD_QUESTION_MODAL_ID);
   var element = document.querySelector(TRIX_EDITOR);
-  var editor = document.querySelector(TRIX_EDITOR).editor;
 
-  var child = $("#trix-editor").children().first().innerHTML;
-  var length = letterHTML.length;
-  letterHTML = element.value;
-  var inside = document.getElementsByClassName("inside");
-  document.getElementById(LETTER_CONTAINER_ID).innerHTML = letterHTML;
-  editor.setSelectedRange([0, editor.getDocument().getLength()]);
-  editor.deleteInDirection("forward");
-  element.innerHTML = letterHTML;
-
-  $.ajax({
-    url: "/letter-preview/save",
-    data: {
-      id: id,
-      letter: letterHTML,
-    },
-    type: "POST",
-    success: function (data) {
-      console.log("success in saveEditModal");
-      location.reload();
-    },
-    error: function () {
-      console.log("error in saveEditModal");
-    },
-  });
-
+  document.getElementById("letter-text").innerText = element.innerText;
+  updated = true;
   modal.style.display = "none";
-  document.getElementById("downloadButton").style.display = "none";
-  document.getElementById("saveButton").style.display = "block";
 }
 
 // Closes without changing
@@ -125,6 +102,9 @@ function saveLetter() {
         date: date,
         notify: notifyRecommendee,
         fileName: templateFilename,
+        preview: updated
+          ? document.getElementById("letter-text").innerText
+          : "",
       },
       type: "POST",
       success: function (d) {
