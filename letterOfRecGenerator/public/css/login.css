@@ -21,7 +21,8 @@ body {
 
 .login-box{
   background-color: white;
-  min-width: 700px !important;
+  min-width: 650px !important;
+  max-width: 850px !important;
   min-height: 400px;
   border-radius: 3px;
 }
