@@ -1056,53 +1056,53 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     template.footerImg = footerImgData;
   }
 
-  // if(id){
-  //   $.ajax({
-  //     url: "/template-editor/update",
-  //     data: {
-  //       id: id,
-  //       template,
-  //     },
-  //     type: "POST",
-  //     cache: false,
-  //     complete: function (data) {
-  //       console.log("complete");
-  //     },
-  //     success: function (data) {
-  //       console.log("success in SaveTemplate");
-  //       console.log(data);
-  //       window.location.href = "/template-dashboard";
-  //     },
-  //     error: function (err) {
-  //       console.log("error in saveTemplate:" + err);
-  //       return;
-  //     },
-  //   });
-  // }
-  // else{
-  //   console.log("creating template");
-  //   console.log(template);
-  //   $.ajax({
-  //     url: "/template-editor/create",
-  //     data: { template: template },
-  //     type: "POST",
-  //     complete: function () {
-  //       console.log("complete");
-  //     },
-  //     success: function (data) {
-  //       id = data.id;
-  //       console.log("success in Creating Template");
-  //       console.log(data);
-  //       window.location.href = "/template-dashboard";
-  //     },
-  //     error: function (err) {
-  //       alert("Template name already exists.");
-  //       console.log("error in saveTemplate:" + err);
+  if(id){
+    $.ajax({
+      url: "/template-editor/update",
+      data: {
+        id: id,
+        template,
+      },
+      type: "POST",
+      cache: false,
+      complete: function (data) {
+        console.log("complete");
+      },
+      success: function (data) {
+        console.log("success in SaveTemplate");
+        console.log(data);
+        window.location.href = "/template-dashboard";
+      },
+      error: function (err) {
+        console.log("error in saveTemplate:" + err);
+        return;
+      },
+    });
+  }
+  else{
+    console.log("creating template");
+    console.log(template);
+    $.ajax({
+      url: "/template-editor/create",
+      data: { template: template },
+      type: "POST",
+      complete: function () {
+        console.log("complete");
+      },
+      success: function (data) {
+        id = data.id;
+        console.log("success in Creating Template");
+        console.log(data);
+        window.location.href = "/template-dashboard";
+      },
+      error: function (err) {
+        alert("Template name already exists.");
+        console.log("error in saveTemplate:" + err);
        
-  //       return;
-  //     },
-  //   });
-  // }
+        return;
+      },
+    });
+  }
   
   console.log(template);
 
