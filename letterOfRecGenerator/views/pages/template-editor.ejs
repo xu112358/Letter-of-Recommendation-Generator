@@ -15,6 +15,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/e558bbfafc.js" crossorigin="anonymous"></script>
+<script>
+  $(function () {
+  $('[data-bs-toggle="popover"]').popover()
+  })
+</script>
+
 <!-- Include stylesheet -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <body>
@@ -72,7 +78,63 @@
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
               <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
             </svg></span></h3>
+
+
+            <button id="collapse-btn" class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              How to use?
+            </button>
+
+            <div class="collapse" id="collapseExample">
+
+                <div class="card container align-middle">
+                  <!-- Question and Dropdown -->
+                  <div class="row">
+                    <div class="col-8"  data-bs-toggle="popover" data-bs-content="Write the question to ask to the requester. The replied info will replace the tag in the letter" data-bs-placement="top">
+                      <input disabled id = "exampleQuestion"type="text" class="form-control" placeholder="Question" value = "What is your major?" data-toggle="popover" data-content="And here's some amazing content. It's very engaging. Right?">
+                    </div>
+      
+                    <div class="col-4"  data-bs-toggle="popover" data-bs-content="Choose the type of the question." data-bs-placement="top">
+                      <select disabled class="form-select" id = "exampleSelect">
+                        <option value="Text">Text</option>
+                        <option selected="selected" value="Radio Button">Radio Button</option>
+                        <option value="Checkboxes">Checkboxes</option>
+                      </select>
+                    </div>
+                  </div>
+          
+                  <!-- Options -->
+                  <div class="options">
+                    <div class="row">
+                      <div class="col-radio-input" data-bs-toggle="popover" data-bs-content="You can customize the options for the requester to choose." data-bs-placement="right">
+                        <input disabled type="text" class="form-control" placeholder="Computer Science" value = "Computer Science">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-radio-input"  data-bs-toggle="popover" data-bs-content="You can have up to 9 options per question." data-bs-placement="left">
+                        <input disabled type="text" class="form-control" placeholder="Business" value = "Business">
+                      </div>
+                    </div>
+                    <!-- Add Option Button -->
+                    <row class="row">
+                      <div class="col-radio-input">
+                        <button disabled type="button" class="add-btn add-options-btn">Add Option</button>
+                      </div>
+                    </row>
+                  </div>
+          
+                  <!-- Tag  -->
+                  <div class="row">
+                    <div class="col-4" data-bs-toggle="popover" data-bs-content="Text here will be used to display the correspoing tag in the tag boilerplate." data-bs-placement="right">
+                      <input disabled type="text" class="form-control" placeholder="Major" value = "Major">
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+            
           </div>
+          
+         
       </div>
       </div>
       
@@ -198,6 +260,10 @@
   },
   theme: 'snow'  // or 'bubble'
 });
+
+
+
+
 </script>
 <script type="text/javascript" src="/javascripts/template-editor.js" id="<%= id %>"
   letterheadImgData="<%= letterheadImage %>" footerImgData="<%= footerImage %>"

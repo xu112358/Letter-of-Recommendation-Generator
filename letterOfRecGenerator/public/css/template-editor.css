@@ -87,3 +87,14 @@ i:hover {
 .editor-is-invalid {
     border-color: red !important;
 }
+
+input[disabled], select[disabled] {
+    background-color: white !important;
+    color: coral !important;
+}
+
+
+input:disabled, select:disabled {
+    background-color: white !important;
+    color: coral !important;
+}
