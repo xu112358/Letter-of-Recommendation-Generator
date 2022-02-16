@@ -1256,8 +1256,8 @@ function getQuestions() {
     }
     var newQuestion = new Question(
       type,
-      encode(questionInputs[i].value),
-      encode(tag),
+      escape(questionInputs[i].value),
+      escape(tag),
       false,
       false
     );
