@@ -28,7 +28,7 @@
     "docx": "^4.7.1",
     "docx-builder": "^1.0.7",
     "docx-merger": "^1.2.2",
-    "docxtemplater": "^3.25.3",
+    "docxtemplater": "^3.28.6",
     "downloads-folder": "^1.0.4",
     "ejs": "^2.7.4",
     "express": "^4.17.1",

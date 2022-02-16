@@ -52,8 +52,8 @@ function loadProfile() {
   var cookie = document.cookie.split(";");
   for (var i = 0; i < cookie.length; i++) {
     if (
-      cookie[i].substr(0, 5) == "auth=" ||
-      cookie[i].substr(0, 6) == " auth="
+      cookie[i].substring(0, 5) == "auth=" ||
+      cookie[i].substring(0, 6) == " auth="
     ) {
       auth = cookie[i];
     }
@@ -261,7 +261,10 @@ function updateProfile() {
   var auth;
   var cookie = document.cookie.split(";");
   for (var i = 0; i < cookie.length; i++) {
-    if (cookie[i].substr(0, 6) == " auth=") {
+    if (
+      cookie[i].substring(0, 5) == "auth=" ||
+      cookie[i].substring(0, 6) == " auth="
+    ) {
       auth = cookie[i];
     }
   }

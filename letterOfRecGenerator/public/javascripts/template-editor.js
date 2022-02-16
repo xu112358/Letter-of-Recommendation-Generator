@@ -463,7 +463,8 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
 // Args string, string, array of strings, array of strings
 function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
-
+  questionVal = unescape(questionVal);
+  tagVal = unescape(tagVal);
   var form = document.querySelector("form");
 
   var newQuestion = document.createDocumentFragment();
@@ -1253,11 +1254,10 @@ function getQuestions() {
     else {
       type = "Custom";
     }
-
     var newQuestion = new Question(
       type,
-      questionInputs[i].value,
-      tag,
+      encode(questionInputs[i].value),
+      encode(tag),
       false,
       false
     );
