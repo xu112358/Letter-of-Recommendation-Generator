@@ -263,7 +263,7 @@ function updateProfile() {
   for (var i = 0; i < cookie.length; i++) {
     if (
       cookie[i].substring(0, 5) == "auth=" ||
-      cookie[i].substring(0, 6) == " auth="
+      cookie[i].substring(0, 6) ==  " auth="
     ) {
       auth = cookie[i];
     }

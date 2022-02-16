@@ -463,7 +463,7 @@ document.querySelector(".add-questions-btn").addEventListener("click", (event) =
 
 // Args string, string, array of strings, array of strings
 function createCard(questionVal, tagVal, optionsVal, tagsVal, questionType) {
-  questionVal = unescape(questionVal);
+  questionVal =  unescape(questionVal);
   tagVal = unescape(tagVal);
   var form = document.querySelector("form");
 
