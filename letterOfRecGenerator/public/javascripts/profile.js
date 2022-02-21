@@ -50,10 +50,10 @@ $.ajax({
 function loadProfile() {
   var auth;
   var cookie = document.cookie.split(";");
+  const regex = " *auth=.+";
   for (var i = 0; i < cookie.length; i++) {
     if (
-      cookie[i].substring(0, 5) == "auth=" ||
-      cookie[i].substring(0, 6) == " auth="
+      cookie[i].match(regex)
     ) {
       auth = cookie[i];
     }
@@ -260,10 +260,12 @@ function updateProfile() {
   //load jwt token from cookie
   var auth;
   var cookie = document.cookie.split(";");
+  const regex = " *auth=.+";
   for (var i = 0; i < cookie.length; i++) {
     if (
-      cookie[i].substring(0, 5) == "auth=" ||
-      cookie[i].substring(0, 6) ==  " auth="
+      // cookie[i].substring(0, 5) == "auth=" ||
+      // cookie[i].substring(0, 6) ==  " auth="
+      cookie[i].match(regex)
     ) {
       auth = cookie[i];
     }
