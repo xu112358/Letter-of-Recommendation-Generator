@@ -34,7 +34,7 @@ function onLoad() {
         type: "GET",
         success: function (dat) {
           console.log("page load success");
-          letterHTML = createLetterPreview(form, form.letter);
+              letterHTML = createLetterPreview(form, form.letter);
         },
       });
     },
@@ -181,6 +181,20 @@ function getDestinationRoute(address, params) {
 
 // Creates the divs for each item in array
 function createLetterPreview(form, letter) {
+  let quillOps = form.template.ops;
+  var responses = form.responses;
+  let tagResponsePair = new Map();
+  responses.forEach((i) => {
+    tagResponsePair.set(decodeURIComponent(i.tag), i.response);
+  });
+
+  quillOps.forEach((op) => {
+    if(op.insert?.spanEmbed?.value){
+      console.log(op);
+      op.insert = tagResponsePair.get(op.insert?.spanEmbed?.value);
+    }
+  });
+  quill.setContents(quillOps);
   $(function () {
     var letterContainer = document.createElement("div");
     letterContainer.classList.add("border", "border-secondary", "letterEditor");
@@ -414,3 +428,23 @@ function displayTemplate() {
 //     saveEditModal();
 //   }, 500);
 // });
+
+
+async function saveQuill(){
+  let delta = quill.getContents();
+  let quillToWordConfig = {
+      exportAs: 'blob',
+      paragraphStyles: {
+        normal : {  // this is the name of the text type that you'd like to style
+              paragraph: {
+                spacing: {
+                    before: 50,
+                    after: 50
+                }
+            }
+          }
+        }
+    };
+  let docAsBlob = await window.quillToWord.generateWord(delta, quillToWordConfig);
+  window.saveAs.saveAs(docAsBlob, 'recommendation-letter.docx');
+}
