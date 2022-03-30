@@ -211,23 +211,37 @@ router.post("/create", async function (req, res, next) {
 
 router.post("/update", async function (req, res, next) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
-
+  
   //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
-  user.updateTemplate(req.body.id, req.body.template, function (err, template) {
-    let writeJson = JSON.stringify(template);
-    fs.writeFile('test.json', writeJson, 'utf8', function(err, data){
-      
-    });
-    if (err) {
-      console.log(err);
-    } else {
-      res.json({
-        success: "Updated Successfully",
-        status: 200,
-      });
+  let user_templates=user.getTemplates()
+
+  let templateName_repeate=false;
+  user_templates.forEach((el)=>{
+    if(el._id!=req.body.id&&el.name==req.body.template.name){
+      templateName_repeate=true;
     }
+
   });
+
+  console.log("templateName_repeate: ",templateName_repeate);
+  
+  if(templateName_repeate){
+    res.status(500).send({ error: "Duplicate Name" });
+  }
+  else{
+    user.updateTemplate(req.body.id, req.body.template, function (err, template) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json({
+          success: "Updated Successfully",
+          status: 200,
+        });
+      }
+    });
+  }
+
 });
 
 module.exports = router;
