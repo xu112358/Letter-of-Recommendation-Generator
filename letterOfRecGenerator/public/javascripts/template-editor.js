@@ -1144,6 +1144,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
       },
       error: function (err) {
         console.log("error in saveTemplate:" + err);
+        alert("Template name already exists.");
         return;
       },
     });
