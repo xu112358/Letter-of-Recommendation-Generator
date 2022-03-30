@@ -23,6 +23,10 @@ router.get("/", async function (req, res, next) {
     }
 
     var templates = user.getTemplates().toObject();
+    //do not transmit ops because it is not needed to display on template dashboard
+    templates.forEach((template) => {
+      delete template.ops;
+    });
     var tmp_metric = {};
     var last_used = {};
     for (var i = 0; i < forms.length; i++) {

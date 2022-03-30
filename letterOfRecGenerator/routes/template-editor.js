@@ -166,6 +166,7 @@ router.get("/template", async function (req, res, next) {
       letterheadImg: user.getTemplate(req.query.id).getLetterheadImg(),
       footerImg: user.getTemplate(req.query.id).getFooterImg(),
       saveSwitch: req.query.saveSwitchData,
+      ops: user.getTemplate(req.query.id).getOps(),
     });
   } else {
     res.json({
@@ -176,6 +177,7 @@ router.get("/template", async function (req, res, next) {
         .getLetterheadImg(),
       footerImg: user.getDeactivatedTemplate(req.query.id).getFooterImg(),
       saveSwitch: req.query.saveSwitchData,
+      ops: user.getTemplate(req.query.id).getOps(),
     });
   }
 });
