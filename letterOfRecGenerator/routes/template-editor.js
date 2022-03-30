@@ -180,10 +180,6 @@ router.get("/template", async function (req, res, next) {
       ops: user.getTemplate(req.query.id).getOps(),
     });
   }
-  let writeJson = JSON.stringify(user.getTemplate(req.query.id));
-    fs.writeFile('testRead.json', writeJson, 'utf8', function(err, data){
-      
-    });
 });
 
 router.post("/create", async function (req, res, next) {
@@ -215,10 +211,6 @@ router.post("/update", async function (req, res, next) {
   //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
   user.updateTemplate(req.body.id, req.body.template, function (err, template) {
-    let writeJson = JSON.stringify(template);
-    fs.writeFile('test.json', writeJson, 'utf8', function(err, data){
-      
-    });
     if (err) {
       console.log(err);
     } else {
