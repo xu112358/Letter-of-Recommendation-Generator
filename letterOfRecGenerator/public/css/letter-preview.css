@@ -296,3 +296,15 @@ trix-editor {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.swd-button {
+  background: #11c3ff linear-gradient(to bottom, transparent, #009bcf);
+  border: 1px solid white;
+  border-radius: 5px;
+  color: white;
+  display: inline-block;
+  font: bold 12px Arial, Helvetica, sans-serif;
+  padding: 10px 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
