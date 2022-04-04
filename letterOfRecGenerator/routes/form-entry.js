@@ -24,6 +24,11 @@ router.get("/:hash", function (req, res, next) {
               " for further questions",
           });
         }
+        //unescape question before sending to the front end
+        let questions = form.getTemplate().getQuestions();
+        questions.forEach(i => {
+          i.question = decodeURIComponent(i.question);
+        });
 
         res.render("pages/form-entry", {
           title:
@@ -32,7 +37,7 @@ router.get("/:hash", function (req, res, next) {
             ", created " +
             form.getSent() +
             ".",
-          questions: form.getTemplate().getQuestions(),
+          questions: questions,
           form: form,
         });
       }

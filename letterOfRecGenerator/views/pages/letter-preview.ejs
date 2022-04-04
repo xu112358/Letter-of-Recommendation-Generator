@@ -46,16 +46,27 @@
           <div id="editor" class = "ql-snow ql-picker.ql-lineheight">
           </div>
           <br />
+          <div class="form-group">
+              <label for="theDate" class="form-label">Enter Date</label>
+              <input
+                class="form-control"
+                type="date"
+                id="theDate"
+                name="date"
+              />
+          </div>
+          <br />
           <button
-              style = "display: inline-block; width: 40%;"
-              class="btn apply-btn"
+              
+              class="btn apply-btn col-md"
+              onclick = "saveQuill()"
             >
             save
           </button>
           <button
-              style = "display: inline-block; width: 40%"
-              class="btn apply-btn"
-              onclick="saveQuill()"
+              
+              class="btn apply-btn col-md"
+              onclick ="downloadQuill()"
             >
             download
           </button>
@@ -77,7 +88,7 @@
             <% } %>
           </div>
 
-          <form>
+          <!-- <form>
             <div class="form-group row">
               <% if (useCustom){ %>
               <div class="col-md">
@@ -118,12 +129,12 @@
             >
               Save Letter
             </button>
-          </form>
+          </form> -->
         </div>
       </div>
 
       <!-- Save and Cancel Letter Preview Edit -->
-      <div id="add-question-modal">
+      <!-- <div id="add-question-modal">
         <div id="letter-preview-modal" class="inside">
           <form class="ui form example">
             <p class="modal-title">Edit Letter</p>
@@ -150,7 +161,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </body>
 

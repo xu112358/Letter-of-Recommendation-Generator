@@ -13,9 +13,6 @@ var id = parseAttribute("id");
 var letterheadImgData = parseAttribute("letterheadImgData");
 var footerImgData = parseAttribute("footerImgData");
 var saveSwitchData = parseAttribute("saveSwitchData");
-
-const savedDataTimeout = 1 * 60 * 60 * 1000;
-
 /**
  * Prototype class for Questions
  */
@@ -78,29 +75,8 @@ window.onload = function () {
   Quill.register(SpanEmbed);
 
   console.log(id);
-  //fetch browse saved questions from localStorage in case we leave the page without submitting the form
-  let now = new Date().getTime();
-  let localStorageQuestions = localStorage.getItem(document.getElementById("template-name").value + "Questions");
-  localStorage.removeItem(document.getElementById("template-name").value + "Questions");
-  let templateData = localStorage.getItem(document.getElementById("template-name").value + "TemplateData");
-  localStorage.removeItem(document.getElementById("template-name").value + "TemplateData");
-  let setupTime = localStorage.getItem(document.getElementById("template-name").value + "SetupTime");
-  localStorage.setItem(document.getElementById("template-name").value + "SetupTime", now);
-  if(setupTime != null){
-    //check if data is timeout
-    if(now - setupTime > savedDataTimeout){
-      localStorageQuestions = null;
-      templateData = null;
-    }
-  }
-  let firstTimeCreated = localStorage.getItem(document.getElementById("template-name").value);
 
-  if(templateData != null){
-    quill.setContents(JSON.parse(templateData));
-  }
-  //if users are updating template and there is no locally stored template
-  if (id && firstTimeCreated) {
-    localStorage.removeItem(document.getElementById("template-name").value);
+  if (id) {
     $.ajax({
       url: "/template-editor/template",
       data: { id, saveSwitchData },
@@ -148,50 +124,15 @@ window.onload = function () {
             //// MAYBE CUSTOM??
           }
         }
+
+
+
       },
       error: function () {
         console.log("error");
       },
     });
-    //if there is no locally stored template
-  } else if(localStorageQuestions != null) {
-    localStorageQuestions = JSON.parse(localStorageQuestions);
-    localStorageQuestions.forEach((question) => {
-      var savedQuestion = new Question(
-        question.type,
-        question.question,
-        question.tag,
-        question.optional,
-        question.organizationFlag
-      );
-      savedQuestion.options = question.options;
-      questions.push(savedQuestion);
-    });
-    for(var i = 0 ; i < questions.length ; ++i){
-      if(questions[i].type === "Radio Button"){
-        var optionVals = [];
-        for (var j = 0 ; j < questions[i].options.length ; ++j){
-          optionVals.push(questions[i].options[j].option);
-        }
-        createCard(questions[i].value, questions[i].tag, optionVals, null, "Radio Button");
-      }
-      else if(questions[i].type === "Checkbox"){
-        var optionVals = [];
-        var tagVals = [];
-        for (var j = 0 ; j < questions[i].options.length ; ++j){
-          optionVals.push(questions[i].options[j].option);
-          tagVals.push(questions[i].options[j].tag)
-        }
-        createCard(questions[i].value, null, optionVals, tagVals, "Checkbox");
-      }
-      else if(questions[i].type === "Text"){
-        createCard(questions[i].value, questions[i].tag, null, null , "Text");
-      }
-      else{
-        //// MAYBE CUSTOM??
-      }
-    }
-  }else {
+  } else {
     console.log("AAA");
     // Prefilled  questions
     createCard("What is your first name?", "First Name", null, null , "Text");
@@ -199,16 +140,13 @@ window.onload = function () {
     createCard("What is your preferred personal pronoun (subject)?", "Pronoun (subject)", null, null , "Text");
     createCard("What is your preferred personal pronoun (object)?", "Pronoun (object)", null, null , "Text");
     createCard("What is your preferred possessive pronoun?", "Possessive Pronoun", null, null , "Text");
+
   }
-  console.log()
   document.activeElement.blur();
 };
 
 window.onbeforeunload = function(){
-  let templateData = quill.getContents();
-  let now = new Date().getTime();
-  localStorage.setItem(document.getElementById("template-name").value + "TemplateData", JSON.stringify(templateData));
-  localStorage.setItem(document.getElementById("template-name").value + "Questions", JSON.stringify(getQuestions()));
+  return "Do you want to save you changes before leaving this page?";
 }
 
 // Show options if checkbox or multiple choice is selected
@@ -1112,7 +1050,7 @@ document.querySelector(".save-btn").addEventListener("click", (event) => {
     name: document.getElementById("template-name").value,
     text: encodeLetterHTML(quill.root.innerHTML),
     htmlText: encodeLetterHTML(quill.root.innerHTML),
-    parsedHtmlText: parsedHtmlLetter,
+    // parsedHtmlText: parsedHtmlLetter,
     questions: getQuestions(),
     ops: quill.getContents().ops, //save quill editor operations
     };

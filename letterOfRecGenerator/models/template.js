@@ -25,7 +25,7 @@ var TemplateSchema = new Schema({
     letterheadImg: String,
     footerImg: String,
     htmlText: String,
-    parsedHtmlText: String,
+    // parsedHtmlText: String,
     //this is an array of operations in quill editor
     ops: Schema.Types.Mixed,
 });
@@ -58,9 +58,9 @@ TemplateSchema.methods.gethtmlText = function () {
     return this.htmlText;
 };
 
-TemplateSchema.methods.getparsedHtmlText= function () {
-    return this.parsedHtmlText;
-};
+// TemplateSchema.methods.getparsedHtmlText= function () {
+//     return this.parsedHtmlText;
+// };
 
 TemplateSchema.methods.getOps = function(){
     return this.ops;

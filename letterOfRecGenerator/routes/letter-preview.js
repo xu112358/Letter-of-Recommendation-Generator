@@ -223,10 +223,6 @@ router.post("/prepareLetter", async function (req, res, next) {
   }
 });
 
-router.get("/downloads-quill", function(req, res) {
-
-})
-
 router.get("/downloads", function (req, res) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
   var file = path.resolve(
