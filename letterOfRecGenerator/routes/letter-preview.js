@@ -66,14 +66,16 @@ router.get("/form", async function (req, res, next) {
   });
 });
 
-router.post("/save", async function (req, res, next) {
+//save recommendation letter online by update savedLetterOps attribute
+router.post("/saveLetter", async function (req, res, next) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+  //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
-  Form.completeForm(req.body.id, req.body.letter, function (err, form) {
+  user.getForm(req.body.id, function (err, form) {
     if (err) {
       console.log(err);
     } else {
-      res.status(200);
+      form.setSavedLetterOps(req.body.savedLetterOps);
     }
   });
 });

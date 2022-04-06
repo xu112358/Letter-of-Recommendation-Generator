@@ -13,6 +13,7 @@ var id = parseAttribute("id");
 var letterheadImgData = parseAttribute("letterheadImgData");
 var footerImgData = parseAttribute("footerImgData");
 var saveSwitchData = parseAttribute("saveSwitchData");
+var isTemplateChanged = false;
 /**
  * Prototype class for Questions
  */
@@ -67,7 +68,6 @@ class SpanEmbed extends Embed {
 }
 
 window.onload = function () {
-
 
   // Quill initialization
   SpanEmbed.blotName = 'spanEmbed';
@@ -146,7 +146,9 @@ window.onload = function () {
 };
 
 window.onbeforeunload = function(){
-  return "Do you want to save you changes before leaving this page?";
+  if(isTemplateChanged){
+    return "Do you want to save you changes before leaving this page?";
+  }
 }
 
 // Show options if checkbox or multiple choice is selected
@@ -278,8 +280,10 @@ document.querySelector("form").addEventListener("click", (event) => {
 
 
 // Handles input events inside text editor
+// Check if user has changed template
 document.querySelector("#editor").addEventListener("input", (event) => {
   document.querySelector("#editor").classList.remove("editor-is-invalid");
+  isTemplateChanged = true;
 });
 
 // Adds option element

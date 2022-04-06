@@ -183,20 +183,25 @@ function downloadLetter() {
 
 // Creates the divs for each item in array
 function createLetterPreview(form, letter) {
-  let quillOps = form.template.ops;
-  var responses = form.responses;
-  let tagResponsePair = new Map();
-  responses.forEach((i) => {
-    tagResponsePair.set(decodeURIComponent(i.tag), i.response);
-  });
+  //If there exists recommendation letter saved previuosly
+  if(form?.savedLetterOps){
+    quill.setContents(form?.savedLetterOps);
+  }else{ //render recommendation letter by replacing tag with student's response
+    let quillOps = form.template.ops;
+    var responses = form.responses;
+    let tagResponsePair = new Map();
+    responses.forEach((i) => {
+      tagResponsePair.set(decodeURIComponent(i.tag), i.response);
+    });
 
-  quillOps.forEach((op) => {
-    if(op.insert?.spanEmbed?.value){
-      console.log(op);
-      op.insert = tagResponsePair.get(op.insert?.spanEmbed?.value);
-    }
-  });
-  quill.setContents(quillOps);
+    quillOps.forEach((op) => {
+      if(op.insert?.spanEmbed?.value){
+        console.log(op);
+        op.insert = tagResponsePair.get(op.insert?.spanEmbed?.value);
+      }
+    });
+    quill.setContents(quillOps);
+  }
   /* $(function () {
     var letterContainer = document.createElement("div");
     letterContainer.classList.add("border", "border-secondary", "letterEditor");
@@ -432,7 +437,20 @@ function displayTemplate() {
 // });
 
 function saveQuill(){
-  
+  $.ajax({
+    url: "/letter-preview/saveLetter",
+    data: {
+      id: id,
+      savedLetterOps: quill.getContents().ops
+    },
+    type: "POST",
+    success: function (d) {
+      console.log("letter saved successfully");
+    },
+    error: function () {
+      console.log("error saving letter");
+    },
+  });
 }
 
 //Download recommendation letter on the front end

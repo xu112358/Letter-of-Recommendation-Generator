@@ -67,7 +67,7 @@ router.post("/", async function (req, res, next) {
         );
 
         const email_username = "minyi.chen2333@gmail.com";
-  const email_password = "@Chenminyishuai233";
+  const email_password = "@b55Cpm75";
         const email_sender =
           "'Letter of Recommendation Generator' <" + email_username + ">";
 
