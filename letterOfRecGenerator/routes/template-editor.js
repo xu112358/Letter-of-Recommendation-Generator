@@ -30,6 +30,7 @@ router.get("/", async function (req, res, next) {
         footerImage: footerImg,
         saveSwitch: req.query.saveSwitch,
         questions: questions,
+        saveButton: 1,
       });
     } else {
       letterheadImg = user.getDeactivatedTemplate(req.query.id).letterheadImg;
@@ -43,6 +44,7 @@ router.get("/", async function (req, res, next) {
         footerImage: footerImg,
         saveSwitch: req.query.saveSwitch,
         questions: questions,
+        saveButton: 0,
       });
     }
   } else {
@@ -86,6 +88,7 @@ router.get("/edit", async function (req, res, next) {
       title: templateName,
       id: req.query.id,
       saveSwitch: true,
+      saveButton: 1,
       questions: questions,
     });
   } else {
@@ -93,6 +96,7 @@ router.get("/edit", async function (req, res, next) {
       title: null,
       id: null,
       saveSwitch: true,
+      saveButton:1,
       questions: [
         { question: "What is your first name?", tag: "<!FNAME>" },
         { question: "What is your last name?", tag: "<!LNAME>" },
@@ -126,13 +130,16 @@ router.get("/deactivated-edit", async function (req, res, next) {
       title: templateName,
       id: req.query.id,
       saveSwitch: false,
+      saveButton:0,
       questions: questions,
+      
     });
   } else {
     res.json({
       title: null,
       id: null,
       saveSwitch: false,
+      saveButton:0,
       questions: [
         { question: "What is your first name?", tag: "<!FNAME>" },
         { question: "What is your last name?", tag: "<!LNAME>" },
@@ -156,9 +163,16 @@ router.get("/deactivated-edit", async function (req, res, next) {
 
 router.get("/template", async function (req, res, next) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
-
+  
   //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
+
+  // console.log("template one @@@@@@@@@@@@@");
+  // console.log(user.getTemplate(req.query.id));
+  // console.log(user.getDeactivatedTemplate(req.query.id));
+  // console.log(user.getTemplates());
+  // console.log(user.getDeactivatedTemplates());
+
   if (req.query.saveSwitchData == "true") {
     res.json({
       letter: user.getTemplate(req.query.id).getText(),
@@ -169,6 +183,8 @@ router.get("/template", async function (req, res, next) {
       ops: user.getTemplate(req.query.id).getOps(),
     });
   } else {
+    //console.log("ops check:")
+    //console.log(user.getTemplate(req.query.id).hasOps())
     res.json({
       letter: user.getDeactivatedTemplate(req.query.id).getText(),
       questions: user.getDeactivatedTemplate(req.query.id).getQuestions(),
@@ -177,7 +193,9 @@ router.get("/template", async function (req, res, next) {
         .getLetterheadImg(),
       footerImg: user.getDeactivatedTemplate(req.query.id).getFooterImg(),
       saveSwitch: req.query.saveSwitchData,
-      ops: user.getTemplate(req.query.id).getOps(),
+      ops: user.getDeactivatedTemplate(req.query.id).getOps(),
+      //ops: [],
+      //ops: user.getTemplate(req.query.id).getOps()==null?[]:user.getTemplate(req.query.id).getOps(),
     });
   }
 });
@@ -211,7 +229,8 @@ router.post("/update", async function (req, res, next) {
   //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
 
-  let user_templates=user.getTemplates()
+  let user_templates=user.getTemplates().toObject();
+  let user_templates_archived=user.getDeactivatedTemplates().toObject();
 
   let templateName_repeate=false;
   user_templates.forEach((el)=>{
@@ -222,7 +241,13 @@ router.post("/update", async function (req, res, next) {
 
   });
 
-  console.log("templateName_repeate: ",templateName_repeate);
+  user_templates_archived.forEach((el)=>{
+    if(el._id!=req.body.id&&el.name==req.body.template.name){
+      templateName_repeate=true;
+
+    }
+
+  });
   
   if(templateName_repeate){
     res.status(500).send({ error: "Duplicate Name" });

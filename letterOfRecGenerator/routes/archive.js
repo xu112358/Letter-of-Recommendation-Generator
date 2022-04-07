@@ -9,6 +9,13 @@ router.get("/", async function (req, res, next) {
 
   //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
+
+
+  let deactive_from=user.getDeactivatedForms(()=>{});
+  console.log("deactive_from:");
+  console.log(deactive_from);
+
+  
   user.getDeactivatedForms(function (err, deactivatedForms) {
     if (err) {
       console.log(err);
