@@ -55,6 +55,7 @@ router.get("/", async function (req, res, next) {
       letterheadImage: null,
       footerImage: null,
       saveSwitch: true,
+      saveButton:1,
       questions: [
         { question: "What is your first name?", tag: "<!FNAME>" },
         { question: "What is your last name?", tag: "<!LNAME>" },

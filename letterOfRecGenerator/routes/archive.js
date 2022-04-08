@@ -11,23 +11,30 @@ router.get("/", async function (req, res, next) {
   var user = await User.findOne({ email: decoded.email });
 
 
-  let deactive_from=user.getDeactivatedForms(()=>{});
-  console.log("deactive_from:");
-  console.log(deactive_from);
+  user.getDeactivatedForms((err,form)=>{console.log(form.length)});
+  
 
   
   user.getDeactivatedForms(function (err, deactivatedForms) {
     if (err) {
       console.log(err);
     } else {
+      console.log("deactive_from:");
+      console.log(deactivatedForms.toObject());
+      console.log(deactivatedForms.length);
+      let new_deactiveFroms=deactivatedForms.toObject();
+      new_deactiveFroms.forEach((el)=>{el["text"]=""; });
       res.render("pages/archive", {
         title: "Archive",
-        forms: deactivatedForms,
+        //forms: deactivatedForms.toObject(),
+        forms: new_deactiveFroms,
         emailtemplates: user.getDeactivatedEmailTemplates(),
         templates: user.getDeactivatedTemplates(),
       });
     }
   });
+  
+
 });
 
 router.post("/restore-template", async function (req, res, next) {

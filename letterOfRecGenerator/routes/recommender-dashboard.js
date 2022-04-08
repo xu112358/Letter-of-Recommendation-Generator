@@ -137,6 +137,11 @@ router.post("/delete", async function (req, res, next) {
       });
     }
   });
+
+  user.getDeactivatedForms((err,form)=>{
+    console.log("deactive form length:");
+    console.log(form.length);
+  });
 });
 
 router.post("/update", async function (req, res, next) {
