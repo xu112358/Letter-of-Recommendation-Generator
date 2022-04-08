@@ -19,17 +19,20 @@ router.get("/", async function (req, res, next) {
     if (err) {
       console.log(err);
     } else {
-      console.log("deactive_from:");
-      console.log(deactivatedForms.toObject());
-      console.log(deactivatedForms.length);
+      // console.log("deactive_from:");
+      // console.log(deactivatedForms.toObject());
+      // console.log(deactivatedForms.length);
       let new_deactiveFroms=deactivatedForms.toObject();
-      new_deactiveFroms.forEach((el)=>{el["text"]=""; });
+      let new_templates=user.getDeactivatedTemplates().toObject();
+      new_deactiveFroms.forEach((form)=>{form.template.ops=""; }); //remove template.ops attribute.
+      new_templates.forEach((template)=>{template.ops="";}); ////remove template.ops attribute.
       res.render("pages/archive", {
         title: "Archive",
         //forms: deactivatedForms.toObject(),
         forms: new_deactiveFroms,
         emailtemplates: user.getDeactivatedEmailTemplates(),
-        templates: user.getDeactivatedTemplates(),
+        //templates: user.getDeactivatedTemplates(),
+        templates:new_templates,
       });
     }
   });
