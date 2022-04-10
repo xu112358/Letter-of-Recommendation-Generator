@@ -206,22 +206,40 @@ router.post("/create", async function (req, res, next) {
 
   //retrive user obj from mongodb
   var user = await User.findOne({ email: decoded.email });
-  user.addTemplate(req.body.template, function (err, id) {
-    console.log(req.body.template);
-    if (err) {
-      console.log(err);
-      if (err.message == "DUPLICATE NAME") {
-        console.log("error is duplicate name");
-        res.status(500).send({ error: "Duplicate Name" });
-      }
-    } else {
-      res.json({
-        success: "Created Successfully",
-        status: 200,
-        id: id,
-      });
+  let user_templates_archived=user.getDeactivatedTemplates().toObject();
+
+  let templateName_repeate=false;
+
+  user_templates_archived.forEach((el)=>{
+    if(el._id!=req.body.id&&el.name==req.body.template.name){
+      templateName_repeate=true;
+
     }
+
   });
+
+  if(templateName_repeate){
+    res.status(500).send({ error: "Duplicate Name" });
+  }
+  else{
+    user.addTemplate(req.body.template, function (err, id) {
+      console.log(req.body.template);
+      if (err) {
+        console.log(err);
+        if (err.message == "DUPLICATE NAME") {
+          console.log("error is duplicate name");
+          res.status(500).send({ error: "Duplicate Name" });
+        }
+      } else {
+        res.json({
+          success: "Created Successfully",
+          status: 200,
+          id: id,
+        });
+      }
+    });
+  }
+  
 });
 
 router.post("/update", async function (req, res, next) {
