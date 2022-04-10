@@ -64,7 +64,8 @@ router.post("/login", async (req, res, next) => {
   var mytoken = jwt.sign(
     {
       iss: "Letter of Recommendation Generator",
-      aud: "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
+      aud:
+        "946973074370-6k1l3346s9i1jtnj3tf7j797vtc6ua3j.apps.googleusercontent.com",
       email: userProfile.email,
     },
     privateKey,
@@ -99,6 +100,7 @@ router.post("/login", async (req, res, next) => {
         res.redirect("/recommender-dashboard");
       } else {
         console.log("user not in system");
+        console.log(userProfile);
         //use user's name to hash to password
         const newUser = new User({
           email: userEmail,

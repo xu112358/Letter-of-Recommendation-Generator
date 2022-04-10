@@ -8,7 +8,10 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient({
+  host: "redis",
+  port: 6379,
+});
 
 // Passport Config
 require("./config/passport")(passport);
