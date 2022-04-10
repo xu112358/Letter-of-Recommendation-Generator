@@ -66,6 +66,7 @@ router.get("/form", async function (req, res, next) {
   });
 });
 
+
 //save recommendation letter online by update savedLetterOps attribute
 router.post("/saveLetter", async function (req, res, next) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
@@ -168,9 +169,9 @@ router.post("/prepareLetter", async function (req, res, next) {
 
         //let's check if user updated the preview in the letter preview page
 
-        if (req.body.preview.length != 0) {
-          formatted_text = req.body.preview;
-        }
+        //if (req.body.preview.length != 0) {
+        //formatted_text = req.body.preview;
+        //}
 
         //set the templateVariables
         doc.setData({

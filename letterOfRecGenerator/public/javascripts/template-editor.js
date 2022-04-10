@@ -14,6 +14,7 @@ var letterheadImgData = parseAttribute("letterheadImgData");
 var footerImgData = parseAttribute("footerImgData");
 var saveSwitchData = parseAttribute("saveSwitchData");
 var isTemplateChanged = false;
+const savedDataTimeout = 1 * 60 * 60 * 1000;
 /**
  * Prototype class for Questions
  */
@@ -75,8 +76,63 @@ window.onload = function () {
   Quill.register(SpanEmbed);
 
   console.log(id);
-
-  if (id) {
+  //fetch browse saved questions from localStorage in case we leave the page without submitting the form
+  let now = new Date().getTime();
+  let localStorageQuestions = localStorage.getItem(document.getElementById("template-name").value + "Questions");
+  localStorage.removeItem(document.getElementById("template-name").value + "Questions");
+  let templateData = localStorage.getItem(document.getElementById("template-name").value + "TemplateData");
+  localStorage.removeItem(document.getElementById("template-name").value + "TemplateData");
+  let setupTime = localStorage.getItem(document.getElementById("template-name").value + "SetupTime");
+  localStorage.setItem(document.getElementById("template-name").value + "SetupTime", now);
+  if(setupTime != null){
+    //check if data is timeout
+    if(now - setupTime > savedDataTimeout){
+      localStorageQuestions = null;
+      templateData = null;
+    }
+  }
+  if(templateData != null){
+    quill.setContents(JSON.parse(templateData));
+  }
+  //if there is a locally stored template
+  if(localStorageQuestions != null) {
+    localStorageQuestions = JSON.parse(localStorageQuestions);
+    localStorageQuestions.forEach((question) => {
+      var savedQuestion = new Question(
+        question.type,
+        question.question,
+        question.tag,
+        question.optional,
+        question.organizationFlag
+      );
+      savedQuestion.options = question.options;
+      questions.push(savedQuestion);
+    });
+    for(var i = 0 ; i < questions.length ; ++i){
+      if(questions[i].type === "Radio Button"){
+        var optionVals = [];
+        for (var j = 0 ; j < questions[i].options.length ; ++j){
+          optionVals.push(questions[i].options[j].option);
+        }
+        createCard(questions[i].value, questions[i].tag, optionVals, null, "Radio Button");
+      }
+      else if(questions[i].type === "Checkbox"){
+        var optionVals = [];
+        var tagVals = [];
+        for (var j = 0 ; j < questions[i].options.length ; ++j){
+          optionVals.push(questions[i].options[j].option);
+          tagVals.push(questions[i].options[j].tag)
+        }
+        createCard(questions[i].value, null, optionVals, tagVals, "Checkbox");
+      }
+      else if(questions[i].type === "Text"){
+        createCard(questions[i].value, questions[i].tag, null, null , "Text");
+      }
+      else{
+        //// MAYBE CUSTOM??
+      }
+    }
+  }else if (id) {
     $.ajax({
       url: "/template-editor/template",
       data: { id, saveSwitchData },
@@ -144,11 +200,11 @@ window.onload = function () {
   }
   document.activeElement.blur();
 };
-
+//before leave or refresh the page, save data into the browser
 window.onbeforeunload = function(){
-  if(isTemplateChanged){
-    return "Do you want to save you changes before leaving this page?";
-  }
+  let templateData = quill.getContents();
+  localStorage.setItem(document.getElementById("template-name").value + "TemplateData", JSON.stringify(templateData));
+  localStorage.setItem(document.getElementById("template-name").value + "Questions", JSON.stringify(getQuestions()));
 }
 
 // Show options if checkbox or multiple choice is selected

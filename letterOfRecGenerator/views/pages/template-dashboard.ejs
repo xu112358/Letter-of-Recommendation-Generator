@@ -41,7 +41,7 @@
                             <label class="input-label"> Template Name: </label>
                             <input id = "template-name" class="input-text" type="text" name="title" autofocus>
                         </div>
-                        <input class="input-submit" onclick="firstTimeCreated()" type="submit" value="Create">
+                        <input class="input-submit" onclick="cleanLocalData()" type="submit" value="Create">
                     </form>
                 </div>
             </div>
@@ -393,6 +393,11 @@
                 '<button id="templates-page-' + tableNumber + '-' + i + '" onclick="javascript:changePage(' +
                 tableNumber + ', ' + i + ')">' + i + '</button>';
         }
+    }
+
+    function cleanLocalData(){
+        localStorage.removeItem(document.getElementById("template-name").value + "Questions");
+        localStorage.removeItem(document.getElementById("template-name").value + "TemplateData");
     }
 
     createPageButtons(0);
