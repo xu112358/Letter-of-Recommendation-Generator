@@ -66,6 +66,21 @@ router.get("/form", async function (req, res, next) {
   });
 });
 
+
+//save recommendation letter online by update savedLetterOps attribute
+router.post("/saveLetter", async function (req, res, next) {
+  var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));
+  //retrive user obj from mongodb
+  var user = await User.findOne({ email: decoded.email });
+  user.getForm(req.body.id, function (err, form) {
+    if (err) {
+      console.log(err);
+    } else {
+      form.setSavedLetterOps(req.body.savedLetterOps);
+    }
+  });
+});
+
 //generate recommendation letter
 router.post("/prepareLetter", async function (req, res, next) {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -210,10 +225,6 @@ router.post("/prepareLetter", async function (req, res, next) {
     console.log(err);
   }
 });
-
-router.get("/downloads-quill", function(req, res) {
-
-})
 
 router.get("/downloads", function (req, res) {
   var decoded = jwt_decode(req.headers.authorization.replace("Bearer ", ""));

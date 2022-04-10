@@ -217,7 +217,19 @@
       </div>
     </div>
 
-    <button type="button" class="add-btn save-btn">Save Template</button>
+
+    <!-- <%=title %>
+    <%=saveSwitch %>
+    <%=id %>
+    <%=saveButton%> -->
+
+    <%if (saveButton===1) { %>
+      <button type="button" class="add-btn save-btn">Save Template</button>
+    
+    <%} else { %>
+      <a type="button" class="add-btn btn btn-primary" href="/archive">Back</a>
+    <% } %>
+    
 
 
   <!-- Modal Component-->

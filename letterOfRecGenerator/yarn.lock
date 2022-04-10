@@ -2731,10 +2731,10 @@
     "xml" "^1.0.1"
     "xml-js" "^1.6.8"
 
-"docxtemplater@^3.28.6":
-  "integrity" "sha512-Hc4tiop+zS0XN08gXIfOD2a0/GtD4M4HT8czFoSJz1CEg/jWGyt4yOAVbMWsx57rX1d1U3gWBcf1Ymb93g9D5g=="
-  "resolved" "https://registry.npmjs.org/docxtemplater/-/docxtemplater-3.28.6.tgz"
-  "version" "3.28.6"
+"docxtemplater@^3.29.0":
+  "integrity" "sha512-fzbAZsvo5z7VxfMv2mVkuveDUETaWIhsyPs+n04NjhOFd8aHkKW9mH7UvNzOoxSi7ueS4gdM8NGVyeJ/n2cKcQ=="
+  "resolved" "https://registry.npmjs.org/docxtemplater/-/docxtemplater-3.29.0.tgz"
+  "version" "3.29.0"
   dependencies:
     "@xmldom/xmldom" "^0.8.0"
 
