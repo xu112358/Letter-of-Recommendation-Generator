@@ -2,12 +2,12 @@
 Repo for hosting Letter of Recommendation Generator Capstone Project as of Spring 2022.
 
 Team members:
-+ Yuxi(Andy) Zhou – yuxizhou@usc.edu
-+ Frost(Tianjian) Xu – frostxu@usc.edu 
-+ Xiaochen(Bob) Yang – xiaocheny@usc.edu
-+ Andrew Han – dongilha@usc.edu
-+ Jared Kuo - jaredkuo@usc.edu
-+ Jiefan(Jeffery) Yang - jiefanya@usc.edu
++ Justin Kuo, kuojusti@usc.edu
++ Kaiyi Huang, kaiyihua@usc.edu
++ Kaituo Xu, kaituoxu@usc.edu
++ Minyi Chen, minyiche@usc.edu
++ Shehzaad Iqbal, shehzaai@usc.edu 
+
 
 
 ## How to Run Locally (Updated Fall 2021)
